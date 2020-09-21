@@ -243,9 +243,9 @@ namespace
 	inline bool isUiUniversalInput (int message)
 	{
 		return 
-			message == CuiM_Escape ||
+			message == CuiM_Escape; /* ||
 			message == CuiM_PageUp ||
-			message == CuiM_PageDown;
+			message == CuiM_PageDown;*/
 	}
 
 	inline bool isChatInput (int message)
