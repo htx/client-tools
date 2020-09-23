@@ -911,6 +911,13 @@ bool SwgCuiHud::OnMessage( UIWidget * const context, const UIMessage & msg)
 					CuiRadialMenuManager::setStorytellerMode(false);
 					CuiRadialMenuManager::setGrenadeTargetMode(false);
 				}
+				else
+				{
+					if(CuiPreferences::getTargetNothingUntargets())
+					{
+						setIntended();
+					}
+				}
 			}
 
 			if (mouseMoveStart)
@@ -2058,6 +2065,35 @@ void SwgCuiHud::summonRadialMenu(const Unicode::String & params)
 		}
 	}
 }
+
+//===========================================================================================
+
+void SwgCuiHud::setIntended()
+{
+	const UIPoint & mouseCoord = UIManager::gUIManager().GetLastMouseCoord();
+	const UIWidget * const widgetUnderMouse = getPage().GetWidgetFromPoint(mouseCoord, true);
+		
+	if (widgetUnderMouse == &getPage())
+	{
+		NetworkId currentSelected = NetworkId::cms_invalid;
+		CreatureObject * const player = Game::getPlayerCreature();
+
+		if(!player) return;
+
+		const NetworkId currentIntended = player->getIntendedTarget();
+
+		if(m_lastSelectedObject.getPointer())
+			currentSelected = m_lastSelectedObject.getPointer()->getNetworkId();
+			
+		if (currentIntended != currentSelected)
+		{
+			player->setLookAtTarget(currentSelected);
+			player->setIntendedTarget(currentSelected);
+		}
+	}
+}
+
+//===========================================================================================
 
 void SwgCuiHud::setIntendedAndSummonRadialMenu(bool mouseUp, bool cancel)
 {

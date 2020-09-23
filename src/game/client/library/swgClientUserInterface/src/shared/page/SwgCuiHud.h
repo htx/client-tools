@@ -86,6 +86,7 @@ public:
 	void                targetAtCursorModeless              (bool startStop);
 
 	void				summonRadialMenu					(const Unicode::String & params);
+	void				setIntended							();
 	void				setIntendedAndSummonRadialMenu		(bool mouseUp, bool cancel=false);
 
 	bool                getAppropriateScreenPointForObject  (const Object & obj, UIPoint & pt) const;
