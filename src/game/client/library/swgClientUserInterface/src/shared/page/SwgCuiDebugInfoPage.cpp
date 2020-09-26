@@ -159,14 +159,14 @@ m_serverLoopTimeRequested (false)
 		getCodeDataObject (TUIText, labelPlayerAnimInfo, "labelPlayerAnimInfo");
 		if(labelPlayerAnimInfo)
 			labelPlayerAnimInfo->SetVisible(false);
-		char buff[256];
+		char buff2[256];
 		for(int i = 0; i < s_maxAnimTracks; ++i)
 		{
 			m_playerAnimTrackText[i]->SetVisible(false);
 
 			UIText * labelPlayerAnimTrack = NULL;
-			sprintf(buff,"labelPlayerAnimTrack%d",i);
-			getCodeDataObject(TUIText,labelPlayerAnimTrack,buff);
+			sprintf(buff2,"labelPlayerAnimTrack%d",i);
+			getCodeDataObject(TUIText,labelPlayerAnimTrack,buff2);
 			if(labelPlayerAnimTrack)
 				labelPlayerAnimTrack->SetVisible(false);
 		}

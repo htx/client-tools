@@ -69,10 +69,10 @@ namespace UITreeViewNamespace
 
 			if (dsb->IsA (TUIDataSourceContainer))
 			{
-				UIDataSourceContainer * const dsc = static_cast<UIDataSourceContainer *>(dsb);
+				UIDataSourceContainer * const dsc2 = static_cast<UIDataSourceContainer *>(dsb);
 
-				UITreeView::DataNode * const node = new UITreeView::DataNode (dsc, parent);
-				populateData (node, *dsc);
+				UITreeView::DataNode * const node = new UITreeView::DataNode (dsc2, parent);
+				populateData (node, *dsc2);
 			}
 		}
 	}

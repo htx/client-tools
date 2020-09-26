@@ -1624,20 +1624,20 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 			static_cast<float> (atof (Unicode::wideToNarrow (argv [3]).c_str ())));
 
 		GroundScene *groundScene = dynamic_cast<GroundScene *>(Game::getScene());
-		Object* const player = groundScene ? groundScene->getPlayer () : 0;
+		Object* const player2 = groundScene ? groundScene->getPlayer () : 0;
 
-		if (player)
+		if (player2)
 		{
 			if (Game::getSinglePlayer())
 			{
-				if (player->getAttachedTo () != 0)
-					player->setParentCell (CellProperty::getWorldCellProperty ());
+				if (player2->getAttachedTo () != 0)
+					player2->setParentCell (CellProperty::getWorldCellProperty ());
 
 				CellProperty::setPortalTransitionsEnabled (false);
-					player->setPosition_p (position);
+					player2->setPosition_p (position);
 				CellProperty::setPortalTransitionsEnabled (true);
 
-				CollisionWorld::objectWarped (player);
+				CollisionWorld::objectWarped (player2);
 			}
 			else
 			{
@@ -1906,15 +1906,15 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		if (!ns)
 			return true;
 
-		Object * const player = ns->getPlayer();
+		Object * const player2 = ns->getPlayer();
 		
-		if (player == 0)
+		if (player2 == 0)
 		{
 			result += node->getFullErrorMessage (ERR_NO_AVATAR);
 			return true;
 		}
 
-		Controller * const controller = player->getController ();
+		Controller * const controller = player2->getController ();
 		
 		if (controller == 0)
 		{
@@ -1990,8 +1990,8 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		std::transform (filename.begin (), filename.end (), filename.begin (), tolower);
 		
 		//-- get the player
-		const Object *const player = Game::getPlayer ();
-		if (!player)
+		const Object *const player2 = Game::getPlayer ();
+		if (!player2)
 		{
 			result += Unicode::narrowToWide ("no player character.\n");
 			return true;
@@ -2009,10 +2009,10 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		if (object->asCreatureObject())
 			object->setController(new RemoteCreatureController(object->asCreatureObject()));
 
-		object->setParentCell (player->getParentCell ());
+		object->setParentCell (player2->getParentCell ());
 		CellProperty::setPortalTransitionsEnabled (false);
 		{
-			object->setTransform_o2p (player->getTransform_o2p ());
+			object->setTransform_o2p (player2->getTransform_o2p ());
 
 			if (argv.size() > 2)
 			{
@@ -3518,12 +3518,12 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		if (!target)
 			return true;
 
-		PlayerObject * const player = target->getPlayerObject ();
-		if (!player)
+		PlayerObject * const player2 = target->getPlayerObject ();
+		if (!player2)
 			return true;
 
 		const int val = atoi (Unicode::wideToNarrow (argv [1]).c_str ());
-		player->clientSetForcePower (val);
+		player2->clientSetForcePower (val);
 		return true;
 	}
 
@@ -3535,12 +3535,12 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		if (!target)
 			return true;
 
-		PlayerObject * const player = target->getPlayerObject ();
-		if (!player)
+		PlayerObject * const player2 = target->getPlayerObject ();
+		if (!player2)
 			return true;
 
 		const int val = atoi (Unicode::wideToNarrow (argv [1]).c_str ());
-		player->clientSetMaxForcePower (val);
+		player2->clientSetMaxForcePower (val);
 		return true;
 	}
 
@@ -3548,8 +3548,8 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand (argv [0], ms_setVehicle))
 	{
-		CreatureObject * const player = Game::getPlayerCreature ();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature ();
+		if (!player2)
 			return true;
 
 		const std::string & appearanceName = Unicode::wideToNarrow (argv [1]);
@@ -3559,11 +3559,11 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		if (!cdfName.empty () && cdfName [0] == '.')
 			cdfName.clear ();		
 
-		const int numChildren = player->getNumberOfChildObjects ();
+		const int numChildren = player2->getNumberOfChildObjects ();
 
 		{
 			for (int i = 0; i < numChildren; ++i)
-				player->getChildObject (i)->kill ();
+				player2->getChildObject (i)->kill ();
 			
 			Appearance * const app = AppearanceTemplateList::createAppearance (appearanceName.c_str ());
 			if (app)
@@ -3571,7 +3571,7 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 				Object * const vehicle = new Object ();
 				vehicle->setAppearance (app);
 				RenderWorld::addObjectNotifications(*vehicle);
-				player->addChildObject_o (vehicle);
+				player2->addChildObject_o (vehicle);
 				vehicle->setDynamics (new VehicleHoverDynamicsClient (vehicle, yaw, h, cdfName.c_str ()));
 			}			
 		}
@@ -3582,14 +3582,14 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 	else if (isCommand (argv [0], ms_mountShip))
 	{
 
-		CreatureObject * const player = Game::getPlayerCreature ();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature ();
+		if (!player2)
 		{
 			result += Unicode::narrowToWide ("no player.\n");
 			return true;
 		}
 
-		if (player->getShipStation() == ShipStation::ShipStation_Pilot)
+		if (player2->getShipStation() == ShipStation::ShipStation_Pilot)
 		{
 			result += Unicode::narrowToWide ("you are already piloting a ship.\n");
 			return true;
@@ -3601,7 +3601,7 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 			return true;
 		}
 
-		const CachedNetworkId & target = player->getLookAtTarget();
+		const CachedNetworkId & target = player2->getLookAtTarget();
 		if (target == NetworkId::cms_invalid)
 		{
 			result += Unicode::narrowToWide ("no lookat target.\n");
@@ -3640,7 +3640,7 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 				{
 					ClientObject * const cell = dynamic_cast<ClientObject *>((*i).getObject());
 					if (cell)
-						ContainerInterface::transferItemToCell(*cell, *player, Transform::identity);
+						ContainerInterface::transferItemToCell(*cell, *player2, Transform::identity);
 				}
 				return true;
 			}
@@ -3652,23 +3652,23 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 		int validArrangementIndex = -1;
 		Container::ContainerErrorCode tmp = Container::CEC_Success;
 
-		if (!shipContainer->getFirstUnoccupiedArrangement(*player, validArrangementIndex, tmp) || (validArrangementIndex < 0))
+		if (!shipContainer->getFirstUnoccupiedArrangement(*player2, validArrangementIndex, tmp) || (validArrangementIndex < 0))
 		{
 			result += Unicode::narrowToWide ("no valid arrangements found for player\n");
 			return true;
 		}
 
-		player->setState(States::PilotingShip, true);
+		player2->setState(States::PilotingShip, true);
 
-		ContainerInterface::transferItemToSlottedContainer(*ship, *player, validArrangementIndex);
+		ContainerInterface::transferItemToSlottedContainer(*ship, *player2, validArrangementIndex);
 	}
 
 	//-----------------------------------------------------------------
 
 	else if (isCommand (argv [0], ms_dismountShip))
 	{
-		CreatureObject * const player = Game::getPlayerCreature ();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature ();
+		if (!player2)
 		{
 			result += Unicode::narrowToWide ("no player.\n");
 			return true;
@@ -3680,13 +3680,13 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 			return true;
 		}
 
-		if (player->getShipStation() != ShipStation::ShipStation_Pilot)
+		if (player2->getShipStation() != ShipStation::ShipStation_Pilot)
 		{
 			result += Unicode::narrowToWide ("not piloting a ship.\n");
 			return true;
 		}
 
-		ShipObject* ship = player->getPilotedShip();
+		ShipObject* ship = player2->getPilotedShip();
 		if (!ship)
 		{
 			result += Unicode::narrowToWide ("couldn't get ship.\n");
@@ -3735,7 +3735,7 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 			IGNORE_RETURN (shipContainer->remove(*equippedObject, tmp));
 		}
 
-		player->setState(States::PilotingShip, false);
+		player2->setState(States::PilotingShip, false);
 	}
 
 	//-----------------------------------------------------------------
@@ -3750,10 +3750,10 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand (argv [0], ms_pseudoDamageShip))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (player2)
 		{
-			Object* const targetObject = player->getLookAtTarget().getObject();
+			Object* const targetObject = player2->getLookAtTarget().getObject();
 			if (targetObject)
 			{
 				ShipDamageMessage shipDamageMsg(targetObject->getNetworkId(), targetObject->getPosition_w(), 0.0f, true);
@@ -3768,11 +3768,11 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand(argv[0], ms_splitObject))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (!player2)
 			return true;
 
-		Object* const targetObject = player->getLookAtTarget().getObject();
+		Object* const targetObject = player2->getLookAtTarget().getObject();
 		if (!targetObject)
 			return true;
 
@@ -3893,11 +3893,11 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand(argv[0], ms_splitRandom))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (!player2)
 			return true;
 
-		Object* const targetObject = player->getLookAtTarget().getObject();
+		Object* const targetObject = player2->getLookAtTarget().getObject();
 		if (!targetObject)
 			return true;
 
@@ -4033,13 +4033,13 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand(argv[0], ms_clientSetMovementScale))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (!player2)
 			return true;
 
 		float const scale = static_cast<float>(atof(Unicode::wideToNarrow(argv[1]).c_str()));
-		player->clientSetMovementScale(scale);
-		player->clientSetAccelScale(scale);
+		player2->clientSetMovementScale(scale);
+		player2->clientSetAccelScale(scale);
 		return true;
 	}
 
@@ -4254,8 +4254,8 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand(argv[0], ms_pathCreate))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (!player2)
 			return true;
 
 		float const scale = static_cast<float>(atof(Unicode::wideToNarrow(argv[1]).c_str()));
@@ -4294,8 +4294,8 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand(argv[0], ms_pathAppearance))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (!player2)
 			return true;
 
 		ClientPathObject::setAppearance(Unicode::wideToNarrow(argv[1]));
@@ -4307,13 +4307,13 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 
 	else if (isCommand(argv[0], ms_showFlyText))
 	{
-		CreatureObject * const player = Game::getPlayerCreature();
-		if (!player)
+		CreatureObject * const player2 = Game::getPlayerCreature();
+		if (!player2)
 			return true;
 
 		Unicode::String const & s = argv[1];
 
-		player->addFlyText(s, 3.0, VectorArgb::solidRed, 1.0, CuiTextManagerTextEnqueueInfo::TW_starwars, true, true, true);
+		player2->addFlyText(s, 3.0, VectorArgb::solidRed, 1.0, CuiTextManagerTextEnqueueInfo::TW_starwars, true, true, true);
 
 		return true;
 	}
@@ -4547,29 +4547,29 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 				std::vector<CollectionsDataTable::CollectionInfoCollection const *> const & collections = CollectionsDataTable::getCollectionsInPage((*iterPage)->name);
 				for (std::vector<CollectionsDataTable::CollectionInfoCollection const *>::const_iterator iterCollection = collections.begin(); iterCollection != collections.end(); ++iterCollection)
 				{
-					std::string title;
+					std::string title2;
 					if (!(*iterCollection)->titles.empty())
 					{
 						for (std::vector<std::string>::const_iterator iterTitle = (*iterCollection)->titles.begin(); iterTitle != (*iterCollection)->titles.end(); ++iterTitle)
 						{
-							if (title.empty())
-								title = "(";
+							if (title2.empty())
+								title2 = "(";
 							else
-								title += ", ";
+								title2 += ", ";
 
-							title += *iterTitle;
+							title2 += *iterTitle;
 						}
 					}
 
-					if (title.empty())
-						title = "no";
+					if (title2.empty())
+						title2 = "no";
 					else
-						title += ")";
+						title2 += ")";
 
 					result += Unicode::narrowToWide(FormattedString<512>().sprintf("        %s, %s, title=%s, showIfNotYetEarned=%s, hidden=%s, noReward=%s, trackServerFirst=%s\n",
 						(*iterCollection)->name.c_str(),
 						(*iterCollection)->icon.c_str(),
-						title.c_str(),
+						title2.c_str(),
 						CollectionsDataTable::getShowIfNotYetEarnedTypeString((*iterCollection)->showIfNotYetEarned),
 						((*iterCollection)->hidden ? "yes" : "no"),
 						((*iterCollection)->noReward ? "yes" : "no"),
@@ -4594,24 +4594,24 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 							prereqs += (*iterPrereqs)->name;
 						}
 
-						std::string title;
+						std::string title3;
 						if (!(*iterSlot)->titles.empty())
 						{
 							for (std::vector<std::string>::const_iterator iterTitle = (*iterSlot)->titles.begin(); iterTitle != (*iterSlot)->titles.end(); ++iterTitle)
 							{
-								if (title.empty())
-									title = "(";
+								if (title3.empty())
+									title3 = "(";
 								else
-									title += ", ";
+									title3 += ", ";
 
-								title += *iterTitle;
+								title3 += *iterTitle;
 							}
 						}
 
-						if (title.empty())
-							title = "no";
+						if (title3.empty())
+							title3 = "no";
 						else
-							title += ")";
+							title3 += ")";
 
 						result += Unicode::narrowToWide(FormattedString<512>().sprintf("            %s (slotId=%s, category=%s, prereq=%s), %s, %s, title=%s, showIfNotYetEarned=%s, hidden=%s\n",
 							(*iterSlot)->name.c_str(),
@@ -4620,7 +4620,7 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 							prereqs.c_str(),
 							(*iterSlot)->icon.c_str(),
 							(*iterSlot)->music.c_str(),
-							title.c_str(),
+							title3.c_str(),
 							CollectionsDataTable::getShowIfNotYetEarnedTypeString((*iterSlot)->showIfNotYetEarned),
 							((*iterSlot)->hidden ? "yes" : "no")));
 
@@ -4697,45 +4697,45 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 				std::vector<CollectionsDataTable::CollectionInfoCollection const *> const & collections = CollectionsDataTable::getCollectionsInPage((*iterPage)->name);
 				for (std::vector<CollectionsDataTable::CollectionInfoCollection const *>::const_iterator iterCollection = collections.begin(); iterCollection != collections.end(); ++iterCollection)
 				{
-					std::string title;
-					Unicode::String localizedTitle;
+					std::string title4;
+					Unicode::String localizedTitle2;
 					if (!(*iterCollection)->titles.empty())
 					{
 						for (std::vector<std::string>::const_iterator iterTitle = (*iterCollection)->titles.begin(); iterTitle != (*iterCollection)->titles.end(); ++iterTitle)
 						{
-							if (title.empty())
-								title = "(";
+							if (title4.empty())
+								title4 = "(";
 							else
-								title += ", ";
+								title4 += ", ";
 
-							title += *iterTitle;
+							title4 += *iterTitle;
 
-							if (localizedTitle.empty())
-								localizedTitle = Unicode::narrowToWide("[");
+							if (localizedTitle2.empty())
+								localizedTitle2 = Unicode::narrowToWide("[");
 							else
-								localizedTitle += Unicode::narrowToWide(", ");
+								localizedTitle2 += Unicode::narrowToWide(", ");
 
-							localizedTitle += CollectionsDataTable::localizeCollectionTitle(*iterTitle);
+							localizedTitle2 += CollectionsDataTable::localizeCollectionTitle(*iterTitle);
 						}
 					}
 
-					if (title.empty())
-						title = "no";
+					if (title4.empty())
+						title4 = "no";
 					else
-						title += ")";
+						title4 += ")";
 
-					if (localizedTitle.empty())
-						localizedTitle = Unicode::narrowToWide("[]");
+					if (localizedTitle2.empty())
+						localizedTitle2 = Unicode::narrowToWide("[]");
 					else
-						localizedTitle += Unicode::narrowToWide("]");
+						localizedTitle2 += Unicode::narrowToWide("]");
 
 					result += Unicode::narrowToWide(FormattedString<512>().sprintf("        %s, %s, %s, %s, title=%s %s, showIfNotYetEarned=%s, hidden=%s, noReward=%s, trackServerFirst=%s\n",
 						(*iterCollection)->name.c_str(),
 						Unicode::wideToNarrow(CollectionsDataTable::localizeCollectionName((*iterCollection)->name)).c_str(),
 						Unicode::wideToNarrow(CollectionsDataTable::localizeCollectionDescription((*iterCollection)->name)).c_str(),
 						(*iterCollection)->icon.c_str(),
-						title.c_str(),
-						Unicode::wideToNarrow(localizedTitle).c_str(),
+						title4.c_str(),
+						Unicode::wideToNarrow(localizedTitle2).c_str(),
 						CollectionsDataTable::getShowIfNotYetEarnedTypeString((*iterCollection)->showIfNotYetEarned),
 						((*iterCollection)->hidden ? "yes" : "no"),
 						((*iterCollection)->noReward ? "yes" : "no"),
@@ -4760,37 +4760,37 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 							prereqs += (*iterPrereqs)->name;
 						}
 
-						std::string title;
-						Unicode::String localizedTitle;
+						std::string title5;
+						Unicode::String localizedTitle3;
 						if (!(*iterSlot)->titles.empty())
 						{
 							for (std::vector<std::string>::const_iterator iterTitle = (*iterSlot)->titles.begin(); iterTitle != (*iterSlot)->titles.end(); ++iterTitle)
 							{
-								if (title.empty())
-									title = "(";
+								if (title5.empty())
+									title5 = "(";
 								else
-									title += ", ";
+									title5 += ", ";
 
-								title += *iterTitle;
+								title5 += *iterTitle;
 
-								if (localizedTitle.empty())
-									localizedTitle = Unicode::narrowToWide("[");
+								if (localizedTitle3.empty())
+									localizedTitle3 = Unicode::narrowToWide("[");
 								else
-									localizedTitle += Unicode::narrowToWide(", ");
+									localizedTitle3 += Unicode::narrowToWide(", ");
 
-								localizedTitle += CollectionsDataTable::localizeCollectionTitle(*iterTitle);
+								localizedTitle3 += CollectionsDataTable::localizeCollectionTitle(*iterTitle);
 							}
 						}
 
-						if (title.empty())
-							title = "no";
+						if (title5.empty())
+							title5 = "no";
 						else
-							title += ")";
+							title5 += ")";
 
-						if (localizedTitle.empty())
-							localizedTitle = Unicode::narrowToWide("[]");
+						if (localizedTitle3.empty())
+							localizedTitle3 = Unicode::narrowToWide("[]");
 						else
-							localizedTitle += Unicode::narrowToWide("]");
+							localizedTitle3 += Unicode::narrowToWide("]");
 
 						result += Unicode::narrowToWide(FormattedString<512>().sprintf("            %s (slotId=%s, category=%s, prereq=%s), %s, %s, %s, %s, title=%s %s, showIfNotYetEarned=%s, hidden=%s\n",
 							(*iterSlot)->name.c_str(),
@@ -4801,8 +4801,8 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 							Unicode::wideToNarrow(CollectionsDataTable::localizeCollectionDescription((*iterSlot)->name)).c_str(),
 							(*iterSlot)->icon.c_str(),
 							(*iterSlot)->music.c_str(),
-							title.c_str(),
-							Unicode::wideToNarrow(localizedTitle).c_str(),
+							title5.c_str(),
+							Unicode::wideToNarrow(localizedTitle3).c_str(),
 							CollectionsDataTable::getShowIfNotYetEarnedTypeString((*iterSlot)->showIfNotYetEarned),
 							((*iterSlot)->hidden ? "yes" : "no")));
 

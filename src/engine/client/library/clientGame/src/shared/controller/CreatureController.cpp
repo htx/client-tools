@@ -835,11 +835,11 @@ void CreatureController::handleMessage (const int message, const float value, co
 				const MessageQueueGenericValueType<std::pair<NetworkId, std::string> > * const msg = safe_cast<const MessageQueueGenericValueType<std::pair<NetworkId, std::string> > *>(data);
 				if (msg)
 				{
-					std::string value;
-					value.append(msg->getValue().first.getValueString());
-					value.append(" ");
-					value.append(msg->getValue().second);
-					IGNORE_RETURN(CuiActionManager::performAction(CuiActions::openCustomizationWindow, Unicode::narrowToWide(value)));
+					std::string value2;
+					value2.append(msg->getValue().first.getValueString());
+					value2.append(" ");
+					value2.append(msg->getValue().second);
+					IGNORE_RETURN(CuiActionManager::performAction(CuiActions::openCustomizationWindow, Unicode::narrowToWide(value2)));
 				}
 			}
 			break;
@@ -886,10 +886,10 @@ void CreatureController::handleMessage (const int message, const float value, co
 				const MessageQueueGenericValueType< std::pair<std::string, std::string> > * const msg = safe_cast<const MessageQueueGenericValueType< std::pair<std::string, std::string> > *>(data);
 				if(msg)
 				{
-					std::string value = msg->getValue().first;
-					value.append("|", 1);
-					value += msg->getValue().second;
-					IGNORE_RETURN(CuiActionManager::performAction(CuiActions::rating, Unicode::narrowToWide(value)));
+					std::string value3 = msg->getValue().first;
+					value3.append("|", 1);
+					value3 += msg->getValue().second;
+					IGNORE_RETURN(CuiActionManager::performAction(CuiActions::rating, Unicode::narrowToWide(value3)));
 				}
 			}
 			break;

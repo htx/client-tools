@@ -1347,7 +1347,7 @@ void CreatureObject::endBaselines()
 		
 		if(getAppearanceInventoryObject())
 		{
-			SlottedContainer * container = ContainerInterface::getSlottedContainer(*getAppearanceInventoryObject());
+			SlottedContainer * container2 = ContainerInterface::getSlottedContainer(*getAppearanceInventoryObject());
 			for (unsigned int k = 0; k < m_wearableAppearanceData.size(); ++k)
 			{
 				Container::ContainerErrorCode tmp = Container::CEC_Success;
@@ -1367,7 +1367,7 @@ void CreatureObject::endBaselines()
 					wearable->setNetworkId(w.m_networkId);
 					wearable->setAppearanceData(w.m_appearanceString);
 					wearable->endBaselines();
-					IGNORE_RETURN(container->add(*wearable, w.m_arrangement, tmp));
+					IGNORE_RETURN(container2->add(*wearable, w.m_arrangement, tmp));
 				}
 				else
 				{
@@ -4697,13 +4697,13 @@ void CreatureObject::checkWearing(Object **underWearObject, StringVector const &
 									bool appearanceObj = false;
 									if(appearanceInv)
 									{
-										StringVector::const_iterator iterSlots = slots.begin();
+										StringVector::const_iterator iterSlots2 = slots.begin();
 
-										for (; iterSlots != slots.end(); ++iterSlots)
+										for (; iterSlots2 != slots.end(); ++iterSlots2)
 										{
-											char const *slot = iterSlots->c_str();
+											char const *slot2 = iterSlots2->c_str();
 
-											clientObject = ContainerInterface::getObjectInSlot(*appearanceInv, slot);
+											clientObject = ContainerInterface::getObjectInSlot(*appearanceInv, slot2);
 
 											if (clientObject != NULL)
 											{
@@ -4737,13 +4737,13 @@ void CreatureObject::checkWearing(Object **underWearObject, StringVector const &
 
 								if(appearanceInv)
 								{
-									StringVector::const_iterator iterSlots = slots.begin();
+									StringVector::const_iterator iterSlots3 = slots.begin();
 
-									for (; iterSlots != slots.end(); ++iterSlots)
+									for (; iterSlots3 != slots.end(); ++iterSlots3)
 									{
-										char const *slot = iterSlots->c_str();
+										char const *slot3 = iterSlots3->c_str();
 
-										clientObject = ContainerInterface::getObjectInSlot(*appearanceInv, slot);
+										clientObject = ContainerInterface::getObjectInSlot(*appearanceInv, slot3);
 
 										if (clientObject != NULL)
 										{
@@ -4820,21 +4820,21 @@ void CreatureObject::checkWearing(Object **underWearObject, StringVector const &
 
 								// Put the underwear object on the skeleton
 
-								SkeletalAppearance2 * const skeletalAppearance = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
+								SkeletalAppearance2 * const skeletalAppearance2 = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
 
-								if (skeletalAppearance != NULL)
+								if (skeletalAppearance2 != NULL)
 								{
-									skeletalAppearance->wear(*underWearObject);
+									skeletalAppearance2->wear(*underWearObject);
 								}
 							}
 						}
 						else if ((*underWearObject) != NULL)
 						{
-							SkeletalAppearance2 * const skeletalAppearance = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
+							SkeletalAppearance2 * const skeletalAppearance3 = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
 
-							if (skeletalAppearance != NULL)
+							if (skeletalAppearance3 != NULL)
 							{
-								skeletalAppearance->stopWearing((*underWearObject));
+								skeletalAppearance3->stopWearing((*underWearObject));
 							}
 
 							delete (*underWearObject);
@@ -4905,20 +4905,20 @@ void CreatureObject::checkWearing(Object **underWearObject, StringVector const &
 
 								// Put the underwear object on the skeleton
 
-								SkeletalAppearance2 * const skeletalAppearance = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
+								SkeletalAppearance2 * const skeletalAppearance4 = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
 
-								if (skeletalAppearance != NULL)
+								if (skeletalAppearance4 != NULL)
 								{
-									skeletalAppearance->wear(*underWearObject);
+									skeletalAppearance4->wear(*underWearObject);
 								}
 							}
 							else if((*underWearObject) != NULL)
 							{
-								SkeletalAppearance2 * const skeletalAppearance = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
+								SkeletalAppearance2 * const skeletalAppearance5 = dynamic_cast<SkeletalAppearance2 * const>(getAppearance());
 
-								if (skeletalAppearance != NULL)
+								if (skeletalAppearance5 != NULL)
 								{
-									skeletalAppearance->wear(*underWearObject);
+									skeletalAppearance5->wear(*underWearObject);
 								}
 							}
 						}
@@ -6039,7 +6039,7 @@ void CreatureObject::setCoverVisibility(bool const visible, bool const islocal)
 						}
 						else
 						{
-							DEBUG_WARNING(true, ("Creature Object: Creature ID [%s] has a lightsabre weapon but not a lightsabre appearance!\nDebug Info:\n", this->getNetworkId().getValueString()));
+							DEBUG_WARNING(true, ("Creature Object: Creature ID [%s] has a lightsabre weapon but not a lightsabre appearance!\nDebug Info:\n", this->getNetworkId().getValueString().c_str()));
 							DEBUG_WARNING(true, ("Creature Object Template Name: [%s]", this->getObjectTemplateName()));
 							DEBUG_WARNING(true, ("Creature Object Appearance Name: [%s]", getAppearance()->getAppearanceTemplateName()));
 							DEBUG_WARNING(true, ("Creature Current Weapon Template Name: [%s]", getCurrentWeapon()->getObjectTemplateName()));
@@ -6066,7 +6066,7 @@ void CreatureObject::setCoverVisibility(bool const visible, bool const islocal)
 						}
 						else
 						{
-							DEBUG_WARNING(true, ("Creature Object: Creature ID [%s] has a lightsabre weapon but not a lightsabre appearance!\nDebug Info:\n", this->getNetworkId().getValueString()));
+							DEBUG_WARNING(true, ("Creature Object: Creature ID [%s] has a lightsabre weapon but not a lightsabre appearance!\nDebug Info:\n", this->getNetworkId().getValueString().c_str()));
 							DEBUG_WARNING(true, ("Creature Object Template Name: [%s]", this->getObjectTemplateName()));
 							DEBUG_WARNING(true, ("Creature Object Appearance Name: [%s]", getAppearance()->getAppearanceTemplateName()));
 							DEBUG_WARNING(true, ("Creature Current Weapon Template Name: [%s]", getCurrentWeapon()->getObjectTemplateName()));
@@ -6634,7 +6634,7 @@ void CreatureObject::verifyWornAppearanceItems()
 			for(int i = 0; i < skeleAppearance->getWearableCount(); ++i)
 			{
 				TangibleObject const * currentItem = dynamic_cast<TangibleObject const *>(skeleAppearance->getWearableObject(i));
-				wornAppearanceMap.insert(std::make_pair<NetworkId, TangibleObject const *>(currentItem->getNetworkId(), currentItem));
+				wornAppearanceMap.insert(std::make_pair(currentItem->getNetworkId(), currentItem));
 			}
 
 			for (unsigned int k = 0; k < m_wearableAppearanceData.size(); ++k) // go through our streamed wearables

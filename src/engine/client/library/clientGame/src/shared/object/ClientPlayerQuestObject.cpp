@@ -288,8 +288,8 @@ void ClientPlayerQuestObject::createClientWaypointObjects()
 	// possibly accessing some bad memory.
 	if(m_clientWaypoints.empty())
 	{
-		std::vector<int>::size_type i = 0;
-		for(; i < m_taskStatus.size(); ++i)
+		std::vector<int>::size_type v = 0;
+		for(; v < m_taskStatus.size(); ++v)
 		{
 			m_clientWaypoints.push_back(NULL);
 		}

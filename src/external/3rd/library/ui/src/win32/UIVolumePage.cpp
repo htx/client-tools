@@ -1101,14 +1101,14 @@ void UIVolumePage::Render( UICanvas &DestinationCanvas ) const
 					//-- wtf
 					const UIPoint & loc = widget->GetLocation ();
 					const UIFloatPoint pos (static_cast<float>(loc.x), static_cast<float>(loc.y));
-					const UISize size (widget->GetSize ());
+					const UISize size2 (widget->GetSize ());
 					
 					const UIFloatPoint points [5] =
 					{
 						pos + UIFloatPoint (0.0f,                        0.0f),
-							pos + UIFloatPoint (0.0f,                        static_cast<float>(size.y)),
-							pos + UIFloatPoint (static_cast<float>(size.x), static_cast<float>(size.y)),
-							pos + UIFloatPoint (static_cast<float>(size.x), 0.0f),
+							pos + UIFloatPoint (0.0f,                        static_cast<float>(size2.y)),
+							pos + UIFloatPoint (static_cast<float>(size2.x), static_cast<float>(size2.y)),
+							pos + UIFloatPoint (static_cast<float>(size2.x), 0.0f),
 							pos + UIFloatPoint (0.0f, 0.0f),
 					};
 					

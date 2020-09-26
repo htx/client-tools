@@ -273,8 +273,8 @@ void CellObject::endBaselines()
 	{
 		CellProperty* const cellProperty = getCellProperty ();
 		const char* const cellName = cellProperty->getCellName ();
-		const PortalProperty* const portalProperty = cellProperty->getPortalProperty ();
-		const char* const pobShortName = portalProperty->getPobShortName ();
+		const PortalProperty* const portalProperty2 = cellProperty->getPortalProperty ();
+		const char* const pobShortName = portalProperty2->getPobShortName ();
 
 		const InteriorEnvironmentBlock* const interiorEnvironmentBlock = NON_NULL (InteriorEnvironmentBlockManager::getEnvironmentBlock (pobShortName, cellName));
 		if (interiorEnvironmentBlock)

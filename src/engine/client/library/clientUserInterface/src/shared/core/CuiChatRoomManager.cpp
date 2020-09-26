@@ -193,9 +193,9 @@ bool CuiChatRoomManager::enterRoom (uint32 id, const CuiChatRoomDataNode * room,
 	
 	if (room)
 	{
-		ChatEnterRoomById msg (++enter_room_sequence, id, room->data.path);
+		ChatEnterRoomById msg (++enter_room_sequence, id, room->mData.path);
 		GameNetwork::send (msg, true);
-		CuiChatRoomManagerHistory::roomJoinAdd (enter_room_sequence, room->data.path, id);
+		CuiChatRoomManagerHistory::roomJoinAdd (enter_room_sequence, room->mData.path, id);
 		return true;
 	}
 	else
@@ -213,8 +213,8 @@ bool CuiChatRoomManager::enterRoom (const std::string & name, Unicode::String & 
 		return false;
 
 	const CuiChatRoomDataNode * const room = findRoomNode (name);
-	if (room && room->data.id)
-		return enterRoom (room->data.id, room, result);
+	if (room && room->mData.id)
+		return enterRoom (room->mData.id, room, result);
 	else if (isdigit (name [0]))
 		return enterRoom (atoi (name.c_str ()), 0, result);
 	else
@@ -304,7 +304,7 @@ CuiChatRoomDataNode * CuiChatRoomManager::findRoomNodeInternal (uint32 id)
 		CuiChatRoomDataNode * const room = rooms.back ();
 		rooms.pop_back ();
 
-		if (room->data.id == id)
+		if (room->mData.id == id)
 			return room;
 
 		const CuiChatRoomDataNode::NodeVector & roomChildren = room->getChildren ();
@@ -366,7 +366,7 @@ int CuiChatRoomManager::parse (const Unicode::String & str, Unicode::String & re
 			return CommandParser::ERR_FAIL;
 		}
 		
-		sendToRoom (node->data.id, message, Unicode::String());
+		sendToRoom (node->mData.id, message, Unicode::String());
 		return CommandParser::ERR_SUCCESS;
 	}
 
@@ -385,7 +385,7 @@ void CuiChatRoomManager::sendToRoom (uint32 id, const Unicode::String & message,
 		WARNING (true, ("null room in sendToRoom"));
 	else if (!Game::isPlayerSquelched())
 	{
-		CuiChatRoomManagerHistory::roomSendAdd (++sequence, room->data.path);
+		CuiChatRoomManagerHistory::roomSendAdd (++sequence, room->mData.path);
 		const ChatSendToRoom msg (sequence, id, message, outOfBand);
 		GameNetwork::send (msg, true);
 	}
@@ -423,13 +423,13 @@ bool CuiChatRoomManager::destroyRoom (const std::string & name, Unicode::String 
 	const CuiChatRoomDataNode * const room = findRoomNode (name);
 	if (room)
 	{
-		if (!room->data.id)
+		if (!room->mData.id)
 		{
 			result += CuiStringIdsChatRoom::not_a_room.localize ();
 			return false;
 		}
 
-		return destroyRoom (room->data.id, result);
+		return destroyRoom (room->mData.id, result);
 	}
 
 	result += CuiStringIdsChatRoom::not_found.localize ();
@@ -458,7 +458,7 @@ bool CuiChatRoomManager::destroyRoom (uint32 id, Unicode::String & result)
 	const ChatDestroyRoom msg (++sequence, id);
 	GameNetwork::send (msg, true);
 
-	CuiChatRoomManagerHistory::roomDestroyAdd (sequence, room->data.path);
+	CuiChatRoomManagerHistory::roomDestroyAdd (sequence, room->mData.path);
 
 	return true;
 }
@@ -487,7 +487,7 @@ bool CuiChatRoomManager::leaveRoom   (const uint32 id, Unicode::String & result)
 
 		if (roomNode->findAvatarInRoom (self.getFullName (), cuiAvatar, CuiChatRoomDataNode::ALT_members))
 		{
-			const ChatRemoveAvatarFromRoom msg (cuiAvatar.chatId, roomNode->data.path);
+			const ChatRemoveAvatarFromRoom msg (cuiAvatar.chatId, roomNode->mData.path);
 			GameNetwork::send (msg, true);
 			return true;
 		}
@@ -507,7 +507,7 @@ bool CuiChatRoomManager::leaveRoom   (const std::string & name, Unicode::String 
 	const CuiChatRoomDataNode * const node = findEnteredRoomNode (name);
 	if (node)
 	{
-		leaveRoom (node->data.id, result);
+		leaveRoom (node->mData.id, result);
 		return true;
 	}
 
@@ -544,7 +544,7 @@ bool CuiChatRoomManager::queryRoom (uint32 id, Unicode::String & result)
 	const CuiChatRoomDataNode * const room = findRoomNode (id);
 	if (room)
 	{
-		const ChatQueryRoom msg (++sequence, room->data.path);
+		const ChatQueryRoom msg (++sequence, room->mData.path);
 		GameNetwork::send (msg, true);
 		return true;
 	}
@@ -562,12 +562,12 @@ bool CuiChatRoomManager::queryRoom (const std::string & path, Unicode::String & 
 	const CuiChatRoomDataNode * const room = findRoomNode (path);
 	if (room)
 	{
-		if (!room->data.id)
+		if (!room->mData.id)
 		{
 			result += CuiStringIdsChatRoom::not_a_room.localize ();
 			return false;
 		}
-		queryRoom (room->data.id, result);
+		queryRoom (room->mData.id, result);
 		return true;
 	}
 
@@ -601,7 +601,7 @@ bool CuiChatRoomManager::setInvited    (uint32 id, const std::string & avatarNam
 	
 	if (invited)
 	{
-		const ChatInviteAvatarToRoom msg (avatar, roomNode->data.path);
+		const ChatInviteAvatarToRoom msg (avatar, roomNode->mData.path);
 		GameNetwork::send (msg, true);
 	}
 	else
@@ -610,7 +610,7 @@ bool CuiChatRoomManager::setInvited    (uint32 id, const std::string & avatarNam
 		CuiChatRoomManagerHistory::uninviteAdd (++sequence_uninvite, id, avatarName);	
 
 		// -- 
-		if (isRoomEntered (roomNode->data.id))
+		if (isRoomEntered (roomNode->mData.id))
 		{
 			//-- construct a possibly invalid avatar id
 			CuiChatAvatarId cuiAvatar = CuiChatAvatarId (ChatAvatarId (avatarName));
@@ -624,7 +624,7 @@ bool CuiChatRoomManager::setInvited    (uint32 id, const std::string & avatarNam
 			avatar = cuiAvatar.chatId;
 		}
 
-		const ChatUninviteFromRoom msg (sequence_uninvite, avatar, roomNode->data.path);
+		const ChatUninviteFromRoom msg (sequence_uninvite, avatar, roomNode->mData.path);
 		GameNetwork::send (msg, true);
 	}
 	
@@ -642,13 +642,13 @@ bool CuiChatRoomManager::setInvited    (const std::string & roomName, const std:
 		return false;
 	}
 	
-	if (!room->data.id)
+	if (!room->mData.id)
 	{
 		result += CuiStringIdsChatRoom::not_a_room.localize ();
 		return false;
 	}
 
-	return setInvited (room->data.id, avatarName, invited, result);
+	return setInvited (room->mData.id, avatarName, invited, result);
 }
 
 //----------------------------------------------------------------------
@@ -675,7 +675,7 @@ bool CuiChatRoomManager::inviteGroup (uint32 id, const std::string & avatarName,
 		return false;
 	}
 	
-	const ChatInviteGroupToRoom msg (avatar, roomNode->data.path);
+	const ChatInviteGroupToRoom msg (avatar, roomNode->mData.path);
 	GameNetwork::send (msg, true);
 	
 	return true;
@@ -692,13 +692,13 @@ bool CuiChatRoomManager::inviteGroup (const std::string & roomName, const std::s
 		return false;
 	}
 	
-	if (!room->data.id)
+	if (!room->mData.id)
 	{
 		result += CuiStringIdsChatRoom::not_a_room.localize ();
 		return false;
 	}
 
-	return inviteGroup (room->data.id, avatarName, result);
+	return inviteGroup (room->mData.id, avatarName, result);
 }
 
 //----------------------------------------------------------------------
@@ -729,13 +729,13 @@ bool CuiChatRoomManager::setBanned    (uint32 id, const std::string & avatarName
 	{
 		static uint32 sequence_ban = 0;
 		++sequence_ban;
-		const ChatBanAvatarFromRoom msg (sequence_ban, avatar, roomNode->data.path);
+		const ChatBanAvatarFromRoom msg (sequence_ban, avatar, roomNode->mData.path);
 		GameNetwork::send (msg, true);
 	}
 	else
 	{
 		// -- 
-		if (isRoomEntered (roomNode->data.id))
+		if (isRoomEntered (roomNode->mData.id))
 		{
 			//-- construct a possibly invalid avatar id
 			CuiChatAvatarId cuiAvatar = CuiChatAvatarId (ChatAvatarId (avatarName));
@@ -751,7 +751,7 @@ bool CuiChatRoomManager::setBanned    (uint32 id, const std::string & avatarName
 
 		static uint32 sequence_unban = 0;
 		++sequence_unban;
-		const ChatUnbanAvatarFromRoom msg (sequence_unban, avatar, roomNode->data.path);
+		const ChatUnbanAvatarFromRoom msg (sequence_unban, avatar, roomNode->mData.path);
 		GameNetwork::send (msg, true);
 	}
 	
@@ -769,13 +769,13 @@ bool CuiChatRoomManager::setBanned    (const std::string & roomName, const std::
 		return false;
 	}
 	
-	if (!room->data.id)
+	if (!room->mData.id)
 	{
 		result += CuiStringIdsChatRoom::not_a_room.localize ();
 		return false;
 	}
 
-	return setBanned (room->data.id, avatarName, invited, result);
+	return setBanned (room->mData.id, avatarName, invited, result);
 }
 
 
@@ -807,7 +807,7 @@ bool CuiChatRoomManager::setModerator  (uint32 id, const std::string & avatarNam
 	{
 		static uint32 sequence_addModerator = 0;
 		CuiChatRoomManagerHistory::addModeratorAdd (++sequence_addModerator, id, avatarName);
-		const ChatAddModeratorToRoom msg (sequence_addModerator, avatar, roomNode->data.path);
+		const ChatAddModeratorToRoom msg (sequence_addModerator, avatar, roomNode->mData.path);
 		GameNetwork::send (msg, true);
 	}
 	else
@@ -816,7 +816,7 @@ bool CuiChatRoomManager::setModerator  (uint32 id, const std::string & avatarNam
 		CuiChatAvatarId cuiAvatar = CuiChatAvatarId (ChatAvatarId (avatarName));
 		
 		// -- 
-		if (isRoomEntered (roomNode->data.id))
+		if (isRoomEntered (roomNode->mData.id))
 		{
 			if (!roomNode->findAvatarInRoom (avatarName, cuiAvatar, CuiChatRoomDataNode::ALT_moderators))
 			{
@@ -828,7 +828,7 @@ bool CuiChatRoomManager::setModerator  (uint32 id, const std::string & avatarNam
 		static uint32 sequence_removeModerator = 0;
 		CuiChatRoomManagerHistory::removeModeratorAdd (++sequence_removeModerator, id, avatarName);
 
-		const ChatRemoveModeratorFromRoom msg (sequence_removeModerator, avatar, roomNode->data.path);
+		const ChatRemoveModeratorFromRoom msg (sequence_removeModerator, avatar, roomNode->mData.path);
 		GameNetwork::send (msg, true);
 
 		return true;
@@ -844,7 +844,7 @@ bool CuiChatRoomManager::setModerator  (const std::string & roomName, const std:
 	const CuiChatRoomDataNode * const roomNode = findRoomNode (roomName);
 	if (roomNode)
 	{
-		return setModerator (roomNode->data.id, avatarName, moderator, result);
+		return setModerator (roomNode->mData.id, avatarName, moderator, result);
 	}
 
 	return false;
@@ -868,7 +868,7 @@ bool CuiChatRoomManager::kick          (uint32 id , const std::string & avatarNa
 
 		if (roomNode->findAvatarInRoom (avatarName, cuiAvatar, CuiChatRoomDataNode::ALT_members))
 		{
-			const ChatKickAvatarFromRoom msg (cuiAvatar.chatId, roomNode->data.path);
+			const ChatKickAvatarFromRoom msg (cuiAvatar.chatId, roomNode->mData.path);
 			GameNetwork::send (msg, true);
 			return true;
 		}
@@ -888,7 +888,7 @@ bool CuiChatRoomManager::kick          (const std::string & roomName, const std:
 	const CuiChatRoomDataNode * const roomNode = findRoomNode (roomName);
 	if (roomNode)
 	{
-		return kick (roomNode->data.id, avatarName, result);
+		return kick (roomNode->mData.id, avatarName, result);
 	}
 
 	result += CuiStringIdsChatRoom::not_found.localize ();
@@ -899,13 +899,13 @@ bool CuiChatRoomManager::kick          (const std::string & roomName, const std:
 
 void CuiChatRoomManager::getRoomShortPath        (const CuiChatRoomDataNode & roomNode, std::string & shortPath)
 {
-	if (roomNode.data.id == getGroupRoomId () || roomNode.data.id == getGuildRoomId () || roomNode.data.id == getCityRoomId () )
+	if (roomNode.mData.id == getGroupRoomId () || roomNode.mData.id == getGuildRoomId () || roomNode.mData.id == getCityRoomId () )
 	{
-		shortPath = roomNode.name;
+		shortPath = roomNode.mName;
 		return;
 	}
 
-	shortPath = roomNode.data.path;
+	shortPath = roomNode.mData.path;
 
 	const ChatAvatarId & selfId = CuiChatManager::getSelfAvatarId ();
 
@@ -943,7 +943,7 @@ void CuiChatRoomManager::receiveRoomList (const RoomDataVector & v)
 		const CuiChatRoomDataNode * const node = chatRoomTree.insertData (data);
 		NOT_NULL (node);
 		UNREF (node);
-		DEBUG_FATAL (node->data.id == 0, ("Inserted a room with zero id: %d, %s", data.id, data.path.c_str ()));
+		//DEBUG_FATAL (node->mData.id == 0, ("Inserted a room with zero id: %d, %s", data.id, data.path.c_str ()));
 	}
 
 	Transceivers::modified.emitMessage (0);
@@ -988,12 +988,12 @@ void CuiChatRoomManager::internalDestroyRoom (CuiChatRoomDataNode *& roomNode)
 	NOT_NULL (roomNode);
 
 	//-- remove from entered room list
-	const ChatRoomsEnteredVector::iterator it = std::find (chatRoomsEntered.begin (), chatRoomsEntered.end (), roomNode->data.id);
+	const ChatRoomsEnteredVector::iterator it = std::find (chatRoomsEntered.begin (), chatRoomsEntered.end (), roomNode->mData.id);
 	
 	if (it != chatRoomsEntered.end ())
 		chatRoomsEntered.erase (it);
 
-	chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->data.path));
+	chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->mData.path));
 
 	const CuiChatRoomDataNode::NodeVector & roomChildren = roomNode->getChildren ();
 
@@ -1013,7 +1013,7 @@ void CuiChatRoomManager::internalDestroyRoom (CuiChatRoomDataNode *& roomNode)
 
 			//-- valid rooms should not get removed
 			//-- rooms with children should not get removed
-			if (!child || child->data.id || !child->getChildren ().empty ())
+			if (!child || child->mData.id || !child->getChildren ().empty ())
 				break;
 		}
 
@@ -1103,7 +1103,7 @@ void CuiChatRoomManager::receiveRoomQueryResults (const ChatQueryRoomResults & m
 	if (!wasInTree)
 		Transceivers::modified.emitMessage (0);
 	else
-		Transceivers::modified.emitMessage (roomNode->data.id);
+		Transceivers::modified.emitMessage (roomNode->mData.id);
 
 	// Only tell the client they received channel information if they actually requested it
 	// NOTE: The server will send the updated room information but the sequence ID will be zero
@@ -1144,7 +1144,7 @@ void CuiChatRoomManager::sendGenericStatusMessage (uint32 sequenceId, const Stri
 		str += shortName;
 	}
 	
-	Transceivers::statusMessage.emitMessage (StatusMessage (sequenceId, roomNode ? roomNode->data.id : 0, str));
+	Transceivers::statusMessage.emitMessage (StatusMessage (sequenceId, roomNode ? roomNode->mData.id : 0, str));
 }
 
 //----------------------------------------------------------------------
@@ -1163,35 +1163,35 @@ void CuiChatRoomManager::receiveOnEnteredRoom (const ChatOnEnteredRoom & msg)
 
 	if (result == CHATRESULT_SUCCESS)
 	{
-		s_pendingEnters.erase(roomNode->name);
+		s_pendingEnters.erase(roomNode->mName);
 
 		//-- ignore the system room
-		if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_SYSTEM.c_str ()))
+		if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_SYSTEM.c_str ()))
 			return;
 
 		//-- squirrel away the planet room id
-		if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_PLANET.c_str ()))
+		if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_PLANET.c_str ()))
 		{
 			setPlanetRoomId (roomId);
 			return;
 		}
 
 		//-- squirrel away the group room id
-		if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_GROUP.c_str ()))
+		if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_GROUP.c_str ()))
 		{
 			setGroupRoomId (roomId);
 			return;
 		}
 
 		//-- squirrel away the guild room id
-		if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_GUILD.c_str ()))
+		if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_GUILD.c_str ()))
 		{
 			setGuildRoomId (roomId);
 			return;
 		}
 
 		//-- squirrel away the city room id
-		if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_CITY.c_str ()))
+		if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_CITY.c_str ()))
 		{
 			setCityRoomId (roomId);
 			return;
@@ -1201,7 +1201,7 @@ void CuiChatRoomManager::receiveOnEnteredRoom (const ChatOnEnteredRoom & msg)
 		//   works much like the group and guild rooms, without the hackishness
 		if(roomNode->parent)
 		{
-			if (roomNode->parent->name == "named")
+			if (roomNode->parent->mName == "named")
 			{
 				setNamedRoomId(roomId);
 				return;
@@ -1221,14 +1221,14 @@ void CuiChatRoomManager::receiveOnEnteredRoom (const ChatOnEnteredRoom & msg)
 
 			if (std::find (chatRoomsEntered.begin (), chatRoomsEntered.end (), roomId) == chatRoomsEntered.end ())
 			{
-				chatRoomsEnteredNames [Unicode::toLower (roomNode->data.path)] = roomId;
+				chatRoomsEnteredNames [Unicode::toLower (roomNode->mData.path)] = roomId;
 				chatRoomsEntered.push_back              (roomId);
 				Transceivers::selfEntered.emitMessage   (*roomNode);
 				Unicode::String dummyResult;
-				CuiChatRoomManager::queryRoom (roomNode->data.path, dummyResult);
+				CuiChatRoomManager::queryRoom (roomNode->mData.path, dummyResult);
 			}
 			else
-				WARNING (true, ("received self ChatOnEnteredRoom for room already entered (%s).", roomNode->data.path.c_str ()));
+				WARNING (true, ("received self ChatOnEnteredRoom for room already entered (%s).", roomNode->mData.path.c_str ()));
 		}
 		else
 		{
@@ -1268,7 +1268,7 @@ void CuiChatRoomManager::receiveOnLeaveRoom      (const ChatOnLeaveRoom & msg)
 
 			if (it != chatRoomsEntered.end ())
 			{
-				chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->data.path));
+				chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->mData.path));
 				chatRoomsEntered.erase (it);
 				Transceivers::selfLeft.emitMessage(*roomNode);
 			}
@@ -1334,11 +1334,11 @@ void CuiChatRoomManager::receiveOnKickAvatarFromRoom      (const ChatOnKickAvata
 		CuiChatRoomDataNode const * const roomNode = findRoomNode (msg.getRoomName());
 		if (!roomNode)
 		{
-			WARNING (true, ("received receiveOnKickAvatarFromRoom but room [%s] doesn't exist on client.", msg.getRoomName())); 
+			WARNING (true, ("received receiveOnKickAvatarFromRoom but room [%s] doesn't exist on client.", msg.getRoomName().c_str())); 
 			return;
 		}
 
-		const uint32         roomId = roomNode->data.id;
+		const uint32         roomId = roomNode->mData.id;
 		const ChatAvatarId & other  = msg.getAvatarId();
 
 		// Process the chat avatar leaving the room
@@ -1352,7 +1352,7 @@ void CuiChatRoomManager::receiveOnKickAvatarFromRoom      (const ChatOnKickAvata
 
 			if (it != chatRoomsEntered.end ())
 			{
-				chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->data.path));
+				chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->mData.path));
 				chatRoomsEntered.erase (it);
 				Transceivers::selfLeft.emitMessage   (*roomNode);
 			}
@@ -1388,7 +1388,7 @@ void CuiChatRoomManager::receiveOnAddModeratorToRoom      (const ChatOnAddModera
 		{
 			const CuiChatRoomDataNode * const roomNode = findRoomNode (roomId);
 			if (roomNode)
-				attemptedRoomName = roomNode->data.path;
+				attemptedRoomName = roomNode->mData.path;
 		}
 		
 		Unicode::String str;
@@ -1440,7 +1440,7 @@ void CuiChatRoomManager::receiveOnAddModeratorToRoom      (const ChatOnAddModera
 		roomNode->setModerator (avatarId, true);
 
 		Transceivers::moderatorAdded.emitMessage  (Messages::ModeratorAdded::Payload (roomNode, &avatarId));
-		Transceivers::modified.emitMessage        (roomNode->data.id);
+		Transceivers::modified.emitMessage        (roomNode->mData.id);
 	}
 }
 
@@ -1463,7 +1463,7 @@ void CuiChatRoomManager::receiveOnRemoveModeratorFromRoom (const ChatOnRemoveMod
 		{
 			const CuiChatRoomDataNode * const roomNode = findRoomNode (roomId);
 			if (roomNode)
-				attemptedRoomName = roomNode->data.path;
+				attemptedRoomName = roomNode->mData.path;
 		}
 		
 		Unicode::String str;
@@ -1515,7 +1515,7 @@ void CuiChatRoomManager::receiveOnRemoveModeratorFromRoom (const ChatOnRemoveMod
 		roomNode->setModerator (avatarId, false);
 
 		Transceivers::moderatorRemoved.emitMessage(Messages::ModeratorRemoved::Payload (roomNode, &avatarId));
-		Transceivers::modified.emitMessage        (roomNode->data.id);
+		Transceivers::modified.emitMessage        (roomNode->mData.id);
 	}
 }
 
@@ -1579,7 +1579,7 @@ void CuiChatRoomManager::receiveOnBanAvatarFromRoom            (const ChatOnBanA
 
 	if (result == CHATRESULT_SUCCESS)
 	{
-		const uint32         roomId = roomNode->data.id;
+		const uint32         roomId = roomNode->mData.id;
 		const ChatAvatarId & other  = msg.getBannee();
 
 		// Process the chat avatar leaving the room
@@ -1593,7 +1593,7 @@ void CuiChatRoomManager::receiveOnBanAvatarFromRoom            (const ChatOnBanA
 
 			if (it != chatRoomsEntered.end ())
 			{
-				chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->data.path));
+				chatRoomsEnteredNames.erase (Unicode::toLower (roomNode->mData.path));
 				chatRoomsEntered.erase (it);
 				Transceivers::selfLeft.emitMessage   (*roomNode);
 			}
@@ -1676,7 +1676,7 @@ void  CuiChatRoomManager::receiveOnUnbanAvatarFromRoom          (const ChatOnUnb
 		roomNode->setBanned (unbannee, false);
 
 		Transceivers::unbanned.emitMessage (Messages::Unbanned::Payload (roomNode, Messages::AvatarPair (&unbannee, &unbanner)));
-		Transceivers::modified.emitMessage (roomNode->data.id);
+		Transceivers::modified.emitMessage (roomNode->mData.id);
 	}
 }
 
@@ -1695,7 +1695,7 @@ void CuiChatRoomManager::receiveOnCreateRoom     (const uint32 sequence, const u
 	const CuiChatRoomDataNode * const oldRoomNode = findRoomNode (roomData.id);
 	if (oldRoomNode)
 	{
-		WARNING (true, ("CuiChatRoomManager receiveOnCreateRoom for pre-existing room [%s] sequence=%d (%s, id=%d, result=%d)", oldRoomNode->data.path.c_str (), sequence, roomData.path.c_str (), roomData.id, result));
+		WARNING (true, ("CuiChatRoomManager receiveOnCreateRoom for pre-existing room [%s] sequence=%d (%s, id=%d, result=%d)", oldRoomNode->mData.path.c_str (), sequence, roomData.path.c_str (), roomData.id, result));
 		return;
 	}
 
@@ -1717,7 +1717,7 @@ void CuiChatRoomManager::receiveOnCreateRoom     (const uint32 sequence, const u
 			if (CuiPreferences::getAutoJoinChatRoomOnCreate ())
 			{
 				Unicode::String tmp;
-				enterRoom (roomNode->data.id, roomNode, tmp);
+				enterRoom (roomNode->mData.id, roomNode, tmp);
  			}
 
 			Transceivers::created.emitMessage   (*roomNode);
@@ -1767,7 +1767,7 @@ void CuiChatRoomManager::receiveFailedEnterRoom             (const uint32 sequen
 	{
 		const CuiChatRoomDataNode * const roomNode = findRoomNode (roomId);
 		if (roomNode)
-			attemptedRoomName = roomNode->data.path;
+			attemptedRoomName = roomNode->mData.path;
 	}
 
 	Unicode::String str;
@@ -1834,23 +1834,23 @@ void CuiChatRoomManager::receiveChatOnReceiveRoomInvitation (const ChatOnReceive
 	}
 
 	//-- squirrel away the group room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_GROUP.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_GROUP.c_str ()))
 	{
-		setGroupRoomId (roomNode->data.id);
+		setGroupRoomId (roomNode->mData.id);
 		return;
 	}
 
 	//-- squirrel away the guild room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_GUILD.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_GUILD.c_str ()))
 	{
-		setGuildRoomId (roomNode->data.id);
+		setGuildRoomId (roomNode->mData.id);
 		return;
 	}
 
 	//-- squirrel away the city room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_CITY.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_CITY.c_str ()))
 	{
-		setCityRoomId (roomNode->data.id);
+		setCityRoomId (roomNode->mData.id);
 		return;
 	}
 
@@ -1859,7 +1859,7 @@ void CuiChatRoomManager::receiveChatOnReceiveRoomInvitation (const ChatOnReceive
 	roomNode->setInvitee (invitee, true);
 
 	Transceivers::inviteeAdded.emitMessage  (Messages::InviteeAdded::Payload (roomNode, Messages::AvatarPair (&invitee, &avatarId)));
-	Transceivers::modified.emitMessage      (roomNode->data.id);
+	Transceivers::modified.emitMessage      (roomNode->mData.id);
 
 	//-- notify user of invitation
 	std::string shortPath;
@@ -2042,7 +2042,7 @@ void CuiChatRoomManager::receiveOnInviteToRoom (const ChatOnInviteToRoom & msg)
 		roomNode->setInvitee (inviteeId, true);
 
 		Transceivers::inviteeAdded.emitMessage (Messages::InviteeAdded::Payload (roomNode, Messages::AvatarPair (&inviteeId, &avatarId)));
-		Transceivers::modified.emitMessage     (roomNode->data.id);
+		Transceivers::modified.emitMessage     (roomNode->mData.id);
 	}
 }
 
@@ -2061,7 +2061,7 @@ void CuiChatRoomManager::receiveOnUninviteFromRoom        (const uint32 result, 
 	{
 		roomNode = findRoomNodeInternal (roomId);
 		if (roomNode)
-			attemptedRoomName = roomNode->data.path;
+			attemptedRoomName = roomNode->mData.path;
 	}
 
 	// Output a pretty message to the client
@@ -2202,11 +2202,11 @@ void CuiChatRoomManager::processAvatarLeavingRoom (uint32 roomId, const ChatAvat
 	const ChatAvatarId & selfAvatarId = CuiChatManager::getSelfAvatarId ();
 
 	//-- ignore the system room
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_SYSTEM.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_SYSTEM.c_str ()))
 		return;
 
 	//-- unset the planet room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_PLANET.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_PLANET.c_str ()))
 	{
 		if (s_planetRoomId == roomId && selfAvatarId == avatarId)
 			setPlanetRoomId (0);
@@ -2214,7 +2214,7 @@ void CuiChatRoomManager::processAvatarLeavingRoom (uint32 roomId, const ChatAvat
 	}
 
 	//-- unset the group room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_GROUP.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_GROUP.c_str ()))
 	{
 		if (s_groupRoomId == roomId && selfAvatarId == avatarId)
 			setGroupRoomId (0);
@@ -2222,7 +2222,7 @@ void CuiChatRoomManager::processAvatarLeavingRoom (uint32 roomId, const ChatAvat
 	}
 
 	//-- unset the guild room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_GUILD.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_GUILD.c_str ()))
 	{
 		if (s_guildRoomId == roomId && selfAvatarId == avatarId)
 			setGuildRoomId (0);
@@ -2230,7 +2230,7 @@ void CuiChatRoomManager::processAvatarLeavingRoom (uint32 roomId, const ChatAvat
 	}
 
 	//-- unset the city room id
-	if (!_stricmp (roomNode->name.c_str (), ChatRoomTypes::ROOM_CITY.c_str ()))
+	if (!_stricmp (roomNode->mName.c_str (), ChatRoomTypes::ROOM_CITY.c_str ()))
 	{
 		if (s_cityRoomId == roomId && selfAvatarId == avatarId)
 			setCityRoomId (0);

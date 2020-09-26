@@ -285,11 +285,11 @@ m_lightningEffects      (new LightningEffectDataVector)
 				for (ClientDataFile::VehicleGroundEffectDataList::const_iterator it = vgedl->begin (); it != vgedl->end (); ++it)
 				{
 					const VehicleGroundEffectData * const vged = *it;
-					Object * const vehicleObject = getOwner ();
-					CreatureObject * const motorCreature = getMotorCreature (*vehicleObject);
-					if(motorCreature && motorCreature->getGameObjectType() == SharedObjectTemplate::GOT_vehicle)
+					Object * const vehicleObject2 = getOwner ();
+					CreatureObject * const motorCreature2 = getMotorCreature (*vehicleObject2);
+					if(motorCreature2 && motorCreature2->getGameObjectType() == SharedObjectTemplate::GOT_vehicle)
 					{
-						const GroundEffectClientData  gecd(*motorCreature, *vged);
+						const GroundEffectClientData  gecd(*motorCreature2, *vged);
 						m_groundEffects->push_back (gecd);
 					}
 					else
@@ -405,15 +405,15 @@ float VehicleHoverDynamicsClient::alter(float elapsedTime)
 			if (currentDamageLevel != m_lastDamageLevel)
 			{
 				Object* particleOwner = vehicleObject;
-				CreatureObject * const motorCreature = getMotorCreature (*vehicleObject);
+				CreatureObject * const motorCreature3 = getMotorCreature (*vehicleObject);
 				
-				if(motorCreature && motorCreature->getGameObjectType() == SharedObjectTemplate::GOT_vehicle)
+				if(motorCreature3 && motorCreature3->getGameObjectType() == SharedObjectTemplate::GOT_vehicle)
 				{
-					particleOwner = motorCreature;
+					particleOwner = motorCreature3;
 				}
 
 				if (m_clientDataFile)
-					m_clientDataFile->applyDamage (particleOwner, motorCreature->hasCondition (TangibleObject::C_onOff), m_lastDamageLevel, currentDamageLevel);
+					m_clientDataFile->applyDamage (particleOwner, motorCreature3->hasCondition (TangibleObject::C_onOff), m_lastDamageLevel, currentDamageLevel);
 
 				static ClientDataFile::ObjectVector ov;
 				ov.clear ();
@@ -615,18 +615,18 @@ void VehicleHoverDynamicsClient::updateCrumbTrail () const
 		{
 			for (TransformList::const_iterator it = s_crumbs.begin (); it != s_crumbs.end (); ++it)
 			{
-				const Transform & t = *it;
-				FrameDebugPrimitive * const fdp = new FrameDebugPrimitive (BoxDebugPrimitive::S_z, t, 1.0f);
+				const Transform & t2 = *it;
+				FrameDebugPrimitive * const fdp = new FrameDebugPrimitive (BoxDebugPrimitive::S_z, t2, 1.0f);
 				camera->addDebugPrimitive (fdp);
 			}
 		}
 		
 		for (TransformPopupList::const_iterator it = s_crumbsPopup.begin (); it != s_crumbsPopup.end (); ++it)
 		{
-			const Transform & t = (*it).first;
+			const Transform & t3 = (*it).first;
 			const float & distance  = (*it).second;
 			
-			SphereDebugPrimitive * const sdp = new SphereDebugPrimitive (BoxDebugPrimitive::S_z, t, Vector::unitY * (-distance), distance, 4, 4);
+			SphereDebugPrimitive * const sdp = new SphereDebugPrimitive (BoxDebugPrimitive::S_z, t3, Vector::unitY * (-distance), distance, 4, 4);
 			sdp->setColor (PackedArgb::solidYellow);
 			camera->addDebugPrimitive (sdp);
 		}

@@ -48,8 +48,8 @@ bool ProsePackageManagerClient::appendTranslation (const ProsePackage & pp, Unic
 	
 	if (pp.complexGrammar)
 	{
-		Unicode::String raw;
-		if (!CuiStringGrammarManager::getRawMessage (pp.stringId, cvar.source, cvar.target, raw))
+		Unicode::String raw2;
+		if (!CuiStringGrammarManager::getRawMessage (pp.stringId, cvar.source, cvar.target, raw2))
 		{
 			WARNING (true, ("ProsePackageManagerClient unable to find appropriate string"));
 			return false;
@@ -98,8 +98,8 @@ bool ProsePackageManagerClient::setTranslation (const ProsePackage & pp, Unicode
 	
 	if (pp.complexGrammar)
 	{
-		Unicode::String raw;
-		if (!CuiStringGrammarManager::getRawMessage (pp.stringId, cvar.source, cvar.target, raw))
+		Unicode::String raw2;
+		if (!CuiStringGrammarManager::getRawMessage (pp.stringId, cvar.source, cvar.target, raw2))
 		{
 			WARNING (true, ("ProsePackageManagerClient unable to find appropriate string"));
 			return false;

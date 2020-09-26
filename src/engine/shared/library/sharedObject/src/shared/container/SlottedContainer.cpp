@@ -104,13 +104,13 @@ bool SlottedContainer::isContentItemObservedWith(Object const &item) const
 	//   return true; otherwise, return false.
 	{
 		ContainerErrorCode  errorCode;
-		int arrangementIndex = -1;
-		bool const result = getFirstUnoccupiedArrangement(item, arrangementIndex, errorCode);
+		int arrangementIndex2 = -1;
+		bool const result = getFirstUnoccupiedArrangement(item, arrangementIndex2, errorCode);
 
 		if (!result || (errorCode != CEC_Success))
 			return false;
 
-		SlottedContainmentProperty::SlotArrangement const &slots = slottedContainmentProperty->getSlotArrangement(arrangementIndex);
+		SlottedContainmentProperty::SlotArrangement const &slots = slottedContainmentProperty->getSlotArrangement(arrangementIndex2);
 		SlottedContainmentProperty::SlotArrangement::const_iterator const endIt = slots.end();
 		for (SlottedContainmentProperty::SlotArrangement::const_iterator it = slots.begin(); it != endIt; ++it)
 		{
@@ -175,13 +175,13 @@ bool SlottedContainer::isContentItemExposedWith(Object const &item) const
 	//   return true; otherwise, return false.
 	{
 		ContainerErrorCode  errorCode;
-		int arrangementIndex = -1;
-		bool const result = getFirstUnoccupiedArrangement(item, arrangementIndex, errorCode);
+		int arrangementIndex2 = -1;
+		bool const result = getFirstUnoccupiedArrangement(item, arrangementIndex2, errorCode);
 
 		if (!result || (errorCode != CEC_Success))
 			return false;
 
-		SlottedContainmentProperty::SlotArrangement const &slots = slottedContainmentProperty->getSlotArrangement(arrangementIndex);
+		SlottedContainmentProperty::SlotArrangement const &slots = slottedContainmentProperty->getSlotArrangement(arrangementIndex2);
 		SlottedContainmentProperty::SlotArrangement::const_iterator const endIt = slots.end();
 		for (SlottedContainmentProperty::SlotArrangement::const_iterator it = slots.begin(); it != endIt; ++it)
 		{

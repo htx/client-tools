@@ -4376,11 +4376,10 @@ void TemplateData::writeDefaultValue(File &fp, const Parameter &param) const
 				for (listIter = data->m_parameters.begin();
 					listIter != data->m_parameters.end(); ++listIter)
 				{
-					const Parameter &param = *listIter;
-					if (param.type == TYPE_NONE || param.type == TYPE_COMMENT)
+					const Parameter &param2 = *listIter;
+					if (param2.type == TYPE_NONE || param2.type == TYPE_COMMENT)
 						continue;
-					writeStructParameterDefault(fp, param,
-						listIter + 1 == data->m_parameters.end());
+					writeStructParameterDefault(fp, param2,	listIter + 1 == data->m_parameters.end());
 				}
 				fp.print("]");
 			}

@@ -2951,9 +2951,9 @@ void CuiWidget3dObjectListViewer::gotoCameraPivotPoint (bool useTarget) const
 							skeleton->findTransformIndex(TemporaryCrcString (m_cameraZoomLookAtBone.c_str (), true), &index, &found);
 							if (found && index >= 0)
 							{
-								const Transform & transform = skeleton->getJointToRootTransformArray() [index];
+								const Transform & transform2 = skeleton->getJointToRootTransformArray() [index];
 								float clampedVal = std::max(std::min(m_zoomBoneInterpFactor, 1.0f), 0.0f);
-								m_cameraLookAtTarget = Vector::linearInterpolate(m_cameraLookAtTarget, transform.getPosition_p (), clampedVal);
+								m_cameraLookAtTarget = Vector::linearInterpolate(m_cameraLookAtTarget, transform2.getPosition_p (), clampedVal);
 							}
 						}
 					}

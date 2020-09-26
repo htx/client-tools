@@ -82,21 +82,21 @@ void Direct3d9_RenderTarget::restoreDevice()
 	FATAL_DX_HR("GetDepthStencilSurface() failed %s", hresult);
 
 	{
-		HRESULT hresult = device->EvictManagedResources();
-		FATAL_DX_HR("EvictManagedResources failed %s", hresult);
+		HRESULT hresult2 = device->EvictManagedResources();
+		FATAL_DX_HR("EvictManagedResources failed %s", hresult2);
 	}
 
 	if (!ms_renderTargetTexture) 
 	{
-		HRESULT hresult = device->CreateTexture(cms_bakedTextureMaxDimension, cms_bakedTextureMaxDimension, 0, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &ms_renderTargetTexture, NULL);
-		FATAL_DX_HR("CreateTexture failed for render target texture %s", hresult);
+		HRESULT hresult2 = device->CreateTexture(cms_bakedTextureMaxDimension, cms_bakedTextureMaxDimension, 0, D3DUSAGE_RENDERTARGET, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &ms_renderTargetTexture, NULL);
+		FATAL_DX_HR("CreateTexture failed for render target texture %s", hresult2);
 		FATAL(ms_renderTargetTexture == NULL, ("RenderTarget renderTargetTexture is null"));
 	}
 
 	if (!ms_systemMemoryTexture) 
 	{
-		HRESULT hresult = device->CreateTexture(cms_bakedTextureMaxDimension, cms_bakedTextureMaxDimension, 0, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &ms_systemMemoryTexture, NULL);
-		FATAL_DX_HR("CreateTexture failed for system memory texture %s", hresult);
+		HRESULT hresult2 = device->CreateTexture(cms_bakedTextureMaxDimension, cms_bakedTextureMaxDimension, 0, 0, D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &ms_systemMemoryTexture, NULL);
+		FATAL_DX_HR("CreateTexture failed for system memory texture %s", hresult2);
 		FATAL(ms_systemMemoryTexture == NULL, ("RenderTarget systemMemoryTexture is null"));
 	}
 }

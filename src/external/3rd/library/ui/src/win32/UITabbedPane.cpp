@@ -927,10 +927,10 @@ void UITabbedPane::SetActiveTab(long index)
 			}
 		}
 
-		UIObjectList olist;
-		mTargetPage->GetChildren(olist);
+		UIObjectList olist2;
+		mTargetPage->GetChildren(olist2);
 
-		for (UIObjectList::iterator it = olist.begin(); it != olist.end(); ++it)
+		for (UIObjectList::iterator it = olist2.begin(); it != olist2.end(); ++it)
 		{
 			if (!(*it)->IsA(TUIWidget))
 				continue;

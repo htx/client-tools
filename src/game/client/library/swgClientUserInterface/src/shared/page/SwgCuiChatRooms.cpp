@@ -46,31 +46,31 @@ namespace
 
 	void setupDataSourceObject (UIDataSourceBase & obj, const CuiChatRoomDataNode & roomNode, const Unicode::String & iconJoinPath)
 	{
-		obj.SetName (Unicode::toLower (roomNode.name).c_str ());
+		obj.SetName (Unicode::toLower (roomNode.mName).c_str ());
 
 		Unicode::String str;
 		
 		//@todo localize
-		str = Unicode::narrowToWide (roomNode.name);
+		str = Unicode::narrowToWide (roomNode.mName);
 		
-		if (!roomNode.data.title.empty ())
+		if (!roomNode.mData.title.empty ())
 		{
 			IGNORE_RETURN (str.append (1, ' '));
 			IGNORE_RETURN (str.append (1, '-'));
 			IGNORE_RETURN (str.append (1, ' '));
-			IGNORE_RETURN (str.append (roomNode.data.title));
+			IGNORE_RETURN (str.append (roomNode.mData.title));
 		}
 		
 		IGNORE_RETURN (obj.SetProperty (UITreeView::DataProperties::LocalText, str));
 		
-		if (!roomNode.data.id)
+		if (!roomNode.mData.id)
 			obj.SetPropertyInteger (UITreeView::DataProperties::ColorIndex, 2);
-		else if (roomNode.data.owner == s_selfId || roomNode.data.creator == s_selfId)
+		else if (roomNode.mData.owner == s_selfId || roomNode.mData.creator == s_selfId)
 			obj.SetPropertyInteger (UITreeView::DataProperties::ColorIndex, 1);
 		else
 			obj.RemoveProperty (UITreeView::DataProperties::ColorIndex);
 
-		if (CuiChatRoomManager::isRoomEntered (roomNode.data.id))
+		if (CuiChatRoomManager::isRoomEntered (roomNode.mData.id))
 		{
 			IGNORE_RETURN (obj.SetProperty (UITreeView::DataProperties::Icon, iconJoinPath));
 		}
@@ -122,11 +122,11 @@ namespace
 				const CuiChatRoomDataNode * const childRoom = NON_NULL (*it);
 				
 				//-- ignore the system room
-				if (!_stricmp (childRoom->name.c_str (), ChatRoomTypes::ROOM_SYSTEM.c_str ()))
+				if (!_stricmp (childRoom->mName.c_str (), ChatRoomTypes::ROOM_SYSTEM.c_str ()))
 					continue;
 
 				//-- ignore the system room
-				if (!_stricmp (childRoom->name.c_str (), ChatRoomTypes::ROOM_PLANET.c_str ()))
+				if (!_stricmp (childRoom->mName.c_str (), ChatRoomTypes::ROOM_PLANET.c_str ()))
 					continue;
 
 				UIDataSourceContainer * subcontainer = dynamic_cast<UIDataSourceContainer *>(findObjectByLowerName (containerChildrenCopy, childRoom->getLowerName ()));
@@ -341,9 +341,9 @@ void SwgCuiChatRooms::updateText ()
 	if (roomNode)
 	{
 		Unicode::String creatorName;
-		CuiChatManager::getShortName (roomNode->data.creator, creatorName);
+		CuiChatManager::getShortName (roomNode->mData.creator, creatorName);
 		Unicode::String ownerName;
-		CuiChatManager::getShortName (roomNode->data.owner, ownerName);
+		CuiChatManager::getShortName (roomNode->mData.owner, ownerName);
 
 		m_textCreator->SetLocalText (creatorName);
 
@@ -355,14 +355,14 @@ void SwgCuiChatRooms::updateText ()
 			m_textOwner->SetVisible (true);
 		}
 
-		m_textPath->SetLocalText    (Unicode::narrowToWide (roomNode->data.path));
+		m_textPath->SetLocalText    (Unicode::narrowToWide (roomNode->mData.path));
 
-		if (roomNode->data.title.empty ())
+		if (roomNode->mData.title.empty ())
 			m_textTitle->SetVisible (false);
 		else
 		{
 			m_textTitle->SetVisible (true);
-			m_textTitle->SetLocalText   (roomNode->data.title);
+			m_textTitle->SetLocalText   (roomNode->mData.title);
 		}
 
 		m_textMembers->SetVisible (false);
@@ -396,11 +396,11 @@ void SwgCuiChatRooms::updateButtons ()
 {
 	const CuiChatRoomDataNode * const roomNode = getSelectedChatRoom ();
 
-	if (roomNode && roomNode->data.id)
+	if (roomNode && roomNode->mData.id)
 	{
 		const ChatAvatarId & selfId = CuiChatManager::getSelfAvatarId ();
-		const bool playerIsOperator = (roomNode->data.owner == selfId) || (roomNode->data.creator == selfId) || roomNode->isModerator (selfId.getFullName ());
-		const bool isRoomEntered    = CuiChatRoomManager::isRoomEntered (roomNode->data.id);
+		const bool playerIsOperator = (roomNode->mData.owner == selfId) || (roomNode->mData.creator == selfId) || roomNode->isModerator (selfId.getFullName ());
+		const bool isRoomEntered    = CuiChatRoomManager::isRoomEntered (roomNode->mData.id);
 
 		m_buttonJoin->SetEnabled   (!isRoomEntered);
 		m_buttonDelete->SetEnabled (playerIsOperator);
@@ -411,7 +411,7 @@ void SwgCuiChatRooms::updateButtons ()
 		// the player can "force" leave the room to get everything back in sync,
 		// except for the guild and group chat room, which has the command
 		// /groupTextChatRoomRejoin and /guildTextChatRoomRejoin and /cityTextChatRoomRejoin
-		if ((roomNode->data.id == CuiChatRoomManager::getGuildRoomId()) || (roomNode->data.id == CuiChatRoomManager::getCityRoomId()) || (roomNode->data.id == CuiChatRoomManager::getGroupRoomId()))
+		if ((roomNode->mData.id == CuiChatRoomManager::getGuildRoomId()) || (roomNode->mData.id == CuiChatRoomManager::getCityRoomId()) || (roomNode->mData.id == CuiChatRoomManager::getGroupRoomId()))
 		{
 			m_buttonLeave->SetEnabled(false);
 
@@ -462,7 +462,7 @@ void SwgCuiChatRooms::updateRoomNode (const CuiChatRoomDataNode & node)
 	
 	if (selectedNode)
 	{
-		if (selectedNode->data.id == node.data.id)
+		if (selectedNode->mData.id == node.mData.id)
 		{
 			updateText ();
 		}
@@ -475,7 +475,7 @@ void SwgCuiChatRooms::updateRoomNode (const CuiChatRoomDataNode & node)
 
 	if (dsc)
 	{
-		UIDataSourceBase * const dsb = dynamic_cast<UIDataSourceBase *>(dsc->GetObjectFromPath (node.data.path.c_str (), TUIDataSourceBase));
+		UIDataSourceBase * const dsb = dynamic_cast<UIDataSourceBase *>(dsc->GetObjectFromPath (node.mData.path.c_str (), TUIDataSourceBase));
 
 		WARNING (!dsb, ("Received a roomnode update but room does not exist in the data tree."));
 
@@ -519,7 +519,7 @@ void SwgCuiChatRooms::join ()
 	if (roomNode)
 	{
 		Unicode::String result;
-		if (!CuiChatRoomManager::enterRoom (roomNode->data.id, roomNode, result))
+		if (!CuiChatRoomManager::enterRoom (roomNode->mData.id, roomNode, result))
 		{
 			CuiMessageBox::createInfoBox (result);
 		}
@@ -545,7 +545,7 @@ void SwgCuiChatRooms::leave ()
 		// don't verify that the avatar is actually in the room, since we
 		// may be out of sync and we just need to "force" leave the room
 		// to get everything back in sync
-		const ChatRemoveAvatarFromRoom msg (CuiChatManager::getSelfAvatarId(), roomNode->data.path);
+		const ChatRemoveAvatarFromRoom msg (CuiChatManager::getSelfAvatarId(), roomNode->mData.path);
 		GameNetwork::send (msg, true);
 	}
 }
@@ -556,7 +556,7 @@ void SwgCuiChatRooms::create ()
 {
 	const CuiChatRoomDataNode * const roomNode = getSelectedChatRoom ();
 
-	if (!roomNode || roomNode->data.id == 0)
+	if (!roomNode || roomNode->mData.id == 0)
 		return;
 
 	CuiWorkspace * const workspace = NON_NULL (getContainingWorkspace ());
@@ -574,7 +574,7 @@ void SwgCuiChatRooms::create ()
 		mediator->activate ();
 		
 		workspace->focusMediator (*mediator, true);
-		mediator->setRootPath    (roomNode->data.path);
+		mediator->setRootPath    (roomNode->mData.path);
 	}
 }
 
@@ -593,14 +593,14 @@ void SwgCuiChatRooms::destroy (uint32 roomId, bool confirmed)
 	{
 		if (!confirmed)
 		{
-			m_roomIdToDestroy = roomNode->data.id;
+			m_roomIdToDestroy = roomNode->mData.id;
 			CuiMessageBox * const box = CuiMessageBox::createYesNoBox (CuiStringIdsChatRoom::confirm_destroy_room.localize ());
 			m_callback->connect (box->getTransceiverClosed (), *this, &SwgCuiChatRooms::onMessageBoxClosedConfirmDestroy);
 			return;
 		}
 		
 		Unicode::String result;
-		if (!CuiChatRoomManager::destroyRoom (roomNode->data.id, result))
+		if (!CuiChatRoomManager::destroyRoom (roomNode->mData.id, result))
 		{
 			CuiMessageBox::createInfoBox (result);
 		}
@@ -616,7 +616,7 @@ void SwgCuiChatRooms::who ()
 	if (roomNode)
 	{
 		Unicode::String param;
-		UIUtils::FormatInteger (param, roomNode->data.id);
+		UIUtils::FormatInteger (param, roomNode->mData.id);
 		CuiActionManager::performAction (CuiActions::chatRoomWho, param);
 	}
 }

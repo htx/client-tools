@@ -386,9 +386,9 @@ void MatchMakingId::packIntString(std::string &value) const
 
 		for (int i = 0; i < intsSize; ++i)
 		{
-			int const value = ints[static_cast<unsigned int>(i)];
+			int const value2 = ints[static_cast<unsigned int>(i)];
 
-			sprintf(text, "%d", value);
+			sprintf(text, "%d", value2);
 			result += text;
 
 			if (i < intsSize - 1)

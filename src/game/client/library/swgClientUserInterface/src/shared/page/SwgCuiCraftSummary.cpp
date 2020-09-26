@@ -57,9 +57,9 @@ m_sessionEnded  (false)
 	m_textSuccess->Clear ();
 
 	{
-		UIPage * page = 0;
-		getCodeDataObject (TUIPage,    page,        "pageMediatorInfo");
-		m_mediatorInfo = new SwgCuiInventoryInfo (*page);
+		UIPage * page2 = 0;
+		getCodeDataObject (TUIPage,    page2,        "pageMediatorInfo");
+		m_mediatorInfo = new SwgCuiInventoryInfo (*page2);
 		m_mediatorInfo->fetch ();
 	}
 

@@ -200,9 +200,9 @@ void translateFloorContacts ( FloorContactList & floorContacts, MoveSegment cons
 		}
 		else
 		{
-			Vector end = moveSeg.getEnd(loc.getCell());
+			Vector end2 = moveSeg.getEnd(loc.getCell());
 
-			loc.setPosition_p(end);
+			loc.setPosition_p(end2);
 		}
 	}
 }

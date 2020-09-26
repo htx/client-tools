@@ -25,6 +25,7 @@
 #include "sharedThread/RunThread.h"
 #include "sharedThread/ThreadHandle.h"
 #include <string>
+#include <ctime>
 
 #ifdef PLATFORM_WIN32 //@todo code reorg
 #include "sharedFoundation/WindowsWrapper.h"
@@ -132,11 +133,13 @@ void Clock::install(bool newUseSleep, bool useRecalibrationThread)
 
 	time_t t = 0;
 	localtime(&t);
-	ms_timeZone = timezone;
+	ms_timeZone = getTimeZone();
+
 	if(ms_timeZone < (12 * 60 * 60))
 	{
 		ms_timeZone = -ms_timeZone;
 	}
+
 	ms_realTimeMilliseconds = static_cast<double>(ms_lastPoll / ms_frameFrequency * 1000.f);
 	ms_applicationStartTime = timeSeconds();
 
@@ -264,7 +267,7 @@ void Clock::update(void)
 	static int bad = 0;
 
 	if (bad && ++bad > 64)
-		__asm int 3;
+		__debugbreak();
 
 	if (ms_lastFrameTime > 3.0)
 		bad = 1;

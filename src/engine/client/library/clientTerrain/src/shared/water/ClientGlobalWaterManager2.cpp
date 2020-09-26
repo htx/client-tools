@@ -461,10 +461,10 @@ void ClientGlobalWaterManager2::DynamicShaderPrimitive::prepareToDraw () const
 		const Vector normal = (above) ? Vector(0,1,0) : Vector(0,-1,0);
 		const float ooShaderSize = 1.0f / _shaderSize();
 		const float stime = float(_time() * 2.0);
-		const Vector referencePosition_w = camera.getPosition_w();
+		const Vector referencePosition_w2 = camera.getPosition_w();
 
-		//const float xref = float(POS_QUANTIZE(referencePosition_w.x));
-		//const float zref = float(POS_QUANTIZE(referencePosition_w.z));
+		//const float xref = float(POS_QUANTIZE(referencePosition_w2.x));
+		//const float zref = float(POS_QUANTIZE(referencePosition_w2.z));
 
 		Graphics::setVertexShaderUserConstants(0, normal.y, stime, ooShaderSize, _heightDelta());
 		Graphics::setVertexShaderUserConstants(1, 0.0f, 0.0f, 0.0f, 0.0f);

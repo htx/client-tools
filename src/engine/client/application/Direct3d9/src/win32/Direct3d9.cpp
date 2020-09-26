@@ -2515,8 +2515,8 @@ bool Direct3d9Namespace::present(bool windowed, HWND window, int width, int heig
 
 			for (int i = 0; hresult == D3DERR_DEVICELOST && i < 60; ++i)
 			{
-				char present[16];
-				sprintf(present, "%d", HRESULT_CODE(hresult));
+				char present2[16];
+				sprintf(present2, "%d", HRESULT_CODE(hresult));
 				DEBUG_REPORT_LOG(true, ("Reset failed, trying repeatedly\n"));
 
 				Sleep(500);

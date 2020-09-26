@@ -745,12 +745,12 @@ void SwgCuiClusterSelection::OnButtonPressed(UIWidget *context)
 			}
 			else
 			{
-				const uint32 clusterId = CuiLoginManager::getConnectedClusterId ();
-				if (clusterId != 0)
+				const uint32 clusterId2 = CuiLoginManager::getConnectedClusterId ();
+				if (clusterId2 != 0)
 				{
-					if (clusterId != clusterInfo->id)
+					if (clusterId2 != clusterInfo->id)
 					{
-						WARNING (true, ("SwgCuiClusterSelection::requestAvatarSelection already connected to [%d], wants [%d], dropping", clusterId, clusterInfo->id));
+						WARNING (true, ("SwgCuiClusterSelection::requestAvatarSelection already connected to [%d], wants [%d], dropping", clusterId2, clusterInfo->id));
 						CuiLoginManager::disconnectFromCluster ();
 					}
 					else

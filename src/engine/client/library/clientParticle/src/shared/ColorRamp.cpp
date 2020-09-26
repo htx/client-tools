@@ -217,11 +217,11 @@ void ColorRamp::setControlPoint(ControlPointList::const_iterator const &iter, Co
 			{
 				// Clamp the percent of the neighboring control points
 
-				ControlPointList::iterator temp = current;
+				ControlPointList::iterator temp2 = current;
 
-				if ((temp != m_controlPointList.begin()) &&
-					(temp != m_controlPointList.end()) &&
-					 (++temp != m_controlPointList.end()))
+				if ((temp2 != m_controlPointList.begin()) &&
+					(temp2 != m_controlPointList.end()) &&
+					 (++temp2 != m_controlPointList.end()))
 				{
 					ControlPointList::iterator previous = current;
 					ControlPointList::iterator next = current;

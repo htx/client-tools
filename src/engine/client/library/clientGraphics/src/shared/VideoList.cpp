@@ -121,8 +121,8 @@ Video *VideoList::fetch(const char *name)
 			{
 				{
 					VideoMap::value_type entry(result->getName(), result);
-					std::pair<VideoMap::iterator, bool> result = s_videoMap->insert(entry);
-					DEBUG_FATAL(!result.second, ("insert failed"));
+					std::pair<VideoMap::iterator, bool> result2 = s_videoMap->insert(entry);
+					DEBUG_FATAL(!result2.second, ("insert failed"));
 				}
 
 				result->fetch();

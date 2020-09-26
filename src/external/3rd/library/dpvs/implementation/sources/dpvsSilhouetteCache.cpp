@@ -429,7 +429,7 @@ SilhouetteCache::Node* SilhouetteCache::createNode (Client* c, const Vector4& ce
         DPVS_ASSERT(p0>=0 && p0 < numPlanes);
 
         register float  A       = dist[p0];         // distance to first plane
-        register float  d       = 0.0f;             // use 0.0 to indicate that edge "must" be taken
+        register float  d2       = 0.0f;             // use 0.0 to indicate that edge "must" be taken
         register bool   in      = true;             // is the edge an "in edge"
         register bool   flip    = false;            // should we perform a flip?
         
@@ -437,7 +437,7 @@ SilhouetteCache::Node* SilhouetteCache::createNode (Client* c, const Vector4& ce
         {
             if (A < 0.0f)                           // check if edge is not initially "in"
                 in = false;
-            d = Math::fabs(A);                      // compute absolute distance to visual event
+            d2 = Math::fabs(A);                      // compute absolute distance to visual event
         } else
         {
             DPVS_ASSERT(p1>=0 && p1 < numPlanes);
@@ -454,20 +454,20 @@ SilhouetteCache::Node* SilhouetteCache::createNode (Client* c, const Vector4& ce
             float dA = Math::fabs(A);               // take absolute values of the distances..
             float dB = Math::fabs(B);
 
-            d = Math::min(dA, dB);                  // use min instead of compare
+            d2 = Math::min(dA, dB);                  // use min instead of compare
         }
 
         register UINT32 index = i;                  // index of the edge
 
         if (in)                                     // is this an "in" edge?
         {
-            inEdges[numInEdges].m_distance      = d;
+            inEdges[numInEdges].m_distance      = d2;
             inEdges[numInEdges].m_index         = index;
             inEdges[numInEdges].m_flip          = flip ? 1 : 0;
             numInEdges++;
         } else                                      // it's an "out" edge (we don't encode the FLIP_MASK here)
         {
-            inEdges[(edgeCount-1)-numOutEdges].m_distance   = d;
+            inEdges[(edgeCount-1)-numOutEdges].m_distance   = d2;
             inEdges[(edgeCount-1)-numOutEdges].m_index      = index;
             inEdges[(edgeCount-1)-numOutEdges].m_flip       = 0;
             numOutEdges++;
@@ -517,9 +517,9 @@ SilhouetteCache::Node* SilhouetteCache::createNode (Client* c, const Vector4& ce
     {
         DPVS_ASSERT(inEdges[i].m_index<=0xFFFF);
 
-        float d = inEdges[i].m_distance * ooMaxValue;
-        DPVS_ASSERT(d >= 0.0f);
-        n->m_edges[i].m_rDistance = (d > 1.0f) ? Node::Edge::OVER_DISTANCE : Math::intChop(d * Node::Edge::MAX_DISTANCE);
+        float d2 = inEdges[i].m_distance * ooMaxValue;
+        DPVS_ASSERT(d2 >= 0.0f);
+        n->m_edges[i].m_rDistance = (d2 > 1.0f) ? Node::Edge::OVER_DISTANCE : Math::intChop(d2 * Node::Edge::MAX_DISTANCE);
         n->m_edges[i].m_index     = inEdges[i].m_index;
         n->m_edges[i].m_flip      = inEdges[i].m_flip;
     }
@@ -530,9 +530,9 @@ SilhouetteCache::Node* SilhouetteCache::createNode (Client* c, const Vector4& ce
         DPVS_ASSERT(outEdges[i].m_index<=0xFFFF);
         DPVS_ASSERT(outEdges[i].m_flip==0);
         
-        float d = outEdges[i].m_distance * ooMaxValue;
-        DPVS_ASSERT(d >= 0.0f && d <= 1.0f);
-        n->m_edges[i+1+numInEdges].m_rDistance = Math::intChop(d * Node::Edge::MAX_DISTANCE);
+        float d2 = outEdges[i].m_distance * ooMaxValue;
+        DPVS_ASSERT(d2 >= 0.0f && d2 <= 1.0f);
+        n->m_edges[i+1+numInEdges].m_rDistance = Math::intChop(d2 * Node::Edge::MAX_DISTANCE);
         n->m_edges[i+1+numInEdges].m_index     = outEdges[i].m_index;
         n->m_edges[i+1+numInEdges].m_flip      = 0;
     }

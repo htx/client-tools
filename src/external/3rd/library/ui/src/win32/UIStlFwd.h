@@ -8,37 +8,14 @@
 #ifndef __UIStlFwd_H__
 #define __UIStlFwd_H__
 
-// ======================================================================
-
-// grab stlport configuration
-#include "stl/_config.h"
-
-namespace std
-{
-	template <class _Tp>                                                                struct less;
-	template <class _Tp>                                                                struct equal_to;
-	template <class _T1, class _T2>                                                     struct pair;
-	template <class _T1>                                                                struct hash;
-	template <class _Tp>                                                                class  allocator;
-	template <class _CharT, class _Traits, class _Alloc>                                class  basic_string;
-	template <class _CharT>                                                             class  char_traits;
-
-	template <size_t _Nb>                                                               class  bitset;
-	template <class _Tp, class _Alloc>                                                  class  deque;
-	template <class _Tp, class _Alloc>                                                  class  list;
-	template <class _Tp, class _Alloc>                                                  class  queue;
-	template <class _Tp, class _Alloc>                                                  class  vector;
-	template <class _Tp, class _Sequence>                                               class  stack;
-	template <class _Tp, class _Container, class _Compare>                              class  priority_queue;
-	template <class _Key, class _Tp, class _Compare, class _Alloc>                      class  map;
-	template <class _Key, class _Tp, class _HashFcn, class _Compare, class _Alloc>      class  hash_map;
-	template <class _Key, class _Tp, class _Compare, class _Alloc>                      class  multimap;
-	template <class _Key, class _Compare, class _Alloc>                                 class  set;
-	template <class _Key, class _HashFcn, class _Compare, class _Alloc>                 class  hash_set;
-	template <class _Key, class _Compare, class _Alloc>                                 class  multiset;
-
-	typedef basic_string<char, char_traits<char>, allocator<char> >                     string;
-}
+#include <deque>
+#include <list>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <queue>
+#include <stack>
 
 template <class _Tp, class _Alloc = std::allocator<_Tp> > struct ui_stddeque
 {
@@ -55,9 +32,9 @@ template <class _Key, class _Tp, class _Compare = std::less<_Key>, class _Alloc 
 	typedef std::map<_Key, _Tp, _Compare, _Alloc> fwd;
 };
 
-template <class _Key, class _Tp, class _HashFcn = std::hash<_Key>, class _Compare = std::equal_to<_Key>, class _Alloc = std::allocator< std::pair <const _Key, _Tp> > > struct ui_stdhash_map
+template <class _Key, class _Tp, class _HashFcn = std::hash<_Key>, class _Compare = std::equal_to<_Key>, class _Alloc = std::allocator< std::pair <const _Key, _Tp> > > struct ui_stdunordered_map
 {
-	typedef std::hash_map<_Key, _Tp, _HashFcn, _Compare, _Alloc> fwd;
+	typedef std::unordered_map<_Key, _Tp, _HashFcn, _Compare, _Alloc> fwd;
 };
 
 template <class _Key, class _Tp, class _Compare = std::less<_Key>, class _Alloc = std::allocator< std::pair <const _Key, _Tp> > > struct ui_stdmultimap
@@ -70,9 +47,9 @@ template <class _Key, class _Compare = std::less<_Key>, class _Alloc = std::allo
 	typedef std::set<_Key, _Compare, _Alloc> fwd;
 };
 
-template <class _Key, class _HashFcn = std::hash<_Key>, class _Compare = std::equal_to<_Key>, class _Alloc = std::allocator<_Key> > struct ui_stdhash_set
+template <class _Key, class _HashFcn = std::hash<_Key>, class _Compare = std::equal_to<_Key>, class _Alloc = std::allocator<_Key> > struct ui_stdunordered_set
 {
-	typedef std::hash_set<_Key, _HashFcn, _Compare, _Alloc> fwd;
+	typedef std::unordered_set<_Key, _HashFcn, _Compare, _Alloc> fwd;
 };
 
 template <class _Key, class _Compare = std::less<_Key>, class _Alloc = std::allocator<_Key> > struct ui_stdmultiset

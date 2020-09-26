@@ -91,9 +91,9 @@ m_maxVar4(-1)
 	{
 		char buf [128];
 		snprintf (buf, sizeof (buf), "colorPicker%d", i);
-		UIPage * page = 0;
-		getCodeDataObject (TUIPage, page,      buf);
-		m_colorPicker [i] = new CuiColorPicker (*page);
+		UIPage * page2 = 0;
+		getCodeDataObject (TUIPage, page2,      buf);
+		m_colorPicker [i] = new CuiColorPicker (*page2);
 		m_colorPicker [i]->fetch ();
 	}
 
@@ -110,9 +110,9 @@ m_maxVar4(-1)
 	}
 
 	{
-		UIPage * page = 0;
-		getCodeDataObject (TUIPage, page,      "info");
-		m_info = new SwgCuiInventoryInfo (*page);
+		UIPage * page3 = 0;
+		getCodeDataObject (TUIPage, page3,      "info");
+		m_info = new SwgCuiInventoryInfo (*page3);
 		m_info->fetch ();
 	}
 

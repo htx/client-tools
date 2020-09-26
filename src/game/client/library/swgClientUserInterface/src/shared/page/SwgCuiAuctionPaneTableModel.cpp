@@ -1037,8 +1037,8 @@ void SwgCuiAuctionPaneTableModel::updateTableColumnSizes (UITable & table)
 
 			for (UITable::ColumnSizeInfoVector::iterator it = csiv.begin (); it != csiv.end (); ++it)
 			{
-				UITable::ColumnSizeInfo & csi = *it;
-				csi.proportion = prop;
+				UITable::ColumnSizeInfo & csi2 = *it;
+				csi2.proportion = prop;
 			}
 		}
 	}

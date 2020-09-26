@@ -70,7 +70,7 @@
 #include "LocalizationManager.h"
 
 #include <cstdio>
-#include <hash_map>
+#include <unordered_map>
 #include <list>
 #include <map>
 #include <set>
@@ -152,7 +152,7 @@ namespace SwgCuiCommandParserUINamespace
 		const char * const testLootBox         = "testLootBox";
 		const char * const debugStringIds      = "debugStringIds";
 		const char * const debugStringIdColor  = "debugStringIdColor";
-#if DEBUG=0
+#if LIBMOZILLA == 1
 		const char * const debugBrowserOutput  = "mozillaBrowserOutput";
 #endif
 #endif
@@ -210,7 +210,7 @@ namespace SwgCuiCommandParserUINamespace
 		{CommandNames::testLootBox,           1, "[objectId]...", "Test the loot box with existing object ids."},
 		{CommandNames::debugStringIds,        0, "[1|0]", "Debug the source string id table and entry."},
 		{CommandNames::debugStringIdColor,    0, "<ui color string>", "Set the color of the debug StringId string."},
-#if DEBUG=0
+#if LIBMOZILLA == 1
 		{CommandNames::debugBrowserOutput,    0, "", "Prints out debug information related to the Mozilla browser."		},
 #endif
 #endif
@@ -1088,7 +1088,7 @@ bool SwgCuiCommandParserUI::performParsing (const NetworkId & userId, const Stri
 		LocalizationManager::debugDisplayStringColor(color);
 		return true;
 	}
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	else if(isCommand(argv[0], CommandNames::debugBrowserOutput))
 	{
 		SwgCuiWebBrowserManager::debugOutput();
@@ -1868,8 +1868,8 @@ void SwgCuiCommandParserUINamespace::AddStylePaths(UIBaseObject * obj, std::set<
 		// Grab all the styles from the selected pages.
 		for (UIBaseObject::UIObjectList::const_iterator it = ov.begin(); it != ov.end(); ++it)
 		{
-			UIBaseObject * const obj = *it;
-			UIBaseObject::UIPropertyNameMap  const * const pmap = obj->GetPropertyMap();
+			UIBaseObject * const obj2 = *it;
+			UIBaseObject::UIPropertyNameMap  const * const pmap = obj2->GetPropertyMap();
 			
 			if (pmap)
 			{
@@ -1893,7 +1893,7 @@ void SwgCuiCommandParserUINamespace::AddStylePaths(UIBaseObject * obj, std::set<
 				}
 			}
 			
-			AddStylePaths(obj, styles);
+			AddStylePaths(obj2, styles);
 		}
 	}
 }

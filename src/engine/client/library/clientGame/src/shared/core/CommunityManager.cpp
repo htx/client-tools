@@ -436,10 +436,10 @@ void CommunityManager::setFriendList(UnicodeStringSet const &friendList)
 			{
 				// The name is not already in the list, so add it
 
-				Unicode::String const &name = (*iterFriendList);
+				Unicode::String const &name2 = (*iterFriendList);
 
 				FriendData friendData;
-				friendData.setName(name);
+				friendData.setName(name2);
 
 				// See if we have any new group or comment information for this name
 

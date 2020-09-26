@@ -16,23 +16,24 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2889F119-79C4-4EA7-893A-9E0BD5F871C8}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -60,19 +61,22 @@
     <IntDir>.\..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>gl06_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <OutDir>.\..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Optimized\</OutDir>
     <IntDir>.\..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Optimized\</IntDir>
     <LinkIncremental>true</LinkIncremental>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>gl06_o</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Release\</OutDir>
     <IntDir>.\..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <TargetName>gl06_r</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -86,9 +90,9 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\libjpeg\include;..\..\..\..\..\client\library\clientGraphics\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\src\shared;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;DEBUG_LEVEL=2;WIN32;_WINDOWS;_USRDLL;DIRECT3D9_EXPORTS;FFP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\libjpeg\include;..\..\..\..\..\client\library\clientGraphics\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\src\shared;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;DEBUG_LEVEL=2;WIN32;_WINDOWS;_USRDLL;DIRECT3D9_EXPORTS;FFP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
@@ -110,10 +114,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libjpeg.lib;odbc32.lib;odbccp32.lib;winmm.lib;delayimp.lib;dxguid.lib;d3d9.lib;d3dx9.lib;ddraw.lib;dxerr9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;libjpeg.lib;odbc32.lib;odbccp32.lib;winmm.lib;delayimp.lib;dxguid.lib;d3d9.lib;d3dx9.lib;ddraw.lib;dxerr9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Debug\gl06_d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libjpeg\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libjpeg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>DllExport.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -129,7 +133,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy debug dll</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\..\dev\win32\gl06_d.dll</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
@@ -143,9 +147,9 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\libjpeg\include;..\..\..\..\..\client\library\clientGraphics\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\src\shared;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;DEBUG_LEVEL=1;WIN32;_WINDOWS;_USRDLL;DIRECT3D9_EXPORTS;FFP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\libjpeg\include;..\..\..\..\..\client\library\clientGraphics\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\src\shared;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;DEBUG_LEVEL=1;WIN32;_WINDOWS;_USRDLL;DIRECT3D9_EXPORTS;FFP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -165,10 +169,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libjpeg.lib;odbc32.lib;odbccp32.lib;winmm.lib;delayimp.lib;dxguid.lib;d3d9.lib;d3dx9.lib;ddraw.lib;dxerr9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;libjpeg.lib;odbc32.lib;odbccp32.lib;winmm.lib;delayimp.lib;dxguid.lib;d3d9.lib;d3dx9.lib;ddraw.lib;dxerr9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Optimized\gl06_o.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libjpeg\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libjpeg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>DllExport.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -184,7 +188,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy optimized dll</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\..\dev\win32\gl06_o.dll</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\optimized\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -199,8 +203,8 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\libjpeg\include;..\..\..\..\..\client\library\clientGraphics\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\src\shared;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;DEBUG_LEVEL=0;WIN32;_WINDOWS;_USRDLL;DIRECT3D9_EXPORTS;FFP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\libjpeg\include;..\..\..\..\..\client\library\clientGraphics\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\src\shared;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;DEBUG_LEVEL=0;WIN32;_WINDOWS;_USRDLL;DIRECT3D9_EXPORTS;FFP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -223,10 +227,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>libjpeg.lib;odbc32.lib;odbccp32.lib;winmm.lib;delayimp.lib;dxguid.lib;d3d9.lib;d3dx9.lib;ddraw.lib;dxerr9.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Release\gl06_r.dll</OutputFile>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;libjpeg.lib;odbc32.lib;odbccp32.lib;winmm.lib;delayimp.lib;dxguid.lib;d3d9.lib;d3dx9.lib;ddraw.lib;dxerr9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\..\..\..\..\..\compile\win32\Direct3d9_ffp\Release\gl06_r.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libjpeg\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libjpeg\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>DllExport.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -242,7 +246,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy production dll</Message>
-      <Command>copy $(TargetPath) ..\..\..\..\..\..\..\dev\win32\gl06_r.dll</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

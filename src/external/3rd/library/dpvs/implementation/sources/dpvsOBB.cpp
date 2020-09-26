@@ -232,16 +232,16 @@ void calculateOBB (
                         ccnt++;
                         bool mod = false;
 
-                        float x = mtx[0].x * v[i].x + mtx[0].y * v[i].y + mtx[0].z * v[i].z;
-                        float y = mtx[1].x * v[i].x + mtx[1].y * v[i].y + mtx[1].z * v[i].z;
-                        float z = mtx[2].x * v[i].x + mtx[2].y * v[i].y + mtx[2].z * v[i].z;
+                        float x2 = mtx[0].x * v[i].x + mtx[0].y * v[i].y + mtx[0].z * v[i].z;
+                        float y2 = mtx[1].x * v[i].x + mtx[1].y * v[i].y + mtx[1].z * v[i].z;
+                        float z2 = mtx[2].x * v[i].x + mtx[2].y * v[i].y + mtx[2].z * v[i].z;
 
-                        if (x < mn.x) { mn.x = x; mod = true; indices[0] = i; }
-                        if (x > mx.x) { mx.x = x; mod = true; indices[1] = i; }
-                        if (y < mn.y) { mn.y = y; mod = true; indices[2] = i; }
-                        if (y > mx.y) { mx.y = y; mod = true; indices[3] = i; }
-                        if (z < mn.z) { mn.z = z; mod = true; indices[4] = i; }
-                        if (z > mx.z) { mx.z = z; mod = true; indices[5] = i; }
+                        if (x2 < mn.x) { mn.x = x; mod = true; indices[0] = i; }
+                        if (x2 > mx.x) { mx.x = x; mod = true; indices[1] = i; }
+                        if (y2 < mn.y) { mn.y = y; mod = true; indices[2] = i; }
+                        if (y2 > mx.y) { mx.y = y; mod = true; indices[3] = i; }
+                        if (z2 < mn.z) { mn.z = z; mod = true; indices[4] = i; }
+                        if (z2 > mx.z) { mx.z = z; mod = true; indices[5] = i; }
 
                         if (mod)
                         {
@@ -275,13 +275,13 @@ void calculateOBB (
                     cnt++;
 
                     Vector3 d(mx-mn);
-                    float v = 2.0f*(d.x*d.y + d.x*d.z + d.y*d.z);
+                    float v2 = 2.0f*(d.x*d.y + d.x*d.z + d.y*d.z);
 
-                    if (v < bestArea)
+                    if (v2 < bestArea)
                     {
                         bestAngles.make(x,y,z);
                         bestMatrix = mtx;
-                        bestArea = v;
+                        bestArea = v2;
                     }
                 } // z loop
             } // y loop

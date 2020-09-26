@@ -981,16 +981,16 @@ void SwgCuiAvatarSimple::onVerifyAndLockNameFinished(const SwgCuiAvatarCreationH
 
 			if (playerAvatar->getObjectName() == playerName)
 			{
-				CreatureObject * const playerAvatar = SwgCuiAvatarCreationHelper::getCreature();
-				NOT_NULL(playerAvatar);
+				CreatureObject * const playerAvatar2 = SwgCuiAvatarCreationHelper::getCreature();
+				NOT_NULL(playerAvatar2);
 
 				if (hasLastName)
 				{
-					playerAvatar->setObjectName(firstname + (Unicode::narrowToWide(" ") + surname));
+					playerAvatar2->setObjectName(firstname + (Unicode::narrowToWide(" ") + surname));
 				}
 				else
 				{
-					playerAvatar->setObjectName(firstname);
+					playerAvatar2->setObjectName(firstname);
 				}
 
 				SwgCuiAvatarCreationHelper::purgeExtraPoolMembers();
@@ -1280,8 +1280,8 @@ void SwgCuiAvatarSimple::loadAllPlayerModelData()
 						m_hiddenAvatarList->SelectRow(i);
 					}
 
-					AvatarMap::const_iterator ii = m_avatarMap->find(templateName);
-					if (ii == m_avatarMap->end() || (*ii).second.m_creature == 0)
+					AvatarMap::const_iterator ii2 = m_avatarMap->find(templateName);
+					if (ii2 == m_avatarMap->end() || (*ii2).second.m_creature == 0)
 					{
 						Avatar & avatar = (*m_avatarMap)[templateName];
 
@@ -1302,8 +1302,8 @@ void SwgCuiAvatarSimple::loadAllPlayerModelData()
 						m_hiddenAvatarList->SelectRow(i);
 					}
 
-					AvatarMap::const_iterator ii = m_avatarMap->find(templateName);
-					if (ii == m_avatarMap->end() || (*ii).second.m_creature == 0)
+					AvatarMap::const_iterator ii3 = m_avatarMap->find(templateName);
+					if (ii3 == m_avatarMap->end() || (*ii3).second.m_creature == 0)
 					{
 						Avatar & avatar =(*m_avatarMap)[templateName];
 
@@ -1580,11 +1580,11 @@ void SwgCuiAvatarSimple::randomizeAppearance()
 					}
 
 					//-- don't randomize the color multiple times
-					StringIntMap::const_iterator ii = colorValues.find(group.varColors[i]);
+					StringIntMap::const_iterator ii4 = colorValues.find(group.varColors[i]);
 
 					int value = 0;
 
-					if (ii == colorValues.end())
+					if (ii4 == colorValues.end())
 					{
 						PaletteColorCustomizationVariable * const var = dynamic_cast<PaletteColorCustomizationVariable *>(CustomizationManager::findVariable(*m_cdata, group.varColors[i]));
 
@@ -1623,7 +1623,7 @@ void SwgCuiAvatarSimple::randomizeAppearance()
 					}
 					else
 					{
-						value =(*ii).second;
+						value =(*ii4).second;
 					}
 
 					if (group.isColorLinkedToHair)

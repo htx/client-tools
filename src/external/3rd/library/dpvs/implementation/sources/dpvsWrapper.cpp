@@ -1361,7 +1361,7 @@ const char* Library::getInfoString (InfoString t)
 		case VERSION:
 		{
 			static char s_tmp[64];
-			sprintf (s_tmp,"dPVS %d.%d.%d",DPVS_VERSION_MAJOR, DPVS_VERSION_MINOR, DPVS_VERSION_REVIS);
+			sprintf_s (s_tmp,"dPVS %d.%d.%d",DPVS_VERSION_MAJOR, DPVS_VERSION_MINOR, DPVS_VERSION_REVIS);
 			return s_tmp;
 		}
 

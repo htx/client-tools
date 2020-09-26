@@ -249,8 +249,13 @@ bool UIUtils::ParseColor( const UIString &s, UIColor &out )
 
 	++i;
 
-	for( ; isspace(*i) && (i != s.end()); ++i )
-		;
+	while((i != s.end() && isspace(*i)))
+	{
+		i++;
+	}
+
+	/*for( ; isspace(*i) && (i != s.end()); ++i )
+		;*/
 
 	if( i != s.end() )	// gunk on the end of the string
 		return false;

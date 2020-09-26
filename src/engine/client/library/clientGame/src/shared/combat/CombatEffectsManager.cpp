@@ -809,7 +809,7 @@ RangedWeaponEffectData const & CombatEffectsManagerNamespace::getRangedWeaponEff
 		rangedItr = s_idToRangedEffectDataMap.find(weaponMapKey);
 		if (rangedItr == s_idToRangedEffectDataMap.end())
 		{
-			DEBUG_WARNING(true, ("getRangedWeaponEffect: invalid weapon specified (%s) [type (%s)]", weaponTemplateName, weaponMapKey.c_str()));
+			DEBUG_WARNING(true, ("getRangedWeaponEffect: invalid weapon specified (%s) [type (%s)]", weaponTemplateName.c_str(), weaponMapKey.c_str()));
 			return s_unknownRangedWeaponEffect;
 		}
 	}
@@ -962,9 +962,9 @@ void CombatEffectsManagerNamespace::generateHitEffect(const RangedWeaponEffectDa
 	// now add the special attack effect, if specified
 	if (actionNameCrc != 0)
 	{
-		SpecialAttackEffectData const & effectData = getSpecialAttackEffect( actionNameCrc );
+		SpecialAttackEffectData const & effectData2 = getSpecialAttackEffect( actionNameCrc );
 
-		applyEffectPairAtLocation( &effectData.m_hitEffect, cell, position_l, normal_l, damageColor, 1.f );
+		applyEffectPairAtLocation( &effectData2.m_hitEffect, cell, position_l, normal_l, damageColor, 1.f );
 	}
 }
 
@@ -1518,8 +1518,8 @@ void CombatEffectsManager::createMeleeHitEffect(WeaponObject & weaponObject, Crc
 	// now add the special attack effect, if specified
 	if (actionNameCrc != 0)
 	{
-		SpecialAttackEffectData const & effectData = getSpecialAttackEffect( actionNameCrc );
-		applyEffectPairAtLocation( &effectData.m_hitEffect, cell, hitLocation, hitNormal, color, 1.f );
+		SpecialAttackEffectData const & effectData2 = getSpecialAttackEffect( actionNameCrc );
+		applyEffectPairAtLocation( &effectData2.m_hitEffect, cell, hitLocation, hitNormal, color, 1.f );
 	}
 
 }

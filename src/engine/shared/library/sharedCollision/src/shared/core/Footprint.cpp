@@ -258,9 +258,9 @@ void Footprint::sweepContacts ( void )
 
 		if(!loc.isAttached())
 		{
-			Floor const * floor = loc.getFloor();
+			Floor const * floor2 = loc.getFloor();
 
-			if(floor)
+			if(floor2)
 			{
 				CellProperty const * contactCell = loc.getCell();
 
@@ -274,7 +274,7 @@ void Footprint::sweepContacts ( void )
 					{
 						// otherwise the contact sticks around until it's more than 2 meters away from the floor's bounding box
 
-						SimpleExtent const * extent = safe_cast<SimpleExtent const *>(floor->getFloorMesh()->getExtent_l());
+						SimpleExtent const * extent = safe_cast<SimpleExtent const *>(floor2->getFloorMesh()->getExtent_l());
 						AxialBox box = extent->getShape().getAxialBox();
 
 						float dist2 = Distance3d::Distance2PointABox(loc.getPosition_l(),box);

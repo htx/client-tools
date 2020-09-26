@@ -1220,8 +1220,8 @@ void SwgCuiPlanetMap::reset()
 
 			if(isGCWCategory)
 			{
-				StringId categoryName(ms_regionNameTable, Unicode::wideToNarrow(ml.m_locationName));
-				childMap.insert(std::make_pair(Unicode::wideToNarrow(categoryName.localize()), ml));
+				StringId categoryName2(ms_regionNameTable, Unicode::wideToNarrow(ml.m_locationName));
+				childMap.insert(std::make_pair(Unicode::wideToNarrow(categoryName2.localize()), ml));
 				continue;
 			}
 			
@@ -1276,8 +1276,8 @@ void SwgCuiPlanetMap::reset()
 
 			child->SetName        (Unicode::wideToNarrow (ml.m_locationName));
 
-			StringId categoryName(ms_regionNameTable, Unicode::wideToNarrow(ml.m_locationName));
-			child->SetProperty    (UITreeView::DataProperties::LocalText, categoryName.localize());
+			StringId categoryName2(ms_regionNameTable, Unicode::wideToNarrow(ml.m_locationName));
+			child->SetProperty    (UITreeView::DataProperties::LocalText, categoryName2.localize());
 			child->SetProperty        (Properties::EntryName,                 ml.m_locationName);
 			child->SetPropertyNarrow  (Properties::EntryId,                   ml.m_locationId.getValueString ());
 			child->SetPropertyInteger (Properties::Category,                  ml.m_category);
@@ -1496,7 +1496,7 @@ void SwgCuiPlanetMap::setupMarkersForType (uint8 category, uint8 subCategory, co
 				rebelScore = 100 - imperialScore;
 			}
 			else
-				DEBUG_WARNING(true, ("SwgCuiPlanetMap: Could not find a GCW Score for key [%s]", narrowName));
+				DEBUG_WARNING(true, ("SwgCuiPlanetMap: Could not find a GCW Score for key [%s]", narrowName.c_str()));
 		}
 
 		ClientWaypointObject * waypoint = 0;
@@ -1518,7 +1518,7 @@ void SwgCuiPlanetMap::setupMarkersForType (uint8 category, uint8 subCategory, co
 					continue;
 			}
 			else
-				WARNING (true, ("SwgCuiPlanetMap placing marker for waypoint [%s] [%s] but no such waypoint found.", ml.m_locationId.getValueString ().c_str (), Unicode::wideToNarrow (ml.m_locationName)));
+				WARNING (true, ("SwgCuiPlanetMap placing marker for waypoint [%s] [%s] but no such waypoint found.", ml.m_locationId.getValueString ().c_str (), Unicode::wideToNarrow (ml.m_locationName).c_str()));
 		}
 
 		UIButton * button = 0;
@@ -1641,8 +1641,8 @@ void SwgCuiPlanetMap::setupMarkersForType (uint8 category, uint8 subCategory, co
 		{
 			UISize currentSize = button->GetSize();
 
-			UISize extent;
-			m_pagePlanet->GetScrollExtent (extent);
+			UISize extent2;
+			m_pagePlanet->GetScrollExtent (extent2);
 			float halfXZone = m_zoneSize.x / 2;
 			float halfZZone = m_zoneSize.y / 2;
 			
@@ -1650,8 +1650,8 @@ void SwgCuiPlanetMap::setupMarkersForType (uint8 category, uint8 subCategory, co
 			float regionZPercentage = ml.m_size / halfZZone;
 			
 			// Region size
-			currentSize.x = static_cast<UIScalar>(static_cast<float>(extent.x) * regionXPercentage);
-			currentSize.y = static_cast<UIScalar>(static_cast<float>(extent.y) * regionZPercentage);
+			currentSize.x = static_cast<UIScalar>(static_cast<float>(extent2.x) * regionXPercentage);
+			currentSize.y = static_cast<UIScalar>(static_cast<float>(extent2.y) * regionZPercentage);
 			
 			button->SetSize(currentSize);
 

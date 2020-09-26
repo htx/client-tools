@@ -138,9 +138,9 @@ BaselinesMessage::~BaselinesMessage()
 
 //-----------------------------------------------------------------------
 
-void BaselinesMessage::pack(Archive::ByteStream & target) const
+void BaselinesMessage::pack(Archive::ByteStream & target2) const
 {
-	AutoByteStream::pack(target);
+	AutoByteStream::pack(target2);
 }
 
 //-----------------------------------------------------------------------

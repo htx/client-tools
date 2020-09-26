@@ -326,18 +326,18 @@ void ObjectClientEffect::execute()
 		ClientEffectTemplate::CreateAppearanceList::const_iterator i = m_clientEffectTemplate->m_cpaFuncs->begin();
 		for (; i != m_clientEffectTemplate->m_cpaFuncs->end(); ++i)
 		{
-			Appearance* const appearance = i->appearanceTemplate->createAppearance ();
+			Appearance* const appearance2 = i->appearanceTemplate->createAppearance ();
 
-			appearance->useRenderEffectsFlag(m_useRenderEnableFlags);
+			appearance2->useRenderEffectsFlag(m_useRenderEnableFlags);
 
 			//-- turn off auto deletion of particle systems (we want to manage the lifetimes)
-			ParticleEffectAppearance* const particleEffectAppearance = ParticleEffectAppearance::asParticleEffectAppearance(appearance);
+			ParticleEffectAppearance* const particleEffectAppearance = ParticleEffectAppearance::asParticleEffectAppearance(appearance2);
 			if (particleEffectAppearance)
 				particleEffectAppearance->setAutoDelete(false);
 
 			//-- create the object
 			Object* const object = new MemoryBlockManagedObject();
-			object->setAppearance(appearance);
+			object->setAppearance(appearance2);
 			RenderWorld::addObjectNotifications(*object);
 			object->attachToObject_w(m_object, true);
 			object->setTransform_o2p(hardpointToObjectTransform);
@@ -348,7 +348,7 @@ void ObjectClientEffect::execute()
 				finalScale = m_scaleOverride;
 			else if(i->minScale <= i->maxScale)
 				finalScale = Random::randomReal(i->minScale, i->maxScale);
-			appearance->setScale(Vector(finalScale, finalScale, finalScale));
+			appearance2->setScale(Vector(finalScale, finalScale, finalScale));
 
 			float playbackRate = 1.0f;
 			if(i->minPlaybackRate <= i->maxPlaybackRate)

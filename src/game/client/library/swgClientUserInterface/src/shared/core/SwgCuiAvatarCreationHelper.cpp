@@ -662,11 +662,11 @@ CreatureObject * SwgCuiAvatarCreationHelper::duplicateCreatureWithClothesAndCust
 		TangibleObject * const tangibleDestHair = destHair ? destHair->asTangibleObject() : NULL;
 		if(tangibleSourceHair && tangibleDestHair)
 		{
-			CustomizationData const * const sourceCustomizationData = tangibleSourceHair->fetchCustomizationData();
+			CustomizationData const * const sourceCustomizationData2 = tangibleSourceHair->fetchCustomizationData();
 			if(sourceCustomizationData)
 			{
-				std::string const & customizationDataStr = sourceCustomizationData->writeLocalDataToString();
-				sourceCustomizationData->release();
+				std::string const & customizationDataStr = sourceCustomizationData2->writeLocalDataToString();
+				sourceCustomizationData2->release();
 
 				CustomizationData * const targetCustomizationData = tangibleDestHair->fetchCustomizationData();
 				if(targetCustomizationData)

@@ -39,7 +39,6 @@
 #include "UITextbox.h"
 #include "UIUtils.h"
 
-#include <typeinfo.h>
 #include <vector>
 #include <list>
 

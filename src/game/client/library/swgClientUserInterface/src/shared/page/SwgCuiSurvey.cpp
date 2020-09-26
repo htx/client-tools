@@ -351,10 +351,10 @@ void SwgCuiSurvey::setResourceData (const ResourceListForSurveyMessage& message)
 			resourceParents.pop_back();
 
 			//see if the node already exists, use it if it does
-			std::map<Unicode::String, UIDataSourceContainer*>::iterator i = m_resourceTreeMapping.find(currentRes);
-			if(i != m_resourceTreeMapping.end())
+			std::map<Unicode::String, UIDataSourceContainer*>::iterator i2 = m_resourceTreeMapping.find(currentRes);
+			if(i2 != m_resourceTreeMapping.end())
 			{
-				currentParent = i->second;
+				currentParent = i2->second;
 				continue;
 			}
 			else

@@ -302,9 +302,9 @@ void MeshAppearanceTemplate::load(Iff &iff)
 #ifdef _DEBUG
 			if (DataLint::isEnabled())
 			{
-				AxialBox const extent = boxExtent->getBox();
+				AxialBox const extent2 = boxExtent->getBox();
 				AxialBox const spsExtent = m_shaderPrimitiveSetTemplate->getExtent();
-				DEBUG_WARNING(!extent.contains(spsExtent), ("MeshAppearanceTemplate [%s] extent doesn't contain SPS extents, this asset will need to be reexported", getCrcName ().getString ()));
+				DEBUG_WARNING(!extent2.contains(spsExtent), ("MeshAppearanceTemplate [%s] extent doesn't contain SPS extents, this asset will need to be reexported", getCrcName ().getString ()));
 			}
 #endif	
 		}

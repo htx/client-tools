@@ -432,10 +432,10 @@ void WhoManagerNamespace::addPlayerToTable(LfgCharacterSearchResultData const &c
 
 			Unicode::String memberName = Unicode::narrowToWide((*memberIter).groupMemberName);
 			
-			Unicode::String::size_type pos = memberName.find(space);
+			Unicode::String::size_type pos2 = memberName.find(space);
 
-			if (pos != Unicode::String::npos)
-				memberName = memberName.substr(0, pos);
+			if (pos2 != Unicode::String::npos)
+				memberName = memberName.substr(0, pos2);
 
 			if (memberIter == groupMembers.begin())
 				memberName = redColor + Unicode::narrowToWide("(L)") + whiteColor + memberName;

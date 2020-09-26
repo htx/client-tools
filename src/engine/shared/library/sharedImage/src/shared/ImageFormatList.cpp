@@ -77,7 +77,7 @@ void ImageFormatList::addImageFormat(const ImageFormat *imageFormat)
 	{
 		//-- get lowercase extension
 		std::string extension = imageFormat->getCommonExtension(i);
-		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), tolower));
+		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), [](char c){return static_cast<char>(std::tolower(c));}));
 
 		//-- map extension to this image format
 		std::pair<ExtensionMap::iterator, bool> result = ms_extensionMap->insert(std::make_pair(extension, imageFormat));
@@ -165,7 +165,7 @@ Image *ImageFormatList::loadImage(const char *filename, bool readOnly)
 	{
 		// convert extension to lower case
 		std::string extension(extensionDot+1);
-		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), tolower));
+		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), [](char c){return static_cast<char>(std::tolower(c));}));
 
 		// see if we have a file format for this extension
 		NOT_NULL(ms_extensionMap);

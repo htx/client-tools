@@ -1498,12 +1498,12 @@ void ClientProceduralTerrainAppearance::buildLocalWaterTable (const TerrainGener
 				// endcap
 				if(affector->getCapWidth() > 0)
 				{
-					std::vector<Vector2d> vertices;
-					vertices.reserve (static_cast<uint> (affector->getEndCapPointList ().getNumberOfElements ()));
+					std::vector<Vector2d> vertices2;
+					vertices2.reserve (static_cast<uint> (affector->getEndCapPointList ().getNumberOfElements ()));
 					int j;
 					for(j = 0; j < affector->getEndCapPointList().getNumberOfElements (); ++j)
 					{
-						vertices.push_back(affector->getEndCapPointList()[j]);
+						vertices2.push_back(affector->getEndCapPointList()[j]);
 					}
 
 
@@ -1512,7 +1512,7 @@ void ClientProceduralTerrainAppearance::buildLocalWaterTable (const TerrainGener
 						affector->getName(),
 						FileName (FileName::P_shader, affector->getRibbonWaterShaderTemplateName ()),
 						affector->getWaterShaderSize(),
-						vertices,
+						vertices2,
 						affector->getHeightList ()[0], 
 						direction, 
 						0.f,

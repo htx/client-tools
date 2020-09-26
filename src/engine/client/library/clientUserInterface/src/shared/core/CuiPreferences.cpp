@@ -19,7 +19,6 @@
 #include "clientUserInterface/CuiIoWin.h"
 #include "clientUserInterface/CuiManager.h"
 #include "clientUserInterface/IMEManager.h"
-#include "clientUserInterface/CuiVoiceChatManager.h"
 #include "sharedFoundation/Production.h"
 #include "sharedGame/CombatDataTable.h"
 #include "sharedUtility/Callback.h"
@@ -386,13 +385,6 @@ namespace
 
 	Callback * ms_buffIconSettingsChangedCallback = 0;
 
-
-	bool ms_voiceChatEnabled = true;
-	bool ms_voiceUsePushToTalk = true;
-	bool ms_voiceUseAdvancedChannelSelection = false;
-	bool ms_voiceShowFlybar = true;
-	bool ms_voiceAutoDeclineInvites = false;
-	bool ms_voiceAutoJoinChannels = true;
 
 	bool ms_defaultExamineHideAppearance = false;
 	bool ms_doubleClickAppearanceUnequip = true;
@@ -836,13 +828,6 @@ void CuiPreferences::install ()
 
 	REGISTER_OPTION(buffIconWhirlygigOpacity);
 
-	REGISTER_OPTION_USER(voiceChatEnabled);
-	REGISTER_OPTION_USER(voiceUsePushToTalk);
-	REGISTER_OPTION_USER(voiceShowFlybar);
-	REGISTER_OPTION_USER(voiceUseAdvancedChannelSelection);
-	REGISTER_OPTION_USER(voiceAutoDeclineInvites);
-	REGISTER_OPTION_USER(voiceAutoJoinChannels);
-
 	REGISTER_OPTION(defaultExamineHideAppearance);
 	REGISTER_OPTION(doubleClickAppearanceUnequip);
 	REGISTER_OPTION(showAppearanceInventory);
@@ -862,11 +847,6 @@ void CuiPreferences::install ()
 	REGISTER_OPTION(overheadMapShowBuildings);
 
 	REGISTER_OPTION(hideCharactersOnClosedGalaxies);
-
-	CuiVoiceChatManager::setVoiceChatEnabled(getVoiceChatEnabled());
-	CuiVoiceChatManager::setUsePushToTalkForceUpdate(getVoiceUsePushToTalk());
-	CuiVoiceChatManager::setShowFlybar(getVoiceShowFlybar());
-	CuiVoiceChatManager::setUseAdvancedChannelSelection(getVoiceUseAdvancedChannelSelection());
 
 	// Update our utils class with our loaded option.
 	setCurrencyFormat(static_cast<CuiPreferences::CurrencyFormat>(ms_currencyFormat));
@@ -3387,90 +3367,6 @@ float CuiPreferences::getBuffIconWhirlygigOpacityDefault()
 Callback& CuiPreferences::getBuffIconSettingsChangedCallback()
 {
 	return *ms_buffIconSettingsChangedCallback;
-}
-
-//----------------------------------------------------------------------
-
-bool CuiPreferences::getVoiceChatEnabled()
-{
-	return ms_voiceChatEnabled;
-}
-
-//----------------------------------------------------------------------
-
-void CuiPreferences::setVoiceChatEnabled(bool enabled)
-{
-	ms_voiceChatEnabled = enabled;
-}
-
-//----------------------------------------------------------------------
-
-bool CuiPreferences::getVoiceUsePushToTalk()
-{
-	return ms_voiceUsePushToTalk;
-}
-
-//----------------------------------------------------------------------
-
-void CuiPreferences::setVoiceUsePushToTalk(bool useit)
-{
-	ms_voiceUsePushToTalk = useit;
-}
-
-//----------------------------------------------------------------------
-
-bool CuiPreferences::getVoiceShowFlybar()
-{
-	return ms_voiceShowFlybar;
-}
-
-//----------------------------------------------------------------------
-
-void CuiPreferences::setVoiceShowFlybar(bool showit)
-{
-	ms_voiceShowFlybar = showit;
-}
-
-//----------------------------------------------------------------------
-
-bool CuiPreferences::getVoiceUseAdvancedChannelSelection()
-{
-	return ms_voiceUseAdvancedChannelSelection;
-}
-
-//----------------------------------------------------------------------
-
-void CuiPreferences::setVoiceUseAdvancedChannelSelection(bool useit)
-{
-	ms_voiceUseAdvancedChannelSelection = useit;
-}
-
-//----------------------------------------------------------------------
-
-bool CuiPreferences::getVoiceAutoDeclineInvites()
-{
-	return ms_voiceAutoDeclineInvites;
-}
-
-//----------------------------------------------------------------------
-
-void CuiPreferences::setVoiceAutoDeclineInvites(bool declineThemAll)
-{
-	ms_voiceAutoDeclineInvites = declineThemAll;
-}
-
-//----------------------------------------------------------------------
-
-bool CuiPreferences::getVoiceAutoJoinChannels()
-{
-	return ms_voiceAutoJoinChannels;
-}
-
-//----------------------------------------------------------------------
-
-void CuiPreferences::setVoiceAutoJoinChannels(bool joinAway)
-{
-	ms_voiceAutoJoinChannels = joinAway;
 }
 
 //----------------------------------------------------------------------

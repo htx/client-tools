@@ -230,11 +230,11 @@ bool CuiInventoryManager::findLeastOccupiedArrangementForEquipping (const Tangib
 		//-- iterate through the slots for this arrangement, computing total volume required to displace
 
 		const SlottedContainmentProperty::SlotArrangement & slotIds = slottedProperty->getSlotArrangement (loopArrangementId);
-		Container::ContainerErrorCode tmp = Container::CEC_Success;
+		Container::ContainerErrorCode tmp2 = Container::CEC_Success;
 		for (SlottedContainmentProperty::SlotArrangement::const_iterator ait = slotIds.begin (); ait != slotIds.end (); ++ait)
 		{
 			const SlotId & slot = *ait;
-			Container::ContainedItem contained = slotted->getObjectInSlot (slot, tmp);
+			Container::ContainedItem contained = slotted->getObjectInSlot (slot, tmp2);
 			ClientObject * const containedObject     = dynamic_cast<ClientObject*>(contained.getObject ());
 
 			if (containedObject)

@@ -196,41 +196,41 @@ m_disconnectReason()
 		{
 			if (!setup.useTcp)
 			{
-				UdpManagerMT::Params p;
+				UdpManagerMT::Params par;
 
-				p.handler = m_managerHandler ? m_managerHandler->getManagerHandler() : 0;
-				p.crcBytes = setup.crcBytes;
-				p.hashTableSize = 1;
-				p.incomingBufferSize = setup.incomingBufferSize;
-				p.outgoingBufferSize = setup.outgoingBufferSize;
-				p.clockSyncDelay = setup.clockSyncDelay;
-				p.keepAliveDelay = setup.keepAliveDelay;
-				p.maxConnections = 1;
-				p.maxRawPacketSize = setup.maxRawPacketSize;
-				p.maxDataHoldSize = setup.maxDataHoldSize;
-				p.reliable[0].maxInstandingPackets = setup.maxInstandingPackets;
-				p.reliable[0].maxOutstandingBytes = setup.maxOutstandingBytes;
-				p.reliable[0].maxOutstandingPackets = setup.maxOutstandingPackets;
-				p.reliable[0].processOnSend = setup.processOnSend;
-				p.reliable[0].fragmentSize = setup.fragmentSize;
-				p.reliable[0].congestionWindowMinimum = setup.congestionWindowMinimum;
-				p.reliable[0].resendDelayAdjust=setup.resendDelayAdjust;
-				p.userSuppliedEncryptExpansionBytes = 1;
+				par.handler = m_managerHandler ? m_managerHandler->getManagerHandler() : 0;
+				par.crcBytes = setup.crcBytes;
+				par.hashTableSize = 1;
+				par.incomingBufferSize = setup.incomingBufferSize;
+				par.outgoingBufferSize = setup.outgoingBufferSize;
+				par.clockSyncDelay = setup.clockSyncDelay;
+				par.keepAliveDelay = setup.keepAliveDelay;
+				par.maxConnections = 1;
+				par.maxRawPacketSize = setup.maxRawPacketSize;
+				par.maxDataHoldSize = setup.maxDataHoldSize;
+				par.reliable[0].maxInstandingPackets = setup.maxInstandingPackets;
+				par.reliable[0].maxOutstandingBytes = setup.maxOutstandingBytes;
+				par.reliable[0].maxOutstandingPackets = setup.maxOutstandingPackets;
+				par.reliable[0].processOnSend = setup.processOnSend;
+				par.reliable[0].fragmentSize = setup.fragmentSize;
+				par.reliable[0].congestionWindowMinimum = setup.congestionWindowMinimum;
+				par.reliable[0].resendDelayAdjust=setup.resendDelayAdjust;
+				par.userSuppliedEncryptExpansionBytes = 1;
 
 				for (int j = 1; j < UdpManager::cReliableChannelCount; j++)
-					p.reliable[j] = p.reliable[0];
-				p.pooledPacketMax = setup.pooledPacketMax;
-				p.pooledPacketSize = setup.pooledPacketSize;
-				p.oldestUnacknowledgedTimeout = setup.oldestUnacknowledgedTimeout;
-				p.processIcmpErrors = setup.processIcmpErrors;
-				p.noDataTimeout = setup.noDataTimeout;
-				p.reliableOverflowBytes = setup.reliableOverflowBytes;
-				p.allowPortRemapping = setup.allowPortRemapping;
+					par.reliable[j] = par.reliable[0];
+				par.pooledPacketMax = setup.pooledPacketMax;
+				par.pooledPacketSize = setup.pooledPacketSize;
+				par.oldestUnacknowledgedTimeout = setup.oldestUnacknowledgedTimeout;
+				par.processIcmpErrors = setup.processIcmpErrors;
+				par.noDataTimeout = setup.noDataTimeout;
+				par.reliableOverflowBytes = setup.reliableOverflowBytes;
+				par.allowPortRemapping = setup.allowPortRemapping;
 
 				m_udpManager = 0;
 				do
 				{
-					UdpManagerMT *m = new UdpManagerMT(&p);
+					UdpManagerMT *m = new UdpManagerMT(&par);
 					m_udpManager = m;
 					setBindPort(static_cast<unsigned short>(m_udpManager->GetLocalPort()));
 					if (isPortReserved(getBindPort()))

@@ -103,11 +103,11 @@ void ClientImageDesignerManager::setMorphCustomization(CreatureObject & creature
 		CustomizationData * const customizationData = fetchCustomizationDataForCustomization(creature, customization);
 		if(customizationData)
 		{
-			CustomizationManager::Customization customization;
-			bool const result = CustomizationManager::getCustomization(CustomizationManager::getSharedSpeciesGender(creature), customizationName, customization);
-			if(result)
+			CustomizationManager::Customization customization2;
+			bool const result2 = CustomizationManager::getCustomization(CustomizationManager::getSharedSpeciesGender(creature), customizationName, customization2);
+			if(result2)
 			{
-				CustomizationManager::MorphParameter param(*customizationData, customization);
+				CustomizationManager::MorphParameter param(*customizationData, customization2);
 				param.update(creature, value);
 			}
 			customizationData->release();

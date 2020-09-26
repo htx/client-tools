@@ -15,6 +15,7 @@
 // stl warning func not inlined
 #pragma warning (disable:4710)
 #pragma warning (disable:4786)
+#pragma warning (disable:4244)
 #endif
 
 #include "Unicode.h"

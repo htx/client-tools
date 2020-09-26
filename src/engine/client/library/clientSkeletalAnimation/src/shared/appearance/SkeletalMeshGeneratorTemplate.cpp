@@ -3869,10 +3869,12 @@ void SkeletalMeshGeneratorTemplate::fillMeshConstructionHelper(
 	//-- add per shader data
 	{
 		int i = 0;
+		ms_perShaderDataScratchpad->resize(m_perShaderData.size() + 1);
 
-		const PerShaderDataVector::const_iterator itEnd = m_perShaderData.end();
-		for (PerShaderDataVector::const_iterator it = m_perShaderData.begin(); it != itEnd; ++it, ++i)
+		for (PerShaderDataVector::const_iterator it = m_perShaderData.begin(); it != m_perShaderData.end(); it++, i++)
+		{
 			(*it)->addPerShaderData(meshConstructionHelper, firstPositionIndex, firstNormalIndex, preparedDot3Vectors, *ms_combinationsOccluded, (*ms_perShaderDataScratchpad)[static_cast<size_t>(i)]);
+		}
 	}
 
 	//-- add texture renderer info
@@ -3892,6 +3894,7 @@ void SkeletalMeshGeneratorTemplate::fillMeshConstructionHelper(
 				VALIDATE_RANGE_INCLUSIVE_EXCLUSIVE(0, entryIndex, static_cast<int>(m_textureRendererEntries->size()));
 				const TextureRendererEntry &entry = (*m_textureRendererEntries)[static_cast<size_t>(entryIndex)];
 
+				ms_perShaderDataScratchpad->resize(static_cast<size_t>(entry.m_shaderIndex + 1));
 				MeshConstructionHelper::PerShaderData *const outputPsd = (*ms_perShaderDataScratchpad)[static_cast<size_t>(entry.m_shaderIndex)];
 				meshConstructionHelper.addAffectedShaderTemplate(ptrd, entry.m_shaderTextureTag, outputPsd);
 			}

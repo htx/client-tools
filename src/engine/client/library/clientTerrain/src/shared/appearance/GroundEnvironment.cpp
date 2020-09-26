@@ -1331,9 +1331,9 @@ void GroundEnvironment::alter(float elapsedTime)
 		Vector const & cameraPos_w = m_referenceCamera->getPosition_w();
 		
 		{
-			for (size_t i = 0; i < m_objectsFollowCameraVector->size(); ++i)
+			for (size_t n = 0; n < m_objectsFollowCameraVector->size(); ++n)
 			{
-				Object * const object = (*m_objectsFollowCameraVector)[i];				
+				Object * const object = (*m_objectsFollowCameraVector)[n];				
 				Vector const & cameraPosRatio = (cameraPos_w * cameraMovementPlanetFactor);
 				Vector const & pos = cameraPos_w + cameraPosRatio;
 				object->setPosition_p(pos);
@@ -1392,11 +1392,10 @@ void GroundEnvironment::alter(float elapsedTime)
 
 		//-- update the celestials
 		{
-			int j;
-			for (j = 0; j < m_celestialObjectList->getNumberOfObjects (); ++j)
+			for (int l = 0; l < m_celestialObjectList->getNumberOfObjects (); ++l)
 			{
-				CelestialObject* const celestialObject = safe_cast<CelestialObject*> (m_celestialObjectList->getObject (j));
-				const Data::CelestialData& celestialData = m_data->m_celestialDataList [j];
+				CelestialObject* const celestialObject = safe_cast<CelestialObject*> (m_celestialObjectList->getObject (l));
+				const Data::CelestialData& celestialData = m_data->m_celestialDataList [l];
 
 				Transform transform;
 				transform.yaw_l (celestialData.m_yaw);
@@ -1418,13 +1417,13 @@ void GroundEnvironment::alter(float elapsedTime)
 
 		// Faction Cruisers in the sky
 		{
-			for (unsigned int j = 0; j < m_factionCelestials->size(); ++j)
+			for (unsigned int m = 0; m < m_factionCelestials->size(); ++m)
 			{
-				CelestialObject* const celestialObject = safe_cast<CelestialObject*> ( (*m_factionCelestials)[j]);
+				CelestialObject* const celestialObject = safe_cast<CelestialObject*> ( (*m_factionCelestials)[m]);
 
 				Transform transform;
-				transform.yaw_l (ms_factionYaw[j]);
-				transform.pitch_l (ms_factionPitch[j]);
+				transform.yaw_l (ms_factionYaw[m]);
+				transform.pitch_l (ms_factionPitch[m]);
 
 				/*if (celestialData.m_cycleTime > 0.f)
 				{
@@ -1501,7 +1500,7 @@ void GroundEnvironment::alter(float elapsedTime)
 			//If the camera is in an interior cell (not in the world cell), turn the sun glare off.
 			bool cameraNotInWorldCell = (m_referenceCamera && !(m_referenceCamera->isInWorldCell()));
 			GameCamera::setDisableGlare (isNight () || cameraNotInWorldCell);			
-			static const float PI_OVER_12 = PI_OVER_4 / 3.0f;
+
 			if (angle < PI_OVER_12)
 			{
 				VectorArgb color = m_mainLight->getDiffuseColor ();

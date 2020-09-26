@@ -321,9 +321,9 @@ bool ServerProceduralTerrainAppearance::ServerChunk::getHeightAt (const Vector& 
 	for (k = offset; k < offset + 8; ++k)
 	{
 		const Plane& plane = (*m_planeList) [k];
-		const Vector& normal = plane.getNormal ();
+		const Vector& normal2 = plane.getNormal ();
 
-		if ((dir.dot (normal) < 0.f) && (plane.findIntersection (start, end, intersection)))
+		if ((dir.dot (normal2) < 0.f) && (plane.findIntersection (start, end, intersection)))
 		{
 			const int i0 = (*ms_indexList) [k * 3 + 0];
 			const int i1 = (*ms_indexList) [k * 3 + 1];
@@ -344,7 +344,7 @@ bool ServerProceduralTerrainAppearance::ServerChunk::getHeightAt (const Vector& 
 				found = true;
 
 				result.setPoint (intersection);
-				result.setNormal (normal);
+				result.setNormal (normal2);
 			}
 		}
 	}

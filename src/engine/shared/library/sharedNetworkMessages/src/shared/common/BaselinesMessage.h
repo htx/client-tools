@@ -39,7 +39,7 @@ public: // methods
 	const Tag                    getTypeId          () const;
 	const Archive::ByteStream &  getPackage         () const;
 
-	void                         pack               (Archive::ByteStream & target) const;
+	void                         pack               (Archive::ByteStream & target2) const;
 
 	static void  install (void);
 	static void  remove (void);

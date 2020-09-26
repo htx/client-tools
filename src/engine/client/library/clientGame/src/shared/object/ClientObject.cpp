@@ -731,7 +731,7 @@ void ClientObject::endBaselines()
 					//-- if we have no current cell, we must assume the player is in the world.
 					//   we must then transform his world position to cell space.
 					CellProperty *cellProperty = cellObject->getCellProperty();
-					FATAL(!cellProperty, ("non-NULL cellObject [%s] has NULL cellProperty", cellObject->getNetworkId().getValueString()));
+					FATAL(!cellProperty, ("non-NULL cellObject [%s] has NULL cellProperty", cellObject->getNetworkId().getValueString().c_str()));
 					setParentCell(cellProperty);
 
 					CellProperty::setPortalTransitionsEnabled(false);

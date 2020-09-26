@@ -111,9 +111,9 @@ namespace SwgCuiDataStorageNamespace
 			}
 
 			int validArrangementIndex = -1;
-			Container::ContainerErrorCode tmp = Container::CEC_Success;
+			Container::ContainerErrorCode tmp2 = Container::CEC_Success;
 
-			if (!equipmentContainer->getFirstUnoccupiedArrangement(*inventoryObject, validArrangementIndex, tmp) || (validArrangementIndex < 0))
+			if (!equipmentContainer->getFirstUnoccupiedArrangement(*inventoryObject, validArrangementIndex, tmp2) || (validArrangementIndex < 0))
 			{
 				DEBUG_FATAL(true,("Must be able to create the inventory"));
 				return 0;

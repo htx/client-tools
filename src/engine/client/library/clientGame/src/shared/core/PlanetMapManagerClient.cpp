@@ -699,9 +699,9 @@ const Unicode::String & PlanetMapManagerClient::findCategoryString   (uint8 cate
 	{			
 		Unicode::String const & result = PlanetMapManager::findCategoryStringId(category).localize();
 		s_typeStringMap.insert (std::make_pair (category, result));
-		TypeStringMap::const_iterator const it = s_typeStringMap.find (category);
-		if (it != s_typeStringMap.end ())
-			return (*it).second;
+		TypeStringMap::const_iterator const it2 = s_typeStringMap.find (category);
+		if (it2 != s_typeStringMap.end ())
+			return (*it2).second;
 	}
 
 	return Unicode::emptyString;

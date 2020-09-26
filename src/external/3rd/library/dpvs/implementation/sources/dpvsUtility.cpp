@@ -815,7 +815,7 @@ void ImpObjectSplitter::splitObject (Object* o)
 
 			{
 				float		maxDist = 0.0f;
-				Vector3		c		= l->getCenter();
+				Vector3		c2		= l->getCenter();
 
 				for (int i = 0; i < N; i++)
 				{
@@ -824,7 +824,7 @@ void ImpObjectSplitter::splitObject (Object* o)
 					if (t == l)									/* under no circumstances do this.. */
 						continue;
 
-					Vector3 tmp = (t->getCenter() - c);
+					Vector3 tmp = (t->getCenter() - c2);
 					float dist  = dot(tmp,tmp);
 
 					if (dist >= maxDist)
@@ -967,14 +967,14 @@ void ImpObjectSplitter::scanTriangleNeighbors (Object* o, Triangle* t)
 
 	while (stackTop > 0)
 	{
-		Triangle* t = m_stack[--stackTop];							// pop triangle from stack
-		DPVS_ASSERT(t->m_object);
+		Triangle* t2 = m_stack[--stackTop];							// pop triangle from stack
+		DPVS_ASSERT(t2->m_object);
 
-		Vector4 tPlEq = Math::getNormalizedPlaneEquation(t->m_vertices[0]->m_location,t->m_vertices[1]->m_location,t->m_vertices[2]->m_location);
+		Vector4 tPlEq = Math::getNormalizedPlaneEquation(t2->m_vertices[0]->m_location,t2->m_vertices[1]->m_location,t2->m_vertices[2]->m_location);
 
 		for (int j = 0; j < 3; j++)										// find neighbors for each vertex
 		{
-			const Vertex* v	= t->m_vertices[j];
+			const Vertex* v	= t2->m_vertices[j];
 		
 			Vector3i mn = getVertexBucketCoords(v->m_location - m_weldDist);
 			Vector3i mx = getVertexBucketCoords(v->m_location + m_weldDist);

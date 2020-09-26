@@ -923,10 +923,10 @@ void AuctionManagerClient::receiveBidResponse           (const NetworkId & id, i
 
 				for (int i = 0; i < T_numTypes; ++i)
 				{
-					Data * const data = findAuction (s_dataVectors [i], id);
-					if (data && !oldDataSet)
+					Data * const data3 = findAuction (s_dataVectors [i], id);
+					if (data3 && !oldDataSet)
 					{
-						oldData = *data;
+						oldData = *data3;
 						oldData.header.highBidderId = playerId;
 						oldData.header.timer = 0;
 						oldData.header.flags &= ~(AUCTION_ACTIVE);

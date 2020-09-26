@@ -522,11 +522,11 @@ void SwgCuiShipComponentManagement::installSelectedComponent()
 				if(result)
 				{
 					Unicode::String massText;
-					for(std::vector<std::pair<std::string, Unicode::String> >::iterator i = attribs.begin(); i != attribs.end(); ++i)
+					for(std::vector<std::pair<std::string, Unicode::String> >::iterator i2 = attribs.begin(); i2 != attribs.end(); ++i2)
 					{
-						if(i->first == cms_massAttribName)
+						if(i2->first == cms_massAttribName)
 						{
-							massText = i->second;
+							massText = i2->second;
 							break;
 						}
 					}

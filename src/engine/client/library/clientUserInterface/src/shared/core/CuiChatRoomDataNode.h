@@ -21,9 +21,9 @@ public:
 	typedef std::vector<CuiChatAvatarId>       AvatarVector;
 	typedef std::vector<ChatAvatarId>          PlainAvatarVector;
 	
-	std::string           name;
+	std::string           mName;
 
-	ChatRoomData          data;
+	ChatRoomData          mData;
 	CuiChatRoomDataNode * parent;
 	
 	                            CuiChatRoomDataNode ();

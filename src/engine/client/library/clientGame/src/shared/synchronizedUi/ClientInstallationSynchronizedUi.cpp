@@ -201,7 +201,7 @@ bool ClientInstallationSynchronizedUi::hasHopperContent           (const Network
 void ClientInstallationSynchronizedUi::onPoolsInserted(const unsigned int c, const NetworkId & nid)
 {
 	if(s_profileNetworkTraffic)
-		REPORT_LOG(true, ("Inserted the %dth pool %s\n", c, nid.getValueString()));
+		REPORT_LOG(true, ("Inserted the %dth pool %s\n", c, nid.getValueString().c_str()));
 }
 
 //----------------------------------------------------------------------
@@ -209,7 +209,7 @@ void ClientInstallationSynchronizedUi::onPoolsInserted(const unsigned int c, con
 void ClientInstallationSynchronizedUi::onTypeIdsInserted(const unsigned int c, const NetworkId & nid)
 {
 	if(s_profileNetworkTraffic)
-		REPORT_LOG(true, ("Inserted the %dth typeid %s\n", c, nid.getValueString()));
+		REPORT_LOG(true, ("Inserted the %dth typeid %s\n", c, nid.getValueString().c_str()));
 }
 
 //----------------------------------------------------------------------
@@ -233,7 +233,7 @@ void ClientInstallationSynchronizedUi::onParentInserted(const unsigned int c, co
 void ClientInstallationSynchronizedUi::onPoolsDeleted(const unsigned int c, const NetworkId & nid)
 {
 	if(s_profileNetworkTraffic)
-		REPORT_LOG(true, ("Deleted the %dth pool %s\n", c, nid.getValueString()));
+		REPORT_LOG(true, ("Deleted the %dth pool %s\n", c, nid.getValueString().c_str()));
 }
 
 //----------------------------------------------------------------------
@@ -241,7 +241,7 @@ void ClientInstallationSynchronizedUi::onPoolsDeleted(const unsigned int c, cons
 void ClientInstallationSynchronizedUi::onTypeIdsDeleted(const unsigned int c, const NetworkId & nid)
 {
 	if(s_profileNetworkTraffic)
-		REPORT_LOG(true, ("Deleted the %dth typeid %s\n", c, nid.getValueString()));
+		REPORT_LOG(true, ("Deleted the %dth typeid %s\n", c, nid.getValueString().c_str()));
 }
 
 //----------------------------------------------------------------------

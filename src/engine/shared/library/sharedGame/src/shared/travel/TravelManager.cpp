@@ -208,14 +208,14 @@ void TravelManagerNamespace::load (const char* fileName)
 			if (!getPlanetIndex (planetName1, planetIndex1))
 				DEBUG_FATAL (true, ("TravelManagerNamespace::load: planet %s could not be found for row %i", planetName1.c_str (), planetIndex1));
 			
-			const int numberOfColumns = dataTable.getNumColumns ();
-			int column(0);
-			for (column = 1; column < numberOfColumns; ++column)
+			const int numberOfColumns2 = dataTable.getNumColumns ();
+			int column2(0);
+			for (column2 = 1; column2 < numberOfColumns2; ++column2)
 			{
-				const int cost = dataTable.getIntValue (column, row);
+				const int cost = dataTable.getIntValue (column2, row);
 				if (cost != 0)
 				{
-					const std::string planetName2 = dataTable.getColumnName (column);
+					const std::string planetName2 = dataTable.getColumnName (column2);
 					int planetIndex2(0);
 					if (!getPlanetIndex (planetName2, planetIndex2))
 						DEBUG_FATAL (true, ("TravelManagerNamespace::load: planet %s could not be found for row %i", planetName2.c_str (), planetIndex2));
@@ -375,7 +375,7 @@ bool TravelManagerNamespace::getPlanetAnyHopLeastCost(int planetIndex1, int plan
 		std::swap (planetIndex1, planetIndex2);
 
 	AnyHopLeastCostRouteList::const_iterator iterFind = ms_anyHopLeastCostRouteList.find(std::make_pair(planetIndex1, planetIndex2));
-	if (iterFind != ms_singleHopRouteList.end())
+	if (iterFind != ms_anyHopLeastCostRouteList.end())
 	{
 		planetCost = iterFind->second.first;
 		return true;

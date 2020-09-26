@@ -269,7 +269,7 @@ void SwgCuiChatRoomsWho::OnGenericSelectionChanged (UIWidget *context )
 		model->GetValueAtText (selectedRow, 0, selectedAvatar);
 
 		const ChatAvatarId & selfId = CuiChatManager::getSelfAvatarId ();
-		const bool playerIsOperator = (node->data.owner == selfId) || (node->data.creator == selfId) || node->isModerator (selfId.getFullName ());
+		const bool playerIsOperator = (node->mData.owner == selfId) || (node->mData.creator == selfId) || node->isModerator (selfId.getFullName ());
 		
 		if (selectedAvatar.empty ())
 		{
@@ -406,12 +406,12 @@ void SwgCuiChatRoomsWho::resetInfo ()
 	const CuiChatRoomDataNode * const node = CuiChatRoomManager::findRoomNode (m_roomId);
 	if (node)
 	{
-		m_textName->SetLocalText      (Unicode::narrowToWide (node->data.path));
-		m_textTitle->SetLocalText     (node->data.title);
-		m_textCreator->SetLocalText   (CuiChatManager::getShortName (node->data.creator));
-		m_textOwner->SetLocalText     (CuiChatManager::getShortName (node->data.creator));
-		m_textPrivate->SetLocalText   (node->data.roomType == CHAT_ROOM_PRIVATE ? SharedStringIds::yes.localize () : SharedStringIds::no.localize ());
-		m_textModerated->SetLocalText (node->data.moderated != 0 ? SharedStringIds::yes.localize () : SharedStringIds::no.localize ());
+		m_textName->SetLocalText      (Unicode::narrowToWide (node->mData.path));
+		m_textTitle->SetLocalText     (node->mData.title);
+		m_textCreator->SetLocalText   (CuiChatManager::getShortName (node->mData.creator));
+		m_textOwner->SetLocalText     (CuiChatManager::getShortName (node->mData.creator));
+		m_textPrivate->SetLocalText   (node->mData.roomType == CHAT_ROOM_PRIVATE ? SharedStringIds::yes.localize () : SharedStringIds::no.localize ());
+		m_textModerated->SetLocalText (node->mData.moderated != 0 ? SharedStringIds::yes.localize () : SharedStringIds::no.localize ());
 	}
 	else
 	{

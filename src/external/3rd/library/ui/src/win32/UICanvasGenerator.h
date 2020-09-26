@@ -30,9 +30,10 @@ private:
 
 class UICanvasFactory
 {
-public:
+	public:
 
-	virtual UICanvas *CreateCanvas( const std::string & shaderName, const std::string & textureName) const = 0;	
+		virtual ~UICanvasFactory(){}
+		virtual UICanvas *CreateCanvas( const std::string & shaderName, const std::string & textureName) const = 0;	
 };
 
 // =====================================

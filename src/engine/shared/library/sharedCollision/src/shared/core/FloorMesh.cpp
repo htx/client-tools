@@ -2198,11 +2198,11 @@ PathWalkResult FloorMesh::pathWalkPoint ( FloorLocator const & startLoc, Vector 
 
 		if(neighborTriId == -1)
 		{
-			float tempHitTime(0);
+			float tempHitTime2(0);
 
-			bool calcHitOK = calcHitTime( pathSegment, currentTriId, hitEdgeId, tempHitTime );
+			bool calcHitOK2 = calcHitTime( pathSegment, currentTriId, hitEdgeId, tempHitTime2 );
 
-			if(!calcHitOK)
+			if(!calcHitOK2)
 			{
 				FLOOR_WARNING("FloorMesh::pathWalkPoint - Couldn't calc exit time");
 
@@ -2218,7 +2218,7 @@ PathWalkResult FloorMesh::pathWalkPoint ( FloorLocator const & startLoc, Vector 
 				{
 					outHitTriId = currentTriId;
 					outHitEdge = hitEdgeId;
-					outHitTime = tempHitTime;
+					outHitTime = tempHitTime2;
 
 					return PWR_ExitedMesh;
 				}
@@ -2226,7 +2226,7 @@ PathWalkResult FloorMesh::pathWalkPoint ( FloorLocator const & startLoc, Vector 
 				{
 					outHitTriId = currentTriId;
 					outHitEdge = hitEdgeId;
-					outHitTime = tempHitTime;
+					outHitTime = tempHitTime2;
 
 					return PWR_HitPortalEdge;
 				}
@@ -3906,10 +3906,10 @@ void FloorMesh::buildDebugData ( void )
 
 			// Edge indicators are duplicated 3 times to make them more visible
 
-			for(int i = 0; i < 3; i++)
+			for(int k = 0; k < 3; k++)
 			{
-				container->push_back( a + scootUp * float(i) );
-				container->push_back( b + scootUp * float(i) );
+				container->push_back( a + scootUp * float(k) );
+				container->push_back( b + scootUp * float(k) );
 			}
 		}
 

@@ -2078,8 +2078,8 @@ void PlayerCreatureController::handleMessage (const int message, const float val
 			MessageQueueGenericValueType<IncomingPayload> const * const msg = safe_cast<MessageQueueGenericValueType<IncomingPayload> const *>(data);
 			if (msg)
 			{
-				IncomingPayload const & data = msg->getValue();
-				PlayerCreatureController::Messages::ShipParkingDataReceived::Payload const payload(data);
+				IncomingPayload const & data2 = msg->getValue();
+				PlayerCreatureController::Messages::ShipParkingDataReceived::Payload const payload(data2);
 				Transceivers::shipParkingDataReceived.emitMessage (payload);
 			}
 		}

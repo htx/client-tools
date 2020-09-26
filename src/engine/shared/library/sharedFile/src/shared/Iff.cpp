@@ -1667,10 +1667,10 @@ std::string Iff::read_stdstring()
 void  Iff::read_string(Unicode::String &str)
 {
 	const int32 count = read_int32 ();
-	unsigned short * data = new unsigned short [count];
-	read_uint16 (count, data);
-	str.assign (data, static_cast<size_t>(count));
-	delete [] data;
+	unsigned short * data2 = new unsigned short [count];
+	read_uint16 (count, data2);
+	str.assign (data2, static_cast<size_t>(count));
+	delete [] data2;
 }
 
 /**

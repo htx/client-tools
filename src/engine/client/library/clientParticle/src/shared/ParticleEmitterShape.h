@@ -35,6 +35,8 @@ public:
 		Shape_x
 	};
 
+	virtual ~ParticleEmitterShape(){}
+
 	static ParticleEmitterShape * createEmitterShape(Shape const shape);
 
 	virtual Vector                getValue() const = 0;

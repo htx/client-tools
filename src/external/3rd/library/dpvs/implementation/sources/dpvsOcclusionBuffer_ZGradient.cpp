@@ -449,9 +449,9 @@ void ZGradient::interpolateList	(float* dst, const ByteLoc* src, int N)
  *****************************************************************************/
 
 // fix MSVC compiler bug by force-improving floating point consistency
-#if defined (DPVS_BUILD_MSC)
+/*#if defined (DPVS_BUILD_MSC)
 #	pragma optimize ("p",on)			
-#endif
+#endif*/
 
 void ZGradient::setupPlane	(int index, const Vector3& a, const Vector3& b, const Vector3& c)
 {

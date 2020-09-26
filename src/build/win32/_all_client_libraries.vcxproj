@@ -17,21 +17,22 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7986223E-4B89-44B1-AED5-716A5562AAB6}</ProjectGuid>
     <Keyword>MakeFileProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -84,6 +85,42 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\engine\client\library\clientAnimation\build\win32\clientAnimation.vcxproj">
+      <Project>{4af54aee-35f9-473c-8c2e-c24d2eedb17b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientAudio\build\win32\clientAudio.vcxproj">
+      <Project>{250a5957-7bb9-4f50-b0e9-19c87136977e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientBugReporting\build\win32\clientBugReporting.vcxproj">
+      <Project>{147d02d6-c76c-4058-863a-a9b3364c2047}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientDirectInput\build\win32\clientDirectInput.vcxproj">
+      <Project>{f1b57bf8-072e-4e69-940a-c254a98da10d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientGame\build\win32\clientGame.vcxproj">
+      <Project>{d10d1a1a-6129-4ef1-b3d7-5c12ee53dfca}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientGraphics\build\win32\clientGraphics.vcxproj">
+      <Project>{7c4b8a91-be83-4bfe-af94-f75ce39fe67d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientObject\build\win32\clientObject.vcxproj">
+      <Project>{82393d39-3807-4c87-932f-e3571616a7dd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientParticle\build\win32\clientParticle.vcxproj">
+      <Project>{97a83cde-723f-47de-a5c6-b779cf50ae9c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientSkeletalAnimation\build\win32\clientSkeletalAnimation.vcxproj">
+      <Project>{66bcfd48-0307-41fd-b4d9-9991bf572a27}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientTerrain\build\win32\clientTerrain.vcxproj">
+      <Project>{2024a6b1-5e9a-4cc9-8243-7232f9b62264}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientTextureRenderer\build\win32\clientTextureRenderer.vcxproj">
+      <Project>{f1fdc6af-af8c-42a5-826e-c66ae9cc6ca6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\library\clientUserInterface\build\win32\clientUserInterface.vcxproj">
+      <Project>{92605a4d-baa0-46e6-9733-6464f6578b6a}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

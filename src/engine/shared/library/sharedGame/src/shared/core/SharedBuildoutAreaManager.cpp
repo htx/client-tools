@@ -212,18 +212,18 @@ void SharedBuildoutAreaManager::install()
   
   		IGNORE_RETURN(snprintf(filename, sizeof(filename)-1, "datatables/buildout/areas_%s.iff", buildoutScene.c_str()));
 
-		Iff iff;
-		if (iff.open(filename, true))
+		Iff iff2;
+		if (iff2.open(filename, true))
 		{
 			DataTable areaListTable;
-			areaListTable.load(iff);
+			areaListTable.load(iff2);
 
 			std::vector<BuildoutArea> areasForScene;
 
 			int const areaCount = areaListTable.getNumRows();
 			for (int areaRow = 0; areaRow < areaCount; ++areaRow)
 			{
-				areasForScene.push_back();
+				areasForScene.emplace_back();
 				BuildoutArea &buildoutArea = areasForScene.back();
 				buildoutArea.areaIndex = i*100+areaRow;
 				buildoutArea.areaName = areaListTable.getStringValue("area", areaRow);

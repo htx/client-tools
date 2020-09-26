@@ -41,7 +41,6 @@
 #include "clientUserInterface/CuiSkillManager.h"
 #include "clientUserInterface/CuiStringVariablesManager.h"
 #include "clientUserInterface/CuiSystemMessageManager.h"
-#include "clientUserInterface/CuiVoiceChatManager.h"
 #include "clientGame/ProsePackageManagerClient.h"
 #include <queue>
 
@@ -691,10 +690,6 @@ uint32 ClientCommandQueue::enqueueCommand(Command const &command, NetworkId cons
 			}
 		}
 	}
-	else if (command.m_commandHash == hash_report)
-	{
-		processedParams.append(Unicode::narrowToWide("|" + CuiVoiceChatManager::getCsReportString()));
-	}
 
 	const Entry * entryPtr = 0;
 
@@ -841,10 +836,10 @@ void ClientCommandQueue::handleCommandRemoved(uint32 sequenceId, float waitTime,
 					ms_timeUntilSecondaryCommandExecuteCompletes = 0;
 
 					// Update cooldown timer component #2
-					CooldownMap::iterator i = ms_cooldownMap.find(std::make_pair(Game::getPlayerNetworkId(), cmd->m_coolGroup));
-					if (i != ms_cooldownMap.end())
+					CooldownMap::iterator l = ms_cooldownMap.find(std::make_pair(Game::getPlayerNetworkId(), cmd->m_coolGroup));
+					if (l != ms_cooldownMap.end())
 					{
-						CooldownMapEntry & cooldown = i->second;
+						CooldownMapEntry & cooldown = l->second;
 						if (sequenceId == cooldown.lastSequenceId)
 						{
 							cooldown.endTime = 0;

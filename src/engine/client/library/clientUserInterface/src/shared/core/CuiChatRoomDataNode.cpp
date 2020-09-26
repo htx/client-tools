@@ -107,8 +107,8 @@ public:
 //----------------------------------------------------------------------
 
 CuiChatRoomDataNode::CuiChatRoomDataNode () :
-name       (),
-data       (),
+mName       (),
+mData       (),
 parent     (0),
 children   (),
 members    (),
@@ -123,8 +123,8 @@ lowerName  ()
 //----------------------------------------------------------------------
 
 CuiChatRoomDataNode::CuiChatRoomDataNode (CuiChatRoomDataNode * _parent, const ChatRoomData & _data) :
-name       (),
-data       (_data),
+mName       (),
+mData       (_data),
 parent     (_parent),
 children   (),
 members    (),
@@ -133,12 +133,12 @@ moderators (),
 banned     (),
 lowerName  ()
 {
-	getBaseName (_data.path, name);
-	lowerName = Unicode::toLower (name);
+	getBaseName (_data.path, mName);
+	lowerName = Unicode::toLower (mName);
 
 	if (_parent)
 	{
-		if (!name.empty () && _parent->getChild (name))
+		if (!mName.empty () && _parent->getChild (mName))
 			DEBUG_FATAL (true, ("Can't add existing room."));
 		else
 		{
@@ -183,8 +183,8 @@ CuiChatRoomDataNode * CuiChatRoomDataNode::insertData (const ChatRoomData & data
 	
 	if (child)
 	{
-		child->data      = data;
-		child->name      = basename;
+		child->mData      = data;
+		child->mName      = basename;
 		child->lowerName = Unicode::toLower (basename);
 	}
 	else
@@ -214,7 +214,7 @@ void CuiChatRoomDataNode::getParentString (const std::string & path, std::string
 
 CuiChatRoomDataNode * CuiChatRoomDataNode::getOrCreateNode (const std::string & path)
 {
-	if (path == data.path)
+	if (path == mData.path)
 		return this;
 
 	std::string parentPath;
@@ -232,8 +232,8 @@ CuiChatRoomDataNode * CuiChatRoomDataNode::getOrCreateNode (const std::string & 
 	if (!child)
 	{
 		child = new CuiChatRoomDataNode (parentNode, ChatRoomData ());
-		child->data.path = path;
-		child->name      = basename;
+		child->mData.path = path;
+		child->mName      = basename;
 		child->lowerName = Unicode::toLower (basename);
 	}
 
@@ -300,7 +300,7 @@ const CuiChatRoomDataNode * CuiChatRoomDataNode::getChild (const std::string & p
 
 const std::string & CuiChatRoomDataNode::getFullPath         () const
 {
-	return data.path;
+	return mData.path;
 }
 
 //----------------------------------------------------------------------
@@ -437,16 +437,16 @@ void CuiChatRoomDataNode::setBanned (const PlainAvatarVector & pav)
 
 void CuiChatRoomDataNode::invalidateRoom ()
 {
-	data.id = 0;
+	mData.id = 0;
 	members.clear         ();
 	invitees.clear        ();
 	moderators.clear      ();
 	banned.clear          ();
-	data.owner.clear      ();
-	data.creator.clear    ();
-	data.title.clear      ();
-	data.moderators.clear ();
-	data.invitees.clear   ();
+	mData.owner.clear      ();
+	mData.creator.clear    ();
+	mData.title.clear      ();
+	mData.moderators.clear ();
+	mData.invitees.clear   ();
 }
 
 //----------------------------------------------------------------------

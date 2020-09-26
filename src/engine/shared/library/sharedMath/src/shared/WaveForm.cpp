@@ -740,12 +740,12 @@ float WaveForm::getValue(WaveFormControlPointIter &iter, float const percent) co
 								c4 = c3;
 							}
 
-							float const previousPercent = c2->getPercent();
+							float const previousPercent2 = c2->getPercent();
 							float const currentPercent = c3->getPercent();
 
-							DEBUG_FATAL((previousPercent > currentPercent), ("WaveForm::getColorAtPercent() - previousPercent(%.3f) > currentPercent(%.3f)", previousPercent, currentPercent));
+							DEBUG_FATAL((previousPercent2 > currentPercent), ("WaveForm::getColorAtPercent() - previousPercent(%.3f) > currentPercent(%.3f)", previousPercent2, currentPercent));
 
-							if ((percent >= previousPercent) &&
+							if ((percent >= previousPercent2) &&
 								(percent <= currentPercent))
 							{
 								break;
@@ -917,14 +917,14 @@ void WaveForm::load(Iff &iff)
 	{
 		float firstValue = m_controlPointList.begin()->getValue();
 
-		ControlPointList::const_iterator iterControlPointList = m_controlPointList.begin();
-		++iterControlPointList;
+		ControlPointList::const_iterator iterControlPointList2 = m_controlPointList.begin();
+		++iterControlPointList2;
 
-		for (; iterControlPointList != m_controlPointList.end(); ++iterControlPointList)
+		for (; iterControlPointList2 != m_controlPointList.end(); ++iterControlPointList2)
 		{
-			float const currentValue = iterControlPointList->getValue();
-			float const randomMin = iterControlPointList->getRandomMin();
-			float const randomMax = iterControlPointList->getRandomMax();
+			float const currentValue = iterControlPointList2->getValue();
+			float const randomMin = iterControlPointList2->getRandomMin();
+			float const randomMax = iterControlPointList2->getRandomMax();
 
 			if ((currentValue != firstValue) ||
 			    ((currentValue == firstValue) &&

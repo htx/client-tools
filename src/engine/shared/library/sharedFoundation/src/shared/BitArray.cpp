@@ -597,15 +597,15 @@ std::string BitArray::getDebugString() const
 
 	s += ") (";
 
-	for (int i = 0; i < m_numAllocatedBytes; ++i)
+	for (int j = 0; j < m_numAllocatedBytes; ++j)
 	{
-		if (i > 0)
+		if (j > 0)
 			s += " ";
 
-		if (i == m_numInUseBytes)
+		if (j == m_numInUseBytes)
 			s += "   ";
 
-		s += FormattedString<512>().sprintf("%02X", static_cast<unsigned char>(m_arrayData[i]));
+		s += FormattedString<512>().sprintf("%02X", static_cast<unsigned char>(m_arrayData[j]));
 	}
 
 	s += ")";

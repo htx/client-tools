@@ -204,24 +204,24 @@ int PolySolver::solveQuartic(const double c[5], double s[4])
 	double y1 = 1.0f;
 
 	{
-		double c[4];
+		double c2[4];
 
-		c[3] = 1.0;
-		c[2] = -a2;
-		c[1] = (a1*a3) - (4.0)*(a0);
-		c[0] = (4.0)*(a2*a0) - (a1*a1) - (a3*a3*a0);
+		c2[3] = 1.0;
+		c2[2] = -a2;
+		c2[1] = (a1*a3) - (4.0)*(a0);
+		c2[0] = (4.0)*(a2*a0) - (a1*a1) - (a3*a3*a0);
 
-		double s[3];
+		double s2[3];
 
-		int nRoots = PolySolver::solveCubic(c, s);
+		int nRoots = PolySolver::solveCubic(c2, s2);
 
 		for (int i = 0; i < nRoots; i++)
 		{
-			if (s[i] == s[i])
+			if (s2[i] == s2[i])
 			{
 				// root is real
 
-				y1 = cleanCubicRoot(s[i], c);
+				y1 = cleanCubicRoot(s2[i], c2);
 
 				break;
 			}
@@ -239,9 +239,9 @@ int PolySolver::solveQuartic(const double c[5], double s[4])
 
 	if (R == 0.0)
 	{
-		double t1 = (y1*y1) - (4.0)*(a0);
+		double t12 = (y1*y1) - (4.0)*(a0);
 
-		double t2 = sqrt(t1);
+		double t2 = sqrt(t12);
 
 		double t3 = (3.0 / 4.0)*(a3*a3) - (2.0)*(a2)+(2.0)*t2;
 
@@ -249,36 +249,36 @@ int PolySolver::solveQuartic(const double c[5], double s[4])
 	}
 	else
 	{
-		double t1 = (4.0)*(a3*a2) - (8.0)*(a1)-(a3*a3*a3);
+		double t12 = (4.0)*(a3*a2) - (8.0)*(a1)-(a3*a3*a3);
 
-		double t2 = t1 / (4.0 * R);
+		double t2 = t12 / (4.0 * R);
 
 		double t3 = (3.0 / 4.0)*(a3*a3) - (R*R) - (2.0)*(a2)+t2;
 
 		D = sqrt(t3);
 	}
 
-	double E;
+	double E2;
 
 	if (R == 0.0)
 	{
-		double t1 = (y1*y1) - (4.0)*(a0);
+		double t12 = (y1*y1) - (4.0)*(a0);
 
-		double t2 = sqrt(t1);
+		double t2 = sqrt(t12);
 
 		double t3 = (3.0 / 4.0)*(a3*a3) - (2.0)*(a2)-(2.0)*(t2);
 
-		E = sqrt(t3);
+		E2 = sqrt(t3);
 	}
 	else
 	{
-		double t1 = (4.0)*(a3*a2) - (8.0)*(a1)-(a3*a3*a3);
+		double t12 = (4.0)*(a3*a2) - (8.0)*(a1)-(a3*a3*a3);
 
-		double t2 = t1 / (4.0 * R);
+		double t2 = t12 / (4.0 * R);
 
 		double t3 = (3.0 / 4.0)*(a3*a3) - (R*R) - (2.0)*(a2)-t2;
 
-		E = sqrt(t3);
+		E2 = sqrt(t3);
 	}
 
 	static const double nan = sqrt(-1.0f);
@@ -293,15 +293,15 @@ int PolySolver::solveQuartic(const double c[5], double s[4])
 		s[1] = (-1.0 / 4.0)*a3 + (1.0 / 2.0)*R - (1.0 / 2.0)*D;
 	}
 
-	if (isnan(E))
+	if (isnan(E2))
 	{
 		s[2] = nan;
 		s[3] = nan;
 	}
 	else
 	{
-		s[2] = (-1.0 / 4.0)*a3 - (1.0 / 2.0)*R + (1.0 / 2.0)*E;
-		s[3] = (-1.0 / 4.0)*a3 - (1.0 / 2.0)*R - (1.0 / 2.0)*E;
+		s[2] = (-1.0 / 4.0)*a3 - (1.0 / 2.0)*R + (1.0 / 2.0)*E2;
+		s[3] = (-1.0 / 4.0)*a3 - (1.0 / 2.0)*R - (1.0 / 2.0)*E2;
 	}
 
 	/*

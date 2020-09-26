@@ -77,7 +77,7 @@ void assertFail (const char* expr, const char* file, int line, const char* messa
 		if (handler) // THERE MUST BE ONE!
 		{
 			char tmp[1024];
-			sprintf (tmp,"%s in file %s, line %d\n.%s\n",const_cast<char*>(expr),const_cast<char*>(file),line,message?const_cast<char*>(message):"");
+			sprintf_s (tmp,"%s in file %s, line %d\n.%s\n",const_cast<char*>(expr),const_cast<char*>(file),line,message?const_cast<char*>(message):"");
 			handler->error (tmp);
 		}
 	}

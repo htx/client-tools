@@ -736,25 +736,25 @@ void SwgCuiGroundRadar::BlipPane::Render (UICanvas & canvas) const
 						}
 					}
 
-					float distance = -pos_w.magnitudeBetweenSquared (obj->findPosition_w ());
+					float distance2 = -pos_w.magnitudeBetweenSquared (obj->findPosition_w ());
 					
 					if (obj == player)
-						distance += 10000.0f;
+						distance2 += 10000.0f;
 					else if (obj == lookAtTarget)
-						distance += 9000.0f;
+						distance2 += 9000.0f;
 					else if (playerGroupLeaderId == obj->getNetworkId ())
-						distance += 8500.0f;
+						distance2 += 8500.0f;
 					else if (creature && playerGroupId.isValid () && creature->getGroup () == playerGroupId)
-						distance += 8000.0f;
+						distance2 += 8000.0f;
 					else if (creature && (creature->getPvpFlags() & PvpStatusFlags::CanAttackYou) != 0)
-						distance += 7000.0f;
+						distance2 += 7000.0f;
 					else if (creature && creature->isPlayer ())
-						distance += 6000.0f;
+						distance2 += 6000.0f;
 					//-- bias non creatures fully below the creatures
 					else if (!creature)
-						distance -= 16384.0f;
+						distance2 -= 16384.0f;
 
-					s_cachedDistanceObjectMap.insert(std::make_pair(distance, ConstWatcher<ClientObject>(obj)));
+					s_cachedDistanceObjectMap.insert(std::make_pair(distance2, ConstWatcher<ClientObject>(obj)));
 				}
 			}
 		}

@@ -168,14 +168,14 @@ void OcclusionBuffer::clearAccordingToStencil()
 
 						if(!reflectionTargetsFixed)
 						{
-							const int bucketNumber = bucket.findNumber(m_bucketRectangle.x1);
+							const int bucketNumber2 = bucket.findNumber(m_bucketRectangle.x1);
 
-							for(int b=by*m_bucketRectangle.x1;b<bucketNumber;b++)	// process buckets on the left
+							for(int b=by*m_bucketRectangle.x1;b<bucketNumber2;b++)	// process buckets on the left
 							{
 								Bucket& b2 = m_bucket[b];
 								if(!b2.hasReflectionTarget() ||						// Doesn't have one (bucket row is full)
-									b2.getReflectionTarget() > bucketNumber)		// has one to the right
-									b2.setReflectionTarget(bucketNumber);			// this bucket is now a valid receiver
+									b2.getReflectionTarget() > bucketNumber2)		// has one to the right
+									b2.setReflectionTarget(bucketNumber2);			// this bucket is now a valid receiver
 							}
 							reflectionTargetsFixed = true;
 						}

@@ -276,12 +276,12 @@ bool SwgCuiPersistentMessageBrowser::OnMessage  (UIWidget * context, const UIMes
 		else if (msg.Type == UIMessage::ContextRequest)
 		{
 			UIWidget * const child = context->GetWidgetFromPoint (msg.MouseCoords, true);
-			int index = -1;
+			int index2 = -1;
 
 			if (child)
-				child->GetPropertyInteger (UIBaseObject::PropertyName::Name, index);
+				child->GetPropertyInteger (UIBaseObject::PropertyName::Name, index2);
 
-			UIPopupMenu * const pop = createContextMenu (index);
+			UIPopupMenu * const pop = createContextMenu (index2);
 			NOT_NULL (pop); 
 			pop->SetLocation (context->GetWorldLocation () + msg.MouseCoords);
 			UIManager::gUIManager ().PushContextWidget (*pop);

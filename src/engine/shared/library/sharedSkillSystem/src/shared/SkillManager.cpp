@@ -15,7 +15,7 @@
 #include "sharedDebug/InstallTimer.h"
 
 #include <algorithm>
-#include <hash_map>
+#include <unordered_map>
 #include <string>
 
 SkillManager      *SkillManager::ms_instance = NULL;
@@ -36,10 +36,10 @@ namespace
 			int c = 0;
 
 			for (c = 'a'; c <= 'z'; ++c)
-				valid.append (1, c);
+				valid.append (1, static_cast<char>(c));
 
 			for (c = '0'; c <= '9'; ++c)
-				valid.append (1, c);
+				valid.append (1, static_cast<char>(c));
 
 			valid.append (1, '_');
 			valid.append (1, '-');

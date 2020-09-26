@@ -874,8 +874,8 @@ bool Os::handleDebugMenu()
 			static_cast<void>(AppendMenu(entry->second, MF_POPUP, reinterpret_cast<UINT>(newMenu), "DebugKey"));
 			lastSubmenu = newMenu;
 
-			DebugKey::FlagVector::const_iterator end = DebugKey::ms_flags.end();
-			for (DebugKey::FlagVector::const_iterator i = DebugKey::ms_flags.begin(); i != end; ++i, ++index)
+			DebugKey::FlagVector::const_iterator end2 = DebugKey::ms_flags.end();
+			for (DebugKey::FlagVector::const_iterator i = DebugKey::ms_flags.begin(); i != end2; ++i, ++index)
 			{
 				// add the current flag to the current menu
 				const DebugKey::Flag &flag = *i;

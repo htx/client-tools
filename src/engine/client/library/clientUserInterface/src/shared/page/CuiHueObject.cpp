@@ -627,7 +627,7 @@ void CuiHueObject::setupPaletteColumnData (const UIDataSource & ds)
 
 		int columns = 0;
 		if (!data->GetPropertyInteger (prop_columns, columns))
-			WARNING (true, ("No property found for %s", prop_columns));
+			WARNING (true, ("No property found for %s", prop_columns.c_str()));
 
 		s_paletteColumnData [paletteName] = columns;
 	}

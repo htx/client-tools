@@ -436,10 +436,10 @@ void SwgCuiQuestAcceptance::setData(WindowType const type, uint32 const questCrc
 		_itoa(q->getLevel(), buffer, 10);
 		m_levelText->SetLocalText(Unicode::narrowToWide(buffer));
 
-		std::string const & type = q->getType();
+		std::string const & type2 = q->getType();
 		if((!q->getType().empty()) && (q->getType() != cms_soloType))
 		{
-			StringId typeSid("quest/quest_types", type);
+			StringId typeSid("quest/quest_types", type2);
 			Unicode::String const & typeWide = Unicode::narrowToWide(" [") + typeSid.localize() + Unicode::narrowToWide("]");
 			m_typeText->SetLocalText(typeWide);
 			m_typePage->SetVisible(true);

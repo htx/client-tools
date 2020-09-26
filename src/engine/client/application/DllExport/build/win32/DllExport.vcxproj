@@ -16,23 +16,24 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{78041480-C2C5-42A1-A566-C57BC3100BBF}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -81,9 +82,8 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedImage\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\library\clientGraphics\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedImage\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\library\clientGraphics\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DIRECT3D8_EXPORTS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -103,7 +103,7 @@
     <Link>
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.pdb</ProgramDatabaseFile>
@@ -114,6 +114,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\optimized\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -127,7 +130,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedImage\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\library\clientGraphics\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedImage\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\library\clientGraphics\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DIRECT3D8_EXPORTS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -151,15 +154,19 @@
     <Link>
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.pdb</ProgramDatabaseFile>
       <ImportLibrary>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -173,9 +180,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedImage\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\library\clientGraphics\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedImage\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedObject\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\library\clientGraphics\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DIRECT3D8_EXPORTS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
@@ -197,7 +203,7 @@
     <Link>
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.pdb</ProgramDatabaseFile>
@@ -208,6 +214,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\win32\DllExport.cpp" />

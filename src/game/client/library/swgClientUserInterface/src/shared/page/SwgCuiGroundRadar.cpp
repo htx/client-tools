@@ -518,11 +518,11 @@ void  SwgCuiGroundRadar::updateRadar (const Vector & pos, const ClientProcedural
 		}
 		else
 		{
-			const Object * const player = Game::getPlayer ();
-			if(player)
+			const Object * const player2 = Game::getPlayer ();
+			if(player2)
 			{
 				std::string zoneName;
-				GroundZoneManager::getZoneName(Game::getSceneId().c_str(), player->getPosition_w(), zoneName);			
+				GroundZoneManager::getZoneName(Game::getSceneId().c_str(), player2->getPosition_w(), zoneName);			
 				regionString = StringId ("zone_n", zoneName).localize ();			
 			}
 		}

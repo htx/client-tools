@@ -487,8 +487,8 @@ int DetailAppearance::_chooseDetailLevel() const
 		appearance = NULL;
 
 		// it wasn't loaded, so now try to find one that is.  search from the current detail level, both higher and lower, looking for something loaded
-		const int numberOfDetailLevels = getDetailAppearanceTemplate()->getDetailLevelCount();
-		for (int offset = 1; offset < numberOfDetailLevels; ++offset)
+		const int numberOfDetailLevels2 = getDetailAppearanceTemplate()->getDetailLevelCount();
+		for (int offset = 1; offset < numberOfDetailLevels2; ++offset)
 		{
 			if (detailLevel - offset >= 0)
 			{
@@ -501,7 +501,7 @@ int DetailAppearance::_chooseDetailLevel() const
 				appearance = NULL;
 			}
 
-			if (detailLevel + offset < numberOfDetailLevels)
+			if (detailLevel + offset < numberOfDetailLevels2)
 			{
 				appearance = m_appearanceList [detailLevel + offset];
 				if (appearance && appearance->isLoaded())

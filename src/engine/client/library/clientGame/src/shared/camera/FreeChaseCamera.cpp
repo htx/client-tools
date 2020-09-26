@@ -711,11 +711,10 @@ float FreeChaseCamera::alter (float elapsedTime)
 			CollisionInfo result;
 			float minimumT = 1.f;
 
-			int i;
-			for (i = 0; i < 4; ++i)
+			for(int k = 0; k < 4; ++k)
 			{
-				const Vector interimStart_w = start_w + rotate_o2w (offsets [i]);
-				const Vector interimEnd_w = end_w + rotate_o2w (offsets [i]);
+				const Vector interimStart_w = start_w + rotate_o2w (offsets [k]);
+				const Vector interimEnd_w = end_w + rotate_o2w (offsets [k]);
 
 				CollisionInfo interimResult;
 				if (ClientWorld::collide (getParentCell (), interimStart_w, interimEnd_w, CollideParameters::cms_default, interimResult, ClientWorld::CF_allCamera))

@@ -81,7 +81,7 @@
 #include "swgSharedNetworkMessages/SetupSwgSharedNetworkMessages.h"
 
 
-#include "libMozilla/libMozilla.h"
+//#include "libMozilla/libMozilla.h"
 
 
 #include "Resource.h"
@@ -212,9 +212,9 @@ int ClientMain(
 		}
 
 		{
-			SetupSharedCompression::Data data;
-			data.numberOfThreadsAccessingZlib = 3;
-			SetupSharedCompression::install(data);
+			SetupSharedCompression::Data data2;
+			data2.numberOfThreadsAccessingZlib = 3;
+			SetupSharedCompression::install(data2);
 		}
 
 		//-- Regular expression support.
@@ -314,14 +314,14 @@ int ClientMain(
 
 		// Mozilla
 		// We want to use the Mozilla that's shipped with the game, not whatever's on the system
-		char szCWD[_MAX_PATH + 1];
+		/*char szCWD[_MAX_PATH + 1];
 		GetCurrentDirectory(_MAX_PATH, szCWD);
 		std::string sPath(szCWD);
 		sPath += "\\mozilla";
 		if (!libMozilla::init(Os::getWindow(), sPath.c_str()))
 		{
 			DEBUG_FATAL(true, ("Mozilla init failed.\n"));
-		}
+		}*/
 
 		if (SetupClientGraphics::install(setupGraphicsData))
 		{
@@ -356,9 +356,9 @@ int ClientMain(
 			SetupClientParticle::install();
 
 			//-- game
-			SetupClientGame::Data data;
-			SetupClientGame::setupGameData(data);
-			SetupClientGame::install(data);
+			SetupClientGame::Data data2;
+			SetupClientGame::setupGameData(data2);
+			SetupClientGame::install(data2);
 
 			CuiManager::setImplementationInstallFunctions(SwgCuiManager::install, SwgCuiManager::remove, SwgCuiManager::update);
 			CuiManager::setImplementationTestFunction(SwgCuiManager::test);
@@ -398,7 +398,7 @@ int ClientMain(
 	SetupSharedFoundation::remove();
 	SetupSharedThread::remove();
 
-	libMozilla::release();
+	//libMozilla::release();
 
 	if (semaphore)
 		CloseHandle(semaphore);

@@ -1329,11 +1329,11 @@ bool ClientWorld::internalCollideObject(uint16 const flags, Object const * const
 			{
 				if (!childObject->isChildObject() || flags & CF_childObjects)
 				{
-					CollisionInfo info;
-					if (internalCollideObject (flags, childObject, startPosition_w, result.getPoint (), excludeObject, cdeof, collideParameters, info))
+					CollisionInfo info2;
+					if (internalCollideObject (flags, childObject, startPosition_w, result.getPoint (), excludeObject, cdeof, collideParameters, info2))
 					{
 						collided = true;
-						result   = info;
+						result   = info2;
 					}
 				}
 			}
@@ -1384,10 +1384,10 @@ bool ClientWorld::internalCollideObject(uint16 const flags, Object const * objec
 			{
 				if (!childObject->isChildObject() || flags & CF_childObjects)
 				{
-					CollisionInfo info;
-					if (internalCollideObject (flags, childObject, startPosition_w, endPosition_w, excludeObject, cdeof, collideParameters, info))
+					CollisionInfo info3;
+					if (internalCollideObject (flags, childObject, startPosition_w, endPosition_w, excludeObject, cdeof, collideParameters, info3))
 					{
-						results.push_back(info);
+						results.push_back(info3);
 						collided = true;
 					}
 				}

@@ -123,7 +123,7 @@ StaticShaderTemplate::StaticShaderTemplate(const CrcString &name, Iff &iff)
 	if (m_textureCoordinateSetMap && m_textureCoordinateSetMap->find(TAG_NRML) != m_textureCoordinateSetMap->end() && m_textureCoordinateSetMap->find(TAG_DOT3) == m_textureCoordinateSetMap->end())
 	{
 		m_addedDot3Placeholder = true;
-		TextureCoordinateSetMap::value_type entry(TAG_DOT3, 1);
+		TextureCoordinateSetMap::value_type entry(TAG_DOT3, (uint8)1);
 		std::pair<TextureCoordinateSetMap::iterator, bool> result = m_textureCoordinateSetMap->insert(entry);
 		DEBUG_FATAL(!result.second, ("insert failed"));
 	}

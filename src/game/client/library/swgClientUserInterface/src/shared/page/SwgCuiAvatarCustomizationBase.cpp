@@ -610,11 +610,11 @@ void SwgCuiAvatarCustomizationBase::OnVolumePageSelectionChanged (UIWidget * con
 			if (hairToWear)
 			{
 				int arrangementIndex = 0;
-				Container::ContainerErrorCode tmp = Container::CEC_Success;
+				Container::ContainerErrorCode tmp2 = Container::CEC_Success;
 
-				if (slotted->getFirstUnoccupiedArrangement (*hairToWear, arrangementIndex, tmp))
+				if (slotted->getFirstUnoccupiedArrangement (*hairToWear, arrangementIndex, tmp2))
 				{
-					slotted->add(*hairToWear, arrangementIndex, tmp);
+					slotted->add(*hairToWear, arrangementIndex, tmp2);
 				}
 			}
 		}
@@ -1786,11 +1786,11 @@ void SwgCuiAvatarCustomizationBase::randomize (bool const all)
 						continue;
 
 					//-- don't randomize the color multiple times
-					const StringIntMap::const_iterator it = colorValues.find (group.varColors [i]);
+					const StringIntMap::const_iterator it2 = colorValues.find (group.varColors [i]);
 
 					int value = 0;
 
-					if (it == colorValues.end ())
+					if (it2 == colorValues.end ())
 					{
 						PaletteColorCustomizationVariable * const var = dynamic_cast<PaletteColorCustomizationVariable *>(CustomizationManager::findVariable (*m_cdata, group.varColors [i]));
 
@@ -1817,7 +1817,7 @@ void SwgCuiAvatarCustomizationBase::randomize (bool const all)
 						}
 					}
 					else
-						value = (*it).second;
+						value = (*it2).second;
 
 					if (group.isColorLinkedToHair)
 						hairColorValues [group.varColorLinkedToHair [i]] = value;

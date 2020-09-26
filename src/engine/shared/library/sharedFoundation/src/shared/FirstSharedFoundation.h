@@ -5,6 +5,9 @@
 //
 // ======================================================================
 
+#include <cstdio>
+#include <algorithm>
+
 #ifndef INCLUDED_FirstSharedFoundation_H
 #define INCLUDED_FirstSharedFoundation_H
 
@@ -65,8 +68,8 @@ const float REAL_MAX = FLT_MAX;
 // ======================================================================
 // things that are useful just about everywhere
 
-#include <math.h>
-#include <string.h>
+#include <cmath>
+#include <string>
 #include <ctype.h>
 #include <stdarg.h>
 

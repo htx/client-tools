@@ -818,8 +818,8 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 
 			if (s_attemptWalkForward)
 			{
-				CreatureObject * player = Game::getPlayerCreature();
-				Controller * const controller = (player != 0) ? player->getController() : 0;
+				CreatureObject * player2 = Game::getPlayerCreature();
+				Controller * const controller = (player2 != 0) ? player2->getController() : 0;
 
 				if (controller != 0)
 				{
@@ -884,15 +884,15 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 
 	if (!doPrimaryAttack && s_attemptDefaultAction == true)
 	{
-		std::string const & commandName = player->getCurrentPrimaryActionName();
+		std::string const & commandName2 = player->getCurrentPrimaryActionName();
 		bool performedPrimaryAction = false;
-		CachedNetworkId targetId = findBestTargetForAction(player, orderedTargets, commandName, s_attemptDefaultAction, performedPrimaryAction);
+		CachedNetworkId targetId = findBestTargetForAction(player, orderedTargets, commandName2, s_attemptDefaultAction, performedPrimaryAction);
 		s_attemptDefaultAction = false;
 	}
 
 	if (doPrimaryAttack || s_wasPrimaryPostureTransitionTimerUsed)
 	{
-		std::string const & commandName = player->getCurrentPrimaryActionName();
+		std::string const & commandName3 = player->getCurrentPrimaryActionName();
 		bool const primaryActionIsOverridden = player->getPrimaryActionOverridden();
 
 		bool performedPrimaryAction = false;
@@ -903,7 +903,7 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 		}
 		else 
 		{
-			targetId = findBestTargetForAction(player, orderedTargets, commandName, s_attemptDefaultAction, performedPrimaryAction);
+			targetId = findBestTargetForAction(player, orderedTargets, commandName3, s_attemptDefaultAction, performedPrimaryAction);
 		}
 
 		s_attemptDefaultAction = false;
@@ -933,13 +933,13 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 			shouldAttack = false;
 		}
 		
-		Command const & command = CommandTable::getCommand(Crc::normalizeAndCalculate(commandName.c_str()));
+		Command const & command = CommandTable::getCommand(Crc::normalizeAndCalculate(commandName3.c_str()));
 		bool const heavyWeapon = (command.m_coolGroup == heavyWeaponCooldown.getCrc());
 		
 		// If we are trying to use a heavy weapon then we don't want this check to occur. There is a special check a little bit
 		// further down (actually, right after this code) that will do the proper checks since Heavy Weapon cost can vary if you
 		// are a commando.
-		ClientCommandChecks::TestCode tc = ClientCommandChecks::canCreatureExecuteCommand(true, commandName, player, targetId);
+		ClientCommandChecks::TestCode tc = ClientCommandChecks::canCreatureExecuteCommand(true, commandName3, player, targetId);
 		if (tc != ClientCommandChecks::TC_pass)
 		{
 
@@ -980,30 +980,30 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 			}
 			else if (!CuiPreferences::getAutoAimToggle() && weaponObject->isDirectionalTargetting())
 			{			
-				ClientCommandChecks::TestCode tc = ClientCommandChecks::canCreatureFireHeavyWeapon(commandName, player);
+				ClientCommandChecks::TestCode tc2 = ClientCommandChecks::canCreatureFireHeavyWeapon(commandName3, player);
 				if(tc == ClientCommandChecks::TC_failNotEnoughAction)
 				{
-					doCommandFailure(*player, targetId, tc, s_failedTestCodesShownPrimary);
+					doCommandFailure(*player, targetId, tc2, s_failedTestCodesShownPrimary);
 				}
-				shouldAttack = !firstTargetIsUnattackable && (tc == ClientCommandChecks::TC_pass);
+				shouldAttack = !firstTargetIsUnattackable && (tc2 == ClientCommandChecks::TC_pass);
 			}
 			else if (!CuiPreferences::getAutoAimToggle() && weaponObject->isGroundTargetting())
 			{
-				ClientCommandChecks::TestCode tc = ClientCommandChecks::canCreatureFireHeavyWeapon(commandName, player);
+				ClientCommandChecks::TestCode tc3 = ClientCommandChecks::canCreatureFireHeavyWeapon(commandName3, player);
 				if(tc == ClientCommandChecks::TC_failNotEnoughAction)
 				{
-					doCommandFailure(*player, targetId, tc, s_failedTestCodesShownPrimary);
+					doCommandFailure(*player, targetId, tc3, s_failedTestCodesShownPrimary);
 				}
-				shouldAttack = ReticleManager::getReticleCurrentlyValid() && !firstTargetIsUnattackable && (tc == ClientCommandChecks::TC_pass);
+				shouldAttack = ReticleManager::getReticleCurrentlyValid() && !firstTargetIsUnattackable && (tc3 == ClientCommandChecks::TC_pass);
 			}
 			else if (CuiPreferences::getAutoAimToggle())
 			{
-				ClientCommandChecks::TestCode tc = ClientCommandChecks::canCreatureFireHeavyWeapon(commandName, player);
+				ClientCommandChecks::TestCode tc4 = ClientCommandChecks::canCreatureFireHeavyWeapon(commandName3, player);
 				if(tc == ClientCommandChecks::TC_failNotEnoughAction)
 				{
-					doCommandFailure(*player, targetId, tc, s_failedTestCodesShownPrimary);
+					doCommandFailure(*player, targetId, tc4, s_failedTestCodesShownPrimary);
 				}
-				shouldAttack = (targetId.isValid() && targetId == player->getIntendedTarget() && (tc == ClientCommandChecks::TC_pass));
+				shouldAttack = (targetId.isValid() && targetId == player->getIntendedTarget() && (tc4 == ClientCommandChecks::TC_pass));
 			}
 			else
 			{
@@ -1029,7 +1029,7 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 					player->setLookAtTarget(targetId);
 	
 				//kick off client animation (function handles rather or not it should be kicked off)
-				const float postureTransitionDelay = doClientAnimation(player, targetId, commandName);
+				const float postureTransitionDelay = doClientAnimation(player, targetId, commandName3);
 
 				if (0.0f < postureTransitionDelay && !s_wasPrimaryPostureTransitionTimerUsed)
 				{
@@ -1188,8 +1188,8 @@ void GroundCombatActionManager::update(float const deltaTimeSecs, ObjectVector c
 
 	if (s_attemptWalkForward)
 	{
-		CreatureObject * player = Game::getPlayerCreature();
-		Controller * const controller = (player != 0) ? player->getController() : 0;
+		CreatureObject * player3 = Game::getPlayerCreature();
+		Controller * const controller = (player3 != 0) ? player3->getController() : 0;
 
 		if (controller != 0)
 		{

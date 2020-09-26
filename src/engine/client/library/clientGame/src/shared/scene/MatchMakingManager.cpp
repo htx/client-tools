@@ -252,11 +252,11 @@ void MatchMakingManager::alter(float const deltaTime)
 		for (; iterPurgeList != s_purgeList.end(); ++iterPurgeList)
 		{
 			NetworkId const &networkId = (*iterPurgeList);
-			DisplayedPlayerMatches::iterator iterDisplayedPlayerMatches = s_displayedPlayerMatches.find(networkId);
+			DisplayedPlayerMatches::iterator iterDisplayedPlayerMatches2 = s_displayedPlayerMatches.find(networkId);
 
-			if (iterDisplayedPlayerMatches != s_displayedPlayerMatches.end())
+			if (iterDisplayedPlayerMatches2 != s_displayedPlayerMatches.end())
 			{
-				s_displayedPlayerMatches.erase(iterDisplayedPlayerMatches);
+				s_displayedPlayerMatches.erase(iterDisplayedPlayerMatches2);
 			}
 		}
 

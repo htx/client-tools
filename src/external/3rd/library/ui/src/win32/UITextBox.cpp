@@ -878,9 +878,9 @@ void UITextbox::MoveCaratVertically( long MovementDirection )
 		long PixelOffset = 0;
 		long CaratOffset = mCaratRect.left;
 
-		const UIString::value_type *s = mLinePointers[CaratLineNumber];
+		const UIString::value_type *s = mLinePointers[CaratLineNumber]._Ptr;
 
-		for( ; s < mLinePointers[CaratLineNumber + 1]; ++s )
+		for( ; s < mLinePointers[CaratLineNumber + 1]._Ptr; ++s )
 		{
 			if( *s != '\n' )
 			{
@@ -898,7 +898,7 @@ void UITextbox::MoveCaratVertically( long MovementDirection )
 				break;
 		}
 
-		mCaratIndex = s - mLinePointers[0];
+		mCaratIndex = s - mLinePointers[0]._Ptr;
 		ScrollCaratOnScreen();
 		CalculateCaratRect();
 	}
@@ -1009,7 +1009,7 @@ long UITextbox::GetCaratOffsetFromPoint( const UIPoint & widgetPt )
 	}
 
 	long  PixelOffset              = textPadding.left;
-	const UIString::value_type * s = mRenderLinePointers[CaratRow];
+	const UIString::value_type * s = mRenderLinePointers[CaratRow]._Ptr;
 
 #if 0
 	//-- Debugging to look at the string we're advancing over
@@ -1040,7 +1040,7 @@ long UITextbox::GetCaratOffsetFromPoint( const UIPoint & widgetPt )
 
 		++s;
 
-		if( s == mRenderLinePointers[CaratRow + 1] )
+		if( s == mRenderLinePointers[CaratRow + 1]._Ptr )
 		{
 			if( CaratRow != static_cast<long>(mRenderLinePointers.size() - 2 ))
 				--s;
@@ -1049,7 +1049,7 @@ long UITextbox::GetCaratOffsetFromPoint( const UIPoint & widgetPt )
 		}
 	}
 
-	return s - mRenderLinePointers[0] - skippedSlashes;
+	return s - mRenderLinePointers[0]._Ptr - skippedSlashes;
 
 }
 
@@ -1516,7 +1516,7 @@ void UITextbox::CalculateCaratRect ()
 					ignoreNextEscape = false;										
 				}
 				realAmountToCopy = static_cast<long>(i - mRenderLinePointers[CaratLineNumber]);
-				s.assign( mRenderLinePointers[CaratLineNumber], realAmountToCopy );
+				s.assign( mRenderLinePointers[CaratLineNumber]._Ptr, realAmountToCopy );
 			}
 		}
 	}

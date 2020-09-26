@@ -394,15 +394,15 @@ void SwgCuiQuestHelper::updateHelperWithQuestData(PlayerObject * const playerObj
 			//-- timer	
 			{
 				QuestJournalManager::TimerDataVector const timers = QuestJournalManager::getTimers(getQuestCrc(), taskId);
-				QuestJournalManager::TimerDataVector::const_iterator i = timers.begin();
+				QuestJournalManager::TimerDataVector::const_iterator i2 = timers.begin();
 				QuestJournalManager::TimerDataVector::const_iterator iEnd = timers.end();
 
 				//-- the helper only supports one timer so use the first one
-				if (i != iEnd)
+				if (i2 != iEnd)
 				{
 					DEBUG_REPORT_PRINT(s_enableUpdateDebug, ("hasTimer\n"));
 
-					QuestJournalManager::TimerData const data = *i;
+					QuestJournalManager::TimerData const data = *i2;
 
 					if (!sameHelperTask || (sameHelperTask && questHelperTask->timerValueChanged(data.timeLeft)))
 					{
@@ -486,8 +486,8 @@ bool SwgCuiQuestHelper::updateHelperWithMissionData(PlayerObject const * const /
 	ClientWaypointObject const * const waypointLocation = m->getLocalWaypoint();
 	if (waypointLocation && waypointLocation->isWaypointVisible())
 	{
-		Location waypointLocation(waypointLocation->getLocation(), waypointLocation->getCell(), Crc::calculate(waypointLocation->getPlanetName().c_str()));
-		showedPath = setupWaypointForTask(NULL, questHelperTask, waypointLocation, false, false, NULL);
+		Location waypointLocation2(waypointLocation->getLocation(), waypointLocation->getCell(), Crc::calculate(waypointLocation->getPlanetName().c_str()));
+		showedPath = setupWaypointForTask(NULL, questHelperTask, waypointLocation2, false, false, NULL);
 	}
 
 	if (s_showingPath && !showedPath)
@@ -563,9 +563,9 @@ bool SwgCuiQuestHelper::setupWaypointForTask(QuestTask const * const questTask, 
 	//-- check for entrance waypoint, while we are in the world point to entrance
 	if (questTask && questTask->hasEntranceWaypoint() && playerCreature->isInWorldCell())
 	{
-		std::string const & sceneName = Game::getSceneId();
-		Vector const waypointEntranceVector = GroundZoneManager::getRelativePositionFromPlayer(sceneName.c_str(), playerCreature->getPosition_w(), questTask->getWaypointEntranceLocation().getCoordinates());
-		bool const inSpace = Game::isSpace();
+		std::string const & sceneName2 = Game::getSceneId();
+		Vector const waypointEntranceVector = GroundZoneManager::getRelativePositionFromPlayer(sceneName2.c_str(), playerCreature->getPosition_w(), questTask->getWaypointEntranceLocation().getCoordinates());
+		bool const inSpace2 = Game::isSpace();
 
 		Camera const * const camera = Game::getCamera();
 		Vector const & cameraPos_w = camera->getPosition_w();
@@ -574,7 +574,7 @@ bool SwgCuiQuestHelper::setupWaypointForTask(QuestTask const * const questTask, 
 		//-- only update the waypoint if the player position or the camera moved
 		if (questHelperTask->cameraPositionChanged(cameraPos_w) || (questHelperTask->playerPositionChanged(player_pos_w)))
 		{
-			if (!inSpace)
+			if (!inSpace2)
 				player_pos_w.y = waypointVector.y;
 
 			int const distance = static_cast<int>(waypointEntranceVector.magnitudeBetween(player_pos_w));
@@ -582,7 +582,7 @@ bool SwgCuiQuestHelper::setupWaypointForTask(QuestTask const * const questTask, 
 			//-- have we reached the entrance? if not use entrance waypoint
 			if (distance > s_minDistanceForFoundEntrance)
 			{
-				waypointVector = GroundZoneManager::getRelativePositionFromPlayer(sceneName.c_str(), playerCreature->getPosition_w(), questTask->getWaypointEntranceLocation().getCoordinates());
+				waypointVector = GroundZoneManager::getRelativePositionFromPlayer(sceneName2.c_str(), playerCreature->getPosition_w(), questTask->getWaypointEntranceLocation().getCoordinates());
 			}
 		}
 	} 
@@ -1101,8 +1101,8 @@ bool SwgCuiQuestHelper::updateHelperWithPlayerQuestData(PlayerObject const * con
 			if (waypointLocation && waypointLocation->isWaypointVisible())
 			{
 				waypointLocation->setWaypointActive(true);
-				Location waypointLocation(waypointLocation->getLocation(), waypointLocation->getCell(), Crc::calculate(waypointLocation->getPlanetName().c_str()));
-				showedPath = setupWaypointForTask(NULL, questHelperTask, waypointLocation, false, false, NULL);
+				Location waypointLocation2(waypointLocation->getLocation(), waypointLocation->getCell(), Crc::calculate(waypointLocation->getPlanetName().c_str()));
+				showedPath = setupWaypointForTask(NULL, questHelperTask, waypointLocation2, false, false, NULL);
 			}
 
 			if (s_showingPath && !showedPath)

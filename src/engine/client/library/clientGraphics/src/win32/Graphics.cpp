@@ -2537,7 +2537,7 @@ void Graphics::drawCylinder(const Vector &base, const float radius, const float 
 	for(int j = 0; j <= tessZ; j++)
 	{
 		vertexBuffer.lock( tessTheta + 1 );
-		VertexBufferWriteIterator vbi = vertexBuffer.begin();
+		VertexBufferWriteIterator vbi2 = vertexBuffer.begin();
 
 		for (int i = 0; i <= tessTheta; i++)
 		{
@@ -2547,9 +2547,9 @@ void Graphics::drawCylinder(const Vector &base, const float radius, const float 
 			float y = (height / float(tessZ)) * float(j);
 			float z = radius * sin(angle);
 
-			vbi.setPosition(base + Vector(x,y,z));
-			vbi.setColor0(color);
-			++vbi;
+			vbi2.setPosition(base + Vector(x,y,z));
+			vbi2.setColor0(color);
+			++vbi2;
 		}
 
 		vertexBuffer.unlock();
@@ -2565,7 +2565,7 @@ void Graphics::drawCylinder(const Vector &base, const float radius, const float 
 		float y = height * float(k);
 
 		vertexBuffer.lock( nSpokes * 4 );
-		VertexBufferWriteIterator vbi = vertexBuffer.begin();
+		VertexBufferWriteIterator vbi3 = vertexBuffer.begin();
 
 		for (int i = 0; i < nSpokes; i++)
 		{
@@ -2574,21 +2574,21 @@ void Graphics::drawCylinder(const Vector &base, const float radius, const float 
 			float x = radius * cos(angle);
 			float z = radius * sin(angle);
 
-			vbi.setPosition(base + Vector(0,0,0));
-			vbi.setColor0(color);
-			++vbi;
+			vbi3.setPosition(base + Vector(0,0,0));
+			vbi3.setColor0(color);
+			++vbi3;
 
-			vbi.setPosition(base + Vector(x,0,z));
-			vbi.setColor0(color);
-			++vbi;
+			vbi3.setPosition(base + Vector(x,0,z));
+			vbi3.setColor0(color);
+			++vbi3;
 
-			vbi.setPosition(base + Vector(0,y,0));
-			vbi.setColor0(color);
-			++vbi;
+			vbi3.setPosition(base + Vector(0,y,0));
+			vbi3.setColor0(color);
+			++vbi3;
 
-			vbi.setPosition(base + Vector(x,y,z));
-			vbi.setColor0(color);
-			++vbi;
+			vbi3.setPosition(base + Vector(x,y,z));
+			vbi3.setColor0(color);
+			++vbi3;
 		}
 
 		vertexBuffer.unlock();
@@ -2608,7 +2608,7 @@ void Graphics::drawCylinder(const Vector &base, const float radius, const float 
 				float rho = (radius / float(tessRho)) * float(j);
 
 				vertexBuffer.lock( tessTheta + 1 );
-				VertexBufferWriteIterator vbi = vertexBuffer.begin();
+				VertexBufferWriteIterator vbi4 = vertexBuffer.begin();
 
 				for (int i = 0; i <= tessTheta; i++)
 				{
@@ -2617,9 +2617,9 @@ void Graphics::drawCylinder(const Vector &base, const float radius, const float 
 					float x = rho * cos(angle);
 					float z = rho * sin(angle);
 
-					vbi.setPosition(base + Vector(x,y,z));
-					vbi.setColor0(color);
-					++vbi;
+					vbi4.setPosition(base + Vector(x,y,z));
+					vbi4.setColor0(color);
+					++vbi4;
 				}
 
 				vertexBuffer.unlock();

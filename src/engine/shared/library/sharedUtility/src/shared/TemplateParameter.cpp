@@ -536,12 +536,12 @@ void VectorParamData::adjustVector(Vector &pos) const
 		{
 			// uniform random point on a sphere from 
 			// http://www.cs.cmu.edu/~mws/rpos.html
-			float y = Random::randomReal(-rad, rad);
+			float y2 = Random::randomReal(-rad, rad);
 			float phi = Random::randomReal(0.0, PI_TIMES_2);
-			float ctheta = cos(asin(y / rad)) * rad;
+			float ctheta = cos(asin(y2 / rad)) * rad;
 			pos.x += ctheta * cos(phi);
 			pos.z += ctheta * sin(phi);
-			pos.y += y;
+			pos.y += y2;
 		}
 	}
 }	// VectorParamData::adjustVector

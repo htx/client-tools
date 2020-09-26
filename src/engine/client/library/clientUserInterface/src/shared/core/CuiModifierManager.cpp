@@ -118,7 +118,7 @@ void CuiModifierManagerNamespace::addModifierNode(ModifierNode &parentNode, std:
 #if PRODUCTION == 0
 		if (!result.second)
 		{
-			DEBUG_WARNING(true, ("CRC collision occured inserting modifier(%s) crc(%u). Dumping full CRC list so you can tell what else has the same CRC.", modifierNode.m_name, modifierNode.m_crc));
+			DEBUG_WARNING(true, ("CRC collision occured inserting modifier(%s) crc(%u). Dumping full CRC list so you can tell what else has the same CRC.", modifierNode.m_name.c_str(), modifierNode.m_crc));
 
 			printModifierTree(s_modifierTree, 0);
 		}

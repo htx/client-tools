@@ -245,7 +245,7 @@ void SwgCuiSpaceMiningSale::reset()
 	ClientObject const * const clientStation = station ? station->asClientObject() : NULL;
 
 	if (NULL == clientStation)
-		WARNING(true, ("SwgCuiSpaceMiningSale invalid station id [%s]", m_spaceStationId));
+		WARNING(true, ("SwgCuiSpaceMiningSale invalid station id [%s]", m_spaceStationId.getValueString().c_str()));
 	else
 		m_textCaption->SetLocalText(Unicode::narrowToWide("Space Mining Sales - ") + clientStation->getLocalizedName());
 

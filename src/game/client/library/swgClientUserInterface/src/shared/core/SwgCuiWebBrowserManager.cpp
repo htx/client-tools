@@ -12,8 +12,10 @@
 #include "clientUserInterface/CuiMediator.h"
 #include "clientUserInterface/CuiWorkspace.h"
 
-#if DEBUG=0
+#if LIBMOZILLA == 1
 #include "libMozilla/libMozilla.h"
+#else
+#pragma warning(disable : 4100)
 #endif
 
 #include "sharedFoundation/Os.h"
@@ -56,7 +58,7 @@ using namespace SwgCuiWebBrowserManagerNamespace;
 
 void SwgCuiWebBrowserManager::install()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	DEBUG_FATAL(s_installed, ("SwgCuiWebBrowserManager already installed.\n"));
 	
 	s_installed = true;
@@ -73,7 +75,7 @@ void SwgCuiWebBrowserManager::install()
 
 void SwgCuiWebBrowserManager::remove()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	DEBUG_FATAL(!s_installed, ("SwgCuiWebBrowserManager not installed. Failed Remove.\n"));
 	s_installed = false;
 
@@ -95,7 +97,7 @@ void SwgCuiWebBrowserManager::remove()
 
 void SwgCuiWebBrowserManager::update(float deltaTimeSecs)
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	// Update Mozilla
 	libMozilla::update();
 
@@ -137,7 +139,7 @@ void SwgCuiWebBrowserManager::update(float deltaTimeSecs)
 
 void SwgCuiWebBrowserManager::createWebBrowserPage(bool useHomePage)
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	bool isValidPage = Game::isSpace() ? (s_type == WBT_Space) : (s_type == WBT_Ground);
 	
 	if(s_Window && isValidPage)
@@ -257,7 +259,7 @@ void SwgCuiWebBrowserManager::createWebBrowserPage(bool useHomePage)
 
 void SwgCuiWebBrowserManager::debugOutput()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	if(s_Widget)
 		s_Widget->debugOutput();
 #endif
@@ -265,7 +267,7 @@ void SwgCuiWebBrowserManager::debugOutput()
 
 void SwgCuiWebBrowserManager::setURL(std::string url, bool clearCachedURL, char const * postData, int postDataLength)
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
         if(s_URL.empty() || clearCachedURL ) 
 		{
 		s_URL = url;
@@ -283,7 +285,7 @@ void SwgCuiWebBrowserManager::setURL(std::string url, bool clearCachedURL, char 
 
 void SwgCuiWebBrowserManager::navigateForward()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	if(s_Widget)
 		s_Widget->NavigateForward();
 #endif
@@ -291,7 +293,7 @@ void SwgCuiWebBrowserManager::navigateForward()
 
 void SwgCuiWebBrowserManager::navigateBack()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	if(s_Widget)
 		s_Widget->NavigateBack();
 #endif
@@ -299,7 +301,7 @@ void SwgCuiWebBrowserManager::navigateBack()
 
 void SwgCuiWebBrowserManager::navigateStop()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	if(s_Widget)
 		s_Widget->NavigateStop();
 #endif
@@ -307,7 +309,7 @@ void SwgCuiWebBrowserManager::navigateStop()
 
 void SwgCuiWebBrowserManager::refreshPage()
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	if(s_Widget)
 		s_Widget->RefreshPage();
 #endif
@@ -315,7 +317,7 @@ void SwgCuiWebBrowserManager::refreshPage()
 
 void SwgCuiWebBrowserManager::setHomePage(std::string const & home)
 {
-#if DEBUG=0
+#if LIBMOZILLA == 1
 	s_homePage = home;
 #endif
 }

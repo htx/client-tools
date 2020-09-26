@@ -245,7 +245,7 @@ int CuiConsoleHelper::appendOutputText (Unicode::String result, bool notify)
 */
 void CuiConsoleHelper::getAppendableText (const Unicode::String & current, Unicode::String & str, bool appendMode)
 {
-	if (str [str.length () - 1] == '\n' && !appendMode)
+	if (!str.empty() && str [str.length () - 1] == '\n' && !appendMode)
 		str.erase (str.length () - 1);
 	
 	if (!current.empty())

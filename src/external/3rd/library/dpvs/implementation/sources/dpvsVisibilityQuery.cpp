@@ -342,11 +342,11 @@ void VisibilityQuery::informUser (void) const
 			portalChainPosition -= cnt;
 		}
 
-		CameraPortalTestValue& p = m_portalChain.getElement(portalChainPosition); 
+		CameraPortalTestValue& p2 = m_portalChain.getElement(portalChainPosition); 
 
-		p.c = m_cameraList.getCurrent();
-		p.p = m_portalList.getCurrent();
-		p.testValue = stencilTestValue;
+		p2.c = m_cameraList.getCurrent();
+		p2.p = m_portalList.getCurrent();
+		p2.testValue = stencilTestValue;
 		portalChainPosition++;
 
 		if(m_portalChain[portalChainPosition-1].p->informPortalEnter())
@@ -459,7 +459,7 @@ void VisibilityQuery::informUser (void) const
 
 		reportViewport(currentCamera);		// report current camera in any case
 
-		p.testValue = stencilTestValue;		// MAY have been changed
+		p2.testValue = stencilTestValue;		// MAY have been changed
 		cellIndex++;
 	}
 

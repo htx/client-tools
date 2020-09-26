@@ -136,7 +136,7 @@ void DestructionSequence::DestructionChildObject::apply(Object & parent) const
 				child->setTransform_o2p(t);
 			}
 			else
-				WARNING(true, ("ClientDataFile::DestructionSequence invalid hardpoint [%s] for parent object [%s]", m_hardpointName.c_str(), parent.getDebugInformation()));
+				WARNING(true, ("ClientDataFile::DestructionSequence invalid hardpoint [%s] for parent object [%s]", m_hardpointName.c_str(), parent.getDebugInformation().c_str()));
 		}
 	}
 }

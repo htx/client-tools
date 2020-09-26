@@ -355,14 +355,14 @@ void SwgCuiAvatarProfessionTemplateSelect::OnButtonPressed(UIWidget * const cont
 				// Set specialties page text.
 				m_pimpl->m_professionSpecialtiesText->SetText(Unicode::narrowToWide(s_professionTemplateStringFile) + buttonId + Unicode::narrowToWide(s_stfSpecialties));
 
-				UIString buttonId;
-				if (m_pimpl->m_selectedButton->GetProperty(s_buttonIdProperty, buttonId))
+				UIString buttonId2;
+				if (m_pimpl->m_selectedButton->GetProperty(s_buttonIdProperty, buttonId2))
 				{
-					setProfessionTemplate(buttonId);
+					setProfessionTemplate(buttonId2);
 				}
 
 				// Open popup menu if this is trader
-				if(Unicode::wideToNarrow(buttonId) == s_traderButtonId)
+				if(Unicode::wideToNarrow(buttonId2) == s_traderButtonId)
 				{
 					m_pimpl->m_popupMenu->SetVisible(true);
 					UIPoint mouseCoord = UIManager::gUIManager().GetLastMouseCoord();

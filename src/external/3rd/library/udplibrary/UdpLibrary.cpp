@@ -324,9 +324,9 @@ UdpManager::UdpManager(const UdpManager::Params *params)
 	else
 	{
 		int r = rand() % mParams.portRange;
-		for (int i = 0; i < mParams.portRange; i++)
+		for (int j = 0; j < mParams.portRange; j++)
 		{
-			CreateAndBindSocket(mParams.port + ((r + i) % mParams.portRange));
+			CreateAndBindSocket(mParams.port + ((r + j) % mParams.portRange));
 			if (mErrorCondition != cErrorConditionCouldNotBindSocket)
 				break;
 		}
@@ -1031,19 +1031,19 @@ void UdpManager::ProcessRawPacket(const PacketHistoryEntry *e)
 					ptr += 4;
 					int encryptCode = UdpMisc::GetValue32(ptr);
 
-					UdpConnection *con = ConnectCodeGetConnection(connectCode);
-					if (con != NULL)
+					UdpConnection *con2 = ConnectCodeGetConnection(connectCode);
+					if (con2 != NULL)
 					{
-						if (mParams.allowAddressRemapping || con->mIp == e->mIp)
+						if (mParams.allowAddressRemapping || con2->mIp == e->mIp)
 						{
 								// one final security check to ensure these are really the same connection, compare encryption codes
-							if (con->mConnectionConfig.encryptCode == encryptCode)
+							if (con2->mConnectionConfig.encryptCode == encryptCode)
 							{
 									// remapping is allowed, remap ourselves to the address of the incoming request
-								mAddressHashTable->Remove(con, AddressHashValue(con->mIp, con->mPort));
-								con->mIp = e->mIp;
-								con->mPort = e->mPort;
-								mAddressHashTable->Insert(con, AddressHashValue(con->mIp, con->mPort));
+								mAddressHashTable->Remove(con2, AddressHashValue(con2->mIp, con2->mPort));
+								con2->mIp = e->mIp;
+								con2->mPort = e->mPort;
+								mAddressHashTable->Insert(con2, AddressHashValue(con2->mIp, con2->mPort));
 								return;
 							}
 						}

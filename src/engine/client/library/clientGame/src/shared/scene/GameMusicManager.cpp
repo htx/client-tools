@@ -715,10 +715,10 @@ bool GameMusicManagerNamespace::determineSpaceCombatState(float const elapsedTim
 
 	// Determine if the player is targeted by an AI (ship or turret)
 	{
-		ShipObject * const playerContainingShip = Game::getPlayerContainingShip();
+		ShipObject * const playerContainingShip2 = Game::getPlayerContainingShip();
 
-		if (   (playerContainingShip != NULL)
-		    && playerContainingShip->hasCondition(TangibleObject::C_spaceCombatMusic))
+		if (   (playerContainingShip2 != NULL)
+		    && playerContainingShip2->hasCondition(TangibleObject::C_spaceCombatMusic))
 		{
 			enemiesTargetingPlayer = true;
 		}

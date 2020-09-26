@@ -313,9 +313,9 @@ void ClientRegionManager::checkCurrentRegion ()
 			ProsePackage p;
 			p.stringId = CuiStringIds::region_left;
 			p.target.stringId = StringId(s_lastCurrentRegion.m_name);
-			Unicode::String result;
-			ProsePackageManagerClient::appendTranslation(p, result);
-			CuiSystemMessageManager::sendFakeSystemMessage (result);
+			Unicode::String result2;
+			ProsePackageManagerClient::appendTranslation(p, result2);
+			CuiSystemMessageManager::sendFakeSystemMessage (result2);
 			s_lastCurrentRegion.m_name.clear();
 		}
 	}
@@ -334,9 +334,9 @@ void ClientRegionManager::checkCurrentRegion ()
 			ProsePackage p;
 			p.stringId = CuiStringIds::region_entered;
 			p.target.stringId = StringId(s_lastCurrentRegion.m_name);
-			Unicode::String result;
-			ProsePackageManagerClient::appendTranslation(p, result);
-			CuiSystemMessageManager::sendFakeSystemMessage (result);
+			Unicode::String result3;
+			ProsePackageManagerClient::appendTranslation(p, result3);
+			CuiSystemMessageManager::sendFakeSystemMessage (result3);
 		}
 	}
 }

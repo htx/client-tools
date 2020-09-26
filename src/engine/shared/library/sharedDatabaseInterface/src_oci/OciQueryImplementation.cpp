@@ -187,8 +187,8 @@ bool DB::OCIQueryImpl::exec()
 		if (mode==Query::MODE_PLSQL_REFCURSOR)
 		{
 			WARNING_STRICT_FATAL(!m_session->isOkToFetch(),("Calling fetch after commit, without an execute in between (may cause Oracle to crash)."));
-			sword status=OCIStmtFetch (m_cursorhp, m_session->errhp, 0, OCI_FETCH_NEXT, OCI_DEFAULT);
-			if (!m_server->checkerr(*m_session,status))
+			sword status2=OCIStmtFetch (m_cursorhp, m_session->errhp, 0, OCI_FETCH_NEXT, OCI_DEFAULT);
+			if (!m_server->checkerr(*m_session,status2))
 				return false;
 		}
 		m_endOfData=true;
@@ -245,8 +245,8 @@ int DB::OCIQueryImpl::fetch()
 		OCIAttrGet((dvoid *) m_cursorhp, (ub4) OCI_HTYPE_STMT,
 				   (dvoid *)& rows, (ub4 *) &sizep, OCI_ATTR_ROWS_FETCHED, m_session->errhp);
 
-		sword status=OCIStmtFetch (m_cursorhp, m_session->errhp, 0, OCI_FETCH_NEXT, OCI_DEFAULT); // cancel the cursor
-		if (!m_server->checkerr(*m_session,status))
+		sword status2=OCIStmtFetch (m_cursorhp, m_session->errhp, 0, OCI_FETCH_NEXT, OCI_DEFAULT); // cancel the cursor
+		if (!m_server->checkerr(*m_session,status2))
 			return -1;
 		m_endOfData=true;
 		if (rows!=0)

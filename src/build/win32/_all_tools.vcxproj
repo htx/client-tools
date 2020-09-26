@@ -17,21 +17,22 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CE9F4DC5-8DAC-4704-925C-0E7D0581375C}</ProjectGuid>
     <Keyword>MakeFileProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -84,6 +85,36 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\engine\client\application\Miff\build\win32\Miff.vcxproj">
+      <Project>{7a9ca0af-b189-44c6-8366-434396b33eca}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\ViewIff\build\win32\ViewIff.vcxproj">
+      <Project>{e1d87320-a777-4672-81bb-ce14321097b0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\DataLintRspBuilder\build\win32\DataLintRspBuilder.vcxproj">
+      <Project>{5b97b272-b221-439c-8fe8-39a5761bac25}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\DataTableTool\build\win32\DataTableTool.vcxproj">
+      <Project>{9262c7ee-e593-46b1-ac7e-f12e5055eb57}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\TemplateCompiler\build\win32\TemplateCompiler.vcxproj">
+      <Project>{355ddf1f-1dca-4667-a1f6-11b66fbc4228}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\TemplateDefinitionCompiler\build\win32\TemplateDefinitionCompiler.vcxproj">
+      <Project>{d21ee827-d349-4efb-b93b-4b5668aae8b3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\APPLICATION\TREEFILEBUILDER\build\win32\TreeFileBuilder.vcxproj">
+      <Project>{63f95846-c17b-4977-bedd-d49852137a3d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\TreeFileExtractor\build\win32\TreeFileExtractor.vcxproj">
+      <Project>{dda6e9e4-501e-4336-84f1-8995098b8656}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\TreeFileRspBuilder\build\win32\TreeFileRspBuilder.vcxproj">
+      <Project>{6235e2b4-a893-4776-be5a-c77120dd8548}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\game\shared\application\SwgContentSync\build\win32\SwgContentSync.vcxproj">
+      <Project>{fb9473a9-e72c-4ae9-97d5-89131d2d2324}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -515,7 +515,7 @@ m_doubleToolbar(false)
 
 	m_effectorUseChild->SetPropertyNarrow (UILowerString ("PalTarget"), "icon");
 
-	m_toolbarItemPanes = new ToolbarItemPaneVector (DEFAULT_PANE_COUNT, DEFAULT_ITEM_COUNT_PER_PANE);
+	m_toolbarItemPanes = new ToolbarItemPaneVector (DEFAULT_PANE_COUNT);
 	m_petToolbarItemPane = new ToolbarItemPane(DEFAULT_ITEM_COUNT_PER_PANE);
 
 	getCodeDataObject (TUIPage, m_toolbarPage,      "ToolBar", true);
@@ -616,10 +616,10 @@ m_doubleToolbar(false)
 
 	for(int i = 0; i < 2; ++i)
 	{
-		UIVolumePage *page = i ? m_petVolumePage : m_volumePage;
-		if(!page)
+		UIVolumePage *page2 = i ? m_petVolumePage : m_volumePage;
+		if(!page2)
 			continue;
-		const UIBaseObject::UIObjectList & olist = page->GetChildrenRef ();
+		const UIBaseObject::UIObjectList & olist = page2->GetChildrenRef ();
 		for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
 		{
 			UIBaseObject * const obj = *it;
@@ -2287,7 +2287,7 @@ void SwgCuiToolbar::onCommandRemoved (const CreatureObject::Messages::CommandRem
 		
 		for (ToolbarItemPane::iterator it = items.begin (); it != items.end (); ++it)
 		{
-			CuiDragInfo * item = it;
+			CuiDragInfo * item = it._Ptr;
 			if(!item)
 				continue;
 			
@@ -2642,12 +2642,12 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 				
 				if((slot == m_defaultActionSlot) && m_bigShade && !pet)
 				{
-					UISize oldSize = m_bigShade->GetSize();
-					UIPoint toolLocation = m_bigButton->GetParentWidget()->GetLocation();
-					UIPoint newLocation = toolLocation + BIG_SHADE_WIDGET_TOOL_OFFSET;
+					UISize oldSize2 = m_bigShade->GetSize();
+					UIPoint toolLocation2 = m_bigButton->GetParentWidget()->GetLocation();
+					UIPoint newLocation2 = toolLocation2 + BIG_SHADE_WIDGET_TOOL_OFFSET;
 					m_bigShade->SetVisible(true);
 					m_bigShade->SetOpacity(opacity);
-					m_bigShade->SetLocation(newLocation);
+					m_bigShade->SetLocation(newLocation2);
 
 					m_bigShade->SetPropertyFloat(UIPie::PropertyName::PieValue, fadedHeight);
 				}
@@ -4345,7 +4345,7 @@ void SwgCuiToolbar::updateCommandRange(int slot, bool pet)
 	CreatureObject *creature = Game::getPlayerCreature();
 	CuiDragInfo *item = getToolbarItem(slot, pet);
 	UIWidget *widget = getToolbarItemWidget(slot, pet);
-	if(!widget)
+	if(!item || !widget)
 		return;
 	const WeaponObject * weapon = 0;
 

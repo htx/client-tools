@@ -335,7 +335,7 @@ void GameAnimationMessageCallback::animationMessageToClientEventCallback(void *c
 			return;
 		}
 
-		const CrcLowerString hardpointName(hardpointName);
+		const CrcLowerString hardpointName2(hardpointName);
 
 		//-- Signal client event with same name as animation message name.
 
@@ -353,8 +353,8 @@ void GameAnimationMessageCallback::animationMessageToClientEventCallback(void *c
 				strcat (buffer, surfaceType);
 			}
 
-			DEBUG_REPORT_LOG(!ms_ignoreFootstepAnimationEvents && ms_logAnimationEvents, ("ANIM: %s firing hardpoint event [%s] at hardpoint [%s].\n", object ? object->getObjectTemplateName() : "invalid object", endHardpointName + 1, hardpointName));
-			IGNORE_RETURN(ClientEventManager::playEvent(CrcLowerString(buffer), object, hardpointName));
+			DEBUG_REPORT_LOG(!ms_ignoreFootstepAnimationEvents && ms_logAnimationEvents, ("ANIM: %s firing hardpoint event [%s] at hardpoint [%s].\n", object ? object->getObjectTemplateName() : "invalid object", endHardpointName + 1, hardpointName2.getString()));
+			IGNORE_RETURN(ClientEventManager::playEvent(CrcLowerString(buffer), object, hardpointName2));
 		}
 		else
 		{
@@ -363,8 +363,8 @@ void GameAnimationMessageCallback::animationMessageToClientEventCallback(void *c
 				hitEvent = true;
 			}
 
-			DEBUG_REPORT_LOG(ms_logAnimationEvents, ("ANIM: %s firing hardpoint event [%s] at hardpoint [%s].\n", object ? object->getObjectTemplateName() : "invalid object", endHardpointName + 1, hardpointName));
-			IGNORE_RETURN(ClientEventManager::playEvent(CrcLowerString(endHardpointName + 1), object, hardpointName));
+			DEBUG_REPORT_LOG(ms_logAnimationEvents, ("ANIM: %s firing hardpoint event [%s] at hardpoint [%s].\n", object ? object->getObjectTemplateName() : "invalid object", endHardpointName + 1, hardpointName2.getString()));
+			IGNORE_RETURN(ClientEventManager::playEvent(CrcLowerString(endHardpointName + 1), object, hardpointName2));
 		}
 	}
 	else if ((messageNameLength > cms_swingMessageNamePrefixLength) && (strncmp(cMessageName, cms_swingMessageNamePrefix, cms_swingMessageNamePrefixLength) == 0))

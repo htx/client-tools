@@ -17,25 +17,26 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EC34F97C-F421-4C75-8C8C-91D00E699D33}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -57,24 +58,27 @@
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_o</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;..\..\..\..\..\shared\library\sharedUtility\include\public;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;..\..\..\..\..\shared\library\sharedUtility\include\public;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -94,9 +98,9 @@
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libxml2-win32-debug.lib;dxguid.lib;dpvs.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;nafxcwd.lib;libxml2-win32-debug.lib;dxguid.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_d.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\dpvs\lib\win32-x86;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_d.pdb</ProgramDatabaseFile>
@@ -114,9 +118,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;..\..\..\..\..\shared\library\sharedUtility\include\public;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;..\..\..\..\..\shared\library\sharedUtility\include\public;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -135,9 +138,9 @@
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libxml2-win32-release.lib;dxguid.lib;dpvs.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;nafxcwd.lib;libxml2-win32-release.lib;dxguid.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_o.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\dpvs\lib\win32-x86;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_o.pdb</ProgramDatabaseFile>
@@ -155,7 +158,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;..\..\..\..\..\shared\library\sharedUtility\include\public;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedMath\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\shared\library\sharedSynchronization\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;..\..\..\..\..\shared\library\sharedUtility\include\public;..\..\src\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -176,9 +179,9 @@
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libxml2-win32-release.lib;dxguid.lib;dpvs.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;libxml2-win32-release.lib;dxguid.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_r.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\dpvs\lib\win32-x86;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_r.pdb</ProgramDatabaseFile>
@@ -241,6 +244,71 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\win32\WorldSnapshotViewer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\dpvs\implementation\msvc8\dpvs.vcxproj">
+      <Project>{17c00ddf-0e33-40dd-94e8-9a300c9bc15d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\zlib-1.2.3\zlib.vcxproj">
+      <Project>{9496a020-65ad-45a6-9acf-ae4f3358b027}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\archive\build\win32\archive.vcxproj">
+      <Project>{52153865-1abf-4fbb-84c4-0fc439716f1e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\fileInterface\build\win32\fileInterface.vcxproj">
+      <Project>{de93996c-cb51-4d61-85a0-a9dfc677445f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\unicodeArchive\build\win32\unicodeArchive.vcxproj">
+      <Project>{41269a52-38b8-4f9a-ae38-1103bb03a10b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\unicode\build\win32\unicode.vcxproj">
+      <Project>{b97963ef-49e4-477e-85ff-e7fee7c626d7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedCompression\build\win32\sharedCompression.vcxproj">
+      <Project>{6bd52b35-92ca-44e4-995e-2b79c7398183}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedDebug\build\win32\sharedDebug.vcxproj">
+      <Project>{f3245c29-7760-4956-b1b7-fc483be417cd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedFile\build\win32\sharedFile.vcxproj">
+      <Project>{e0f9d922-daa7-475e-a95a-7bc540ed58fe}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedFoundationTypes\build\win32\sharedFoundationTypes.vcxproj">
+      <Project>{d6cc353f-4fd1-4aeb-a984-e7b2e9ce4e69}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedFoundation\build\win32\sharedFoundation.vcxproj">
+      <Project>{c595c10e-ada8-429a-896a-8904a46737d3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedIoWin\build\win32\sharedIoWin.vcxproj">
+      <Project>{03819289-4e8b-44e9-9f3b-a3243c9797c9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedLog\build\win32\sharedLog.vcxproj">
+      <Project>{2ae0cef0-c4f2-4786-a026-8338fb09d61b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedMath\build\win32\sharedMath.vcxproj">
+      <Project>{5789ea7c-6596-4dcc-a9fb-dd7582888f90}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedMemoryManager\build\win32\sharedMemoryManager.vcxproj">
+      <Project>{dc2cd926-8ea3-4add-aa62-a95cca8ac7dd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedMessageDispatch\build\win32\sharedMessageDispatch.vcxproj">
+      <Project>{c87164f5-14a9-403c-8bc4-217fd40731ea}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedNetworkMessages\build\win32\sharedNetworkMessages.vcxproj">
+      <Project>{decf2964-3a66-4fa6-ab27-d4507c5480ea}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedRandom\build\win32\sharedRandom.vcxproj">
+      <Project>{2e6982e0-dcb6-4ed9-bfad-d29daeea6ad2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedSynchronization\build\win32\sharedSynchronization.vcxproj">
+      <Project>{2fe4e38d-be7d-4e3b-9613-63e9f01855f4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedThread\build\win32\sharedThread.vcxproj">
+      <Project>{858f7dce-325a-467c-9dda-2fe40217286f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedUtility\build\win32\sharedUtility.vcxproj">
+      <Project>{52df0d16-d070-47fc-b987-8d80b027d114}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

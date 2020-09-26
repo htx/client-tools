@@ -2071,7 +2071,7 @@ int MemoryManager::getLimit()
 void MemoryManager::own(void * userPointer)
 {
 	UNREF(userPointer);
-//	__asm int 3;
+//	__debugbreak();
 }
 
 // ----------------------------------------------------------------------

@@ -374,8 +374,8 @@ void ShipHitEffectsManagerClient::handleShipHit(ShipObject & ship, MessageQueueS
 	}
 	else
 	{	
-		Vector up_o = ship.rotate_w2o(up_o);
-		up_o.normalize();
+		Vector up_o2 = ship.rotate_w2o(up_o);
+		up_o2.normalize();
 	}
 	
 	Vector const & playPoint_o = msg.hitLocation_o;

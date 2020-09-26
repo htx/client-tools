@@ -17,21 +17,22 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A4AC1380-D2AB-4B0D-824A-4918680F5CA4}</ProjectGuid>
     <Keyword>MakeFileProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -84,6 +85,60 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\engine\client\application\AnimationEditor\build\win32\AnimationEditor.vcxproj">
+      <Project>{ab9a58e2-734b-45e4-b4bb-c7e9ff6aca3f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\ClientEffectEditor\build\win32\ClientEffectEditor.vcxproj">
+      <Project>{99e4a02b-6849-4c82-a9d3-213fd45bfe84}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\Direct3d9\build\win32\Direct3d9.vcxproj">
+      <Project>{e89a79a9-8488-4d42-bf88-b9833f5607c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\Direct3d9\build\win32\Direct3d9_ffp.vcxproj">
+      <Project>{2889f119-79c4-4ea7-893a-9e0bd5f871c8}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\Direct3d9\build\win32\Direct3d9_vsps.vcxproj">
+      <Project>{cf3b1ee2-d965-44e1-9464-01297964f2cb}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\LightningEditor\build\win32\LightningEditor.vcxproj">
+      <Project>{944b3154-4dc7-4450-be1e-bae9d648d1df}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\NpcEditor\build\win32\NpcEditor.vcxproj">
+      <Project>{ef79ac9c-892b-448a-87ab-aba65ce4fd19}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\ParticleEditor\build\win32\ParticleEditor.vcxproj">
+      <Project>{b75ac10e-38ce-4e3e-9ba4-6a5915de1c30}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\ShaderBuilder\build\win32\ShaderBuilder.vcxproj">
+      <Project>{6b75d5ad-dea7-491b-b93d-9d2c51cbf030}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\SoundEditor\build\win32\SoundEditor.vcxproj">
+      <Project>{4f6e5721-ae45-47d2-831e-269df5ae4c69}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\SwooshEditor\build\win32\SwooshEditor.vcxproj">
+      <Project>{0c54ad5c-87b2-43c6-a699-03a547ff6e03}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\TerrainEditor\build\win32\TerrainEditor.vcxproj">
+      <Project>{513a5071-8aae-45cd-b58f-fa81f48137a0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\TextureBuilder\build\win32\TextureBuilder.vcxproj">
+      <Project>{aeaeb11d-d4e6-444a-ad71-f78da7f9bd95}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\Viewer\build\win32\Viewer.vcxproj">
+      <Project>{5fbd3891-61e3-4a49-92fe-cd8225577628}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\client\application\WorldSnapshotViewer\build\win32\WorldSnapshotViewer.vcxproj">
+      <Project>{ec34f97c-f421-4c75-8c8c-91d00e699d33}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\engine\shared\application\PlanetWatcher\build\win32\PlanetWatcher.vcxproj">
+      <Project>{5efb446b-1e95-487f-b1bb-b9767fa86de3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\game\client\application\SwgClient\build\win32\SwgClient.vcxproj">
+      <Project>{2379493d-680b-41df-9bef-ffbc09827baf}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\game\client\application\SwgGodClient\build\win32\SwgGodClient.vcxproj">
+      <Project>{f5cf1fec-1123-4246-b24b-46debb3c5146}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

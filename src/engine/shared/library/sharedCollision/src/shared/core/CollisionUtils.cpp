@@ -1318,12 +1318,12 @@ bool CalcAvoidancePoint ( Vector const & A, Vector const & B, RangeLoop const & 
 
 // ----------------------------------------------------------------------
 
-bool CalcAvoidancePoint ( Sphere const & A, Vector const & delta, BaseExtent const * E, Vector & out )
+bool CalcAvoidancePoint ( Sphere const & A, Vector const & delta, BaseExtent const * E2, Vector & out )
 {
 	Sphere B(A.getCenter() + delta,A.getRadius());
 
-	RangeLoop rangeA = CalcAvoidanceThetas(A,E);
-	RangeLoop rangeB = CalcAvoidanceThetas(B,E);
+	RangeLoop rangeA = CalcAvoidanceThetas(A,E2);
+	RangeLoop rangeB = CalcAvoidanceThetas(B,E2);
 
 	return CalcAvoidancePoint(A.getCenter(),B.getCenter(),rangeA,rangeB,out);
 }

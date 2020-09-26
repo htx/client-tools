@@ -16,21 +16,22 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{17C00DDF-0E33-40DD-94E8-9A300C9BC15D}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IntelCPP|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -112,6 +113,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\lib\win32-x86/dpvs.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -162,6 +166,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\lib\win32-x86/dpvs.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='IntelCPP|Win32'">
     <Midl>
@@ -173,7 +180,6 @@
       <HeaderFileName />
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/O3 -Qunroll0  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\..\interface;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

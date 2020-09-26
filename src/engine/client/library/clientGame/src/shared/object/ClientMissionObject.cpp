@@ -564,171 +564,171 @@ bool ClientMissionObject::isDuty() const
 const std::string & ClientMissionObject::getMissionTypeString() const
 {
 	// @todo this should be a crc string table!
-	static const unsigned int destroy = CrcLowerString::calculateCrc("destroy");
-	static const unsigned int recon = CrcLowerString::calculateCrc("recon");
-	static const unsigned int deliver = CrcLowerString::calculateCrc("deliver");
-	static const unsigned int escorttocreator = CrcLowerString::calculateCrc("escorttocreator");
-	static const unsigned int escort = CrcLowerString::calculateCrc("escort");
-	static const unsigned int bounty = CrcLowerString::calculateCrc("bounty");
-	static const unsigned int survey = CrcLowerString::calculateCrc("survey");
-	static const unsigned int crafting = CrcLowerString::calculateCrc("crafting");
-	static const unsigned int musician = CrcLowerString::calculateCrc("musician");
-	static const unsigned int dancer =  CrcLowerString::calculateCrc("dancer");
-	static const unsigned int hunting =  CrcLowerString::calculateCrc("hunting");
-	static const unsigned int space_assassination = CrcLowerString::calculateCrc("space_assassination");
-	static const unsigned int space_delivery = CrcLowerString::calculateCrc("space_delivery");
-	static const unsigned int space_delivery_duty = CrcLowerString::calculateCrc("space_delivery_duty");
-	static const unsigned int space_destroy = CrcLowerString::calculateCrc("space_destroy");
-	static const unsigned int space_destroy_duty = CrcLowerString::calculateCrc("space_destroy_duty");
-	static const unsigned int space_surprise_attack = CrcLowerString::calculateCrc("space_surprise_attack");
-	static const unsigned int space_escort = CrcLowerString::calculateCrc("space_escort");
-	static const unsigned int space_escort_duty = CrcLowerString::calculateCrc("space_escort duty");
-	static const unsigned int space_inspection = CrcLowerString::calculateCrc("space_inspection");
-	static const unsigned int space_patrol = CrcLowerString::calculateCrc("space_patrol");
-	static const unsigned int space_recovery = CrcLowerString::calculateCrc("space_recovery");
-	static const unsigned int space_recovery_duty = CrcLowerString::calculateCrc("space_recovery_duty");
-	static const unsigned int space_rescue = CrcLowerString::calculateCrc("space_rescue");
-	static const unsigned int space_rescue_duty = CrcLowerString::calculateCrc("space_rescue_duty");
-	static const unsigned int space_battle = CrcLowerString::calculateCrc("space_battle");
-	static const unsigned int space_survival = CrcLowerString::calculateCrc("space_survival");
-	static const unsigned int space_mining_destroy = CrcLowerString::calculateCrc("space_mining_destroy");
+	static const unsigned int destroy2 = CrcLowerString::calculateCrc("destroy");
+	static const unsigned int recon2 = CrcLowerString::calculateCrc("recon");
+	static const unsigned int deliver2 = CrcLowerString::calculateCrc("deliver");
+	static const unsigned int escorttocreator2 = CrcLowerString::calculateCrc("escorttocreator");
+	static const unsigned int escort2 = CrcLowerString::calculateCrc("escort");
+	static const unsigned int bounty2 = CrcLowerString::calculateCrc("bounty");
+	static const unsigned int survey2 = CrcLowerString::calculateCrc("survey");
+	static const unsigned int crafting2 = CrcLowerString::calculateCrc("crafting");
+	static const unsigned int musician2 = CrcLowerString::calculateCrc("musician");
+	static const unsigned int dancer2 =  CrcLowerString::calculateCrc("dancer");
+	static const unsigned int hunting2 =  CrcLowerString::calculateCrc("hunting");
+	static const unsigned int space_assassination2 = CrcLowerString::calculateCrc("space_assassination");
+	static const unsigned int space_delivery2 = CrcLowerString::calculateCrc("space_delivery");
+	static const unsigned int space_delivery_duty2 = CrcLowerString::calculateCrc("space_delivery_duty");
+	static const unsigned int space_destroy2 = CrcLowerString::calculateCrc("space_destroy");
+	static const unsigned int space_destroy_duty2 = CrcLowerString::calculateCrc("space_destroy_duty");
+	static const unsigned int space_surprise_attack2 = CrcLowerString::calculateCrc("space_surprise_attack");
+	static const unsigned int space_escort2 = CrcLowerString::calculateCrc("space_escort");
+	static const unsigned int space_escort_duty2 = CrcLowerString::calculateCrc("space_escort duty");
+	static const unsigned int space_inspection2 = CrcLowerString::calculateCrc("space_inspection");
+	static const unsigned int space_patrol2 = CrcLowerString::calculateCrc("space_patrol");
+	static const unsigned int space_recovery2 = CrcLowerString::calculateCrc("space_recovery");
+	static const unsigned int space_recovery_duty2 = CrcLowerString::calculateCrc("space_recovery_duty");
+	static const unsigned int space_rescue2 = CrcLowerString::calculateCrc("space_rescue");
+	static const unsigned int space_rescue_duty2 = CrcLowerString::calculateCrc("space_rescue_duty");
+	static const unsigned int space_battle2 = CrcLowerString::calculateCrc("space_battle");
+	static const unsigned int space_survival2 = CrcLowerString::calculateCrc("space_survival");
+	static const unsigned int space_mining_destroy2 = CrcLowerString::calculateCrc("space_mining_destroy");
 	
-	if(m_missionType.get() == destroy)
+	if(m_missionType.get() == destroy2)
 	{
 		static const std::string r = "destroy";
 		return r;
 	}
-	else if(m_missionType.get() == recon)
+	else if(m_missionType.get() == recon2)
 	{
 		static const std::string r = "recon";
 		return r;
 	}
-	else if(m_missionType.get() == deliver)
+	else if(m_missionType.get() == deliver2)
 	{
 		static const std::string r = "deliver";
 		return r;
 	}
-	else if(m_missionType.get() == escorttocreator)
+	else if(m_missionType.get() == escorttocreator2)
 	{
 		static const std::string r = "escorttocreator";
 		return r;
 	}
-	else if(m_missionType.get() == escort)
+	else if(m_missionType.get() == escort2)
 	{
 		static const std::string r = "escort";
 		return r;
 	}
-	else if(m_missionType.get() == bounty)
+	else if(m_missionType.get() == bounty2)
 	{
 		static const std::string r = "bounty";
 		return r;
 	}
-	else if(m_missionType.get() == survey)
+	else if(m_missionType.get() == survey2)
 	{
 		static const std::string r = "survey";
 		return r;
 	}
-	else if(m_missionType.get() == crafting)
+	else if(m_missionType.get() == crafting2)
 	{
 		static const std::string r = "crafting";
 		return r;
 	}
-	else if(m_missionType.get() == musician)
+	else if(m_missionType.get() == musician2)
 	{
 		static const std::string r = "musician";
 		return r;
 	}
-	else if(m_missionType.get() == dancer)
+	else if(m_missionType.get() == dancer2)
 	{
 		static const std::string r = "dancer";
 		return r;
 	}
-	else if(m_missionType.get() == hunting)
+	else if(m_missionType.get() == hunting2)
 	{
 		static const std::string r = "hunting";
 		return r;
 	}
-	else if(m_missionType.get() == space_assassination)
+	else if(m_missionType.get() == space_assassination2)
 	{
 		static const std::string r = "space_assassination";
 		return r;
 	}
-	else if(m_missionType.get() == space_delivery)
+	else if(m_missionType.get() == space_delivery2)
 	{
 		static const std::string r = "space_delivery";
 		return r;
 	}
-	else if(m_missionType.get() == space_delivery_duty)
+	else if(m_missionType.get() == space_delivery_duty2)
 	{
 		static const std::string r = "space_delivery_duty";
 		return r;
 	}
-	else if(m_missionType.get() == space_destroy)
+	else if(m_missionType.get() == space_destroy2)
 	{
 		static const std::string r = "space_destroy";
 		return r;
 	}
-	else if(m_missionType.get() == space_destroy_duty)
+	else if(m_missionType.get() == space_destroy_duty2)
 	{
 		static const std::string r = "space_destroy_duty";
 		return r;
 	}
-	else if(m_missionType.get() == space_surprise_attack)
+	else if(m_missionType.get() == space_surprise_attack2)
 	{
 		static const std::string r = "space_surprise_attack";
 		return r;
 	}
-	else if(m_missionType.get() == space_escort)
+	else if(m_missionType.get() == space_escort2)
 	{
 		static const std::string r = "space_escort";
 		return r;
 	}
-	else if(m_missionType.get() == space_escort_duty)
+	else if(m_missionType.get() == space_escort_duty2)
 	{
 		static const std::string r = "space_escort_duty";
 		return r;
 	}
-	else if(m_missionType.get() == space_inspection)
+	else if(m_missionType.get() == space_inspection2)
 	{
 		static const std::string r = "space_inspection";
 		return r;
 	}
-	else if(m_missionType.get() == space_patrol)
+	else if(m_missionType.get() == space_patrol2)
 	{
 		static const std::string r = "space_patrol";
 		return r;
 	}
-	else if(m_missionType.get() == space_recovery)
+	else if(m_missionType.get() == space_recovery2)
 	{
 		static const std::string r = "space_recovery";
 		return r;
 	}
-	else if(m_missionType.get() == space_recovery_duty)
+	else if(m_missionType.get() == space_recovery_duty2)
 	{
 		static const std::string r = "space_recovery_duty";
 		return r;
 	}
-	else if(m_missionType.get() == space_rescue)
+	else if(m_missionType.get() == space_rescue2)
 	{
 		static const std::string r = "space_rescue";
 		return r;
 	}
-	else if(m_missionType.get() == space_rescue_duty)
+	else if(m_missionType.get() == space_rescue_duty2)
 	{
 		static const std::string r = "space_rescue_duty";
 		return r;
 	}
-	else if(m_missionType.get() == space_battle)
+	else if(m_missionType.get() == space_battle2)
 	{
 		static const std::string r = "space_battle";
 		return r;
 	}
-	else if(m_missionType.get() == space_survival)
+	else if(m_missionType.get() == space_survival2)
 	{
 		static const std::string r = "space_survival";
 		return r;
 	}
-	else if(m_missionType.get() == space_mining_destroy)
+	else if(m_missionType.get() == space_mining_destroy2)
 	{
 		static const std::string r = "space_mining_destroy";
 		return r;

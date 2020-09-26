@@ -424,16 +424,16 @@ void Direct3d9_LightManager::selectLights()
 					{
 						// try to fit the light in a specular slot
 						{
-							for (int i = 0; light && i < ParallelSpecularCount; ++i)
-								if (!ms_currentLights.parallelSpecular[i] || (light->*getPossiblyScaledSpecularIntensity)() > (ms_currentLights.parallelSpecular[i]->*getPossiblyScaledSpecularIntensity)())
-									swap(ms_currentLights.parallelSpecular[i], light);
+							for (int j = 0; light && j < ParallelSpecularCount; ++j)
+								if (!ms_currentLights.parallelSpecular[j] || (light->*getPossiblyScaledSpecularIntensity)() > (ms_currentLights.parallelSpecular[j]->*getPossiblyScaledSpecularIntensity)())
+									swap(ms_currentLights.parallelSpecular[j], light);
 						}
 
 						// non-specular light, or all specular slots were full
 						{
-							for (int i = 0; light && i < ParallelCount; ++i)
-								if (!ms_currentLights.parallel[i] || (light->*getPossiblyScaledDiffuseIntensity)() > (ms_currentLights.parallel[i]->*getPossiblyScaledDiffuseIntensity)())
-									swap(ms_currentLights.parallel[i], light);
+							for (int k = 0; light && k < ParallelCount; ++k)
+								if (!ms_currentLights.parallel[k] || (light->*getPossiblyScaledDiffuseIntensity)() > (ms_currentLights.parallel[k]->*getPossiblyScaledDiffuseIntensity)())
+									swap(ms_currentLights.parallel[k], light);
 						}
 
 						break;
@@ -444,19 +444,19 @@ void Direct3d9_LightManager::selectLights()
 					{
 						// try to fit the light in a specular slot
 						{
-							for (int i = 0; light && i < PointSpecularCount; ++i)
+							for (int l = 0; light && l < PointSpecularCount; ++l)
 							{
-								if (!ms_currentLights.pointSpecular[i] || (light->*getPossiblyScaledSpecularIntensity)() > (ms_currentLights.pointSpecular[i]->*getPossiblyScaledSpecularIntensity)())
-									swap(ms_currentLights.pointSpecular[i], light);
+								if (!ms_currentLights.pointSpecular[l] || (light->*getPossiblyScaledSpecularIntensity)() > (ms_currentLights.pointSpecular[l]->*getPossiblyScaledSpecularIntensity)())
+									swap(ms_currentLights.pointSpecular[l], light);
 							}
 						}
 
 						// non-specular light, or all specular slots were full
 						{
-							for (int i = 0; light && i < PointCount; ++i)
+							for (int m = 0; light && m < PointCount; ++m)
 							{
-								if (!ms_currentLights.point[i] || (light->*getPossiblyScaledDiffuseIntensity)() > (ms_currentLights.point[i]->*getPossiblyScaledDiffuseIntensity)())
-									swap(ms_currentLights.point[i], light);
+								if (!ms_currentLights.point[m] || (light->*getPossiblyScaledDiffuseIntensity)() > (ms_currentLights.point[m]->*getPossiblyScaledDiffuseIntensity)())
+									swap(ms_currentLights.point[m], light);
 							}
 						}
 						break;

@@ -154,7 +154,7 @@ inline float cot(float f)
 inline float GaussianDistribution(float variate, float standardDeviation, float mean)
 {
 	// equation from http://mathworld.wolfram.com/NormalDistribution.html
-	return (1.0f / (standardDeviation * sqrt(2.0f * PI))) * pow(E, -(sqr(variate - mean) / (2.0f * sqr(standardDeviation))));
+	return (1.0f / (standardDeviation * sqrtf(2.0f * PI))) * powf(E, -(sqr(variate - mean) / (2.0f * sqr(standardDeviation))));
 }
 
 inline float withinEpsilon(float const rhs, float const lhs, float const epsilon = 1.0e-3f)

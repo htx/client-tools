@@ -31,7 +31,7 @@ public:
 	const NetworkId              getTarget     () const;
 	const Tag                    getTypeId     () const;
 
-	void                         pack          (Archive::ByteStream & target) const;
+	void                         pack          (Archive::ByteStream & target2) const;
 
 	enum
 	{

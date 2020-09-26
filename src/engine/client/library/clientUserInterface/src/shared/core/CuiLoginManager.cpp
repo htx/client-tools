@@ -477,7 +477,7 @@ void CuiLoginManager::receiveLoginClusterStatus (const LoginClusterStatus & lcs)
 					s_addressClusterMap [addr] = data.m_clusterId;
 				}
 				else
-					WARNING (true, ("Received cluster status for unknown cluster %d, [%s:%d]", data.m_clusterId, data.m_connectionServerAddress, data.m_connectionServerPort));
+					WARNING (true, ("Received cluster status for unknown cluster %d, [%s:%d]", data.m_clusterId, data.m_connectionServerAddress.c_str(), data.m_connectionServerPort));
 			}
 		}
 	}
@@ -834,7 +834,7 @@ CreatureObject * CuiLoginManager::getAvatarCreature (uint32 clusterId, const Net
 		}
 	}
 	else
-		WARNING (true, ("Request for invalid avatar id %s", id.getValueString ()));
+		WARNING (true, ("Request for invalid avatar id %s", id.getValueString ().c_str()));
 
 	return 0;
 }

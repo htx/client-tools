@@ -275,7 +275,7 @@ void SwgCuiRoadmap_Profession::performActivate()
 		sprintf(tmp, "long_title_%s_phase%d", m_parentMediator->getContextRoadmap().c_str(), i);
 		StringId phaseTitle(ROADMAP_STRING_FILE, tmp);
 		m_phaseTitles[i]->SetLocalText(phaseTitle.localize());
-		sprintf(tmp, "title_%s", m_parentMediator->getContextRoadmap().c_str(), i);
+		sprintf(tmp, "title_%s", m_parentMediator->getContextRoadmap().c_str());
 		StringId roadmapTitle(ROADMAP_STRING_FILE, tmp);
 		m_roadmapTitles[i]->SetLocalText(roadmapTitle.localize());
 		int track;
@@ -333,10 +333,10 @@ void SwgCuiRoadmap_Profession::showZoomedInPhase(int phase)
 		UIString lastSkillName = Unicode::emptyString;
 		UIBaseObject::UIObjectList children;
 		m_zoomedInRootPages[m_showingPhase]->GetChildren(children);
-		UIBaseObject::UIObjectList::iterator i;
-		for(i = children.begin(); i != children.end(); ++i)
+		UIBaseObject::UIObjectList::iterator i2;
+		for(i2 = children.begin(); i2 != children.end(); ++i2)
 		{
-			UIBaseObject *curPtr = *i;
+			UIBaseObject *curPtr = *i2;
 			if(curPtr->IsA(TUIPage))
 			{
 				UIPage *curPage = safe_cast<UIPage *>(curPtr);
@@ -354,11 +354,11 @@ void SwgCuiRoadmap_Profession::showZoomedInPhase(int phase)
 		UIString firstSkillName = Unicode::emptyString;
 		UIBaseObject::UIObjectList children;
 		m_zoomedInRootPages[m_showingPhase]->GetChildren(children);
-		UIBaseObject::UIObjectList::iterator i;
+		UIBaseObject::UIObjectList::iterator i3;
 		bool found = false;
-		for(i = children.begin(); !found && (i != children.end()); ++i)
+		for(i3 = children.begin(); !found && (i3 != children.end()); ++i3)
 		{
-			UIBaseObject *curPtr = *i;
+			UIBaseObject *curPtr = *i3;
 			if(curPtr->IsA(TUIPage))
 			{
 				UIPage *curPage = safe_cast<UIPage *>(curPtr);
@@ -458,14 +458,14 @@ void SwgCuiRoadmap_Profession::setCenterSkill(std::string const &skillName)
 			UIPage *curPage = safe_cast<UIPage *>(curPtr);
 			if(curPage->HasProperty(SKILL_NAME))
 			{
-				UIString skillName;
-				curPage->GetProperty(SKILL_NAME, skillName);
+				UIString skillName2;
+				curPage->GetProperty(SKILL_NAME, skillName2);
 
-				const SkillObject * const skill = SkillManager::getInstance ().getSkill (Unicode::wideToNarrow(skillName));
+				const SkillObject * const skill = SkillManager::getInstance ().getSkill (Unicode::wideToNarrow(skillName2));
 				if(skill)
 				{								
 					// If this is the working skill, position the highlight bar around it
-					if(strcmp(m_parentMediator->getContextSkill().c_str(), Unicode::wideToNarrow(skillName).c_str()) == 0)
+					if(strcmp(m_parentMediator->getContextSkill().c_str(), Unicode::wideToNarrow(skillName2).c_str()) == 0)
 					{
 						UIPoint curPos = curPage->GetLocation();
 						m_selectedPage->SetVisible(true);							

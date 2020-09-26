@@ -393,9 +393,9 @@ bool ProjectileManager::stopBeam(Object & object, int weaponIndex, bool notifySe
 		ProjectileBeamVector & pbv = (*it).second;
 		
 		{
-			for (ProjectileBeamVector::iterator it = pbv.begin(); it != pbv.end(); ++it)
+			for (ProjectileBeamVector::iterator it2 = pbv.begin(); it2 != pbv.end(); ++it2)
 			{
-				ProjectileBeamWatcher & projectileBeamWatcher = *it;
+				ProjectileBeamWatcher & projectileBeamWatcher = *it2;
 				if (projectileBeamWatcher.getPointer())
 					projectileBeamWatcher->kill();
 

@@ -216,13 +216,13 @@ void SwgCuiCraftAssemblyDialogOption::setSlot (const ClientObject & transferring
 
 		for (CuiCraftManager::IntVector::const_iterator it = iv.begin (); it != iv.end (); ++it)
 		{
-			const int optionIndex = *it;
-			DEBUG_FATAL (optionIndex < 0, ("bad"));
-			if (optionIndex >= numOptions)
+			const int optionIndex2 = *it;
+			DEBUG_FATAL (optionIndex2 < 0, ("bad"));
+			if (optionIndex2 >= numOptions)
 				WARNING (true, ("bad option"));
 			else
 			{
-				const Option & opt = slot->options [optionIndex];
+				const Option & opt = slot->options [optionIndex2];
 
 				UIData * const data = new UIData;
 				const Unicode::String & nameStr = opt.name.localize ();
@@ -231,7 +231,7 @@ void SwgCuiCraftAssemblyDialogOption::setSlot (const ClientObject & transferring
 				data->SetProperty (UIList::DataProperties::LOCALTEXT, nameStr);
 
 				Unicode::String desc;
-				if (DraftSchematicInfo::createOptionDescription  (*slot, manf_schem, optionIndex, desc, true, true))
+				if (DraftSchematicInfo::createOptionDescription  (*slot, manf_schem, optionIndex2, desc, true, true))
 					data->SetProperty (DataProperties::LOCALDESCRIPTION,  desc);
 
 				ds->AddChild      (data);

@@ -92,19 +92,6 @@ char *strsep(char **string, const char *delim)
 
 // ----------------------------------------------------------------------
 
-int snprintf(char *buffer, size_t count, const char *format, ...)
-{
-	va_list va;
-
-	va_start(va, format);
-		const int result = _vsnprintf(buffer, count, format, va);
-	va_end(va);
-
-	return result;
-}
-
-// ----------------------------------------------------------------------
-
 struct tm *gmtime_r(const time_t *timep, struct tm *result)
 {
 	s_gmTimeSection.enter();

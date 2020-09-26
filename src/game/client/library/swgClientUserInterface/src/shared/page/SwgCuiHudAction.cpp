@@ -107,7 +107,6 @@
 #include "swgClientUserInterface/SwgCuiTcgWindow.h"
 #include "swgClientUserInterface/SwgCuiToolbar.h"
 #include "swgClientUserInterface/SwgCuiWebBrowserManager.h"
-#include "swgClientUserInterface/SwgCuiVoiceFlyBar.h"
 
 
 #if PRODUCTION != 0
@@ -282,7 +281,6 @@ m_toggleDownTimeNames          (0.0f)
 	CuiActionManager::addAction (CuiActions::myCollections, this, false);
 
 	CuiActionManager::addAction(CuiActions::sendSavedPlayerInterestsToServer, this, false);
-	CuiActionManager::addAction (SwgCuiActions::toggleVoiceFlyBar, this, false);
 
 	//CuiActionManager::addAction (CuiActions::tcg, this, false);
 
@@ -1078,26 +1076,26 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 		std::string loginId;
 		std::string clusterName;
 		Unicode::String playerName;
-		NetworkId id;
+		NetworkId id2;
 
-		if (Game::getPlayerPath(loginId, clusterName, playerName, id))
+		if (Game::getPlayerPath(loginId, clusterName, playerName, id2))
 		{
 			httpParams["Station_Name"] = loginId;
 			httpParams["Server"] = clusterName;
 			httpParams["Character"] = Unicode::wideToNarrow(playerName);
-			httpParams["Character_ID"] = id.getValueString();
+			httpParams["Character_ID"] = id2.getValueString();
 		}
 
 		char buf[64];
 
-		const ClientObject* const player = Game::getClientPlayer();
+		const ClientObject* const player2 = Game::getClientPlayer();
 		if (player)
 		{
-			const Vector & world_pos = player->getPosition_w();
+			const Vector & world_pos = player2->getPosition_w();
 			sprintf(buf, "%.02f %.02f %.02f", world_pos.x, world_pos.y, world_pos.z);
 			httpParams["LOC"] = buf;
 
-			const ObjectTemplate* const t = player->getObjectTemplate();
+			const ObjectTemplate* const t = player2->getObjectTemplate();
 			const SharedCreatureObjectTemplate* const c_t = dynamic_cast<const SharedCreatureObjectTemplate*>(t);
 			if (c_t)
 			{
@@ -1119,7 +1117,7 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 				httpParams["Gender"] = genderString;
 			}
 
-			const CreatureObject * playerAsCreature = player->asCreatureObject();
+			const CreatureObject * playerAsCreature = player2->asCreatureObject();
 			if (playerAsCreature)
 			{
 				sprintf(buf, "%u", playerAsCreature->getLevel());
@@ -1583,15 +1581,6 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 		SwgCuiLfg::sendSavedInterests();
 	}
 
-	else if (id == SwgCuiActions::toggleVoiceFlyBar)
-	{
-		CuiMediatorFactory::toggleInWorkspace(CuiMediatorTypes::WS_VoiceFlyBar);
-	}
-
-	else if (id == SwgCuiActions::toggleVoiceActiveSpeakers)
-	{
-		CuiMediatorFactory::toggleInWorkspace(CuiMediatorTypes::WS_VoiceActiveSpeakers);
-	}
 	//else if (id == CuiActions::tcg)
 	//{
 		//SwgCuiTcgWindow * tcgWindow = safe_cast<SwgCuiTcgWindow * >(CuiMediatorFactory::getInWorkspace(CuiMediatorTypes::WS_TcgWindow, false, false, false));

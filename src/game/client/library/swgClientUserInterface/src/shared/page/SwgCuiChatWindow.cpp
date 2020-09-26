@@ -1003,8 +1003,8 @@ void SwgCuiChatWindow::updateActiveDefaultChannel()
 			if (roomNode)
 			{
 				m_parserStrategy->setUseChatRoom(true);
-				m_parserStrategy->setChatRoomId(roomNode->data.id);
-				SwgCuiCommandParserChatRoom::setCurrentChatRoom(roomNode->data.id);
+				m_parserStrategy->setChatRoomId(roomNode->mData.id);
+				SwgCuiCommandParserChatRoom::setCurrentChatRoom(roomNode->mData.id);
 			}
 		}
 		else if (defaultChannel.type == CT_planet)
@@ -1736,7 +1736,7 @@ void SwgCuiChatWindow::onInstantMessageFailed(const Unicode::String & str)
 
 void SwgCuiChatWindow::onChatRoomCreated(const CuiChatRoomManager::Messages::Created::Payload & roomNode)
 {
-	ChannelId const id(CT_chatRoom, roomNode.data.path);
+	ChannelId const id(CT_chatRoom, roomNode.mData.path);
 	
 	for (SwgCuiChatWindow::TabVector::iterator it = m_tabVector->begin(); it != m_tabVector->end(); ++it)
 	{
@@ -1776,7 +1776,7 @@ void SwgCuiChatWindow::onChatRoomDestroyed(const CuiChatRoomManager::Messages::D
 		str += CuiChatManager::prosify(avatar.chatId, CuiStringIdsChatRoom::destroyed_other_prose);
 	}
 
-	const ChannelId id(CT_chatRoom, roomNode.data.path);
+	const ChannelId id(CT_chatRoom, roomNode.mData.path);
 
 	for (SwgCuiChatWindow::TabVector::iterator it = m_tabVector->begin(); it != m_tabVector->end(); ++it)
 	{
@@ -1916,9 +1916,9 @@ void SwgCuiChatWindow::onNamedRoomIdChanged(const CuiChatRoomManager::Messages::
 		{
 			SwgCuiChatWindow const * const cw = NON_NULL(*it);
 			
-			for (TabVector::iterator it = cw->m_tabVector->begin(); it != cw->m_tabVector->end(); ++it)
+			for (TabVector::iterator it2 = cw->m_tabVector->begin(); it2 != cw->m_tabVector->end(); ++it2)
 			{
-				Tab * tab = *it;
+				Tab * tab = *it2;
 				if (tab->getDefaultChannel().type == cid.type && tab->getDefaultChannel().getDisplayName() == cid.getDisplayName())
 				{
 					tab->setDefaultChannel(cid);
@@ -2001,7 +2001,7 @@ void SwgCuiChatWindow::handleChatRoomJoinDefault(const CuiChatRoomDataNode & roo
 {
 	const std::string & fullPath = roomNode.getFullPath();
 
-	bool const isPublic = roomNode.data.roomType == CHAT_ROOM_PUBLIC;
+	bool const isPublic = roomNode.mData.roomType == CHAT_ROOM_PUBLIC;
 	ChannelId id(CT_chatRoom, fullPath, isPublic);
 	appendTextToChannel(id, Unicode::emptyString, true);
 
@@ -2051,7 +2051,7 @@ void SwgCuiChatWindow::onChatRoomOtherEntered(const CuiChatRoomManager::Messages
 	const CuiChatRoomDataNode & roomNode = *NON_NULL(payload.first);
 
 	//-- zero roomType is private
-	if (roomNode.data.roomType != 0)
+	if (roomNode.mData.roomType != 0)
 	{
 		const CuiChatAvatarId & avatar = *NON_NULL(payload.second);
 
@@ -2180,7 +2180,7 @@ void SwgCuiChatWindow::onChatRoomOtherLeft(const CuiChatRoomManager::Messages::O
 {
 	const CuiChatRoomDataNode & roomNode = *NON_NULL(payload.first);
 	//-- zero roomType is private
-	if (roomNode.data.roomType != 0)
+	if (roomNode.mData.roomType != 0)
 	{
 		const CuiChatAvatarId & avatar = *NON_NULL(payload.second);
 

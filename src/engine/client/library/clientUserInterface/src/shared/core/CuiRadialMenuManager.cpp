@@ -57,7 +57,6 @@
 #include "clientUserInterface/CuiStringIds.h"
 #include "clientUserInterface/CuiStringVariablesManager.h"
 #include "clientUserInterface/CuiSystemMessageManager.h"
-#include "clientUserInterface/CuiVoiceChatManager.h"
 #include "sharedCollision/CollideParameters.h"
 #include "sharedCollision/CollisionInfo.h"
 #include "sharedFoundation/Clock.h"
@@ -1179,11 +1178,6 @@ bool CuiRadialMenuManager::populateMenu (CuiMenuInfoHelper & helper, const Objec
 				}
 			}
 
-			if(creature->isPlayer() && CuiVoiceChatManager::isLoggedIn())
-			{
-				helper.addRootMenu(VOICE_INVITE, got);
-			}
-
 			if (Game::getSinglePlayer ())
 			{
 				const int conv_start = helper.addRootMenu (CONVERSE_START, got);
@@ -1338,9 +1332,9 @@ bool CuiRadialMenuManager::populateMenu (CuiMenuInfoHelper & helper, const Objec
 
 							if (clientObjectGrandparent)
 							{
-								CreatureObject const * const creature = clientObjectGrandparent->asCreatureObject();
+								CreatureObject const * const creature2 = clientObjectGrandparent->asCreatureObject();
 							
-								if (creature && creature->isDead())
+								if (creature2 && creature2->isDead())
 								{
 									helper.addRootMenu(LOOT, got);
 									isLooting = true;

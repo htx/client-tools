@@ -43,7 +43,7 @@ namespace ShipComponentPowerEffectsManagerClientNamespace
 		ShipChassis const * const shipChassis = ShipChassis::findShipChassisByCrc(ship.getChassisType());
 		if (NULL == shipChassis)
 		{
-			WARNING(true, ("ShipComponentPowerEffectsManagerClient invalid ship chassis for ship [%s]", ship.getDebugInformation()));
+			WARNING(true, ("ShipComponentPowerEffectsManagerClient invalid ship chassis for ship [%s]", ship.getDebugInformation().c_str()));
 			return empty;
 		}
 

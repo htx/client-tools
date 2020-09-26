@@ -91,9 +91,9 @@ m_sessionEnded       (false)
 	{
 		char buf [128];
 		snprintf (buf, sizeof (buf), "colorPicker%d", i);
-		UIPage * page = 0;
-		getCodeDataObject (TUIPage, page,      buf);
-		m_colorPicker [i] = new CuiColorPicker (*page);
+		UIPage * page2 = 0;
+		getCodeDataObject (TUIPage, page2,      buf);
+		m_colorPicker [i] = new CuiColorPicker (*page2);
 		m_colorPicker [i]->fetch ();
 	}
 
@@ -110,9 +110,9 @@ m_sessionEnded       (false)
 	}
 
 	{
-		UIPage * page = 0;
-		getCodeDataObject (TUIPage, page,      "info");
-		m_info = new SwgCuiInventoryInfo (*page);
+		UIPage * page3 = 0;
+		getCodeDataObject (TUIPage, page3,      "info");
+		m_info = new SwgCuiInventoryInfo (*page3);
 		m_info->fetch ();
 	}
 
@@ -452,25 +452,25 @@ void SwgCuiCraftCustomize::setupCustomizations ()
 				if (!_stricmp (currentAppName.c_str (), appName.c_str ()))
 					currentIndex = i;
 
-				UIData * const d = new UIData;
+				UIData * const d2 = new UIData;
 
 				ClientObject * clientObject = safe_cast<ClientObject *>(ObjectTemplate::createObject (appName.c_str ()));
 				if (!clientObject)
 				{
-					d->SetPropertyNarrow (UITextbox::PropertyName::Text, appName);
+					d2->SetPropertyNarrow (UITextbox::PropertyName::Text, appName);
 					clientObject = safe_cast<ClientObject *>(proto->getObjectTemplate ()->createObject ());
 					NOT_NULL (clientObject);
 				}
 				else
 				{
-					d->SetProperty (UITextbox::PropertyName::Text, clientObject->getLocalizedName ());
+					d2->SetProperty (UITextbox::PropertyName::Text, clientObject->getLocalizedName ());
 				}
 
 				if (clientObject)
 					clientObject->endBaselines ();
 
 				m_objects->push_back (Watcher<TangibleObject>(dynamic_cast<TangibleObject *>(clientObject)));
-				ds->AddChild (d);
+				ds->AddChild (d2);
 			}
 		}
 

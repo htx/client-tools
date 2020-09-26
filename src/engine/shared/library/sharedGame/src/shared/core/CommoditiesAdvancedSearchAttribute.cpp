@@ -269,10 +269,10 @@ void CommoditiesAdvancedSearchAttribute::install()
 			std::map<int, std::map<std::string, std::string> >::const_iterator const iterParentAttributeNameAliases = s_searchAttributeNameAliases.find(GameObjectTypes::getMaskedType(iterGameObjectType->first));
 			if (iterParentAttributeNameAliases != s_searchAttributeNameAliases.end())
 			{
-				std::map<std::string, std::string> & alias = s_searchAttributeNameAliases[iterGameObjectType->first];
+				std::map<std::string, std::string> & alias2 = s_searchAttributeNameAliases[iterGameObjectType->first];
 				for (std::map<std::string, std::string>::const_iterator iterAlias = iterParentAttributeNameAliases->second.begin(); iterAlias != iterParentAttributeNameAliases->second.end(); ++iterAlias)
 				{
-					alias.insert(*iterAlias);
+					alias2.insert(*iterAlias);
 				}
 			}
 		}

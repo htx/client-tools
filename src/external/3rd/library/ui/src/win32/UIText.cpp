@@ -22,6 +22,7 @@
 
 #include <cassert>
 #include <vector>
+#include <algorithm>
 
 //----------------------------------------------------------------------
 
@@ -379,7 +380,7 @@ void UIText::RemoveLeadingLines( int LinesToRemove )
 
 	if( mLines->linePointers.size() && ((int)mLines->linePointers.size() > (LinesToRemove - 2)) )
 	{
-		UIString LinesRemaining( mLines->linePointers[LinesToRemove] );
+		UIString LinesRemaining( mLines->linePointers[LinesToRemove]._Ptr );
 
 		mLocalText = LinesRemaining;	
 		mLines->clear();
@@ -428,12 +429,13 @@ void UIText::AppendLocalText( const UIString &StringToAppend )
 		//@TODO this is crap.  this now assumes that all mLines->linePointers pointers are pointers into mRenderData,
 		// which happens to be true right now.
 		UIString::iterator OldBase = mRenderData.begin();
+		UIString oldStr = mRenderData;
 		mLocalText.append(StringToAppend);
 		SyncRenderDataToLocalText();
 		UIString::iterator NewBase = mRenderData.begin();
-
+		
 		// Rebase iterators
-		if( OldBase != NewBase )
+		if( oldStr.compare(&*NewBase) != 0)
 		{
 			for( i = mLines->linePointers.begin(); i != mLines->linePointers.end(); ++i )
 				*i = NewBase + (*i - OldBase);
@@ -453,11 +455,12 @@ void UIText::AppendLocalText( const UIString &StringToAppend )
 				UIString::const_iterator		TextToRewrap;
 
 				TextToRewrap = mLines->linePointers[mLines->linePointers.size() - 2];
-				TextToLineWrap.append( TextToRewrap );
+				TextToLineWrap.append( TextToRewrap._Ptr );
 
 				mStyle->GetWrappedTextInfo( TextToLineWrap, mMaxLines, GetWidth(), ScrollExtentOfNewText, &NewLineBreaks, &NewLineWidths );
 
 				// Rebase iterators
+
 				for( i = NewLineBreaks.begin(); i != NewLineBreaks.end(); ++i )
 					*i = TextToRewrap + (*i - TextToLineWrap.begin());
 

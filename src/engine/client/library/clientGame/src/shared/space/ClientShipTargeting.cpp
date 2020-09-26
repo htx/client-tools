@@ -242,8 +242,8 @@ void ClientShipTargetingNamespace::gatherUniqueShipsFromGroup(GroupObject const 
 		if (ii->first != ToIgnore)
 		{
 			NetworkId const & shipId = group->getShipFromMember(ii->first);
-			UniqueSet::const_iterator ii = uniqueSet.find(shipId);
-			if (ii != uniqueSet.end())
+			UniqueSet::const_iterator ii2 = uniqueSet.find(shipId);
+			if (ii2 != uniqueSet.end())
 			{
 				ships.push_back(shipId);
 				uniqueSet.insert(shipId);

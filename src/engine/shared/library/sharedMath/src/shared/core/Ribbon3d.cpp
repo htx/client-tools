@@ -38,8 +38,8 @@ Ribbon3d::Ribbon3d ( Line3d const & line, Vector const & delta )
 
 Plane3d Ribbon3d::getPlane( void ) const
 {
-	Vector E = m_pointB - m_pointA;
-	Vector N = E.cross( m_dir );
+	Vector E2 = m_pointB - m_pointA;
+	Vector N = E2.cross( m_dir );
 
 	return Plane3d( m_pointA, N );
 }

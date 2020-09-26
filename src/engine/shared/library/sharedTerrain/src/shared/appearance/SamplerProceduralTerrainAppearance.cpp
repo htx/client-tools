@@ -330,9 +330,9 @@ bool SamplerProceduralTerrainAppearance::SamplerChunk::getHeightAt (const Vector
 	for (int tri = triangleOffset; tri < triangleOffset + 8; ++tri)
 	{
 		const Plane& plane = (*m_planeList) [tri];
-		const Vector& normal = plane.getNormal ();
+		const Vector& normal2 = plane.getNormal ();
 
-		if (  dir.dot(normal)<0.f // if triangle is facing upward
+		if (  dir.dot(normal2)<0.f // if triangle is facing upward
 			&& plane.findIntersection(start, end, intersection)
 			)
 		{
@@ -355,7 +355,7 @@ bool SamplerProceduralTerrainAppearance::SamplerChunk::getHeightAt (const Vector
 				found = true;
 
 				result.setPoint (intersection);
-				result.setNormal (normal);
+				result.setNormal (normal2);
 			}
 		}
 	}

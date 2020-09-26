@@ -52,16 +52,16 @@ ContainmentResult TestPointLine ( Vector const & P, Line3d const & L )
 ContainmentResult TestPointSeg ( Vector const & P, Segment3d const & S )
 {
 	Vector const & B = S.getBegin();
-	Vector const & E = S.getEnd();
+	Vector const & E2 = S.getEnd();
 
-	float d = ((P.x - B.x) * (E.z - B.z)) + ((P.z - B.z) * -(E.x - B.x));
+	float d = ((P.x - B.x) * (E2.z - B.z)) + ((P.z - B.z) * -(E2.x - B.x));
 
 	return Containment1d::TestFloatGreater(d,0.0f);
 }
 
-ContainmentResult TestPointSeg ( Vector const & P, Vector const & B, Vector const & E )
+ContainmentResult TestPointSeg ( Vector const & P, Vector const & B, Vector const & E2 )
 {
-	float d = ((P.x - B.x) * (E.z - B.z)) + ((P.z - B.z) * -(E.x - B.x));
+	float d = ((P.x - B.x) * (E2.z - B.z)) + ((P.z - B.z) * -(E2.x - B.x));
 
 	return Containment1d::TestFloatGreater(d,0.0f);
 }

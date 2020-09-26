@@ -1538,7 +1538,7 @@ void ClientDataFile::apply (Object* const object) const
 			}
 		}
 		else
-			DEBUG_WARNING(true, ("ClientDataFile::apply: object %s has wearables but no skeletal appearance", object->getDebugInformation(true)));
+			DEBUG_WARNING(true, ("ClientDataFile::apply: object %s has wearables but no skeletal appearance", object->getDebugInformation(true).c_str()));
 	}
 
 	//-- apply flags.

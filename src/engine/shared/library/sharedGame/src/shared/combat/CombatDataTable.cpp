@@ -15,7 +15,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
-#include <hash_map>
+#include <unordered_map>
 
 // ======================================================================
 
@@ -25,7 +25,7 @@ namespace CombatDataTableNamespace
 	std::string const cs_columnActionNameCrc("actionNameCrc");
 	int s_actionNameCrcColumn;
 
-	std::hash_map<uint32, int> s_commandsWithMinInvisLevelRequired;
+	std::unordered_map<uint32, int> s_commandsWithMinInvisLevelRequired;
 }
 
 using namespace CombatDataTableNamespace;
@@ -113,8 +113,8 @@ std::string CombatDataTable::getActionAnimationData(uint32 commandHash, char con
 	std::string fieldName = "anim_";
 
 	std::string lowerWeaponType(weaponType);
-	int (*pf)(int)=::tolower; 
-	std::transform(lowerWeaponType.begin(), lowerWeaponType.end(), lowerWeaponType.begin(), pf); 
+	//int (*pf)(int)=::tolower; 
+	std::transform(lowerWeaponType.begin(), lowerWeaponType.end(), lowerWeaponType.begin(),  [](char c){return static_cast<char>(std::tolower(c));}); 
 
 	fieldName += lowerWeaponType;
 
@@ -402,7 +402,7 @@ int CombatDataTable::getMinInvisLevelRequired(uint32 commandHash)
 	if(commandHash == 0)
 		return -1;
 
-	std::hash_map<uint32, int>::const_iterator it = s_commandsWithMinInvisLevelRequired.find(commandHash);
+	std::unordered_map<uint32, int>::const_iterator it = s_commandsWithMinInvisLevelRequired.find(commandHash);
 	if (it != s_commandsWithMinInvisLevelRequired.end())
 		return it->second;
 

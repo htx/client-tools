@@ -314,10 +314,6 @@ m_doubleToolbar(0)
 		CuiMediatorFactory::activateInWorkspace (CuiMediatorTypes::WS_DpsMeter);
 
 	CuiIMEManager::GetCuiIMEManager()->SetIMEIndicator(Game::isHudSceneTypeSpace() ? CuiMediatorTypes::WS_IMEIndicatorSpace : CuiMediatorTypes::WS_IMEIndicator);
-
-	if (CuiPreferences::getVoiceShowFlybar())
-		CuiMediatorFactory::activateInWorkspace(CuiMediatorTypes::WS_VoiceFlyBar);
-
 }
 
 //----------------------------------------------------------------------

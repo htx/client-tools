@@ -129,16 +129,16 @@ const VertexBufferDescriptor &Direct3d9_VertexBufferDescriptorMap::getDescriptor
 		// texture coordinate sets
 		const int numberOfTextureCoordinateSets = vertexFormat.getNumberOfTextureCoordinateSets();
 		{
-			for (int i = 0; i < numberOfTextureCoordinateSets; ++i)
+			for (int j = 0; j < numberOfTextureCoordinateSets; ++j)
 			{
-				const int dimension = vertexFormat.getTextureCoordinateSetDimension(i);
-				descriptor.offsetTextureCoordinateSet[i] = descriptor.vertexSize;
+				const int dimension = vertexFormat.getTextureCoordinateSetDimension(j);
+				descriptor.offsetTextureCoordinateSet[j] = descriptor.vertexSize;
 				descriptor.vertexSize = static_cast<int8>(descriptor.vertexSize + (sizeof(float) * dimension));
 			}
 		}
 		{
-			for (int i = numberOfTextureCoordinateSets; i < VertexBufferFormat::MAX_TEXTURE_COORDINATE_SETS; ++i)
-				descriptor.offsetTextureCoordinateSet[i] = -1;
+			for (int k = numberOfTextureCoordinateSets; k < VertexBufferFormat::MAX_TEXTURE_COORDINATE_SETS; ++k)
+				descriptor.offsetTextureCoordinateSet[k] = -1;
 		}
 
 		DEBUG_FATAL(descriptor.vertexSize == 0, ("Vertex has no data"));

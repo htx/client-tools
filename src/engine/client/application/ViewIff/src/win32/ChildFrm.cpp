@@ -151,5 +151,5 @@ void CChildFrame::OnDump()
 {
 	CFileDialog dialog(FALSE);
 	if (dialog.DoModal() == IDOK)
-		treeView->Dump(dialog.GetPathName());
+		treeView->Dump(CT2A(dialog.GetPathName()));
 }

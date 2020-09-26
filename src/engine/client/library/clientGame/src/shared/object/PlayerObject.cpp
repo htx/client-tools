@@ -2014,11 +2014,11 @@ void PlayerObject::getObjectInfo(std::map<std::string, std::map<std::string, Uni
 	}
 	else
 	{
-		char buffer[128];
-		snprintf(buffer, sizeof(buffer)-1, "Citizen type (%d) of (", m_citizenshipType.get());
-		buffer[sizeof(buffer)-1] = '\0';
+		char buffer2[128];
+		snprintf(buffer2, sizeof(buffer2)-1, "Citizen type (%d) of (", m_citizenshipType.get());
+		buffer2[sizeof(buffer2)-1] = '\0';
 
-		citizenshipInfo = buffer;
+		citizenshipInfo = buffer2;
 		citizenshipInfo += m_citizenshipCity.get();
 		citizenshipInfo += ")";
 	}

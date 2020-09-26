@@ -3431,24 +3431,24 @@ void GroundScene::receiveMessage(const MessageDispatch::Emitter &, const Message
 	else if (message.isType("LaunchBrowserMessage"))
 	{
 		Archive::ReadIterator ri = NON_NULL (gnm)->getByteStream().begin();
-		const GenericValueTypeMessage<std::string> message(ri);
-		Os::launchBrowser(message.getValue());
+		const GenericValueTypeMessage<std::string> message2(ri);
+		Os::launchBrowser(message2.getValue());
 	}
 	else if (message.isType("SetCommandCooldown"))
 	{
 		Archive::ReadIterator ri = NON_NULL (gnm)->getByteStream().begin();
-		const GenericValueTypeMessage<std::pair<uint32, std::pair<uint32, uint32> > > message(ri);
-		ClientCommandQueue::setCommandCooldown(message.getValue().first, message.getValue().second.first, message.getValue().second.second);
+		const GenericValueTypeMessage<std::pair<uint32, std::pair<uint32, uint32> > > message3(ri);
+		ClientCommandQueue::setCommandCooldown(message3.getValue().first, message3.getValue().second.first, message3.getValue().second.second);
 	}
 	else if (message.isType("fca11a62d23041008a4f0df36aa7dca6"))
 	{
 		Archive::ReadIterator ri = NON_NULL (gnm)->getByteStream().begin();
-		const GenericValueTypeMessage<float> message(ri);
+		const GenericValueTypeMessage<float> message4(ri);
 
 #if PRODUCTION == 0
 		if (s_usePlayerServerSpeed)
 #endif
-		ms_playerServerMovementSpeed = message.getValue();
+		ms_playerServerMovementSpeed = message4.getValue();
 	}
 }
 

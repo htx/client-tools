@@ -903,20 +903,20 @@ inline bool SphereTreeNode<ObjectType, ExtentAccessor>::findClosest( const Vecto
 
 		float dist = sphere.getCenter().magnitudeBetween(begin);
 
-		float minDist = dist - sphere.getRadius();
+		float minDist2 = dist - sphere.getRadius();
 		float maxDist = dist + sphere.getRadius();
 
-		if(minDist >= maxDistance)
+		if(minDist2 >= maxDistance)
 		{
 			continue;
 		}
 
-		if(minDist < outMinDistance)
+		if(minDist2 < outMinDistance)
 		{
 			found = true;
 
 			outClosest = *c;
-			outMinDistance = minDist;
+			outMinDistance = minDist2;
 			outMaxDistance = maxDist;
 		}
 	}
@@ -969,26 +969,26 @@ inline bool SphereTreeNode<ObjectType, ExtentAccessor>::findClosest2d( const Vec
 
 		testCounter++;
 
-		Vector delta = sphere.getCenter() - begin;
+		Vector delta2 = sphere.getCenter() - begin;
 
-		delta.y = 0.0f;
+		delta2.y = 0.0f;
 
-		float dist = delta.magnitude();
+		float dist = delta2.magnitude();
 
-		float minDist = dist - sphere.getRadius();
+		float minDist2 = dist - sphere.getRadius();
 		float maxDist = dist + sphere.getRadius();
 
-		if(minDist >= maxDistance)
+		if(minDist2 >= maxDistance)
 		{
 			continue;
 		}
 
-		if(minDist < outMinDistance)
+		if(minDist2 < outMinDistance)
 		{
 			found = true;
 
 			outClosest = *c;
-			outMinDistance = minDist;
+			outMinDistance = minDist2;
 			outMaxDistance = maxDist;
 		}
 	}

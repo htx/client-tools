@@ -2139,7 +2139,7 @@ void ShaderImplementationPassVertexShader::reloadShaderProgram()
 		using namespace ShaderImplementationPassVertexShaderNamespace;
 
 		VertexShaderMap::iterator i = ms_vertexShaderMap.find(&m_fileName);
-		DEBUG_FATAL(i == ms_vertexShaderMap.end(), ("vertex shader %s not found", m_fileName));
+		DEBUG_FATAL(i == ms_vertexShaderMap.end(), ("vertex shader %s not found", m_fileName.getString()));
 		ms_vertexShaderMap.erase(i);
 
 		delete [] m_text;
@@ -2271,7 +2271,7 @@ ShaderImplementationPassVertexShader::~ShaderImplementationPassVertexShader()
 	using namespace ShaderImplementationPassVertexShaderNamespace;
 
 	VertexShaderMap::iterator i = ms_vertexShaderMap.find(&m_fileName);
-	DEBUG_FATAL(i == ms_vertexShaderMap.end(), ("vertex shader %s not found", m_fileName));
+	DEBUG_FATAL(i == ms_vertexShaderMap.end(), ("vertex shader %s not found", m_fileName.getString()));
 	ms_vertexShaderMap.erase(i);
 
 	delete [] m_text;
@@ -2777,7 +2777,7 @@ ShaderImplementationPassPixelShaderProgram::~ShaderImplementationPassPixelShader
 	using namespace ShaderImplementationPassPixelShaderProgramNamespace;
 
 	ProgramMap::iterator i = ms_programMap.find(&m_fileName);
-	DEBUG_FATAL(i == ms_programMap.end(), ("pixel program %s not found", m_fileName));
+	DEBUG_FATAL(i == ms_programMap.end(), ("pixel program %s not found", m_fileName.getString()));
 	ms_programMap.erase(i);
 
 	delete [] m_exe;
@@ -2826,7 +2826,7 @@ void ShaderImplementationPassPixelShaderProgram::reload()
 		using namespace ShaderImplementationPassPixelShaderProgramNamespace;
 
 		ProgramMap::iterator i = ms_programMap.find(&m_fileName);
-		DEBUG_FATAL(i == ms_programMap.end(), ("pixel program %s not found", m_fileName));
+		DEBUG_FATAL(i == ms_programMap.end(), ("pixel program %s not found", m_fileName.getString()));
 		ms_programMap.erase(i);
 
 		delete [] m_exe;

@@ -528,9 +528,9 @@ bool DraftSchematicInfo::formatDraftAttribWeights (Unicode::String & draftAttrib
 									}
 								}
 								DEBUG_WARNING(!foundMapping, ("Can't find mapping for resource name '%s'", Unicode::wideToNarrow(resourceAttribName).c_str()));								
-								for (ObjectAttributeManager::AttributeVector::iterator it = resourceAttribs.begin(); it != resourceAttribs.end(); ++it)
+								for (ObjectAttributeManager::AttributeVector::iterator it2 = resourceAttribs.begin(); it2 != resourceAttribs.end(); ++it2)
 								{
-									ObjectAttributeManager::AttributePair & attributePair = *it;
+									ObjectAttributeManager::AttributePair & attributePair = *it2;
 									if(attributePair.first == mappedType)
 									{
 										resourceValue = atoi(Unicode::wideToNarrow(attributePair.second).c_str());									
@@ -1055,9 +1055,9 @@ float DraftSchematicInfo::calculateResourceMatch(const NetworkId &resourceTypeId
 							}
 						}
 						DEBUG_WARNING(!foundMapping, ("Can't find mapping for resource name '%s'", Unicode::wideToNarrow(resourceAttribName).c_str()));
-						for (ObjectAttributeManager::AttributeVector::iterator it = resourceAttribs.begin(); it != resourceAttribs.end(); ++it)
+						for (ObjectAttributeManager::AttributeVector::iterator it3 = resourceAttribs.begin(); it3 != resourceAttribs.end(); ++it3)
 						{
-							ObjectAttributeManager::AttributePair & attributePair = *it;
+							ObjectAttributeManager::AttributePair & attributePair = *it3;
 							if(attributePair.first == mappedType)
 							{
 								resourceValue = atoi(Unicode::wideToNarrow(attributePair.second).c_str());

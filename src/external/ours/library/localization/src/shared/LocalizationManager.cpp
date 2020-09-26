@@ -441,14 +441,14 @@ void LocalizationManager::releaseStringTable (const LocalizedStringTable * table
 		}
 		else if(!m_usingEnglishLocale)
 		{
-			const StringTableMap_t::iterator find_iter = m_englishStringTableMap.find (table->getName ());
+			const StringTableMap_t::iterator find_iter2 = m_englishStringTableMap.find (table->getName ());
 
-			assert (find_iter != m_englishStringTableMap.end ());//lint !e1924 // c-style cast.  MSVC bug
+			assert (find_iter2 != m_englishStringTableMap.end ());//lint !e1924 // c-style cast.  MSVC bug
 
-			delete (*find_iter).second.second;
-			(*find_iter).second.second = 0;
+			delete (*find_iter2).second.second;
+			(*find_iter2).second.second = 0;
 
-			m_englishStringTableMap.erase (find_iter);
+			m_englishStringTableMap.erase (find_iter2);
 		}
 	}
 

@@ -984,14 +984,14 @@ void WorldSnapshot::update(CellProperty const * const cellProperty, Vector const
 			RenderWorld::CellPropertyList const & cellPropertyList = RenderWorld::getVisibleCells();
 			for (size_t i = 0; i < cellPropertyList.size(); ++i)
 			{
-				CellProperty const * const cellProperty = cellPropertyList[i];
-				if (!cellProperty || cellProperty == CellProperty::getWorldCellProperty ())
+				CellProperty const * const cellProperty2 = cellPropertyList[i];
+				if (!cellProperty2 || cellProperty2 == CellProperty::getWorldCellProperty ())
 					continue;
 
-				if (!cellProperty->getOwner().isInWorld())
+				if (!cellProperty2->getOwner().isInWorld())
 					continue;
 
-				const WorldSnapshotReaderWriter::Node* const cellNode = ms_reader.find ( cellProperty->getOwner ().getNetworkId ().getValue () );
+				const WorldSnapshotReaderWriter::Node* const cellNode = ms_reader.find ( cellProperty2->getOwner ().getNetworkId ().getValue () );
 				if (cellNode && !cellNode->isInWorld ())
 				{
 					cellNode->addToWorld ();

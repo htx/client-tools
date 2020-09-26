@@ -89,9 +89,6 @@ IoResult TimeOfDayTest::processEvent (IoEvent* event)
 				m_timer.updateSubtract (elapsedTime);
 	
 			const float timeRatio  = m_timer.getElapsedRatio ();
-			const float PI_OVER_6  = PI_OVER_3 * 0.5f;
-			const float PI_OVER_8  = PI_OVER_4 * 0.5f;
-			const float PI_OVER_16 = PI_OVER_4 * 0.25f;
 
 			//-- jake wants the main light at 12 degrees from the y axis
 			if (timeRatio <= 0.5f)

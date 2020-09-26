@@ -123,8 +123,8 @@ bool SwgCuiCommandParserChatRoom::performParsing  (const NetworkId & , const Str
 
 			if (room)
 			{
-				Unicode::appendStringField (result, room->data.path, 20, Unicode::FA_LEFT);
-				result += room->data.title;
+				Unicode::appendStringField (result, room->mData.path, 20, Unicode::FA_LEFT);
+				result += room->mData.title;
 			}
 			else
 				result += Unicode::narrowToWide ("ERROR!");
@@ -149,7 +149,7 @@ bool SwgCuiCommandParserChatRoom::performParsing  (const NetworkId & , const Str
 			const CuiChatRoomDataNode * const room = rooms.back ();
 			rooms.pop_back ();
 			
-			const uint32 id = room->data.id;
+			const uint32 id = room->mData.id;
 			
 			if (id)
 			{
@@ -162,9 +162,9 @@ bool SwgCuiCommandParserChatRoom::performParsing  (const NetworkId & , const Str
 				
 				if (node)
 				{
-					Unicode::appendStringField (result, room->data.path, 20, Unicode::FA_LEFT);
+					Unicode::appendStringField (result, room->mData.path, 20, Unicode::FA_LEFT);
 					result.append (4, ' ');
-					result += room->data.title;
+					result += room->mData.title;
 				}
 				else
 					result += Unicode::narrowToWide ("ERROR!");
@@ -470,21 +470,21 @@ bool SwgCuiCommandParserChatRoom::performParsing  (const NetworkId & , const Str
 			result += CuiStringIdsChatRoom::info_owner.localize ();
 			result += color_reset;
 			result.append (tabStop2);
-			result += Unicode::narrowToWide (roomNode->data.owner.getFullName ());
+			result += Unicode::narrowToWide (roomNode->mData.owner.getFullName ());
 			result.append (1, '\n');
 
 			result += color_contrast;
 			result += CuiStringIdsChatRoom::info_creator.localize ();
 			result += color_reset;
 			result.append (tabStop2);
-			result += Unicode::narrowToWide (roomNode->data.creator.getFullName ());
+			result += Unicode::narrowToWide (roomNode->mData.creator.getFullName ());
 			result.append (1, '\n');
 
 			result += color_contrast;
 			result += CuiStringIdsChatRoom::info_private_prefix.localize ();
 			result += color_reset;
 			result.append (tabStop2);
-			UIUtils::FormatBoolean (tmpStr, roomNode->data.roomType == CHAT_ROOM_PRIVATE);
+			UIUtils::FormatBoolean (tmpStr, roomNode->mData.roomType == CHAT_ROOM_PRIVATE);
 			result += tmpStr;
 			result.append (1, '\n');
 
@@ -492,7 +492,7 @@ bool SwgCuiCommandParserChatRoom::performParsing  (const NetworkId & , const Str
 			result += CuiStringIdsChatRoom::info_moderated_prefix.localize ();
 			result += color_reset;
 			result.append (tabStop2);
-			UIUtils::FormatBoolean (tmpStr, roomNode->data.moderated != 0);
+			UIUtils::FormatBoolean (tmpStr, roomNode->mData.moderated != 0);
 			result += tmpStr;
 			result.append (1, '\n');
 

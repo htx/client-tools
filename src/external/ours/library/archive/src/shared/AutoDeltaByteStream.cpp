@@ -196,7 +196,7 @@ void AutoDeltaByteStream::unpackDeltas(ReadIterator & source)
 AutoDeltaVariableBase::AutoDeltaVariableBase() :
 	AutoVariableBase(),
 	index(0),
-	owner(0)
+	mOwner(0)
 {
 }
 
@@ -209,7 +209,7 @@ AutoDeltaVariableBase::AutoDeltaVariableBase() :
 */
 AutoDeltaVariableBase::~AutoDeltaVariableBase()
 {
-	owner = 0;
+	mOwner = 0;
 }
 
 //-----------------------------------------------------------------------

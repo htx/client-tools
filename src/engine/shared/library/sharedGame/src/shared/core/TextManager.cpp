@@ -137,11 +137,11 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 						continue;
 					}
 
-					unsigned int index = lowerText.find(cussWord, findStartPosition);
+					unsigned int index2 = lowerText.find(cussWord, findStartPosition);
 
-					if (index != Unicode::String::npos)
+					if (index2 != Unicode::String::npos)
 					{
-						findStartPosition = index;
+						findStartPosition = index2;
 
 						// Found a bad word, replace the word
 
@@ -152,7 +152,7 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 						{
 							getFilterLetter(filterLetter);
 
-							text[index + i] = filterLetter[0];
+							text[index2 + i] = filterLetter[0];
 							++findStartPosition;
 						}
 

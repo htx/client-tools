@@ -220,7 +220,7 @@ protected:
 	virtual void        unpackDelta(ReadIterator & source) = 0;
 private:
 	unsigned short int  index;
-	AutoDeltaByteStream * owner;
+	AutoDeltaByteStream * mOwner;
 };
 
 //-----------------------------------------------------------------------
@@ -279,7 +279,7 @@ inline const unsigned short int AutoDeltaVariableBase::getIndex() const
 */
 inline AutoDeltaByteStream * AutoDeltaVariableBase::getOwner()
 {
-	return owner;
+	return mOwner;
 }
 
 //-----------------------------------------------------------------------
@@ -314,7 +314,7 @@ inline void AutoDeltaVariableBase::setIndex(const unsigned short int newIndex)
 */
 inline void AutoDeltaVariableBase::setOwner(AutoDeltaByteStream * newOwner)
 {
-	owner = newOwner;
+	mOwner = newOwner;
 }
 
 //-----------------------------------------------------------------------
@@ -325,8 +325,8 @@ inline void AutoDeltaVariableBase::setOwner(AutoDeltaByteStream * newOwner)
 */
 inline void AutoDeltaVariableBase::touch()
 {
-	if(owner)
-		owner->addToDirtyList(this);
+	if(mOwner)
+		mOwner->addToDirtyList(this);
 }
 
 //-----------------------------------------------------------------------

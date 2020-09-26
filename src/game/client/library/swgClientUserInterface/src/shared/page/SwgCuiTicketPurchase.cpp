@@ -275,7 +275,7 @@ m_callback                 (new MessageDispatch::Callback)
 				if(!gcwButton)
 					DEBUG_WARNING(true, ("Failed to find Galactic Map GCW Button for planet [%s] using codeData value [%s]", planet.c_str(), buttonName.c_str()));
 				else
-					ms_gcwButtons.insert(std::make_pair<std::string, UIButton *>(planet, gcwButton));
+					ms_gcwButtons.insert(std::make_pair(planet, gcwButton));
 			}
 
 			DataTableManager::close(cs_PlanetWidthDataTable);
@@ -1052,8 +1052,7 @@ void SwgCuiTicketPurchase::showPlanet (const std::string& planetName)
 				else
 				{
 					mapWidthInMeters = cs_defaultPlanetWidth;
-					DEBUG_WARNING(true, ("Missing entry in '%s' for planet '%s' assuming default width of '%f'",
-						cs_PlanetWidthDataTable, planetName, cs_defaultPlanetWidth));
+					DEBUG_WARNING(true, ("Missing entry in '%s' for planet '%s' assuming default width of '%f'", cs_PlanetWidthDataTable, planetName.c_str(), cs_defaultPlanetWidth));
 				}
 			}
 
@@ -1075,14 +1074,14 @@ void SwgCuiTicketPurchase::showPlanet (const std::string& planetName)
 				BuildoutArea const * const ba = SharedBuildoutAreaManager::findBuildoutAreaAtPosition(planetName, travelPoint.m_point_w.x, travelPoint.m_point_w.z, true);
 				if (ba)
 				{
-					Vector2d const & size = ba->getSize(true);
+					Vector2d const & size2 = ba->getSize(true);
 
 					Vector baPos = ba->getRelativePosition(travelPoint.m_point_w, true);
-					baPos.x += size.x * 0.5f;
-					baPos.z += size.y * 0.5f;
+					baPos.x += size2.x * 0.5f;
+					baPos.z += size2.y * 0.5f;
 
-					x = clamp (0.f, (baPos.x) / size.x, 1.f);
-					z = 1.f - clamp (0.f, (baPos.z) / size.y, 1.f);
+					x = clamp (0.f, (baPos.x) / size2.x, 1.f);
+					z = 1.f - clamp (0.f, (baPos.z) / size2.y, 1.f);
 					
 				}
 				else

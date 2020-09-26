@@ -154,21 +154,21 @@ ClientProceduralTerrainAppearance::ShaderCache::ShaderCache (const ShaderGroup& 
 		bool const dot3 = ClientProceduralTerrainAppearance::getDot3Terrain ();
 		
 		//-- load blend tiles
-		for (int i = 0; i < 4; i++)
+		for (int j = 0; j < 4; j++)
 		{
 			char shaderName [64];
-			sprintf (shaderName , "shader/terrain_%sblend%i.sht", dot3 ? "dot3_" : "", i);
-			blendingShader [i] = safe_cast<StaticShader*>(ShaderTemplateList::fetchModifiableShader (shaderName));
-			blendingShader [i]->setObeysLightScale (ConfigClientTerrain::getEnableLightScaling ());
+			sprintf (shaderName , "shader/terrain_%sblend%i.sht", dot3 ? "dot3_" : "", j);
+			blendingShader [j] = safe_cast<StaticShader*>(ShaderTemplateList::fetchModifiableShader (shaderName));
+			blendingShader [j]->setObeysLightScale (ConfigClientTerrain::getEnableLightScaling ());
 			
 			if (specular)
 			{
-				sprintf (shaderName , "shader/terrain_%sblend%i_spec.sht", dot3 ? "dot3_" : "", i);
-				blendingShaderSpecular[i] = safe_cast<StaticShader*>(ShaderTemplateList::fetchModifiableShader (shaderName));
-				blendingShaderSpecular[i]->setObeysLightScale (ConfigClientTerrain::getEnableLightScaling ());
+				sprintf (shaderName , "shader/terrain_%sblend%i_spec.sht", dot3 ? "dot3_" : "", j);
+				blendingShaderSpecular[j] = safe_cast<StaticShader*>(ShaderTemplateList::fetchModifiableShader (shaderName));
+				blendingShaderSpecular[j]->setObeysLightScale (ConfigClientTerrain::getEnableLightScaling ());
 			}
 			else
-				blendingShaderSpecular[i] = NULL;
+				blendingShaderSpecular[j] = NULL;
 		}
 	}
 

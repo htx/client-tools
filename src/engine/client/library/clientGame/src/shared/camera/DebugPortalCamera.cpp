@@ -285,9 +285,9 @@ float DebugPortalCamera::alter (float elapsedTime)
 				DEBUG_REPORT_LOG(true, ("Camera path playback finished\n"));
 
 				static int size = m_frameRateList->size();
-				for (int i = 0; i < size; ++i)
+				for (int j = 0; j < size; ++j)
 				{
-					DEBUG_REPORT_LOG_PRINT(true, ("path %4d %6.5f %5.2f\n", i, (*m_frameTimeList)[i], (*m_frameRateList)[i]));
+					DEBUG_REPORT_LOG_PRINT(true, ("path %4d %6.5f %5.2f\n", j, (*m_frameTimeList)[j], (*m_frameRateList)[j]));
 				}
 
 				m_mode = M_normal;

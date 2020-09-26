@@ -1140,9 +1140,9 @@ bool ClientExpertiseManager::canDeallocateExpertise(std::string const & expertis
 		if(potentialPostReq)
 		{
 			SkillObject::SkillVector const prereqs = potentialPostReq->getPrerequisiteSkills();
-			for (SkillObject::SkillVector::const_iterator i = prereqs.begin(); i != prereqs.end(); ++i)
+			for (SkillObject::SkillVector::const_iterator m = prereqs.begin(); m != prereqs.end(); ++m)
 			{
-				SkillObject const * prereq = (*i);
+				SkillObject const * prereq = (*m);
 				if (prereq && (prereq->getSkillName() == expertiseName))
 				{
 					return false;

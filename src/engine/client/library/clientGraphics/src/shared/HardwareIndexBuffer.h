@@ -44,6 +44,7 @@ inline HardwareIndexBuffer::HardwareIndexBuffer(Type type)
 :
 	m_type(type)
 {
+
 }
 
 

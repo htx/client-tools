@@ -96,10 +96,10 @@ void ClientInteriorLayoutManager::update()
 			continue;
 
 		TemporaryCrcString const cellName(cellProperty->getCellName(), true);
-		for (int i = 0; i < interiorLayout->getNumberOfObjects(cellName); ++i)
+		for (int j = 0; j < interiorLayout->getNumberOfObjects(cellName); ++j)
 		{
-			CrcString const & objectTemplateName = interiorLayout->getObjectTemplateName(cellName, i);
-			Transform const & transform_o2p = interiorLayout->getTransform_o2p(cellName, i);
+			CrcString const & objectTemplateName = interiorLayout->getObjectTemplateName(cellName, j);
+			Transform const & transform_o2p = interiorLayout->getTransform_o2p(cellName, j);
 
 			//-- Create the object
 			ClientObject * const interiorObject = safe_cast<ClientObject *>(ObjectTemplateList::createObject(objectTemplateName));

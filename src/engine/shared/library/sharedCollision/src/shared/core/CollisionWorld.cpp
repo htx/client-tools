@@ -1453,11 +1453,11 @@ QueryInteractionResult CollisionWorld::queryInteraction ( CellProperty const * c
 
 					Vector delta = localB - pointA;
 
-					float hitTime = Collision3d::ComponentAlong(hitDelta,delta);
+					float hitTime2 = Collision3d::ComponentAlong(hitDelta,delta);
 
-					if(hitTime < hitPortalTime)
+					if(hitTime2 < hitPortalTime)
 					{
-						outHitTime = hitTime;
+						outHitTime = hitTime2;
 						outHitObject = NULL;
 
 						return QIR_HitTerrain;

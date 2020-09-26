@@ -1,13 +1,11 @@
 -i..\..\..\ours\library\unicode\include
 -i..\directx8/include
--i..\stlport453\stlport
 -iinclude
 
 std.lnt
 swg-gen.lnt
 swg-dx.lnt
 swg-win.lnt
-swg-stlport.lnt
 
 -esym(641, PageAttributeFlags);
 -esym(641, ButtonAttributeBitFlags);

@@ -741,11 +741,11 @@ void ShaderPrimitiveSorter::Phase::draw()
 		
 		Graphics::setAlphaFadeOpacity(alphaFadeOpacityEnabled, alphaFadeOpacity);
 		
-		for (int i = 0; i < numberOfPasses; ++i)
+		for (int j = 0; j < numberOfPasses; ++j)
 		{
-			Graphics::setStaticShader(staticShader, i);
+			Graphics::setStaticShader(staticShader, j);
 						
-			bool const isHeat = entry.staticShader->isHeatPass(i);
+			bool const isHeat = entry.staticShader->isHeatPass(j);
 			
 			if (isHeat)
 			{

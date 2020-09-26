@@ -57,9 +57,9 @@ DeltasMessage::~DeltasMessage()
 
 //-----------------------------------------------------------------------
 
-void DeltasMessage::pack(Archive::ByteStream & target) const
+void DeltasMessage::pack(Archive::ByteStream & target2) const
 {
-	AutoByteStream::pack(target);
+	AutoByteStream::pack(target2);
 }
 
 //-----------------------------------------------------------------------

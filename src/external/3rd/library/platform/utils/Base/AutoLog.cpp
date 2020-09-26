@@ -41,7 +41,7 @@ bool CAutoLog::Open(const char * filename)
     if (pFilename)
         return false;
 
-    pFilename = strdup(filename);
+    pFilename = _strdup(filename);
 
     //  Sanitize slashes
     char *ptr;
@@ -288,7 +288,7 @@ void CAutoLog::Archive(void)
     else
         sprintf(strCurrent,".");
 
-	sprintf(strPath,"%s"SLASHCHAR"%s", strCurrent, strTime);                   // logs/041698
+	sprintf(strPath,"%s--%s", strCurrent, strTime);                   // logs/041698
 
 #ifdef WIN32
     // remember current directory
@@ -331,7 +331,7 @@ void CAutoLog::Archive(void)
     else
         pCurrent++;
 
-    sprintf(strCurrent,"%s"SLASHCHAR"%s",strPath,pCurrent);
+    sprintf(strCurrent,"%s--%s",strPath,pCurrent);
 
     fflush(pFile);
     fclose(pFile);

@@ -54,9 +54,9 @@ m_container           (0),
 m_moneyOk             (false)
 {
 	{
-		UIPage * page = 0;
-		getCodeDataObject (TUIPage, page, "container");
-		m_container = new SwgCuiInventoryContainer (*page);
+		UIPage * page2 = 0;
+		getCodeDataObject (TUIPage, page2, "container");
+		m_container = new SwgCuiInventoryContainer (*page2);
 		m_container->fetch ();
 		m_container->setContainerProvider (m_containerProvider);
 	}

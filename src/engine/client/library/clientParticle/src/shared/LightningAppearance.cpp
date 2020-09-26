@@ -1003,15 +1003,15 @@ void LightningAppearance::setPosition_w(int const index, Vector const &startPosi
 			float const largeBoltPercent = m_lightningAppearanceTemplate->getLargeBoltPercent();
 			float currentPercent = 0.0f;
 			
-			for (unsigned int index = 0; index < static_cast<unsigned int>(m_activeBoltCount); ++index)
+			for (unsigned int index2 = 0; index2 < static_cast<unsigned int>(m_activeBoltCount); ++index2)
 			{
 				if (currentPercent < largeBoltPercent)
 				{
-					m_lightningBoltDataList[index].m_largeBolt = true;
+					m_lightningBoltDataList[index2].m_largeBolt = true;
 				}
 				else
 				{
-					m_lightningBoltDataList[index].m_largeBolt = false;
+					m_lightningBoltDataList[index2].m_largeBolt = false;
 				}
 				
 				currentPercent += 1.0f / static_cast<float>(m_activeBoltCount);

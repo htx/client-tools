@@ -1009,8 +1009,8 @@ void Audio::showAudioDebug()
 	DEBUG_REPORT_PRINT(true, ("Sound Instant Rejections   - %d\n", s_instantRejectionCount));
 	DEBUG_REPORT_PRINT(true, ("Next sampleId/soundId      - %d/%d\n", s_nextSampleId, s_nextSoundId));
 	DEBUG_REPORT_PRINT(true, ("Timer Delay (ms)           - %d/%d peak (%.1f) avg\n", s_timerCurrentDelay, s_timerHighestDelay, s_averageTimerDelay));
-	DEBUG_REPORT_PRINT(true, ("User Speaker Setting       - %s\n", getCurrent3dProvider()));
-	DEBUG_REPORT_PRINT(true, ("Miles Speaker Setting      - %s\n", getSpeakerSpec()));
+	DEBUG_REPORT_PRINT(true, ("User Speaker Setting       - %s\n", getCurrent3dProvider().c_str()));
+	DEBUG_REPORT_PRINT(true, ("Miles Speaker Setting      - %s\n", getSpeakerSpec().c_str()));
 	DEBUG_REPORT_PRINT(true, ("Environmental Reverb       - %s\n", getRoomTypeString()));
 	DEBUG_REPORT_PRINT(true, ("Obstruction (interiors)    - %d%%\n", static_cast<int>(getObstruction() * 100.0f + 0.5f)));
 	DEBUG_REPORT_PRINT(true, ("Occlusion (inside vs out)  - %d%%\n", static_cast<int>(getOcclusion() * 100.0f + 0.5f)));
@@ -1322,7 +1322,7 @@ bool Audio::install()
 	AIL_speaker_configuration(s_digitalDevice2d, NULL, NULL, NULL, &s_speakers);
 
 	REPORT_LOG(true, ("Audio: %s\n", getCurrent3dProvider().c_str()));
-	REPORT_LOG(true, ("Audio: Miles speakers are %s\n", getSpeakerSpec()));
+	REPORT_LOG(true, ("Audio: Miles speakers are %s\n", getSpeakerSpec().c_str()));
 	REPORT_LOG(true, ("Audio: Miles Max DIG_MIXER_CHANNELS(%d)\n", getMaxDigitalMixerChannels()));
 
 	// This disables any reberb from a previous product
@@ -1988,11 +1988,11 @@ void Audio::alter(float const deltaTime, Object const *listener)
 				{
 					// The sample is not a good choice to play so stop it
 
-					Sound2 * sound = (*iterUtilitySoundList);
+					Sound2 * sound2 = (*iterUtilitySoundList);
 					float const fadeOutTime = 0.0f;
-					bool const keepAlive = sound->isInfiniteLooping();
+					bool const keepAlive = sound2->isInfiniteLooping();
 
-					AudioNamespace::stopSound(sound->getSoundId(), fadeOutTime, keepAlive);
+					AudioNamespace::stopSound(sound2->getSoundId(), fadeOutTime, keepAlive);
 				}
 			}
 		}

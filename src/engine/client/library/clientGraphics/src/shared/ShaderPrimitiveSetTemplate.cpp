@@ -1153,12 +1153,12 @@ void ShaderPrimitiveSetTemplate::LocalShaderPrimitiveTemplate::validateShaderTem
 				formatBits(buffer1, shaderTextureCoordinateSets);
 				formatBits(buffer2, vbTextureCoordinateSets);
 
-				char const * const name = sst->getName().getString() ? sst->getName().getString() : "unknown";
+				char const * const name2 = sst->getName().getString() ? sst->getName().getString() : "unknown";
 				char const * const missing = (shaderTextureCoordinateSets & (~vbTextureCoordinateSets)) ? "missing " : "";
 				char const * const extra = (vbTextureCoordinateSets & (~shaderTextureCoordinateSets)) ? "extra " : "";
 				char const * const skip = (((shaderTextureCoordinateSets + 1) & shaderTextureCoordinateSets) != 0) ? "skip " : "";
 
-				WARNING(true, ("shader %s needs different texture coordinates than vb %s%s%s(%s %s)", name, missing, extra, skip, buffer1, buffer2));
+				WARNING(true, ("shader %s needs different texture coordinates than vb %s%s%s(%s %s)", name2, missing, extra, skip, buffer1, buffer2));
 			}
 
 			if (name)
