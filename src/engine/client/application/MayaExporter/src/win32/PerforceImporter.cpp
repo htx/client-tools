@@ -34,7 +34,7 @@
 //system / STL includes
 #include <map>
 #include <set>
-#include "windows.h"
+#include <windows.h>
 #include "resource.h"
 
 const int s_perforceErrorNotLoggedIn      = 7189;    // Perforce password (P4PASSWD) invalid or unset

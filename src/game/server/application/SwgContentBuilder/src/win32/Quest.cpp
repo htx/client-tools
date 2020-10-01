@@ -97,7 +97,7 @@ std::string const & Quest::getConversationStfName () const
 void Quest::setConversationStfName (std::string const & conversationStfName)
 {
 	m_conversationStfName = conversationStfName;
-	std::transform (m_conversationStfName.begin (), m_conversationStfName.end (), m_conversationStfName.begin (), tolower);
+	std::transform (m_conversationStfName.begin (), m_conversationStfName.end (), m_conversationStfName.begin (), [](char c){return static_cast<unsigned char>(std::tolower(c));});
 }
 
 // ----------------------------------------------------------------------

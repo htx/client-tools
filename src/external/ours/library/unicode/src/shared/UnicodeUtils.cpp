@@ -136,7 +136,7 @@ namespace Unicode
 	NarrowString    toLower (const NarrowString & nstr)
 	{
 		NarrowString retval (nstr);
-		std::transform (retval.begin (), retval.end (), retval.begin (), [](char c){return static_cast<char>(std::tolower(c));});
+		std::transform (retval.begin (), retval.end (), retval.begin (), [](char c){return static_cast<unsigned char>(std::tolower(c));});
 		return retval;
 	}
 
@@ -149,7 +149,7 @@ namespace Unicode
 	NarrowString    toUpper (const NarrowString & nstr)
 	{
 		NarrowString retval (nstr);
-		std::transform (retval.begin (), retval.end (), retval.begin (), [](char c){return static_cast<char>(std::toupper(c));});
+		std::transform (retval.begin (), retval.end (), retval.begin (), [](char c){return static_cast<unsigned char>(std::toupper(c));});
 		return retval;
 	}
 

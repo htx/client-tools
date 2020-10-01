@@ -17,6 +17,10 @@
 // ======================================================================
 
 #include <afxwin.h>
+#include <afxext.h>
+#include <afxdisp.h>      //MFC automation classes
+#include <afxdtctl.h>   //MFC support for Internet Explorer common controls
+#include <afxcmn.h>
 
 // ======================================================================
 

@@ -780,7 +780,7 @@ void LayerView::OnButtonDeleteLayer()
 	CString name = GetTreeCtrl ().GetItemText (selection);
 
 	CString tmp;
-	tmp.Format ("Are you sure you want to delete %s?", name);
+	tmp.Format ("Are you sure you want to delete %s?", name.GetString());
 
 	if (MessageBox (tmp, 0, MB_YESNO) == IDYES)
 	{

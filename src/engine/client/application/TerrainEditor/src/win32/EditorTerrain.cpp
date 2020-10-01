@@ -319,10 +319,10 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 	NOT_NULL (terrain);
 
 	//-- calculate texture width
-	const int numberOfPoles = generatorChunkData->numberOfPoles;
-	const int originOffset  = generatorChunkData->originOffset;
-	const int upperPad      = generatorChunkData->upperPad;
-	const int width         = numberOfPoles - originOffset - upperPad;
+	const int numberOfPoles2 = generatorChunkData->numberOfPoles;
+	const int originOffset2  = generatorChunkData->originOffset;
+	const int upperPad2      = generatorChunkData->upperPad;
+	const int width         = numberOfPoles2 - originOffset2 - upperPad2;
 	DEBUG_FATAL (!IsPowerOfTwo (width), ("width is not a power of 2"));
 
 	extent.x0 = generatorChunkData->start.x;
@@ -393,13 +393,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 	const Array2d<bool>* passableMap = generatorChunkData->passableMap;
 	NOT_NULL (passableMap);
 
-	const MapView* mapView = terrain->mapView;  //lint !e578  //-- hides mapView
-	NOT_NULL (mapView);
+	const MapView* mapView2 = terrain->mapView;  //lint !e578  //-- hides mapView
+	NOT_NULL (mapView2);
 
-	const TerrainEditorDoc* document = terrain->document;  //lint !e578  //-- hides document
-	NOT_NULL (document);
+	const TerrainEditorDoc* document2 = terrain->document;  //lint !e578  //-- hides document
+	NOT_NULL (document2);
 
-	const real distance = document->getWhiteHeight () - document->getBlackHeight ();
+	const real distance = document2->getWhiteHeight () - document2->getBlackHeight ();
 
 #if MAPVIEW_REVERSED
 	Vector toLight (-1, 1, 1);
@@ -414,9 +414,9 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 
 	int x;
 	int z;
-	for (z = 1; z < numberOfPoles - 2; z++)
+	for (z = 1; z < numberOfPoles2 - 2; z++)
 	{
-		for (x = 1; x < numberOfPoles - 2; x++)
+		for (x = 1; x < numberOfPoles2 - 2; x++)
 		{
 			bool set   = false;
 			real r     = CONST_REAL (0);
@@ -426,23 +426,23 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 			if (!excludeMap->getData (x, z))
 			{
 				//-- color is initially set to pink
-				if (mapView->getShowHeightMap ())
+				if (mapView2->getShowHeightMap ())
 				{
-					if (mapView->getShowLighting ())
+					if (mapView2->getShowLighting ())
 					{
 						r = g = b = clamp (0.f, toLight.dot (gcd_vertexNormalMap->getData (x, z)), 1.f);
 					}
 					else
 					{
-						const real y = clamp (document->getBlackHeight (), gcd_heightMap->getData (x, z), CONST_REAL (document->getWhiteHeight ()));
+						const real y = clamp (document2->getBlackHeight (), gcd_heightMap->getData (x, z), CONST_REAL (document2->getWhiteHeight ()));
 
-						r = g = b = (distance == CONST_REAL (0)) ? CONST_REAL (0) : ((y - document->getBlackHeight ()) / distance);
+						r = g = b = (distance == CONST_REAL (0)) ? CONST_REAL (0) : ((y - document2->getBlackHeight ()) / distance);
 					}
 
 					set = true;
 				}
 
-				if (mapView->getShowColorMap () || mapView->getShowShaderMap ())
+				if (mapView2->getShowColorMap () || mapView2->getShowShaderMap ())
 				{
 					//-- brighten the height color before mixing in vertex color
 					r = r * CONST_REAL (0.5) + CONST_REAL (0.5);
@@ -450,7 +450,7 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					b = b * CONST_REAL (0.5) + CONST_REAL (0.5);
 				}
 
-				if (mapView->getShowColorMap ())
+				if (mapView2->getShowColorMap ())
 				{
 					const PackedRgb color = colorMap->getData (x, z);
 
@@ -470,7 +470,7 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					set = true;
 				}
 
-				if (mapView->getShowPassableMap())
+				if (mapView2->getShowPassableMap())
 				{
 					if (!passableMap->getData(x, z))
 					{
@@ -480,13 +480,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (mapView->getShowShaderMap ())
+				if (mapView2->getShowShaderMap ())
 				{
 					const int familyId = gcd_shaderMap->getData (x, z).getFamilyId ();
 
 					if (familyId)
 					{
-						const PackedRgb color = document->getTerrainGenerator ()->getShaderGroup ().getFamilyColor (familyId);
+						const PackedRgb color = document2->getTerrainGenerator ()->getShaderGroup ().getFamilyColor (familyId);
 
 						if (set)
 						{
@@ -505,13 +505,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (mapView->getShowRadialMap ())
+				if (mapView2->getShowRadialMap ())
 				{
 					const int familyId = gcd_floraDynamicFarMap->getData (x, z).getFamilyId();
 
 					if (familyId)
 					{
-						const PackedRgb color = document->getTerrainGenerator ()->getRadialGroup ().getFamilyColor (familyId);
+						const PackedRgb color = document2->getTerrainGenerator ()->getRadialGroup ().getFamilyColor (familyId);
 
 						r = static_cast<real> (color.r) * RECIP (255);
 						g = static_cast<real> (color.g) * RECIP (255);
@@ -519,13 +519,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (mapView->getShowRadialMap ())
+				if (mapView2->getShowRadialMap ())
 				{
 					const int familyId = gcd_floraDynamicNearMap->getData (x, z).getFamilyId();
 
 					if (familyId)
 					{
-						const PackedRgb color = document->getTerrainGenerator ()->getRadialGroup ().getFamilyColor (familyId);
+						const PackedRgb color = document2->getTerrainGenerator ()->getRadialGroup ().getFamilyColor (familyId);
 
 						r = static_cast<real> (color.r) * RECIP (255);
 						g = static_cast<real> (color.g) * RECIP (255);
@@ -533,13 +533,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (mapView->getShowFloraMap ())
+				if (mapView2->getShowFloraMap ())
 				{
 					const int familyId = gcd_floraStaticNonCollidableMap->getData (x, z).getFamilyId ();
 
 					if (familyId)
 					{
-						const PackedRgb color = document->getTerrainGenerator ()->getFloraGroup ().getFamilyColor (familyId);
+						const PackedRgb color = document2->getTerrainGenerator ()->getFloraGroup ().getFamilyColor (familyId);
 
 						r = static_cast<real> (color.r) * RECIP (255);
 						g = static_cast<real> (color.g) * RECIP (255);
@@ -547,13 +547,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (mapView->getShowFloraMap ())
+				if (mapView2->getShowFloraMap ())
 				{
 					const int familyId = gcd_floraStaticCollidableMap->getData (x, z).getFamilyId ();
 
 					if (familyId)
 					{
-						const PackedRgb color = document->getTerrainGenerator ()->getFloraGroup ().getFamilyColor (familyId);
+						const PackedRgb color = document2->getTerrainGenerator ()->getFloraGroup ().getFamilyColor (familyId);
 
 						r = static_cast<real> (color.r) * RECIP (255);
 						g = static_cast<real> (color.g) * RECIP (255);
@@ -561,13 +561,13 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (mapView->getShowEnvironmentMap ())
+				if (mapView2->getShowEnvironmentMap ())
 				{
 					const int familyId = gcd_environmentMap->getData (x, z).getFamilyId();
 
 					if (familyId)
 					{
-						const PackedRgb color = document->getTerrainGenerator ()->getEnvironmentGroup ().getFamilyColor (familyId);
+						const PackedRgb color = document2->getTerrainGenerator ()->getEnvironmentGroup ().getFamilyColor (familyId);
 
 						r = static_cast<real> (color.r) * RECIP (255);
 						g = static_cast<real> (color.g) * RECIP (255);
@@ -576,7 +576,7 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 				}
 			}
 
-			if (mapView->getShowWater ())
+			if (mapView2->getShowWater ())
 			{
 				bool showWater = false;
 
@@ -670,17 +670,17 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 										const Vector2d myPos(pos.x,pos.z);
 										const Vector temp1 = (ribbonQuad.points[0] + ribbonQuad.points[1])/2.0f;
 										const Vector temp2 = (ribbonQuad.points[2] + ribbonQuad.points[3])/2.0f;
-										const Vector2d p1(temp1.x,temp1.z);
-										const Vector2d p2(temp2.x,temp2.z);
+										const Vector2d p12(temp1.x,temp1.z);
+										const Vector2d p22(temp2.x,temp2.z);
 										const float startHeight = temp1.y;
 										const float endHeight = temp2.y;
-										const float totalDistance = p1.magnitudeBetween(p2);
+										const float totalDistance = p12.magnitudeBetween(p22);
 										
 										
-										const Line2d line (p1,p2);
+										const Line2d line (p12,p22);
 										const float distToLine = line.computeDistanceTo(myPos);
-										const float realDistToPoint1 = p1.magnitudeBetween(myPos);
-										const float realDistToPoint2 = p2.magnitudeBetween(myPos);
+										const float realDistToPoint1 = p12.magnitudeBetween(myPos);
+										const float realDistToPoint2 = p22.magnitudeBetween(myPos);
 										const float projectedDistToPoint1 = sqrt(sqr(realDistToPoint1) - sqr(distToLine));
 										const float projectedDistToPoint2 = sqrt(sqr(realDistToPoint2) - sqr(distToLine));
 
@@ -710,7 +710,7 @@ void EditorTerrain::Chunk::create (const TerrainGenerator::GeneratorChunkData* c
 					}
 				}
 
-				if (showWater || (document->getUseGlobalWaterTable () && gcd_heightMap->getData (x, z) < document->getGlobalWaterTableHeight ()))
+				if (showWater || (document2->getUseGlobalWaterTable () && gcd_heightMap->getData (x, z) < document2->getGlobalWaterTableHeight ()))
 				{
 					r = static_cast<real> (128) * RECIP (255);
 					g = static_cast<real> (128) * RECIP (255);
@@ -1983,16 +1983,16 @@ bool EditorTerrain::isBelowWater (const Vector& position) const
 					// project the world point onto the line between the control points and interp for the height
 					const Vector temp1 = (ribbonQuad.points[0] + ribbonQuad.points[1])/2.0f;
 					const Vector temp2 = (ribbonQuad.points[2] + ribbonQuad.points[3])/2.0f;
-					const Vector2d p1(temp1.x,temp1.z);
-					const Vector2d p2(temp2.x,temp2.z);
+					const Vector2d p13(temp1.x,temp1.z);
+					const Vector2d p23(temp2.x,temp2.z);
 					const float startHeight = temp1.y;
 					const float endHeight = temp2.y;
-					const float totalDistance = p1.magnitudeBetween(p2);						
+					const float totalDistance = p13.magnitudeBetween(p23);						
 											
-					const Line2d line (p1,p2);
+					const Line2d line (p13,p23);
 					const float distToLine = line.computeDistanceTo(myPos);
-					const float realDistToPoint1 = p1.magnitudeBetween(myPos);
-					const float realDistToPoint2 = p2.magnitudeBetween(myPos);
+					const float realDistToPoint1 = p13.magnitudeBetween(myPos);
+					const float realDistToPoint2 = p23.magnitudeBetween(myPos);
 					const float projectedDistToPoint1 = sqrt(sqr(realDistToPoint1) - sqr(distToLine));
 					const float projectedDistToPoint2 = sqrt(sqr(realDistToPoint2) - sqr(distToLine));
 

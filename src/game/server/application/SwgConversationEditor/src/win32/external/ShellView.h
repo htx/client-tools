@@ -64,7 +64,7 @@ protected:
 private:
 	void AddTexts( TCHAR ch );
 	void WriteToPipe(LPCTSTR line);
-	BOOL CreateChildProcess(DWORD& dwProcessId, CString const & commandLine);
+	BOOL CreateChildProcess(DWORD& dwProcessId2, CString const & commandLine);
 
 	static UINT ReadPipeThreadProc( LPVOID pParam );
 private:

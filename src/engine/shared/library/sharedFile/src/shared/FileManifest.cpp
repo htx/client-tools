@@ -45,7 +45,7 @@ namespace FileManifestNamespace
 	static bool s_isValidScene                            = false;
 	static bool s_isTransitionScene                       = true;
 
-	const static std::string s_manifestDataTable          = "datatables/manifest/skufree.iff";
+	std::string s_manifestDataTable          = "datatables/manifest/skufree.iff";
 
 	const static std::string s_validScenes []             = {"tutorial", "space_npe_falcon", "dungeon1:npe_shared_station", "dungeon1:npe_dungeon", "space_ord_mantell"};
 	const static int s_numValidScenes                     = sizeof (s_validScenes) / sizeof (s_validScenes[0]);
@@ -65,6 +65,11 @@ void FileManifest::install()
 {
 	DEBUG_FATAL(s_installed, ("FileManifest::install(): already installed"));
 	s_installed = true;
+
+	/*std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
+	fileNamePath += s_manifestDataTable;
+
+	s_manifestDataTable = fileNamePath;*/
 
 	ExitChain::add(FileManifest::remove, "FileManifest::remove", 0, true);
 

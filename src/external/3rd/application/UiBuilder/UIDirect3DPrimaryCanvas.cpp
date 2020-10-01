@@ -287,10 +287,10 @@ bool UIDirect3DPrimaryCanvas::Generate( void )
 
 			if( memcmp( &OldPreferedTexturePixelFormat, &mPreferedTexturePixelFormat, sizeof( mPreferedTexturePixelFormat ) ) )
 			{
-				UIDirect3DTextureCanvasSet::iterator i;
+				UIDirect3DTextureCanvasSet::iterator j;
 
-				for( i = mAttachedTextures.begin(); i != mAttachedTextures.end(); ++i )
-					(*i)->NotifyRenderCanvasChanged();
+				for( j = mAttachedTextures.begin(); j != mAttachedTextures.end(); ++j )
+					(*j)->NotifyRenderCanvasChanged();
 			}
 
 			return true;

@@ -112,7 +112,7 @@ static void generateFiles (const CString& explicitDirectory, const CString& entr
 	const int entryLength = entryDirectory.GetLength ();
 
 	CString searchMask;
-	searchMask.Format ("%s%s*.*", explicitDirectory, (explicitLength > 1 && explicitDirectory [explicitLength-1] != '/') ? "/" : "");
+	searchMask.Format ("%s%s*.*", explicitDirectory.GetString(), (explicitLength > 1 && explicitDirectory [explicitLength-1] != '/') ? "/" : "");
 
 	CFileFind finder;
 	BOOL working = finder.FindFile (searchMask);
@@ -123,10 +123,10 @@ static void generateFiles (const CString& explicitDirectory, const CString& entr
 		if (!finder.IsDots ())
 		{
 			CString explicitName;
-			explicitName.Format ("%s%s%s", explicitDirectory, (explicitLength > 1 && explicitDirectory [explicitLength-1] != '/') ? "/" : "", finder.GetFileName ());
+			explicitName.Format ("%s%s%s", explicitDirectory.GetString(), (explicitLength > 1 && explicitDirectory [explicitLength-1] != '/') ? "/" : "", finder.GetFileName().GetString());
 
 			CString entryName;
-			entryName.Format ("%s%s%s", entryDirectory, (entryLength > 1 && entryDirectory [entryLength-1] != '/' ? "/" : ""), finder.GetFileName ());
+			entryName.Format ("%s%s%s", entryDirectory.GetString(), (entryLength > 1 && entryDirectory [entryLength-1] != '/' ? "/" : ""), finder.GetFileName().GetString());
 
 			if (finder.IsDirectory ())
 			{
@@ -154,7 +154,7 @@ static void generateFiles (const CString& explicitDirectory, const CString& entr
 						if (iterator == dataMap.end ())
 							dataMap [entryName] = explicitName;
 						else
-							printf ("Duplicate found: %s\n", entryName);
+							printf ("Duplicate found: %s\n", entryName.GetString());
 
 						break;
 					}
@@ -176,7 +176,7 @@ static void writeRsp (const DataMap& dataMap, const CString& name)
 	for (DataMap::const_iterator iterator = dataMap.begin (); iterator != end; ++iterator)
 	{
 		CString line;
-		line.Format ("%s @ %s\n", iterator->first, iterator->second);
+		line.Format ("%s @ %s\n", iterator->first.GetString(), iterator->second.GetString());
 
 		outfile.WriteString (line);
 	}
@@ -206,7 +206,7 @@ void main (int argc, char* argv [])
 	{
 		for (StringMap::reverse_iterator i = ms_stringMap.rbegin (); i != ms_stringMap.rend (); ++i)
 		{
-			printf ("%s -> %s\n", i->first, i->second);
+			printf ("%s -> %s\n", i->first.GetString(), i->second.GetString());
 			generateFiles (i->second, "");
 		}
 	}

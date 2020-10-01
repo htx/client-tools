@@ -1964,9 +1964,9 @@ bool MayaHierarchy::Node::writePob (bool /*publish*/) const
 							int doorHardpointIndex = -1;
 							float minimumDistance = REAL_MAX;
 
-							for (uint i = 0; i < doorHardpoints.size(); i++)
+							for (uint k = 0; k < doorHardpoints.size(); k++)
 							{
-								Hardpoint * hardpoint = doorHardpoints[i];
+								Hardpoint * hardpoint = doorHardpoints[k];
 
 								std::vector<Vector> const & vertices = portalGeometry->getVertices();
 								std::vector<int> const & indices = portalGeometry->getIndices();
@@ -1982,7 +1982,7 @@ bool MayaHierarchy::Node::writePob (bool /*publish*/) const
 									if (distance < minimumDistance)
 									{
 										minimumDistance = distance;
-										doorHardpointIndex = i;
+										doorHardpointIndex = k;
 									}
 								}
 							}
@@ -2019,9 +2019,9 @@ bool MayaHierarchy::Node::writePob (bool /*publish*/) const
 
 					// ----------
 					
-					for (int i = 0; i < collisionNode->getNumberOfChildren(); ++i)
+					for (int l = 0; l < collisionNode->getNumberOfChildren(); ++l)
 					{
-						const Node *pNode = collisionNode->getChild(i);
+						const Node *pNode = collisionNode->getChild(l);
 
 						if(pNode->getType() == T_floor)
 						{
@@ -2232,8 +2232,8 @@ bool MayaHierarchy::Node::writePob (bool /*publish*/) const
 		{
 			Cell const & cell = cellList[j];
 
-			const int numberOfPortals = cell.m_portalList.size();
-			for (int k = 0; k < numberOfPortals; ++k)
+			const int numberOfPortals2 = cell.m_portalList.size();
+			for (int k = 0; k < numberOfPortals2; ++k)
 			{
 				Portal const & portal = cell.m_portalList[k];
 				int const portalIndex = portal.m_index;
@@ -2291,11 +2291,11 @@ bool MayaHierarchy::Node::writePob (bool /*publish*/) const
 					iff.insertForm(TAG_CELL);
 						iff.insertForm(TAG_0005);
 
-							const int32 numberOfPortals = cell.m_portalList.size();
+							const int32 numberOfPortals3 = cell.m_portalList.size();
 
 							iff.insertChunk(TAG_DATA);
 
-								iff.insertChunkData(numberOfPortals);
+								iff.insertChunkData(numberOfPortals3);
 								iff.insertChunkData(cell.m_canSeeWorldCell);
 								iff.insertChunkString(cell.m_name);
 								iff.insertChunkString(cell.m_appearanceName.asChar());
@@ -2322,7 +2322,7 @@ bool MayaHierarchy::Node::writePob (bool /*publish*/) const
 								iff.exitForm(TAG_NULL);
 							}
 							
-							for (int k = 0; k < numberOfPortals; ++k)
+							for (int k = 0; k < numberOfPortals3; ++k)
 							{
 								Portal const & pi = cell.m_portalList[k];
 
@@ -3695,15 +3695,15 @@ bool MayaHierarchy::setupNode (Node * root, Node * parent)
 
 	if(root->getType() == T_cel)
 	{
-		MStatus status;
+		MStatus status2;
 
-		MFnDagNode dagNode;
+		MFnDagNode dagNode2;
 
-		if(!root->getMayaDagNodeFn(dagNode)) return false;
+		if(!root->getMayaDagNodeFn(dagNode2)) return false;
 
-		IGNORE_RETURN( dagNode.attribute ("canSeeWorld", &status) );
+		IGNORE_RETURN( dagNode2.attribute ("canSeeWorld", &status2) );
 
-		if (status == MS::kSuccess)
+		if (status2 == MS::kSuccess)
 		{
 			root->setCanSeeWorldCell();
 		}
@@ -3777,26 +3777,26 @@ bool MayaHierarchy::sortNode (Node* root)
 	//-- reorder nodes in terms of listed order
 	if (type == T_lod || type == T_cmp || type == T_prt || type == T_cel || type == T_pob || type == T_collision)
 	{
-		int i;
+		int m;
 		int j;
-		for (i = 0; i < n - 1; i++)
+		for (m = 0; m < n - 1; m++)
 		{
-			for (j = i + 1; j < n; j++)
+			for (j = m + 1; j < n; j++)
 			{
-				const int o1 = root->getChild (i)->getDesiredOrder ();
+				const int o1 = root->getChild (m)->getDesiredOrder ();
 				const int o2 = root->getChild (j)->getDesiredOrder ();
 				
 				if ((type == T_lod) || (type == T_collision))
 				{
 					//-- lod nodes and collision nodes are sorted highest number to lowest
 					if (o1 < o2)
-						root->swapChildren (i, j);
+						root->swapChildren (m, j);
 				}
 				else
 				{
 					//-- cmp, prt, cel, and pob nodes are sorted lowest to highest
 					if (o1 > o2)
-						root->swapChildren (i, j);
+						root->swapChildren (m, j);
 				}
 			}
 		}

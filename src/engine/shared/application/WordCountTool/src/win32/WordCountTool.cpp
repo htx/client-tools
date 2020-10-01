@@ -9,7 +9,6 @@
 
 #include "FirstWordCountTool.h"
 
-
 #include "StringTable.h"
 
 // ======================================================================
@@ -105,7 +104,7 @@ void WordCountToolNamespace::countFileNameList ()
 		int const numberOfLines = stringTable.getNumberOfLines ();
 		int const numberOfWords = stringTable.getNumberOfWords ();
 
-		printf ("%i\t%i\t%i\t%s\n", numberOfStrings, numberOfLines, numberOfWords, ms_fileNameList [i]);
+		printf ("%i\t%i\t%i\t%s\n", numberOfStrings, numberOfLines, numberOfWords, ms_fileNameList[i].GetString());
 
 		totalNumberOfStrings += numberOfStrings;
 		totalNumberOfLines += numberOfLines;
@@ -164,7 +163,7 @@ void WordCountToolNamespace::countNumberOfTranslations (char const * const newFi
 			numberOfNewTranslations = newStringTable.getNumberOfWords();
 		}
 
-		printf ("%i\t%i\t%s\n", numberOfNewTranslations, numberOfChangedTranslations, ms_newFileNameList [i]);
+		printf ("%i\t%i\t%s\n", numberOfNewTranslations, numberOfChangedTranslations, ms_newFileNameList[i].GetString());
 
 		totalNumberOfNewTranslations += numberOfNewTranslations;
 		totalNumberOfChangedTranslations += numberOfChangedTranslations;
@@ -203,7 +202,7 @@ void WordCountToolNamespace::dumpFileNameList ()
 		StringTable stringTable;
 		stringTable.load (ms_fileNameList [i]);
 
-		printf ("%s\n", ms_fileNameList [i]);
+		printf ("%s\n", ms_fileNameList[i].GetString());
 
 		for (int j = 0; j < stringTable.getNumberOfStrings (); ++j)
 		{
@@ -211,7 +210,7 @@ void WordCountToolNamespace::dumpFileNameList ()
 			CString string = stringTable.getString (j).c_str ();
 			string.Remove('\n');
 
-			printf ("\t%s\t%s\n", stringTable.getStringId (j).c_str (), string);
+			printf ("\t%s\t%s\n", stringTable.getStringId (j).c_str (), string.GetString());
 		}
 	}
 }
@@ -245,7 +244,7 @@ void WordCountToolNamespace::findFileNameList (char const * const searchString, 
 			{
 				if (!printedHeader)
 				{
-					printf ("%s\n", ms_fileNameList [i]);
+					printf ("%s\n", ms_fileNameList[i].GetString());
 					printedHeader = true;
 				}
 
@@ -253,12 +252,12 @@ void WordCountToolNamespace::findFileNameList (char const * const searchString, 
 				if (useID)
 				{
 					stringId = stringTable.getString(j);
-					printf ("\t%s\t%s\n", string, stringId.c_str());
+					printf ("\t%s\t%s\n", string.GetString(), stringId.c_str());
 				}
 				else
 				{
 					stringId = stringTable.getStringId(j);
-					printf ("\t%s\t%s\n", stringId.c_str(), string);
+					printf ("\t%s\t%s\n", stringId.c_str(), string.GetString());
 				}
 			}
 		}
@@ -328,7 +327,7 @@ void WordCountToolNamespace::evaluateFileNameList (char const * const baseLangua
 		{
 			missingTableCount++;
 			missingCount += stringTable.getNumberOfStrings();			
-			printf("%d\t%d\t%d\tMISSING\t\t%s\n", stringTable.getNumberOfStrings(), stringTable.getNumberOfStrings(), 0, ms_fileNameList[i]);
+			printf("%d\t%d\t%d\tMISSING\t\t%s\n", stringTable.getNumberOfStrings(), stringTable.getNumberOfStrings(), 0, ms_fileNameList[i].GetString());
 			continue;
 		}
 		
@@ -359,7 +358,7 @@ void WordCountToolNamespace::evaluateFileNameList (char const * const baseLangua
 				olderCountPerTable++;
 			}
 		}
-		printf("%d\t%d\t%d\t \t\t%s\n", stringTable.getNumberOfStrings(), missingCountPerTable, olderCountPerTable, ms_fileNameList[i]);
+		printf("%d\t%d\t%d\t \t\t%s\n", stringTable.getNumberOfStrings(), missingCountPerTable, olderCountPerTable, ms_fileNameList[i].GetString());
 	}
 	printf("Totals: Count %d Number Missing Tables: %d Number Missing Strings: %d Number Older Strings: %d\n", count, missingTableCount, missingCount, olderCount);
 }
@@ -379,7 +378,7 @@ void main (int const argc, char const * const argv [])
 	if (ms_fileNameList.empty ())
 	{
 		printUsage ();
-		printf ("error: %s does not contain any valid string filenames\n");
+		printf ("error: o_o does not contain any valid string filenames\n");
 		return;
 	}
 

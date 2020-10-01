@@ -289,7 +289,7 @@ void SwgContentBuilderDlg::OnButtonBrowseobjectdeliver()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else
@@ -354,7 +354,7 @@ void SwgContentBuilderDlg::OnButtonBrowseobjectretrieve()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else
@@ -448,7 +448,7 @@ void SwgContentBuilderDlg::OnButtonLoad()
 			if (index0 == -1 || index1 == -1 || index2 == -1)
 			{
 				CString message;
-				message.Format ("%s\r\nis not a valid server object template .tpf or is not in the correct location ($/.../sys.server/compiled/game/object/tangible/spawning/static_npc)", pathName);
+				message.Format ("%s\r\nis not a valid server object template .tpf or is not in the correct location ($/.../sys.server/compiled/game/object/tangible/spawning/static_npc)", pathName.GetString());
 				MessageBox (message);
 
 				return;
@@ -668,7 +668,7 @@ void SwgContentBuilderDlg::OnButtonSaveas()
 		if (index0 == -1 || index1 == -1 || index2 == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template .tpf or is not in the correct location ($/.../sys.server/compiled/game/object/tangible/spawning/static_npc)", pathName);
+			message.Format ("%s\r\nis not a valid server object template .tpf or is not in the correct location ($/.../sys.server/compiled/game/object/tangible/spawning/static_npc)", pathName.GetString());
 			MessageBox (message);
 		}
 		else
@@ -985,7 +985,7 @@ void SwgContentBuilderDlg::OnButtonBrowsegatingobject()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else

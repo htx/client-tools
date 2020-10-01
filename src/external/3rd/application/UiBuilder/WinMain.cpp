@@ -1937,16 +1937,16 @@ bool SaveWorkspaceFile( bool SaveAs )
 					continue;
 			}
 
-			FILE * fp = fopen( FileName.c_str (), "wb" );
+			FILE * fp2 = fopen( FileName.c_str (), "wb" );
 			
-			if( !fp )
+			if( !fp2 )
 			{
 				messages.push_back (FileName);
 			}
 			else
 			{
-				fwrite( outputData.data (), outputData.size(), 1, fp );
-				fclose( fp );
+				fwrite( outputData.data (), outputData.size(), 1, fp2 );
+				fclose( fp2 );
 				
 				struct _stat statbuf;
 				const int result = _stat (FileName.c_str (), &statbuf);

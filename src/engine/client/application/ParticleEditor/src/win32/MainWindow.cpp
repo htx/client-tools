@@ -65,31 +65,31 @@ MainWindow::MainWindow(QWidget *parent, char const *name)
 
 	// Add a workspace
 
-	QWorkspace *m_workSpace = new QWorkspace(this);
-	setCentralWidget(m_workSpace);
+	QWorkspace *m_workSpace2 = new QWorkspace(this);
+	setCentralWidget(m_workSpace2);
 
 	// Game widget
 
-	m_gameWidget = new GameWidget(m_workSpace, "GameWidget", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
+	m_gameWidget = new GameWidget(m_workSpace2, "GameWidget", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
 	ParticleEditorUtility::loadWidget(*m_gameWidget, 385, 3);
 	m_gameWidget->runGameLoop();
 
 	// Attribute editor
 
-	m_attributeEditor = new AttributeEditor(m_workSpace, "AttributeEditor", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
+	m_attributeEditor = new AttributeEditor(m_workSpace2, "AttributeEditor", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
 
 	// Attribute viewer
 
-	m_attributeViewer = new PEAttributeViewer(m_workSpace, "PEAttributeViewer", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
+	m_attributeViewer = new PEAttributeViewer(m_workSpace2, "PEAttributeViewer", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
 	m_attributeViewer->setFixedWidth(370);
 
 	// Particle effect list viewer
 
-	m_particleEffectListViewer = new ParticleEffectListViewer(m_workSpace, "ParticleEffectListViewer", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
+	m_particleEffectListViewer = new ParticleEffectListViewer(m_workSpace2, "ParticleEffectListViewer", Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title);
 
 	// Particle effect transform edit
 
-	m_particleEffectTransformEdit = new ParticleEffectTransformEdit(m_workSpace, "ParticleEffectTransformEdit", this);
+	m_particleEffectTransformEdit = new ParticleEffectTransformEdit(m_workSpace2, "ParticleEffectTransformEdit", this);
 
 	// Signal that the particle effect transform has changed so we can move the particle effect
 
@@ -405,7 +405,7 @@ void MainWindow::save(QString const &path)
 	else if (!path.isEmpty())
 	{
 		QString text;
-		text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(path.latin1(), FileNameUtils::fileName | FileNameUtils::extension));
+		text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", (FileNameUtils::get(path.latin1(), FileNameUtils::fileName | FileNameUtils::extension)).c_str());
 		QMessageBox::warning(this, "Error Saving File", text, "OK.");
 	}
 }

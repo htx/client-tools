@@ -373,7 +373,7 @@ const CString RadialTreeView::CreateUniqueFamilyName (const CString* base)
 
 	if (base)
 	{
-		familyName.Format ("%s", *base);
+		familyName.Format ("%s", *base->GetString());
 	}
 	else
 	{
@@ -386,7 +386,7 @@ const CString RadialTreeView::CreateUniqueFamilyName (const CString* base)
 	{
 		if (base)
 		{
-			familyName.Format ("%s_%i", *base, familyIndex);
+			familyName.Format ("%s_%i", *base->GetString(), familyIndex);
 		}
 		else
 		{
@@ -521,9 +521,9 @@ void RadialTreeView::OnDeleteradial()
 		if (MessageBox (tmp, 0, MB_YESNO) == IDYES)
 		{
 			// set property view to default dialog before destroying data in dlg
-			TerrainEditorDoc* pDoc = static_cast<TerrainEditorDoc*> (GetDocument());
+			TerrainEditorDoc* pDoc3 = static_cast<TerrainEditorDoc*> (GetDocument());
 			PropertyView::ViewData dummyData;
-			pDoc->SetPropertyView (RUNTIME_CLASS(PropertyView), &dummyData);
+			pDoc3->SetPropertyView (RUNTIME_CLASS(PropertyView), &dummyData);
 			
 			//-- remove from radial group
 			radialGroup->removeFamily (familyId);
@@ -553,7 +553,7 @@ void RadialTreeView::OnDeleteradial()
 				const CString name = GetTreeCtrl ().GetItemText (child);
 
 				CString tmp;
-				tmp.Format ("Are you sure you want to delete %s?", name);
+				tmp.Format ("Are you sure you want to delete %s?", name.GetString());
 
 				if (MessageBox (tmp, 0, MB_YESNO) == IDYES)
 				{

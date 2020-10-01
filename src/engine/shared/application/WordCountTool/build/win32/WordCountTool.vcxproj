@@ -25,6 +25,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -58,24 +59,27 @@
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_o</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\src\win32;..\..\src\win32\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\src\win32;..\..\src\win32\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0502;WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -95,9 +99,9 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_d.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_d.pdb</ProgramDatabaseFile>
@@ -107,6 +111,9 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <ClCompile>
@@ -115,9 +122,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\src\win32;..\..\src\win32\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\src\win32;..\..\src\win32\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0502;WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
@@ -138,7 +145,7 @@
     <Link>
       <AdditionalDependencies>ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_o.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_o.pdb</ProgramDatabaseFile>
@@ -148,6 +155,9 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -157,9 +167,8 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryBlockManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\src\win32;..\..\src\win32\external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_AFX;_WIN32_WINNT=0x0502;WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -179,7 +188,7 @@
     <Link>
       <AdditionalDependencies>legacy_stdio_definitions.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_r.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_r.pdb</ProgramDatabaseFile>
@@ -189,6 +198,9 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\win32\FirstWordCountTool.cpp">

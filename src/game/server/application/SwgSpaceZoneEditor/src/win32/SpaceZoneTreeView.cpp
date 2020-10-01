@@ -366,7 +366,7 @@ void SpaceZoneTreeView::validate()
 			}
 
 			CString buffer;
-			buffer.Format("%s is out of bounds at <%1.2f, %1.2f, %1.2f>\r\n", object->getName(), position.x, position.y, position.z);
+			buffer.Format("%s is out of bounds at <%1.2f, %1.2f, %1.2f>\r\n", object->getName().GetString(), position.x, position.y, position.z);
 
 			warning += buffer;
 		}

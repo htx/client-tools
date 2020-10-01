@@ -454,7 +454,7 @@ void ActionsView::gotoObjectBookmark(int index) const
 	if(obj == 0)
 	{
 		char buf [128];
-		IGNORE_RETURN(_snprintf(buf, 128, "Object with Network ID %d, name %s not found in world.\n", cam.id, cam.cameraBookmark.name.c_str()));
+		IGNORE_RETURN(_snprintf(buf, 128, "Object with Network ID %d, name %s not found in world.\n", (int)cam.id.getValue(), cam.cameraBookmark.name.c_str()));
 		IGNORE_RETURN(QMessageBox::warning(&MainFrame::getInstance(), "Warning", buf));
 		return;
 	}

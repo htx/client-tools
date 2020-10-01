@@ -409,8 +409,8 @@ IDirect3DBaseTexture9 *CRenderView::GetTexture(const CString &fileName)
 		{
 			// create it if it wasn't found
 			IDirect3DTexture9 *texture = NULL;
-			const HRESULT hresult = D3DXCreateTextureFromFileEx(device, fullFileName,	D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_FILTER_TRIANGLE, D3DX_FILTER_BOX, 0, NULL, NULL, &texture);
-			if (FAILED(hresult))
+			const HRESULT hresult2 = D3DXCreateTextureFromFileEx(device, fullFileName,	D3DX_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, D3DX_FILTER_TRIANGLE, D3DX_FILTER_BOX, 0, NULL, NULL, &texture);
+			if (FAILED(hresult2))
 			{
 				errorMessage = "CreateTexture failed";
 				return NULL;

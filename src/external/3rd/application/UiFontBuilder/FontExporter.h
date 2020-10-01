@@ -51,7 +51,7 @@ public:
 	typedef std::set<Unicode::unicode_char_t> IdSet_t;
 
 
-	virtual             ~FontExporter () = 0;
+	virtual             ~FontExporter() = 0;
 
 	virtual bool         export (const IdSet_t & idSet) = 0;
 

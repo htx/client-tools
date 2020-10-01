@@ -10,6 +10,8 @@
 #ifndef MESSENGER_H
 #define MESSENGER_H
 
+#pragma warning (disable : 4456)
+
 // ======================================================================
 
 #include <stdarg.h>

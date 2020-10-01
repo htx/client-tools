@@ -192,7 +192,7 @@ static void generateFile(const CString& explicitDirectory, const CString& entryD
 	const int entryLength = entryDirectory.GetLength();
 
 	CString searchMask;
-	searchMask.Format("%s%s*.*", explicitDirectory, (explicitLength > 1 && explicitDirectory[explicitLength-1] != '/') ? "/" : "");
+	searchMask.Format("%s%s*.*", explicitDirectory.GetString(), (explicitLength > 1 && explicitDirectory[explicitLength-1] != '/') ? "/" : "");
 
 	CFileFind finder;
 
@@ -206,11 +206,11 @@ static void generateFile(const CString& explicitDirectory, const CString& entryD
 		{
 			CString explicitName;
 
-			explicitName.Format("%s%s%s", explicitDirectory, (explicitLength > 1 && explicitDirectory[explicitLength-1] != '/') ? "/" : "", finder.GetFileName());
+			explicitName.Format("%s%s%s", explicitDirectory.GetString(), (explicitLength > 1 && explicitDirectory[explicitLength-1] != '/') ? "/" : "", finder.GetFileName().GetString());
 
 			CString entryName;
 
-			entryName.Format("%s%s%s", entryDirectory, (entryLength > 1 && entryDirectory[entryLength-1] != '/' ? "/" : ""), finder.GetFileName());
+			entryName.Format("%s%s%s", entryDirectory.GetString(), (entryLength > 1 && entryDirectory[entryLength-1] != '/' ? "/" : ""), finder.GetFileName().GetString());
 
 			if (finder.IsDirectory())
 			{
@@ -296,7 +296,7 @@ static void writeRsp(std::string const &destPath)
 {
 	//-- open the config file
 
-	mkdir(destPath.c_str());
+	_mkdir(destPath.c_str());
 
 	// Set the output filenames depending if this is client or server output
 
@@ -420,8 +420,8 @@ static void writeRsp(std::string const &destPath)
 
 	for (; testAssetsStringListIter != testAssetsStringList.end(); ++testAssetsStringListIter)
 	{
-		CString line;
-		line.Format("%4d %s", current, *testAssetsStringListIter);
+		CString line2;
+		line2.Format("%4d %s", current, (*testAssetsStringListIter).GetString());
 
 		testAssetsOutFile.WriteString(line);
 		++current;
@@ -443,18 +443,18 @@ static void writeRsp(std::string const &destPath)
 		CString const &first = duplicateMapIter->first;
 		StringList const &second = duplicateMapIter->second;
 
-		CString line;
-		line.Format("%3d Duplicate Asset: %s\n", duplicateCount, first);
-		duplicateAssetsOutFile.WriteString(line);
+		CString line3;
+		line3.Format("%3d Duplicate Asset: %s\n", duplicateCount, first.GetString());
+		duplicateAssetsOutFile.WriteString(line3);
 
 		StringList::const_iterator stringListIter = second.begin();
 		int instanceDuplicateCount = 1;
 
 		for (; stringListIter != second.end(); ++stringListIter)
 		{
-			CString line;
-			line.Format("    %2d Referenced: %s\n", instanceDuplicateCount, (*stringListIter));
-			duplicateAssetsOutFile.WriteString(line);
+			CString line4;
+			line4.Format("    %2d Referenced: %s\n", instanceDuplicateCount, (*stringListIter).GetString());
+			duplicateAssetsOutFile.WriteString(line4);
 			++instanceDuplicateCount;
 		}
 
@@ -516,11 +516,11 @@ void main(int argc, char * argv[])
 		{
 			if (ms_server)
 			{
-				configFile = "../../exe/shared/servercommon.cfg";
+				configFile = "servercommon.cfg";
 			}
 			else
 			{
-				configFile = "../../exe/win32/common.cfg";
+				configFile = "common.cfg";
 			}
 		}
 
@@ -530,7 +530,7 @@ void main(int argc, char * argv[])
 
 			for (StringMap::reverse_iterator i = ms_stringMap.rbegin(); i != ms_stringMap.rend(); ++i)
 			{
-				printf("%s -> %s\n", i->first, i->second);
+				printf("%s -> %s\n", i->first.GetString(), i->second.GetString());
 				generateFile(i->second, "");
 			}
 

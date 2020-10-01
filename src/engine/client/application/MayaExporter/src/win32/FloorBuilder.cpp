@@ -501,24 +501,24 @@ bool FloorBuilder::extractFloor ( MObject nodeObject, FloorMesh & outMesh )
 
 	{
 		MIntArray edges;
-		IntVector indices;
+		IntVector indices2;
 
 		getSetIndicesForObject("crossable",nodeObject,edges);
 
-		unpackEdgeIndices(fnMesh,edges,indices);
+		unpackEdgeIndices(fnMesh,edges,indices2);
 
-		outMesh.addCrossableEdges(indices);
+		outMesh.addCrossableEdges(indices2);
 	}
 
 	{
 		MIntArray edges;
-		IntVector indices;
+		IntVector indices3;
 
 		getSetIndicesForObject("ramp",nodeObject,edges);
 
-		unpackEdgeIndices(fnMesh,edges,indices);
+		unpackEdgeIndices(fnMesh,edges,indices3);
 
-		outMesh.addRampEdges(indices);
+		outMesh.addRampEdges(indices3);
 	}
 
 	// ----------
@@ -526,13 +526,13 @@ bool FloorBuilder::extractFloor ( MObject nodeObject, FloorMesh & outMesh )
 
 	{
 		MIntArray tris;
-		IntVector indices;
+		IntVector indices4;
 
 		getSetIndicesForObject("fallthrough",nodeObject,tris);
 
-		unpackTriIndices(fnMesh,tris,indices);
+		unpackTriIndices(fnMesh,tris,indices4);
 
-		outMesh.addFallthroughTris(indices);
+		outMesh.addFallthroughTris(indices4);
 	}
 
 	// ----------

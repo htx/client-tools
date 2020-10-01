@@ -540,28 +540,28 @@ void CCrystalEditView::OnEditUntab()
 	{
 		m_pTextBuffer->BeginUndoGroup();
 
-		CPoint ptSelStart, ptSelEnd;
-		GetSelection(ptSelStart, ptSelEnd);
-		int nStartLine = ptSelStart.y;
-		int nEndLine = ptSelEnd.y;
-		ptSelStart.x = 0;
-		if (ptSelEnd.x > 0)
+		CPoint ptSelStart2, ptSelEnd2;
+		GetSelection(ptSelStart2, ptSelEnd2);
+		int nStartLine = ptSelStart2.y;
+		int nEndLine = ptSelEnd2.y;
+		ptSelStart2.x = 0;
+		if (ptSelEnd2.x > 0)
 		{
-			if (ptSelEnd.y == GetLineCount() - 1)
+			if (ptSelEnd2.y == GetLineCount() - 1)
 			{
-				ptSelEnd.x = GetLineLength(ptSelEnd.y);
+				ptSelEnd2.x = GetLineLength(ptSelEnd2.y);
 			}
 			else
 			{
-				ptSelEnd.x = 0;
-				ptSelEnd.y ++;
+				ptSelEnd2.x = 0;
+				ptSelEnd2.y ++;
 			}
 		}
 		else
 			nEndLine --;
-		SetSelection(ptSelStart, ptSelEnd);
-		SetCursorPos(ptSelEnd);
-		EnsureVisible(ptSelEnd);
+		SetSelection(ptSelStart2, ptSelEnd2);
+		SetCursorPos(ptSelEnd2);
+		EnsureVisible(ptSelEnd2);
 
 		//	Shift selection to left
 		m_bHorzScrollBarLocked = TRUE;
@@ -1016,7 +1016,7 @@ void CCrystalEditView::OnUpdateEditUndo(CCmdUI* pCmdUI)
 			//	Format menu item text using the provided item description
 			CString desc;
 			m_pTextBuffer->GetUndoDescription(desc);
-			menu.Format(IDS_MENU_UNDO_FORMAT, desc);
+			menu.Format(IDS_MENU_UNDO_FORMAT, desc.GetString());
 		}
 		else
 		{
@@ -1088,7 +1088,7 @@ void CCrystalEditView::OnUpdateEditRedo(CCmdUI* pCmdUI)
 			//	Format menu item text using the provided item description
 			CString desc;
 			m_pTextBuffer->GetRedoDescription(desc);
-			menu.Format(IDS_MENU_REDO_FORMAT, desc);
+			menu.Format(IDS_MENU_REDO_FORMAT, desc.GetString());
 		}
 		else
 		{

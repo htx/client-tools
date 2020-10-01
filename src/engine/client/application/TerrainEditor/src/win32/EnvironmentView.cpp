@@ -184,7 +184,7 @@ const CString EnvironmentView::CreateUniqueFamilyName (const CString* base) cons
 
 	if (base)
 	{
-		familyName.Format ("%s", *base);
+		familyName.Format ("%s", *base->GetString());
 	}
 	else
 	{
@@ -197,7 +197,7 @@ const CString EnvironmentView::CreateUniqueFamilyName (const CString* base) cons
 	{
 		if (base)
 		{
-			familyName.Format ("%s_%i", *base, familyIndex);
+			familyName.Format ("%s_%i", *base->GetString(), familyIndex);
 		}
 		else
 		{
@@ -321,8 +321,8 @@ void EnvironmentView::OnEndlabeledit(NMHDR* pNMHDR, LRESULT* pResult)
 		NOT_NULL (environmentGroup);
 
 		//-- change name
-		const int familyId = static_cast<int> (GetTreeCtrl ().GetItemData (pTVDispInfo->item.hItem));
-		environmentGroup->setFamilyName (familyId, newName);
+		const int familyId2 = static_cast<int> (GetTreeCtrl ().GetItemData (pTVDispInfo->item.hItem));
+		environmentGroup->setFamilyName (familyId2, newName);
 
 		//-- tell tree about new name
 		IGNORE_RETURN (GetTreeCtrl ().SetItem (&pTVDispInfo->item));

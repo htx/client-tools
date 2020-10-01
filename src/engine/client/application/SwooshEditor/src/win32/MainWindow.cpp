@@ -235,7 +235,7 @@ void MainWindow::slotFileSaveAsAction()
 			if (!FileNameUtils::isWritable(newPath.latin1()))
 			{
 				QString text;
-				text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension));
+				text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension).c_str());
 				QMessageBox::warning(this, "Error Saving File", text, "OK.");
 		
 				// Offer them to choose a new filename
@@ -296,7 +296,7 @@ void MainWindow::save(QString const &path)
 	else if (!newPath.isEmpty())
 	{
 		QString text;
-		text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension));
+		text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension).c_str());
 		QMessageBox::warning(this, "Error Saving File", text, "OK.");
 	}
 }
@@ -326,11 +326,11 @@ void MainWindow::writeSwooshIff(Iff &iff)
 {
 	SwooshAppearanceTemplate swooshAppearanceTemplate;
 
-	float const red = static_cast<float>(m_color.red()) / 255.0f;
-	float const green = static_cast<float>(m_color.green()) / 255.0f;
-	float const blue = static_cast<float>(m_color.blue()) / 255.0f;
+	float const red2 = static_cast<float>(m_color.red()) / 255.0f;
+	float const green2 = static_cast<float>(m_color.green()) / 255.0f;
+	float const blue2 = static_cast<float>(m_color.blue()) / 255.0f;
 
-	swooshAppearanceTemplate.setColor(red, green, blue);
+	swooshAppearanceTemplate.setColor(red2, green2, blue2);
 	swooshAppearanceTemplate.setAlpha(QtUtility::getFloat(m_alphaLineEdit));
 	swooshAppearanceTemplate.setWidth(QtUtility::getFloat(m_widthLineEdit));
 	swooshAppearanceTemplate.setSamplesPerSecond(QtUtility::getFloat(m_samplesPerSecondLineEdit));
@@ -432,11 +432,11 @@ void MainWindow::loadIff(Iff &iff)
 
 	if (swooshAppearanceTemplate != NULL)
 	{
-		int const red = static_cast<int>(swooshAppearanceTemplate->getColor().r * 255.0f);
-		int const green = static_cast<int>(swooshAppearanceTemplate->getColor().g * 255.0f);
-		int const blue = static_cast<int>(swooshAppearanceTemplate->getColor().b * 255.0f);
+		int const red3 = static_cast<int>(swooshAppearanceTemplate->getColor().r * 255.0f);
+		int const green3 = static_cast<int>(swooshAppearanceTemplate->getColor().g * 255.0f);
+		int const blue3 = static_cast<int>(swooshAppearanceTemplate->getColor().b * 255.0f);
 
-		m_color.setRgb(red, green, blue);
+		m_color.setRgb(red3, green3, blue3);
 		QtUtility::setLineEditFloat(m_alphaLineEdit, swooshAppearanceTemplate->getAlpha(), 0.0f, 1.0f, 2);
 		QtUtility::setLineEditFloat(m_widthLineEdit, swooshAppearanceTemplate->getWidth(), 0.001f, 16.0f, 3);
 		QtUtility::setLineEditFloat(m_samplesPerSecondLineEdit, swooshAppearanceTemplate->getSamplesPerSecond(), SwooshAppearanceTemplate::getMinSamplesPerSecond(), SwooshAppearanceTemplate::getMaxSamplesPerSecond(), 3);
@@ -546,11 +546,11 @@ void MainWindow::reset()
 {
 	SwooshAppearanceTemplate swooshAppearanceTemplate;
 
-	int const red = static_cast<int>(swooshAppearanceTemplate.getColor().r * 255.0f);
-	int const green = static_cast<int>(swooshAppearanceTemplate.getColor().g * 255.0f);
-	int const blue = static_cast<int>(swooshAppearanceTemplate.getColor().b * 255.0f);
+	int const red4 = static_cast<int>(swooshAppearanceTemplate.getColor().r * 255.0f);
+	int const green4 = static_cast<int>(swooshAppearanceTemplate.getColor().g * 255.0f);
+	int const blue4 = static_cast<int>(swooshAppearanceTemplate.getColor().b * 255.0f);
 
-	m_color = QColor(red, green, blue);
+	m_color = QColor(red4, green4, blue4);
 	m_alphaLineEdit->setText(QString::number(swooshAppearanceTemplate.getAlpha()));
 	m_widthLineEdit->setText(QString::number(swooshAppearanceTemplate.getWidth()));
 	m_samplesPerSecondLineEdit->setText(QString::number(swooshAppearanceTemplate.getSamplesPerSecond()));
@@ -613,9 +613,9 @@ void MainWindow::slotSelectShaderPushButton()
 		FileNameUtils::swapChar(path, '/', '\\');
 		std::string strippedPath;
 
-		bool result = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
+		bool result2 = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
 
-		if (!result)
+		if (!result2)
 		{
 			strippedPath = path;
 
@@ -656,9 +656,9 @@ void MainWindow::selectAppearance(QLineEdit *lineEdit)
 
 	QSettings settings;
 	settings.insertSearchPath(QSettings::Windows, QtUtility::getSearchPath());
-	QString result(settings.readEntry("AppearancePath", "c://"));
+	QString result3(settings.readEntry("AppearancePath", "c://"));
 
-	QString appearancePath(QFileDialog::getOpenFileName(result, "Appearance files (*.apt *.prt *.msh *.sat)", this, "AppearanceFileDialog", "Open Appearance"));
+	QString appearancePath(QFileDialog::getOpenFileName(result3, "Appearance files (*.apt *.prt *.msh *.sat)", this, "AppearanceFileDialog", "Open Appearance"));
 
 	if (!appearancePath.isNull())
 	{
@@ -724,9 +724,9 @@ void MainWindow::slotSelectSoundPushButton()
 		FileNameUtils::swapChar(path, '/', '\\');
 		std::string strippedPath;
 
-		bool result = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
+		bool result4 = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
 
-		if (!result)
+		if (!result4)
 		{
 			strippedPath = path;
 

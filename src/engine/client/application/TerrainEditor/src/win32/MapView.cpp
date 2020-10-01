@@ -2523,8 +2523,7 @@ void MapView::updateRiversAndRoads (void)
 
 					Vector2d current = segmentStart;
 
-					int i = 0;
-					for (i = 0; i < numberOfSegments - 1; ++i)
+					for (int k = 0; k < numberOfSegments - 1; ++k)
 					{
 						affector->addPointHeightData (Vector (current.x, terrain->getHeightDataHeightAt (current), current.y));
 

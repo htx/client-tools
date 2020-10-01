@@ -177,7 +177,7 @@ void DialogRewards::OnButtonBrowseobject1()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else
@@ -212,7 +212,7 @@ void DialogRewards::OnButtonBrowseobject2()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else
@@ -247,7 +247,7 @@ void DialogRewards::OnButtonBrowseobject3()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else
@@ -282,7 +282,7 @@ void DialogRewards::OnButtonBrowseobject4()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else

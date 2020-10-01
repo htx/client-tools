@@ -215,7 +215,7 @@ CString const & SwgSpaceZoneEditorDoc::Object::getObjVar(CString const & key) co
 		if (m_objVarList[i].m_key == key)
 			return m_objVarList[i].m_value;
 
-	DEBUG_FATAL(true, ("Unknown objVar %s for object %s [%s]", key, m_objectTemplateName, m_originalObjVars));
+	DEBUG_FATAL(true, ("Unknown objVar %s for object %s [%s]", key.GetString(), m_objectTemplateName.GetString(), m_originalObjVars.GetString()));
 	return cms_empty;
 }
 
@@ -446,8 +446,8 @@ BOOL SwgSpaceZoneEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 						if (!result.second)
 						{
 							CString message;
-							message.Format("Multiple objects with name %s already exist.\n", object->getName());
-							DEBUG_REPORT_LOG(true, ("%s\n", message));
+							message.Format("Multiple objects with name %s already exist.\n", object->getName().GetString());
+							DEBUG_REPORT_LOG(true, ("%s\n", message.GetString()));
 							MessageBox(0, message, "Error", MB_OK);
 
 							return FALSE;
@@ -459,16 +459,16 @@ BOOL SwgSpaceZoneEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 					{
 						Configuration::ObjVarList objVarList;
 						Configuration::unpackObjVars(object->getOriginalObjVars(), objVarList);
-						for (size_t j = 0; j < objVarList.size(); ++j)
+						for (size_t l = 0; l < objVarList.size(); ++l)
 						{
-							Configuration::ObjVar const & objVar = objVarList[j];
+							Configuration::ObjVar const & objVar = objVarList[l];
 
 							Configuration::PropertyTemplate const * const propertyTemplate = Configuration::getPropertyTemplate(objVar.m_key);
 							if (!propertyTemplate)
 							{
 								CString const message(CString("There is no property information found for objVar ") + objVar.m_key + " in SwgSpaceZoneEditor.ini.  Please consult asommers or drubenfield.");
 								CString const caption(CString("Can't open ") + lpszPathName);
-								DEBUG_REPORT_LOG(true, ("%s\n", message));
+								DEBUG_REPORT_LOG(true, ("%s\n", message.GetString()));
 								MessageBox(0, message, caption, MB_OK);
 
 								return FALSE;
@@ -518,14 +518,14 @@ BOOL SwgSpaceZoneEditorDoc::OnOpenDocument(LPCTSTR lpszPathName)
 									Object * const patrolPoint = new Object(*loadedPatrolPoint);
 
 									CString patrolPointName;
-									patrolPointName.Format("%s_%02d", object->getName(), j);
+									patrolPointName.Format("%s_%02d", object->getName().GetString(), j);
 									patrolPoint->setName(patrolPointName);
 									patrolPoint->setParent(object);
 									patrolPointList.push_back(patrolPointName);
 									m_objectList.push_back(patrolPoint);
 
 									std::pair<PatrolPointMap::iterator, bool> result = m_patrolPointMap.insert(std::make_pair(patrolPointName, patrolPoint));
-									DEBUG_FATAL(!result.second, ("%s already exists\n", patrolPointName));
+									DEBUG_FATAL(!result.second, ("%s already exists\n", patrolPointName.GetString()));
 								}
 							}
 						}
@@ -716,14 +716,14 @@ void SwgSpaceZoneEditorDoc::duplicateObject(Object const * object, CString const
 						Object * const patrolPoint = new Object(*loadedPatrolPoint);
 
 						CString patrolPointName;
-						patrolPointName.Format("%s_%02d", newObject->getName(), j);
+						patrolPointName.Format("%s_%02d", newObject->getName().GetString(), j);
 						patrolPoint->setName(patrolPointName);
 						patrolPoint->setParent(newObject);
 						patrolPointList.push_back(patrolPointName);
 						m_objectList.push_back(patrolPoint);
 
 						std::pair<PatrolPointMap::iterator, bool> result = m_patrolPointMap.insert(std::make_pair(patrolPointName, patrolPoint));
-						DEBUG_FATAL(!result.second, ("%s already exists\n", patrolPointName));
+						DEBUG_FATAL(!result.second, ("%s already exists\n", patrolPointName.GetString()));
 					}
 			}
 
@@ -786,14 +786,14 @@ void SwgSpaceZoneEditorDoc::addPatrolPoint(Object * object)
 	}
 
 	CString patrolPointName;
-	patrolPointName.Format("%s_%02d", object->getName(), patrolPointIndex + 1);
+	patrolPointName.Format("%s_%02d", object->getName().GetString(), patrolPointIndex + 1);
 	patrolPoint->setName(patrolPointName);
 	patrolPoint->setParent(object);
 	patrolPoint->setTransform_o2w(patrolPointList.empty() ? object->getTransform_o2w() : findPatrolPoint(patrolPointList.back())->getTransform_o2w());
 	patrolPointList.push_back(patrolPointName);
 	m_objectList.push_back(patrolPoint);
 	std::pair<PatrolPointMap::iterator, bool> result = m_patrolPointMap.insert(std::make_pair(patrolPointName, patrolPoint));
-	DEBUG_FATAL(!result.second, ("%s already exists\n", patrolPointName));
+	DEBUG_FATAL(!result.second, ("%s already exists\n", patrolPointName.GetString()));
 
 	CString patrolPoints;
 	Configuration::packString(patrolPointList, patrolPoints, ':');
@@ -825,12 +825,12 @@ BOOL SwgSpaceZoneEditorDoc::OnSaveDocument(LPCTSTR lpszPathName)
 
 		CString temp;
 		temp.Format("%s\t%1.6f\t%1.6f\t%1.6f\t%1.6f\t%1.6f\t%1.6f\t%1.2f\t%1.2f\t%1.2f\t%s\t%s\n", 
-			object->getObjectTemplateName(),
+			object->getObjectTemplateName().GetString(),
 			transform_o2w.getLocalFrameJ_p().x, transform_o2w.getLocalFrameJ_p().y, transform_o2w.getLocalFrameJ_p().z, 
 			transform_o2w.getLocalFrameK_p().x, transform_o2w.getLocalFrameK_p().y, transform_o2w.getLocalFrameK_p().z, 
 			transform_o2w.getPosition_p().x, transform_o2w.getPosition_p().y, transform_o2w.getPosition_p().z, 
-			objVars,
-			object->getScripts());
+			objVars.GetString(),
+			object->getScripts().GetString());
 
 		buffer += temp;
 	}

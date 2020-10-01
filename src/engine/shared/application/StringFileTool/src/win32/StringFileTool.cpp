@@ -162,21 +162,21 @@ BOOL StringFileTool::InitInstance()
 
 	if (theirsFileName.IsEmpty())
 	{
-		MessageBox(0, Unicode::narrowToWide("Invalid parameters: \"").c_str() + CString(m_lpCmdLine) + Unicode::narrowToWide("\"; original=").c_str() + originalFileName + Unicode::narrowToWide(" theirs=").c_str() + theirsFileName + Unicode::narrowToWide(" yours=").c_str() + yoursFileName, Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
+		MessageBox(0, Unicode::narrowToWide("Invalid parameters: \"").c_str() + CString(m_lpCmdLine) + Unicode::narrowToWide("\"; original=").c_str() + originalFileName + Unicode::narrowToWide(" theirs=").c_str() + theirsFileName + Unicode::narrowToWide(" yours=").c_str() + yoursFileName, (LPCTSTR)Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
 		return FALSE;
 	}
 
 	StringTable originalStringTable;
 	if (!originalStringTable.load(Unicode::wideToNarrow(originalFileNameUnicode).c_str()))
 	{
-		MessageBox(0, Unicode::narrowToWide("Could not open string table ").c_str() + originalFileName, Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
+		MessageBox(0, Unicode::narrowToWide("Could not open string table ").c_str() + originalFileName, (LPCTSTR)Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
 		return FALSE;
 	}
 
 	StringTable theirsStringTable;
 	if (!theirsStringTable.load(Unicode::wideToNarrow(theirsFileNameUnicode).c_str()))
 	{
-		MessageBox(0, Unicode::narrowToWide("Could not open string table ").c_str() + theirsFileName, Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
+		MessageBox(0, Unicode::narrowToWide("Could not open string table ").c_str() + theirsFileName, (LPCTSTR)Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
 		return FALSE;
 	}
 
@@ -199,7 +199,7 @@ BOOL StringFileTool::InitInstance()
 		StringTable yoursStringTable;
 		if (!yoursStringTable.load(Unicode::wideToNarrow(yoursFileNameUnicode).c_str()))
 		{
-			MessageBox(0, Unicode::narrowToWide("Could not open string table ").c_str() + yoursFileName + Unicode::narrowToWide(".  Merge cancelled.").c_str(), Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
+			MessageBox(0, Unicode::narrowToWide("Could not open string table ").c_str() + yoursFileName + Unicode::narrowToWide(".  Merge cancelled.").c_str(), (LPCTSTR)Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
 			return FALSE;
 		}
 
@@ -212,13 +212,13 @@ BOOL StringFileTool::InitInstance()
 		{
 			if (!mergedStringTable.save())
 			{
-				MessageBox(0, Unicode::narrowToWide("Could not write string table ").c_str() + mergedFileName + Unicode::narrowToWide(".  DO NOT TRUST THIS MERGE!").c_str(), Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
+				MessageBox(0, Unicode::narrowToWide("Could not write string table ").c_str() + mergedFileName + Unicode::narrowToWide(".  DO NOT TRUST THIS MERGE!").c_str(), (LPCTSTR)Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
 				mergedStringTable.save();
 			}
 		}
 		else
 		{
-			MessageBox(0, Unicode::narrowToWide("Merge cancelled.").c_str(), Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
+			MessageBox(0, (LPCTSTR)Unicode::narrowToWide("Merge cancelled.").c_str(), (LPCTSTR)Unicode::narrowToWide("StringFileTool").c_str(), MB_ICONWARNING | MB_OK);
 			mergedStringTable.save();
 		}
 	}

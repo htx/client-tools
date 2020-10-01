@@ -497,8 +497,8 @@ void ActionsObjectTemplate::onServerSubmit()
 
 	if(!GodClientPerforce::getInstance().submitFiles(sv, result))
 	{
-		const std::string msg = "Could not submit file(s) to perforce!  Beanhead.\n" + result;
-		IGNORE_RETURN(QMessageBox::warning(&MainFrame::getInstance(), "Warning", msg.c_str()));
+		const std::string msg2 = "Could not submit file(s) to perforce!  Beanhead.\n" + result;
+		IGNORE_RETURN(QMessageBox::warning(&MainFrame::getInstance(), "Warning", msg2.c_str()));
 	}
 
 	m_serverRefresh->doActivate();
@@ -786,8 +786,8 @@ void ActionsObjectTemplate::onClientSubmit()
 
 	if(!GodClientPerforce::getInstance().submitFiles(sv, result))
 	{
-		const std::string msg = "Could not submit file(s) to perforce!  Beanhead.\n" + result;
-		IGNORE_RETURN(QMessageBox::warning(&MainFrame::getInstance(), "Warning", msg.c_str()));
+		const std::string msg3 = "Could not submit file(s) to perforce!  Beanhead.\n" + result;
+		IGNORE_RETURN(QMessageBox::warning(&MainFrame::getInstance(), "Warning", msg3.c_str()));
 	}
 
 	m_clientRefresh->doActivate();

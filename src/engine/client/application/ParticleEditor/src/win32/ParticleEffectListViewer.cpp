@@ -597,7 +597,7 @@ ParticleEmitterGroupDescription const & ParticleEmitterGroupListViewItem::getPar
 //-----------------------------------------------------------------------------
 void ParticleEmitterGroupListViewItem::updateParticleCount()
 {
-	ParticleEmitterGroupDescription m_particleEmitterGroupDescription;
+	ParticleEmitterGroupDescription m_particleEmitterGroupDescription2;
 
 	//char text[256];
 	//sprintf(text, "%4d", ParticleManager::getParticleCount());
@@ -1392,9 +1392,9 @@ void ParticleEffectListViewer::showParticleEmitterPopUpMenu(QPoint const &point)
 	{
 		case MI_reset:
 			{
-				ParticleEmitterListViewItem *particleEmitterListViewItem = dynamic_cast<ParticleEmitterListViewItem *>(m_selectedListViewItem);
+				ParticleEmitterListViewItem *particleEmitterListViewItem3 = dynamic_cast<ParticleEmitterListViewItem *>(m_selectedListViewItem);
 
-				if (particleEmitterListViewItem != NULL)
+				if (particleEmitterListViewItem3 != NULL)
 				{
 					// Create a default description
 
@@ -1403,11 +1403,11 @@ void ParticleEffectListViewer::showParticleEmitterPopUpMenu(QPoint const &point)
 
 					// Reset to the default description
 
-					particleEmitterListViewItem->setDescription(particleEmitterDescription);
+					particleEmitterListViewItem3->setDescription(particleEmitterDescription);
 
 					// Signal to show the new default description
 
-					emit showParticleEmitterAttributes(particleEmitterListViewItem->getParticleEmitterDescription());
+					emit showParticleEmitterAttributes(particleEmitterListViewItem3->getParticleEmitterDescription());
 
 					// Signal to rebuild the particle effect
 

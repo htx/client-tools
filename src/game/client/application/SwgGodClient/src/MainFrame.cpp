@@ -766,13 +766,13 @@ void MainFrame::loadDockWindowSettings(QSettings* settings, QDockWindow* window)
 	const std::string newlineEntry     = entry + "/newline";
 	const std::string extraOffsetEntry = entry + "/extraOffset";
 
-	Dock d          = Qt::Left;
+	Dock d2          = Qt::Left;
 	int  i          = 0;
 	bool nl         = false;
 	int  eo         = 0;
-	if(QMainWindow::getLocation(window, d, i, nl, eo))
+	if(QMainWindow::getLocation(window, d2, i, nl, eo))
 	{
-		const Dock dock       = static_cast<Dock>(settings->readNumEntry(dockEntry.c_str(),       static_cast<int>(d)));
+		const Dock dock		  = static_cast<Dock>(settings->readNumEntry(dockEntry.c_str(),       static_cast<int>(d2)));
 		const int index       = settings->readNumEntry                 (indexEntry.c_str(),       i);
 		const bool newLine    = settings->readBoolEntry                (newlineEntry.c_str(),     nl);
 		const int extraOffset = settings->readNumEntry                 (extraOffsetEntry.c_str(), eo);

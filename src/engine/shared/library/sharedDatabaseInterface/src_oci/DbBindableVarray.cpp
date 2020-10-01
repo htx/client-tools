@@ -343,17 +343,17 @@ std::string BindableVarrayNumber::outputValue() const
 	for (sb4 i=0; i < size; ++i)
 	{
 		OCINumber *element;
-		OCIInd *indicator;
+		OCIInd *indicator2;
 		boolean exists;
 		
 		if (i!=0)
 			result += ", ";
 		
-		if (localSession->m_server->checkerr(*localSession, OCICollGetElem(localSession->envhp, localSession->errhp, m_data, i, &exists, reinterpret_cast<dvoid**>(&element), reinterpret_cast<dvoid**>(&indicator))))
+		if (localSession->m_server->checkerr(*localSession, OCICollGetElem(localSession->envhp, localSession->errhp, m_data, i, &exists, reinterpret_cast<dvoid**>(&element), reinterpret_cast<dvoid**>(&indicator2))))
 		{
 			if (exists)
 			{
-				if (*indicator == OCI_IND_NULL)
+				if (*indicator2 == OCI_IND_NULL)
 					result += "NULL";
 				else
 				{
@@ -557,17 +557,17 @@ std::string BindableVarrayString::outputValue() const
 	for (sb4 i=0; i < size; ++i)
 	{
 		OCIString **element;
-		OCIInd *indicator;
+		OCIInd *indicator3;
 		boolean exists;
 		
 		if (i!=0)
 			result += ", ";
 		
-		if (localSession->m_server->checkerr(*localSession, OCICollGetElem(localSession->envhp, localSession->errhp, m_data, i, &exists, reinterpret_cast<dvoid**>(&element), reinterpret_cast<dvoid**>(&indicator))))
+		if (localSession->m_server->checkerr(*localSession, OCICollGetElem(localSession->envhp, localSession->errhp, m_data, i, &exists, reinterpret_cast<dvoid**>(&element), reinterpret_cast<dvoid**>(&indicator3))))
 		{
 			if (exists)
 			{
-				if (*indicator == OCI_IND_NULL)
+				if (*indicator3 == OCI_IND_NULL)
 					result += "NULL";
 				else
 				{

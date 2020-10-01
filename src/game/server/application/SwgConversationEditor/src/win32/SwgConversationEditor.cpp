@@ -195,7 +195,7 @@ BOOL SwgConversationEditorApp::InitInstance()
 
 	TreeFile::addSearchAbsolute (0);
 
-	char buffer [1024];
+	/*char buffer [1024];
 	if (GetCurrentDirectory (1024, buffer) != 0)
 		m_currentDirectory = buffer;
 
@@ -205,7 +205,7 @@ BOOL SwgConversationEditorApp::InitInstance()
 		temp.Remove('\\');
 		if (temp.Find("exewin32") == -1)
 			AfxMessageBox ("SwgConversationEditor is not running from <branch>\\exe\\win32.  You may be running an older version.");
-	}
+	}*/
 
 	//-- Load ini file
 	if (!Configuration::install ())

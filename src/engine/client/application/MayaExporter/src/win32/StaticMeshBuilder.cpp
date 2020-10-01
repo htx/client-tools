@@ -831,10 +831,10 @@ static void _applyScratchMapNormal(Vector &o_newTangentNormal, const Vector &i_s
 
 		const Vector axisRotZ(-i_scratchNormal.x, -i_scratchNormal.y, cosAngle);
 
-		Vector newNormal(axisRotX.dot(i_tangentNormal), axisRotY.dot(i_tangentNormal), axisRotZ.dot(i_tangentNormal));
-		newNormal.normalize();
+		Vector newNormal2(axisRotX.dot(i_tangentNormal), axisRotY.dot(i_tangentNormal), axisRotZ.dot(i_tangentNormal));
+		newNormal2.normalize();
 
-		o_newTangentNormal = newNormal;
+		o_newTangentNormal = newNormal2;
 	}
 	else
 	{
@@ -1433,7 +1433,7 @@ bool StaticMeshBuilder::specifyNoMoreData(void)
 	for (sd = m_firstShaderData, sdIndex = 0; sd; sd = sd->next, ++sdIndex)
 	{
 		result = sd->build(m_setWriter, m_shaderTemplateCount - sdIndex - 1);
-		MESSENGER_REJECT(!result, ("failed to write shader %d's face data (\"%s\")\n", sdIndex, sd->shaderTemplateName));
+		MESSENGER_REJECT(!result, ("failed to write shader %d's face data (\"%s\")\n", sdIndex, sd->shaderTemplateName.c_str()));
 	}
 
 	// If we have no extent for the mesh, create one.

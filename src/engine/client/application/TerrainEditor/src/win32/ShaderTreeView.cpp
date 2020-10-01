@@ -341,7 +341,7 @@ const CString ShaderTreeView::CreateUniqueFamilyName (const CString* base)
 
 	if (base)
 	{
-		familyName.Format ("%s", *base);
+		familyName.Format ("%s", *base->GetString());
 	}
 	else
 	{
@@ -355,7 +355,7 @@ const CString ShaderTreeView::CreateUniqueFamilyName (const CString* base)
 	{
 		if (base)
 		{
-			familyName.Format ("%s_%i", *base, familyIndex);
+			familyName.Format ("%s_%i", *base->GetString(), familyIndex);
 		}
 		else
 		{
@@ -572,7 +572,7 @@ void ShaderTreeView::OnDeleteshader()
 				const CString name = GetTreeCtrl ().GetItemText (child);
 
 				CString tmp;
-				tmp.Format ("Are you sure you want to delete %s?", name);
+				tmp.Format ("Are you sure you want to delete %s?", name.GetString());
 
 				if (MessageBox (tmp, 0, MB_YESNO) == IDYES)
 				{
@@ -679,7 +679,7 @@ void ShaderTreeView::OnFindshader()
 
 						//-- tell the properties view about it
 						{
-							TerrainEditorDoc* pDoc = static_cast<TerrainEditorDoc*> (GetDocument());
+							TerrainEditorDoc* pDoc4 = static_cast<TerrainEditorDoc*> (GetDocument());
 							HTREEITEM selection = GetTreeCtrl ().GetSelectedItem ();
 							
 							FormShader::FormShaderViewData vd;
@@ -687,7 +687,7 @@ void ShaderTreeView::OnFindshader()
 							vd.shaderGroup = shaderGroup;
 							vd.childName = GetTreeCtrl ().GetItemText (selection);
 
-							pDoc->SetPropertyView (RUNTIME_CLASS(FormShader), &vd);
+							pDoc4->SetPropertyView (RUNTIME_CLASS(FormShader), &vd);
 						}
 
 					}

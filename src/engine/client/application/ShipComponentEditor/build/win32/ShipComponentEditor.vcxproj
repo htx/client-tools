@@ -58,24 +58,27 @@
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_o</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\compile\win32\ShipComponentEditor\Debug;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\include;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\external\ours\library\unicodeArchive\include\public;..\..\..\..\..\..\external\ours\library\archive\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\engine\client\library\clientAudio\include\public;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedGame\include\public;..\..\..\..\..\..\engine\shared\library\sharedImage\include\public;..\..\..\..\..\..\engine\shared\library\sharedInputMap\include\public;..\..\..\..\..\..\engine\shared\library\sharedIoWin\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMathArchive\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMessageDispatch\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplate\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplateDefinition\include\public;..\..\..\..\..\..\engine\shared\library\sharedObject\include\public;..\..\..\..\..\..\engine\shared\library\sharedRandom\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\..\..\..\..\engine\server\library\serverGame\include\public;..\..\..\..\..\..\engine\server\library\serverUtility\include\public;..\..\..\..\..\..\engine\client\library\clientGame\include\public;..\..\..\..\..\..\engine\client\library\clientSkeletalAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientGraphics\include\public;..\..\..\..\..\..\engine\client\library\clientAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientObject\include\public;..\..\..\..\..\..\engine\client\library\clientParticle\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\compile\win32\ShipComponentEditor\Debug;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\external\ours\library\unicodeArchive\include\public;..\..\..\..\..\..\external\ours\library\archive\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\engine\client\library\clientAudio\include\public;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedGame\include\public;..\..\..\..\..\..\engine\shared\library\sharedImage\include\public;..\..\..\..\..\..\engine\shared\library\sharedInputMap\include\public;..\..\..\..\..\..\engine\shared\library\sharedIoWin\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMathArchive\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMessageDispatch\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplate\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplateDefinition\include\public;..\..\..\..\..\..\engine\shared\library\sharedObject\include\public;..\..\..\..\..\..\engine\shared\library\sharedRandom\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\..\..\..\..\engine\server\library\serverGame\include\public;..\..\..\..\..\..\engine\server\library\serverUtility\include\public;..\..\..\..\..\..\engine\client\library\clientGame\include\public;..\..\..\..\..\..\engine\client\library\clientSkeletalAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientGraphics\include\public;..\..\..\..\..\..\engine\client\library\clientAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientObject\include\public;..\..\..\..\..\..\engine\client\library\clientParticle\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_WINDOWS;QT_DLL;QT_NO_STL;QT_ACCESSIBILITY_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -95,18 +98,25 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dinput8.lib;dpvs.lib;dsound.lib;dxguid.lib;libpcre.a;libxml2-win32-release.lib;mss32.lib;mswsock.lib;qt-mt334.lib;qtmain.lib;winmm.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;dinput8.lib;dpvs.lib;dsound.lib;dxguid.lib;libpcre.a;libxml2-win32-release.lib;mss32.lib;mswsock.lib;qt-mt334.lib;qtmain.lib;winmm.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_d.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\dpvs\lib\win32-x86;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\lib;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;libcd;msvcrt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y
+xcopy "$(SolutionDir)..\..\compile\win32\dpvs\$(Configuration)\dpvs.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D
+xcopy "$(SolutionDir)..\..\external\3rd\library\miles-7.2e\redist\Mss32.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D
+xcopy "$(SolutionDir)..\..\external\3rd\library\qt\3.3.4\lib\qt-mt334.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <ClCompile>
@@ -115,9 +125,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\compile\win32\ShipComponentEditor\Optimized;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\include;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\external\ours\library\unicodeArchive\include\public;..\..\..\..\..\..\external\ours\library\archive\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\engine\client\library\clientAudio\include\public;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedGame\include\public;..\..\..\..\..\..\engine\shared\library\sharedImage\include\public;..\..\..\..\..\..\engine\shared\library\sharedInputMap\include\public;..\..\..\..\..\..\engine\shared\library\sharedIoWin\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMathArchive\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMessageDispatch\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplate\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplateDefinition\include\public;..\..\..\..\..\..\engine\shared\library\sharedObject\include\public;..\..\..\..\..\..\engine\shared\library\sharedRandom\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\..\..\..\..\engine\server\library\serverGame\include\public;..\..\..\..\..\..\engine\server\library\serverUtility\include\public;..\..\..\..\..\..\engine\client\library\clientGame\include\public;..\..\..\..\..\..\engine\client\library\clientSkeletalAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientGraphics\include\public;..\..\..\..\..\..\engine\client\library\clientAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientObject\include\public;..\..\..\..\..\..\engine\client\library\clientParticle\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\compile\win32\ShipComponentEditor\Optimized;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\external\ours\library\unicodeArchive\include\public;..\..\..\..\..\..\external\ours\library\archive\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\engine\client\library\clientAudio\include\public;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedGame\include\public;..\..\..\..\..\..\engine\shared\library\sharedImage\include\public;..\..\..\..\..\..\engine\shared\library\sharedInputMap\include\public;..\..\..\..\..\..\engine\shared\library\sharedIoWin\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMathArchive\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMessageDispatch\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplate\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplateDefinition\include\public;..\..\..\..\..\..\engine\shared\library\sharedObject\include\public;..\..\..\..\..\..\engine\shared\library\sharedRandom\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\..\..\..\..\engine\server\library\serverGame\include\public;..\..\..\..\..\..\engine\server\library\serverUtility\include\public;..\..\..\..\..\..\engine\client\library\clientGame\include\public;..\..\..\..\..\..\engine\client\library\clientSkeletalAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientGraphics\include\public;..\..\..\..\..\..\engine\client\library\clientAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientObject\include\public;..\..\..\..\..\..\engine\client\library\clientParticle\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_WINDOWS;QT_DLL;QT_NO_STL;QT_ACCESSIBILITY_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
@@ -136,18 +146,25 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dinput8.lib;dpvs.lib;dsound.lib;dxguid.lib;libpcre.a;libxml2-win32-release.lib;mss32.lib;mswsock.lib;qt-mt334.lib;qtmain.lib;winmm.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;dinput8.lib;dpvs.lib;dsound.lib;dxguid.lib;libpcre.a;libxml2-win32-release.lib;mss32.lib;mswsock.lib;qt-mt334.lib;qtmain.lib;winmm.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_o.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\dpvs\lib\win32-x86;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\lib;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;libcd;msvcrt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_o.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y
+xcopy "$(SolutionDir)..\..\compile\win32\dpvs\Debug\dpvs.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D
+xcopy "$(SolutionDir)..\..\external\3rd\library\miles-7.2e\redist\Mss32.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D
+xcopy "$(SolutionDir)..\..\external\3rd\library\qt\3.3.4\lib\qt-mt334.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -156,7 +173,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\compile\win32\ShipComponentEditor\Release;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\include;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\external\ours\library\unicodeArchive\include\public;..\..\..\..\..\..\external\ours\library\archive\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\engine\client\library\clientAudio\include\public;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedGame\include\public;..\..\..\..\..\..\engine\shared\library\sharedImage\include\public;..\..\..\..\..\..\engine\shared\library\sharedInputMap\include\public;..\..\..\..\..\..\engine\shared\library\sharedIoWin\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMathArchive\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMessageDispatch\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplate\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplateDefinition\include\public;..\..\..\..\..\..\engine\shared\library\sharedObject\include\public;..\..\..\..\..\..\engine\shared\library\sharedRandom\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\..\..\..\..\engine\server\library\serverGame\include\public;..\..\..\..\..\..\engine\server\library\serverUtility\include\public;..\..\..\..\..\..\engine\client\library\clientGame\include\public;..\..\..\..\..\..\engine\client\library\clientSkeletalAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientGraphics\include\public;..\..\..\..\..\..\engine\client\library\clientAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientObject\include\public;..\..\..\..\..\..\engine\client\library\clientParticle\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\compile\win32\ShipComponentEditor\Release;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\include;..\..\..\..\..\..\external\ours\library\unicode\include;..\..\..\..\..\..\external\ours\library\unicodeArchive\include\public;..\..\..\..\..\..\external\ours\library\archive\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\..\external\ours\library\localization\include;..\..\..\..\..\..\engine\client\library\clientAudio\include\public;..\..\..\..\..\..\engine\shared\library\sharedCompression\include\public;..\..\..\..\..\..\engine\shared\library\sharedDebug\include\public;..\..\..\..\..\..\engine\shared\library\sharedFile\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundation\include\public;..\..\..\..\..\..\engine\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\..\engine\shared\library\sharedGame\include\public;..\..\..\..\..\..\engine\shared\library\sharedImage\include\public;..\..\..\..\..\..\engine\shared\library\sharedInputMap\include\public;..\..\..\..\..\..\engine\shared\library\sharedIoWin\include\public;..\..\..\..\..\..\engine\shared\library\sharedMath\include\public;..\..\..\..\..\..\engine\shared\library\sharedMathArchive\include\public;..\..\..\..\..\..\engine\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\..\engine\shared\library\sharedMessageDispatch\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplate\include\public;..\..\..\..\..\..\engine\shared\library\sharedTemplateDefinition\include\public;..\..\..\..\..\..\engine\shared\library\sharedObject\include\public;..\..\..\..\..\..\engine\shared\library\sharedRandom\include\public;..\..\..\..\..\..\engine\shared\library\sharedSynchronization\include\public;..\..\..\..\..\..\engine\shared\library\sharedThread\include\public;..\..\..\..\..\..\engine\shared\library\sharedUtility\include\public;..\..\..\..\..\..\engine\server\library\serverGame\include\public;..\..\..\..\..\..\engine\server\library\serverUtility\include\public;..\..\..\..\..\..\engine\client\library\clientGame\include\public;..\..\..\..\..\..\engine\client\library\clientSkeletalAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientGraphics\include\public;..\..\..\..\..\..\engine\client\library\clientAnimation\include\public;..\..\..\..\..\..\engine\client\library\clientObject\include\public;..\..\..\..\..\..\engine\client\library\clientParticle\include\public;..\..\..\..\..\..\engine\client\library\clientDirectInput\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_WINDOWS;QT_DLL;QT_NO_STL;QT_ACCESSIBILITY_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -177,18 +194,25 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>dinput8.lib;dpvs.lib;dsound.lib;dxguid.lib;libpcre.a;libxml2-win32-release.lib;mss32.lib;mswsock.lib;qt-mt334.lib;qtmain.lib;winmm.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;dinput8.lib;dpvs.lib;dsound.lib;dxguid.lib;libpcre.a;libxml2-win32-release.lib;mss32.lib;mswsock.lib;qt-mt334.lib;qtmain.lib;winmm.lib;ws2_32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_r.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\external\3rd\library\dpvs\lib\win32-x86;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\lib;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Release;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\lib;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;..\..\..\..\..\..\external\3rd\library\qt\3.3.4\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd;libc;libcd;msvcrt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_r.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y
+xcopy "$(SolutionDir)..\..\compile\win32\dpvs\$(Configuration)\dpvs.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D
+xcopy "$(SolutionDir)..\..\external\3rd\library\miles-7.2e\redist\Mss32.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D
+xcopy "$(SolutionDir)..\..\external\3rd\library\qt\3.3.4\lib\qt-mt334.dll" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y /D</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\compile\win32\ShipComponentEditor\Debug\BaseAttachmentsChassisEditorDetails_d.cpp">
@@ -1195,6 +1219,15 @@
     <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\blat194\build\win32\blat.vcxproj">
       <Project>{ecbdfcff-f4ae-475a-aa90-729eb96430a0}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\dpvs\implementation\msvc8\dpvs.vcxproj">
+      <Project>{17c00ddf-0e33-40dd-94e8-9a300c9bc15d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\libEverQuestTCG\build\win32\libEverQuestTCG.vcxproj">
+      <Project>{03f3c054-f380-4618-be46-6e25061a3587}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\udplibrary\udplibrary.vcxproj">
+      <Project>{1a7d1159-3474-4520-882f-f1842f0aafae}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\ui\build\win32\ui.vcxproj">
       <Project>{d4accb0c-7b66-433d-b715-8ef7f43b8e2d}</Project>

@@ -117,7 +117,7 @@ namespace DialogDirectoryNamespace
 
 					if (finder.IsDirectory ())
 					{
-						sprintf (subDirectory, "%s%s%s", directory, directory [n-1] != '/' ? "/" : "", finder.GetFileName ());
+						sprintf (subDirectory, "%s%s%s", directory, directory [n-1] != '/' ? "/" : "", finder.GetFileName().GetString());
 
 						addDirectory (subDirectory, treeCtrl, treeItem, refresh);
 					}
@@ -283,7 +283,7 @@ void DialogDirectory::OnDblclkTreeview (NMHDR * const /*pNMHDR*/, LRESULT * cons
 		if (!AfxGetApp ()->OpenDocumentFile (rootPath + (rootPath [rootPath.GetLength () - 1] == '/' ? "" : "/") + name))
 		{
 			CString buffer;
-			buffer.Format ("%s could not be opened\n", rootPath + (rootPath [rootPath.GetLength () - 1] == '/' ? "" : "/") + name);
+			buffer.Format ("%s could not be opened\n", static_cast<LPCTSTR>(rootPath + (rootPath [rootPath.GetLength () - 1] == '/' ? "" : "/") + name.GetString()));
 			CONSOLE_PRINT (buffer);
 		}
 		else

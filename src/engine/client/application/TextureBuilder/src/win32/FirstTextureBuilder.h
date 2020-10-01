@@ -8,6 +8,8 @@
 #ifndef INCLUDED_FirstTextureBuilder_H
 #define INCLUDED_FirstTextureBuilder_H
 
+#pragma warning(disable : 4996 4838 4099)
+
 // ======================================================================
 
 #if _MSC_VER > 1000

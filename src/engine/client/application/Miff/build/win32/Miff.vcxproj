@@ -23,7 +23,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -60,16 +60,19 @@
     <OutDir>.\../../../../../../compile/win32/Miff/Optimized\</OutDir>
     <IntDir>.\../../../../../../compile/win32/Miff/Optimized\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_o</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\../../../../../../compile/win32/Miff/Release\</OutDir>
     <IntDir>.\../../../../../../compile/win32/Miff/Release\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\../../../../../../compile/win32/Miff/Debug\</OutDir>
     <IntDir>.\../../../../../../compile/win32/Miff/Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <Midl>
@@ -78,9 +81,9 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;DEBUG_LEVEL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;DEBUG_LEVEL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeaderOutputFile>.\../../../../../../compile/win32/Miff/Optimized/Miff.pch</PrecompiledHeaderOutputFile>
@@ -98,19 +101,23 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\../../../../../../compile/win32/Miff/Optimized/Miff.exe</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)_o.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>LIBC;LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBC;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/Miff/Optimized/Miff.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\../../../../../../compile/win32/Miff/Optimized/Miff.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -120,8 +127,8 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -142,18 +149,22 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\../../../../../../compile/win32/Miff/Release/Miff.exe</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)_r.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/Miff/Release/Miff.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\../../../../../../compile/win32/Miff/Release/Miff.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -163,9 +174,9 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\..\external\3rd\library\stlport453\stlport;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;DEBUG_LEVEL=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\..\..\..\..\shared\library\sharedCompression\include\public;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\..\..\shared\library\sharedDebug\include\public;..\..\..\..\..\shared\library\sharedFile\include\public;..\..\..\..\..\shared\library\sharedFoundationTypes\include\public;..\..\..\..\..\shared\library\sharedFoundation\include\public;..\..\..\..\..\shared\library\sharedMemoryManager\include\public;..\..\..\..\..\shared\library\sharedThread\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;DEBUG_LEVEL=2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -185,19 +196,23 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>wsock32.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\../../../../../../compile/win32/Miff/Debug/Miff.exe</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\zlib\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>LIBC;LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/Miff/Debug/Miff.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\../../../../../../compile/win32/Miff/Debug/Miff.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\$(ProjectName)\$(Configuration)\"  /I /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\..\..\compile\win32\Miff\lex_yy.c" />
@@ -246,9 +261,18 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\archive\build\win32\archive.vcxproj">
+      <Project>{52153865-1abf-4fbb-84c4-0fc439716f1e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\external\ours\library\fileInterface\build\win32\fileInterface.vcxproj">
       <Project>{de93996c-cb51-4d61-85a0-a9dfc677445f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\unicodeArchive\build\win32\unicodeArchive.vcxproj">
+      <Project>{41269a52-38b8-4f9a-ae38-1103bb03a10b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\external\ours\library\unicode\build\win32\unicode.vcxproj">
+      <Project>{b97963ef-49e4-477e-85ff-e7fee7c626d7}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\shared\library\sharedCompression\build\win32\sharedCompression.vcxproj">
       <Project>{6bd52b35-92ca-44e4-995e-2b79c7398183}</Project>
@@ -274,6 +298,9 @@
       <Project>{03819289-4e8b-44e9-9f3b-a3243c9797c9}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedLog\build\win32\sharedLog.vcxproj">
+      <Project>{2ae0cef0-c4f2-4786-a026-8338fb09d61b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\shared\library\sharedMath\build\win32\sharedMath.vcxproj">
       <Project>{5789ea7c-6596-4dcc-a9fb-dd7582888f90}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
@@ -281,6 +308,12 @@
     <ProjectReference Include="..\..\..\..\..\shared\library\sharedMemoryManager\build\win32\sharedMemoryManager.vcxproj">
       <Project>{dc2cd926-8ea3-4add-aa62-a95cca8ac7dd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedMessageDispatch\build\win32\sharedMessageDispatch.vcxproj">
+      <Project>{c87164f5-14a9-403c-8bc4-217fd40731ea}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\shared\library\sharedNetworkMessages\build\win32\sharedNetworkMessages.vcxproj">
+      <Project>{decf2964-3a66-4fa6-ab27-d4507c5480ea}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\shared\library\sharedRandom\build\win32\sharedRandom.vcxproj">
       <Project>{2e6982e0-dcb6-4ed9-bfad-d29daeea6ad2}</Project>
@@ -299,7 +332,17 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\..\..\..\..\build\win32\packages\bison-win32.2.4.1.1\build\native\bison-win32.targets" Condition="Exists('..\..\..\..\..\..\build\win32\packages\bison-win32.2.4.1.1\build\native\bison-win32.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\..\..\..\build\win32\packages\bison-win32.2.4.1.1\build\native\bison-win32.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\..\..\..\build\win32\packages\bison-win32.2.4.1.1\build\native\bison-win32.targets'))" />
+  </Target>
 </Project>

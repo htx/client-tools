@@ -24,7 +24,7 @@ namespace Base
 
     void  put(ByteStream & target, const LoginAPI::UsageLimit & source)
     {
-	unsigned next = source.GetNextAllowance();
+	    unsigned next = (unsigned int)source.GetNextAllowance();
         put(target, source.GetType());
         put(target, source.GetAllowance());
         put(target, next);

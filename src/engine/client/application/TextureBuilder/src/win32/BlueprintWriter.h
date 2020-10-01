@@ -11,8 +11,8 @@
 // ======================================================================
 
 #include "../../../../../../engine/shared/library/sharedFoundation/include/public/sharedFoundation/Tag.h"
-
-enum TextureFormat;
+#include "../../../../../../engine/client/library/clientGraphics/src/shared/Texture.def"
+//enum TextureFormat;
 
 class Iff;
 class Vector;

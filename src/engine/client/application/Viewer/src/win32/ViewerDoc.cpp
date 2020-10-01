@@ -378,11 +378,11 @@ void CViewerDoc::reload (void)
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadShaderTemplate(const char *filename)
+bool CViewerDoc::loadShaderTemplate(const char *filename2)
 {
 	try
 	{
-		Shader* shader = ShaderTemplateList::fetchModifiableShader (filename);
+		Shader* shader = ShaderTemplateList::fetchModifiableShader (filename2);
 		object->setAppearance (new ShaderAppearance (CONST_REAL (10), CONST_REAL (10), shader, VectorArgb::solidWhite));
 	}
 	catch (FatalException& e)
@@ -399,12 +399,12 @@ bool CViewerDoc::loadShaderTemplate(const char *filename)
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadTexture(const char *filename)
+bool CViewerDoc::loadTexture(const char *filename3)
 {
 	try
 	{
 		Shader* shader = ShaderTemplateList::fetchModifiableShader("shader/viewer.sht");
-		const Texture *texture = TextureList::fetch(filename);
+		const Texture *texture = TextureList::fetch(filename3);
 		static_cast<StaticShader *>(shader)->setTexture(TAG_MAIN, *texture);
 		texture->release();
 		object->setAppearance (new ShaderAppearance (CONST_REAL (10), CONST_REAL (10), shader, VectorArgb::solidWhite));
@@ -423,7 +423,7 @@ bool CViewerDoc::loadTexture(const char *filename)
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadTextureRendererTemplate(const char *filename)
+bool CViewerDoc::loadTextureRendererTemplate(const char *filename4)
 {
 	const TextureRendererTemplate *trtPointer = 0;
 	Shader                        *shader = 0;
@@ -444,7 +444,7 @@ bool CViewerDoc::loadTextureRendererTemplate(const char *filename)
 		}
 
 		//-- load up the rendered texture template
-		const TextureRendererTemplate *textureRendererTemplate = TextureRendererList::fetch(filename);
+		const TextureRendererTemplate *textureRendererTemplate = TextureRendererList::fetch(filename4);
 		if (!textureRendererTemplate)
 			return false;
 
@@ -494,7 +494,7 @@ bool CViewerDoc::loadTextureRendererTemplate(const char *filename)
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadSkeletonTemplate(const char *filename)
+bool CViewerDoc::loadSkeletonTemplate(const char *filename5)
 {
 	try
 	{
@@ -506,7 +506,7 @@ bool CViewerDoc::loadSkeletonTemplate(const char *filename)
 		}
 
 		//-- Fetch the SkeletonTemplate.
-		const SkeletonTemplate *const skeletonTemplate = SkeletonTemplateList::fetch(CrcLowerString(filename));
+		const SkeletonTemplate *const skeletonTemplate = SkeletonTemplateList::fetch(CrcLowerString(filename5));
 		if (!skeletonTemplate)
 			return false;
 
@@ -519,11 +519,11 @@ bool CViewerDoc::loadSkeletonTemplate(const char *filename)
 		std::string  shortFilename;
 		std::string  baseFilename;
 
-		const char *lastDirectoryChar = strrchr(filename, '\\');
+		const char *lastDirectoryChar = strrchr(filename5, '\\');
 		if (lastDirectoryChar)
 			shortFilename = lastDirectoryChar + 1;
 		else
-			shortFilename = filename;
+			shortFilename = filename5;
 
 		// Strip extension.
 		std::string::size_type  extensionStartPos = shortFilename.find_last_of('.');
@@ -567,7 +567,7 @@ bool CViewerDoc::loadSkeletonTemplate(const char *filename)
 		}
 
 		//-- Add the skeleton template to the SkeletalAppearanceTemplate.
-		m_skeletalAppearanceTemplate->addSkeletonTemplate(filename, NULL);
+		m_skeletalAppearanceTemplate->addSkeletonTemplate(filename5, NULL);
 
 		//-- create a SkeletalAppearance2
 		SkeletalAppearance2 *const appearance = new SkeletalAppearance2 (m_skeletalAppearanceTemplate);
@@ -712,7 +712,7 @@ void CViewerDoc::setupObjectCustomizationData(Object *object, Appearance *appear
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadMeshGenerator(const char *filename)
+bool CViewerDoc::loadMeshGenerator(const char *filename6)
 {
 	try
 	{
@@ -724,7 +724,7 @@ bool CViewerDoc::loadMeshGenerator(const char *filename)
 		}
 
 		//-- create the Appearance from the MeshGenerator file.
-		SkeletalAppearance2 *const appearance = createAppearanceFromMeshGenerator(filename);
+		SkeletalAppearance2 *const appearance = createAppearanceFromMeshGenerator(filename6);
 		if (!appearance)
 		{
 			object->setAppearance (0);
@@ -882,7 +882,7 @@ int getTargetAnimationTemplateName(const SkeletalAnimationTemplate* skeletalAnim
 	return ret;
 }
 
-bool CViewerDoc::loadSkeletalAppearanceTemplate(const char *filename)
+bool CViewerDoc::loadSkeletalAppearanceTemplate(const char *filename7)
 {
 	// whenever we load a skeletal appearance template, load it in such a way
 	// that we're setup to edit it.
@@ -906,14 +906,14 @@ bool CViewerDoc::loadSkeletalAppearanceTemplate(const char *filename)
 
 		m_skeletalAppearanceTemplateFilename = "";
 
-		const AppearanceTemplate *at = AppearanceTemplateList::fetch(filename);
+		const AppearanceTemplate *at = AppearanceTemplateList::fetch(filename7);
 		m_skeletalAppearanceTemplate = const_cast<SkeletalAppearanceTemplate*>(dynamic_cast<const SkeletalAppearanceTemplate*>(at));
 		if (!m_skeletalAppearanceTemplate)
 		{
 			if (at)
 			{
 				AppearanceTemplateList::release(at);
-				DEBUG_REPORT_LOG(true, ("[%s] was an appearance, but not a skeletal appearance template\n", filename));
+				DEBUG_REPORT_LOG(true, ("[%s] was an appearance, but not a skeletal appearance template\n", filename7));
 			}
 			return false;
 		}
@@ -932,7 +932,7 @@ bool CViewerDoc::loadSkeletalAppearanceTemplate(const char *filename)
 		object->setAppearance(appearance);
 
 		// setup appearance template view name
-		m_skeletalAppearanceTemplateFilename = filename;
+		m_skeletalAppearanceTemplateFilename = filename7;
 		SkeletalAppearanceTemplateView *const view = getSkeletalAppearanceTemplateView();
 		if (view)
 		{
@@ -1012,12 +1012,12 @@ bool CViewerDoc::loadSkeletalAppearanceTemplate(const char *filename)
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadStandardAppearance(const char *filename)
+bool CViewerDoc::loadStandardAppearance(const char *filename8)
 {
 	// try to load an appearance through standard channels
 	try
 	{
-		const AppearanceTemplate* at = AppearanceTemplateList::fetch (filename);
+		const AppearanceTemplate* at = AppearanceTemplateList::fetch (filename8);
 		Appearance* appearance       = at->createAppearance ();
 
 		object->setAppearance (appearance);
@@ -1037,7 +1037,7 @@ bool CViewerDoc::loadStandardAppearance(const char *filename)
 
 // ----------------------------------------------------------------------
 
-Object * CViewerDoc::attachStandardAppearanceToHardpoint(Object * parent, char const * const filename, char const * const hardpointName)
+Object * CViewerDoc::attachStandardAppearanceToHardpoint(Object * parent, char const * const filename9, char const * const hardpointName)
 {
 	HardpointObject * hardpointObject = new HardpointObject(CrcLowerString(hardpointName));
 
@@ -1046,7 +1046,7 @@ Object * CViewerDoc::attachStandardAppearanceToHardpoint(Object * parent, char c
 
 	try
 	{
-		const AppearanceTemplate* at = AppearanceTemplateList::fetch (filename);
+		const AppearanceTemplate* at = AppearanceTemplateList::fetch (filename9);
 		Appearance* appearance = at->createAppearance ();
 
 		hardpointObject->setAppearance (appearance);
@@ -1071,11 +1071,11 @@ Object * CViewerDoc::attachStandardAppearanceToHardpoint(Object * parent, char c
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadPortalObject(const char *filename)
+bool CViewerDoc::loadPortalObject(const char *filename10)
 {
 	try
 	{
-		PortalProperty *portalProperty = new PortalProperty(*object, filename);
+		PortalProperty *portalProperty = new PortalProperty(*object, filename10);
 		object->addProperty(*portalProperty);
 		portalProperty->createAppearance();
 		portalProperty->clientSinglePlayerInitializeFirstTimeObject();
@@ -1199,7 +1199,7 @@ BOOL CViewerDoc::load (LPCTSTR lpszPathName)
 		if (index != -1)
 			fileName = fileName.Right(fileName.GetLength() - index - 1);
 
-		REPORT_LOG(true, ("CViewerDoc::load: [%s] tool %1.2f seconds to load and consumed %i bytes\n", fileName, static_cast<float>(totalTime) / 1000.f, bytesTotal));
+		REPORT_LOG(true, ("CViewerDoc::load: [%s] tool %1.2f seconds to load and consumed %i bytes\n", fileName.GetString(), static_cast<float>(totalTime) / 1000.f, bytesTotal));
 	}
 
 	//-- add customization variables
@@ -1368,7 +1368,7 @@ void CViewerDoc::stopAnimation(void)
 
 // ----------------------------------------------------------------------
 
-void CViewerDoc::playAnim(const char* filename,bool queueAnimation, bool usePrimarySkeleton)
+void CViewerDoc::playAnim(const char* filename11,bool queueAnimation, bool usePrimarySkeleton)
 {
 	if(!object)
 		return;
@@ -1414,7 +1414,7 @@ void CViewerDoc::playAnim(const char* filename,bool queueAnimation, bool usePrim
 			return;
 		}
 			
-		const SkeletalAnimationTemplate* skeletalAnimationTemplate = SkeletalAnimationTemplateList::fetch(CrcLowerString(filename));
+		const SkeletalAnimationTemplate* skeletalAnimationTemplate = SkeletalAnimationTemplateList::fetch(CrcLowerString(filename11));
 
 		SkeletalAnimation *const skeletalAnimation = skeletalAnimationTemplate->fetchSkeletalAnimation(sma->getAnimationEnvironment(), *primarySkeletonTransformNameMap);
 
@@ -1680,7 +1680,7 @@ void CViewerDoc::OnAnimationSkeletalanimationWear ()
 	std::string  pathName (dlg.GetPathName ());
 
 	// convert to lower case
-	std::transform(pathName.begin(), pathName.end(), pathName.begin(), tolower);
+	std::transform(pathName.begin(), pathName.end(), pathName.begin(), [](char c){return static_cast<unsigned char>(std::tolower(c));});
 
 	const size_t size = pathName.size();
 	if (size < 4)
@@ -1865,9 +1865,9 @@ void CViewerDoc::skeletalAnimationSet_load0000 (Iff& iff)
 
 			const float blendTime = iff.read_float ();
 
-			char* filename = iff.read_string ();
-			FileName::stripPath (filename, istrlen (filename) + 1);
-			FileName fn (FileName::P_animation, filename);
+			char* filename12 = iff.read_string ();
+			FileName::stripPath (filename12, istrlen (filename12) + 1);
+			FileName fn (FileName::P_animation, filename12);
 			CString tempFn = fn;
 
 			const bool  isInterruptible = iff.read_int32 () != 0;
@@ -1879,12 +1879,12 @@ void CViewerDoc::skeletalAnimationSet_load0000 (Iff& iff)
 
 			iff.exitChunk ();
 
-			skeletalAnimationKeyMap[key] = new SkeletalAnimationKey(key, filename, timeScale, isLooping, playForced, blendTime, ms_primaryTrackId);
+			skeletalAnimationKeyMap[key] = new SkeletalAnimationKey(key, filename12, timeScale, isLooping, playForced, blendTime, ms_primaryTrackId);
 			UNREF(weight);
 			UNREF(isInterruptible);
 
-			delete [] filename;
-			filename = 0;
+			delete [] filename12;
+			filename12 = 0;
 		}
 	
 	iff.exitForm ();
@@ -1903,7 +1903,7 @@ void CViewerDoc::skeletalAnimationSet_load0001 (Iff& iff)
 		iff.enterChunk (TAG_DATA);
 
 		float blendTime       = iff.read_float ();
-		char* filename        = iff.read_string ();
+		char* filename13        = iff.read_string ();
 		bool  isInterruptible = iff.read_int32 () != 0;
 		bool  isLooping       = iff.read_int32 () != 0;
 		char  key             = iff.read_int8 ();
@@ -1913,12 +1913,12 @@ void CViewerDoc::skeletalAnimationSet_load0001 (Iff& iff)
 
 		iff.exitChunk ();
 
-		skeletalAnimationKeyMap[key] = new SkeletalAnimationKey(key, filename, timeScale, isLooping, playForced, blendTime, ms_primaryTrackId);
+		skeletalAnimationKeyMap[key] = new SkeletalAnimationKey(key, filename13, timeScale, isLooping, playForced, blendTime, ms_primaryTrackId);
 		UNREF(weight);
 		UNREF(isInterruptible);
 
-		delete [] filename;
-		filename = 0;
+		delete [] filename13;
+		filename13 = 0;
 	}
 	
 	iff.exitForm ();
@@ -1937,7 +1937,7 @@ void CViewerDoc::skeletalAnimationSet_load0002 (Iff& iff)
 		iff.enterChunk (TAG_DATA);
 
 		float blendTime       = iff.read_float ();
-		char* filename        = iff.read_string ();
+		char* filename14        = iff.read_string ();
 		bool  isInterruptible = iff.read_int32 () != 0;
 		bool  isLooping       = iff.read_int32 () != 0;
 		char  key             = iff.read_int8 ();
@@ -1948,13 +1948,13 @@ void CViewerDoc::skeletalAnimationSet_load0002 (Iff& iff)
 
 		iff.exitChunk ();
 
-		skeletalAnimationKeyMap[key] = new SkeletalAnimationKey(key, filename, timeScale, isLooping, playForced, blendTime, ms_primaryTrackId);
+		skeletalAnimationKeyMap[key] = new SkeletalAnimationKey(key, filename14, timeScale, isLooping, playForced, blendTime, ms_primaryTrackId);
 		UNREF(weight);
 		UNREF(isInterruptible);
 		UNREF(soundFilename);
 
-		delete [] filename;
-		filename = 0;
+		delete [] filename14;
+		filename14 = 0;
 
 		delete [] soundFilename;
 		soundFilename = 0;
@@ -2627,9 +2627,9 @@ void CViewerDoc::OnSkeletonTemplateAdd()
 
 // ----------------------------------------------------------------------
 
-void CViewerDoc::saveSkeletalAppearanceTemplate(const char *filename)
+void CViewerDoc::saveSkeletalAppearanceTemplate(const char *filename15)
 {
-	if (!filename || !*filename || !m_skeletalAppearanceTemplate)
+	if (!filename15 || !*filename15 || !m_skeletalAppearanceTemplate)
 		return;
 
 	//-- construct the iff
@@ -2638,18 +2638,18 @@ void CViewerDoc::saveSkeletalAppearanceTemplate(const char *filename)
 	DEBUG_REPORT_LOG(true, ("SkeletalAppearanceTemplate: writing [%d] bytes...", iff.getRawDataSize()));
 	
 	//-- write the iff
-	const bool writeSuccess = iff.write(filename, true);
+	const bool writeSuccess = iff.write(filename15, true);
 	if (writeSuccess)
 	{
 		DEBUG_REPORT_LOG(true, ("success.\n"));
-		m_skeletalAppearanceTemplateFilename = filename;
+		m_skeletalAppearanceTemplateFilename = filename15;
 	}
 	else
 	{
 		DEBUG_REPORT_LOG(true, ("failure.\n"));
 
 		char buffer[MAX_PATH];
-		sprintf(buffer, "Failed to save skeletal appearance template [%s]", filename);
+		sprintf(buffer, "Failed to save skeletal appearance template [%s]", filename15);
 		MessageBox(NULL, buffer, "Write Failure", MB_OK | MB_ICONSTOP);
 	}
 }
@@ -2664,9 +2664,9 @@ CViewerApp *CViewerDoc::getOurApp() const
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::saveSkeletalAppearanceWorkspace(const CString &filename)
+bool CViewerDoc::saveSkeletalAppearanceWorkspace(const CString &filename16)
 {
-	if (!filename.GetLength())
+	if (!filename16.GetLength())
 	{
 		MessageBox(NULL, "Bad workspace name", "Save Failure", MB_OK | MB_ICONSTOP);
 		return false;
@@ -2703,17 +2703,17 @@ bool CViewerDoc::saveSkeletalAppearanceWorkspace(const CString &filename)
 	DEBUG_REPORT_LOG(true, ("skeletal appearance workspace iff size: %d bytes\n", iff.getRawDataSize()));
 
 	// write the iff image
-	const bool writeSuccess = iff.write(filename, true);
+	const bool writeSuccess = iff.write(filename16, true);
 	if (!writeSuccess)
 	{
 		char buffer[2 * MAX_PATH];
 
-		sprintf(buffer, "Skeletal apearance workspace [%s] failed to write file", static_cast<const char*>(filename));
+		sprintf(buffer, "Skeletal apearance workspace [%s] failed to write file", static_cast<const char*>(filename16));
 		MessageBox(NULL, buffer, "Save Failure", MB_OK | MB_ICONSTOP);
 		return false;
 	}
 
-	m_skeletalAppearanceWorkspaceFilename = filename;
+	m_skeletalAppearanceWorkspaceFilename = filename16;
 
 	// no errors
 	return true;
@@ -2810,16 +2810,16 @@ bool CViewerDoc::loadSkeletalAppearanceWorkspace_0002(Iff *iff)
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadSkeletalAppearanceWorkspace(const char *filename)
+bool CViewerDoc::loadSkeletalAppearanceWorkspace(const char *filename17)
 {
 	//-- clear out existing skeletal appearance template and appearance
 	resetSkeletalAppearanceWorkspace();
 
 	//-- keep track of the name of the workspace
-	m_skeletalAppearanceWorkspaceFilename = filename;
+	m_skeletalAppearanceWorkspaceFilename = filename17;
 
 	//-- load the iff image
-	Iff iff(filename);
+	Iff iff(filename17);
 
 	// skeletal appearance workspace
 	bool loadSuccess = false;
@@ -2854,7 +2854,7 @@ bool CViewerDoc::loadSkeletalAppearanceWorkspace(const char *filename)
 	if (!loadSuccess)
 	{
 		char buffer[2*MAX_PATH];
-		sprintf(buffer, "Failed to load skeletal appearance workspace [%s]", filename);
+		sprintf(buffer, "Failed to load skeletal appearance workspace [%s]", filename17);
 		MessageBox(NULL, buffer, "Load Failure", MB_OK | MB_ICONSTOP);
 		return false;
 	}
@@ -2864,7 +2864,7 @@ bool CViewerDoc::loadSkeletalAppearanceWorkspace(const char *filename)
 	if (!app)
 		return false;
 		
-	app->setLastSkeletalAppearanceWorkspaceFilename(filename);
+	app->setLastSkeletalAppearanceWorkspaceFilename(filename17);
 
 	//-- no errors
 	return true;
@@ -3076,17 +3076,17 @@ void CViewerDoc::OnFileWriteCdfBakedWearableData()
 		return;
 	}
 
-	char const *const filename = "c:\\clientBakedWearable.txt";
+	char const *const filename18 = "c:\\clientBakedWearable.txt";
 
-	bool const success = ClientBakedWearableWriter::write(*object, filename);
-	WARNING(!success, ("Failed to write client-baked wearables to [%s].\n", filename));
+	bool const success = ClientBakedWearableWriter::write(*object, filename18);
+	WARNING(!success, ("Failed to write client-baked wearables to [%s].\n", filename18));
 }
 
 // ----------------------------------------------------------------------
 
-bool CViewerDoc::loadHardpointHierarchy(const char *filename)
+bool CViewerDoc::loadHardpointHierarchy(const char *filename19)
 {
-	UNREF(filename);
+	UNREF(filename19);
 	return true;
 }
 

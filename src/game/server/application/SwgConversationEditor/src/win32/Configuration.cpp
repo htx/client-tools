@@ -16,7 +16,7 @@ namespace ConfigurationNamespace
 {
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-#if 1
+#if 0
 	CString const cms_root = "../../exe/win32/";
 #else
 	CString const cms_root = "";

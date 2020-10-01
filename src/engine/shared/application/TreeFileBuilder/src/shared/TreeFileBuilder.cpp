@@ -268,7 +268,7 @@ TreeFileBuilder::~TreeFileBuilder(void)
 
 	if (errors)
 	{
-		if(unlink(treeFileName))
+		if(_unlink(treeFileName))
 			printf("Could not delete '%s'.\n", treeFileName);
 	}
 
@@ -697,10 +697,10 @@ void TreeFileBuilder::compressAndWrite(const byte *uncompressed, int &sizeOfData
 			byte *newBuffer = new byte[newBufferLength];
 
 			// try the compressor on this data
-			Compressor *compressor = TreeFile::SearchTree::borrowCompressor(compressorType);
-			int size = compressor->compress(uncompressed, uncompressedSize, newBuffer, newBufferLength);
-			TreeFile::SearchTree::returnCompressor(compressorType, compressor);
-			compressor = NULL;
+			Compressor *compressor2 = TreeFile::SearchTree::borrowCompressor(compressorType); // slow clap
+			int size = compressor2->compress(uncompressed, uncompressedSize, newBuffer, newBufferLength);
+			TreeFile::SearchTree::returnCompressor(compressorType, compressor2);
+			compressor2 = NULL;
 
 			if (size < smallestSize)
 			{

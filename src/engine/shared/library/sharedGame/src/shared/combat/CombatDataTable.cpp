@@ -114,7 +114,7 @@ std::string CombatDataTable::getActionAnimationData(uint32 commandHash, char con
 
 	std::string lowerWeaponType(weaponType);
 	//int (*pf)(int)=::tolower; 
-	std::transform(lowerWeaponType.begin(), lowerWeaponType.end(), lowerWeaponType.begin(),  [](char c){return static_cast<char>(std::tolower(c));}); 
+	std::transform(lowerWeaponType.begin(), lowerWeaponType.end(), lowerWeaponType.begin(),  [](char c){return static_cast<unsigned char>(std::tolower(c));}); 
 
 	fieldName += lowerWeaponType;
 

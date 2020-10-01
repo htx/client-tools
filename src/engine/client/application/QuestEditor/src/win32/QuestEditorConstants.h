@@ -27,7 +27,7 @@ char const * const cs_defaultBranch = "defaultBranch";
 char const * const cs_toolDirectory = "toolDirectory";
 
 //-- File constants
-char const * const cs_questEditorConfigFile = "../../exe/win32/QuestEditorConfig.xml";
+char const * const cs_questEditorConfigFile = "QuestEditorConfig.xml";
 char const * const cs_unknownIcon = "../../data/internal/sys.client/built/questeditor/image/component/unknown.png";
 char const * const cs_taskOnFailIcon = "../../data/internal/sys.client/built/questeditor/image/task/taskonfail.png";
 char const * const cs_chanceToActivateIcon = "../../data/internal/sys.client/built/questeditor/image/task/chancetoactivate.png";

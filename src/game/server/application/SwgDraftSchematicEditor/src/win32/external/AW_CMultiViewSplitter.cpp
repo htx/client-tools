@@ -3,7 +3,7 @@
 // Written by Caroline Englebienne of AniWorld, Inc.
 // Copyright (c) 2000 AniWorld, Inc. 
 /////////////////////////////////////////////////////////////////////////////
-#include "FirstSwgDraftSchematicEditor.h"
+#include "../FirstSwgDraftSchematicEditor.h"
 #include "AW_CMultiViewSplitter.h"
 
 #ifdef _DEBUG

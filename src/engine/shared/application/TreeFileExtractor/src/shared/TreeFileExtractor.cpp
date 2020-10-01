@@ -184,7 +184,7 @@ void TreeFileExtractor::run()
 			AbstractFile* const abstractFile = TreeFile::open(relativeFileName, AbstractFile::PriorityData, true);
 			if (!abstractFile)
 			{
-				if (unlink(extractedFileName.c_str()) != 0)
+				if (_unlink(extractedFileName.c_str()) != 0)
 				{
 					printf("\nerror: could not delete file %s\n", extractedFileName.c_str());
 					++ms_errors;

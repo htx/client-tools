@@ -627,7 +627,7 @@ bool ExporterLog::writeStaticMesh(const std::string& filename, bool interactive)
 		std::string finalFilename = *i;
 		if(pos != std::string::npos)
 			finalFilename = i->substr(pos + ms_baseDir.length());
-		fprintf(ms_outfile, "	%s\n", finalFilename);
+		fprintf(ms_outfile, "	%s\n", finalFilename.c_str());
 	}
 	fprintf(ms_outfile, "}\n");
 
@@ -638,7 +638,7 @@ bool ExporterLog::writeStaticMesh(const std::string& filename, bool interactive)
 		std::string finalFilename = *i;
 		if(pos != std::string::npos)
 			finalFilename = i->substr(pos + ms_baseDir.length());
-		fprintf(ms_outfile, "	%s\n", finalFilename);
+		fprintf(ms_outfile, "	%s\n", finalFilename.c_str());
 	}
 	fprintf(ms_outfile, "}\n\n");
 
@@ -649,7 +649,7 @@ bool ExporterLog::writeStaticMesh(const std::string& filename, bool interactive)
 		std::string finalFilename = *i;
 		if(pos != std::string::npos)
 			finalFilename = i->substr(pos + ms_baseDir.length());
-		fprintf(ms_outfile, "	%s\n", finalFilename);
+		fprintf(ms_outfile, "	%s\n", finalFilename.c_str());
 	}
 	fprintf(ms_outfile, "}\n\n");
 
@@ -1138,7 +1138,7 @@ void ExporterLog::writeHardpoint(int indentLevel, const Hardpoint* hardpoint)
 
 	for(i = 0; i < indentLevel+1; ++i)
 		fprintf(ms_outfile, "	");
-	fprintf(ms_outfile, "name = %s\n", hardpoint->getName());
+	fprintf(ms_outfile, "name = %s\n", hardpoint->getName().getString());
 
 	for(i = 0; i < indentLevel+1; ++i)
 		fprintf(ms_outfile, "	");

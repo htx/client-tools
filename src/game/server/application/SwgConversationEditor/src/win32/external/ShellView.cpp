@@ -225,7 +225,7 @@ BOOL CShellView::CreateShellRedirect(CString const & commandLine)
 	return TRUE;
 }
 
-BOOL CShellView::CreateChildProcess(DWORD& dwProcessId, CString const & commandLine)
+BOOL CShellView::CreateChildProcess(DWORD& dwProcessId2, CString const & commandLine)
 {
 	PROCESS_INFORMATION piProcInfo;
 	STARTUPINFO siStartInfo;  
@@ -254,7 +254,7 @@ BOOL CShellView::CreateChildProcess(DWORD& dwProcessId, CString const & commandL
 			&siStartInfo,  // STARTUPINFO pointer 
 			&piProcInfo);  // receives PROCESS_INFORMATION 
 	if( ret )
-		dwProcessId = piProcInfo.dwProcessId;
+		dwProcessId2 = piProcInfo.dwProcessId;
 	return ret;
 }
 

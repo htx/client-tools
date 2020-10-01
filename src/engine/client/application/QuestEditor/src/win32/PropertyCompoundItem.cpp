@@ -57,11 +57,11 @@ void PropertyCompoundItem::createChildren()
 	for (; !childData.isNull(); childData = childData.previousSibling())
 		if (childData.nodeName() == cs_Data)
 		{
-			PropertyItem * childItem = this;
+			PropertyItem * childItem2 = this;
 
-			propertyEditor->setupInput(childItem, childData, this);
+			propertyEditor->setupInput(childItem2, childData, this);
 
-			addChild(childItem);
+			addChild(childItem2);
 		}
 
 	setConcatenatedValue();

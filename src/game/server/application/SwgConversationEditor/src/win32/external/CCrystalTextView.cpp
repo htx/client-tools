@@ -418,10 +418,10 @@ void CCrystalTextView::DrawLineHelperImpl(CDC *pdc, CPoint &ptOrigin, const CRec
 		if (nWidth > 0)
 		{
 			int nCharWidth = GetCharWidth();
-			int nCount = line.GetLength();
+			int nCount2 = line.GetLength();
 			int nCountFit = nWidth / nCharWidth + 1;
-			if (nCount > nCountFit)
-				nCount = nCountFit;
+			if (nCount2 > nCountFit)
+				nCount2 = nCountFit;
 #ifdef _DEBUG
 			//CSize sz = pdc->GetTextExtent(line, nCount);
 			//ASSERT(sz.cx == m_nCharWidth * nCount);
@@ -432,7 +432,7 @@ void CCrystalTextView::DrawLineHelperImpl(CDC *pdc, CPoint &ptOrigin, const CRec
 			rcBounds.right = rcBounds.left + GetCharWidth() * nCount;
 			pdc->ExtTextOut(rcBounds.left, rcBounds.top, ETO_OPAQUE, &rcBounds, NULL, 0, NULL);
 			*/
-			VERIFY(pdc->ExtTextOut(ptOrigin.x, ptOrigin.y, ETO_CLIPPED, &rcClip, line, nCount, NULL));
+			VERIFY(pdc->ExtTextOut(ptOrigin.x, ptOrigin.y, ETO_CLIPPED, &rcClip, line, nCount2, NULL));
 		}
 		ptOrigin.x += GetCharWidth() * line.GetLength();
 	}

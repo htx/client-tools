@@ -78,7 +78,7 @@ END_MESSAGE_MAP()
 
 //-------------------------------------------------------------------
 
-static enum DirectoryIconList
+enum DirectoryIconList
 {
 	DIL_unknown,
 	DIL_closedFolder,
@@ -227,7 +227,7 @@ static void addDirectory (const char* directory, CTreeCtrl& tree, HTREEITEM root
 
 				if (finder.IsDirectory ())
 				{
-					sprintf (subDirectory, "%s%s%s", directory, directory [n-1] != '/' ? "/" : "", finder.GetFileName ());
+					sprintf (subDirectory, "%s%s%s", directory, directory [n-1] != '/' ? "/" : "", finder.GetFileName ().GetString());
 
 					addDirectory (subDirectory, tree, item);
 
@@ -491,7 +491,7 @@ void DirectoryDialog::OnKeydownDirectoryTree(NMHDR* pNMHDR, LRESULT* pResult)
 		if (m_treeCtrl.GetParentItem (selection) == 0)
 		{
 			CString tmp;
-			tmp.Format ("Are you sure you wish to remove %s?", m_treeCtrl.GetItemText (selection));
+			tmp.Format ("Are you sure you wish to remove %s?", m_treeCtrl.GetItemText (selection).GetString());
 			if (MessageBox (tmp, 0, MB_YESNO) == IDYES)
 				m_treeCtrl.DeleteItem (selection);
 		}

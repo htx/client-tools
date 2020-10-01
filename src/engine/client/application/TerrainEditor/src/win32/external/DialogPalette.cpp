@@ -353,8 +353,8 @@ void CDialogPalette::OnLButtonDown(UINT nFlags, CPoint point)
       m_selected = j*16+i;
       this->DrawPaletteItem(m_oldi,m_oldj);
       this->DrawPaletteItem(i,j);
-      CRect rect(10,10,10+16*(m_width+m_space)+m_width,10+16*(m_height+m_space)+m_width+30);
-      RedrawWindow(rect,NULL,RDW_INVALIDATE | RDW_UPDATENOW | RDW_NOERASE ); 
+      CRect rect2(10,10,10+16*(m_width+m_space)+m_width,10+16*(m_height+m_space)+m_width+30);
+      RedrawWindow(rect2,NULL,RDW_INVALIDATE | RDW_UPDATENOW | RDW_NOERASE ); 
       SetDlgItemInt(IDC_EDIT_SELECTED,m_selected);
       SetDlgItemInt(IDC_EDIT_RED,colorRamp.getRed (m_selected));
       SetDlgItemInt(IDC_EDIT_GREEN,colorRamp.getGreen (m_selected));

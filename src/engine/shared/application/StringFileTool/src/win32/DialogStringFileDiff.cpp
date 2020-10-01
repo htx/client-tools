@@ -132,14 +132,14 @@ BOOL DialogStringFileDiff::OnInitDialog()
 	//-- Add columns to list ctrl
 	IGNORE_RETURN(m_imageList.Create(IDB_BITMAP_ICONS, 16, 5, RGB(255,255,255)));
 	IGNORE_RETURN(GetListCtrl().SetImageList(&m_imageList, LVSIL_SMALL));
-	IGNORE_RETURN(GetListCtrl().InsertColumn(0, Unicode::narrowToWide("StringId").c_str(), LVCFMT_LEFT, 128, 0));
-	IGNORE_RETURN(GetListCtrl().InsertColumn(1, Unicode::narrowToWide(m_stringTable1.getFileName()).c_str(), LVCFMT_LEFT, 256, 0));
-	IGNORE_RETURN(GetListCtrl().InsertColumn(2, Unicode::narrowToWide(m_stringTable2.getFileName()).c_str(), LVCFMT_LEFT, 256, 0));
+	IGNORE_RETURN(GetListCtrl().InsertColumn(0, (LPCTSTR)Unicode::narrowToWide("StringId").c_str(), LVCFMT_LEFT, 128, 0));
+	IGNORE_RETURN(GetListCtrl().InsertColumn(1, (LPCTSTR)Unicode::narrowToWide(m_stringTable1.getFileName()).c_str(), LVCFMT_LEFT, 256, 0));
+	IGNORE_RETURN(GetListCtrl().InsertColumn(2, (LPCTSTR)Unicode::narrowToWide(m_stringTable2.getFileName()).c_str(), LVCFMT_LEFT, 256, 0));
 
 	//-- Add sort types to combo box
 	m_comboBox.ResetContent ();
 	for (int i = 0; i < StringFileTool::ST_COUNT; ++i)
-		m_comboBox.AddString(Unicode::narrowToWide(StringFileTool::getShowNames()[i]).c_str());
+		m_comboBox.AddString((LPCTSTR)Unicode::narrowToWide(StringFileTool::getShowNames()[i]).c_str());
 	m_comboBox.SetCurSel(1);
 
 	//-- Populate list ctrl
@@ -305,10 +305,10 @@ void DialogStringFileDiff::populate()
 			
 			if (add)
 			{
-				int const item = GetListCtrl().InsertItem(GetListCtrl().GetItemCount(), Unicode::narrowToWide(iter->first).c_str(), iter->second->getIconType()); 
+				int const item = GetListCtrl().InsertItem(GetListCtrl().GetItemCount(), (LPCTSTR)Unicode::narrowToWide(iter->first).c_str(), iter->second->getIconType()); 
 
-				GetListCtrl().SetItemText(item, 1, iter->second->m_string1.c_str());
-				GetListCtrl().SetItemText(item, 2, iter->second->m_string2.c_str());
+				GetListCtrl().SetItemText(item, 1, (LPCTSTR)iter->second->m_string1.c_str());
+				GetListCtrl().SetItemText(item, 2, (LPCTSTR)iter->second->m_string2.c_str());
 			}
 
 			delete iter->second;

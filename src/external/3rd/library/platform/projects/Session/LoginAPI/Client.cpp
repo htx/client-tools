@@ -33,7 +33,7 @@ namespace LoginAPI
 		if (offset == std::string::npos)
 		{
 			char token[256];
-			sprintf(token, "%s[%d]", key.c_str(), value);
+			sprintf_s(token, "%s[%d]", key.c_str(), value);
 			if (!mData.empty())
 				mData += ", ";
 			mData += token;
@@ -42,7 +42,7 @@ namespace LoginAPI
 		{
 			char token[256];
 			unsigned delimiter = mData.find("]", offset);
-			sprintf(token, "%d", value);
+			sprintf_s(token, "%d", value);
 			std::string newData = mData.substr(0,offset+keyToken.size()) + token + mData.substr(delimiter);
 			mData = newData;
 		}
@@ -59,7 +59,7 @@ namespace LoginAPI
 		if (offset == std::string::npos)
 		{
 			char token[256];
-			sprintf(token, "%s[%s]", key.c_str(), value.c_str());
+			sprintf_s(token, "%s[%s]", key.c_str(), value.c_str());
 			if (!mData.empty())
 				mData += ", ";
 			mData += token;

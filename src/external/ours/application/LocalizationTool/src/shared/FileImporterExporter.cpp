@@ -199,10 +199,10 @@ namespace
 					"Conflicts with previous entry str=[%s]\n",
 
 					id, 
-					token_entry_key.c_str (), 
+					token_entry_key.c_str(), 
 					Unicode::wideToNarrow (locstr->getString ()).c_str (),
 					Unicode::wideToNarrow (current->getString ()).c_str ());
-				resultMsg += buf;
+					resultMsg += buf;
 
 				delete table;
 				return 0;

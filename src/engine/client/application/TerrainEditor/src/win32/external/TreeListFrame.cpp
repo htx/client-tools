@@ -264,11 +264,11 @@ void CTLFrame::ResetScrollBar()
 		{
 			m_tree.m_nOffset = 0;
 			m_tree.Invalidate();
-			CRect m_headerRect;
-			m_tree.m_wndHeader.GetWindowRect(&m_headerRect);
-			CRect m_wndRect;
-			GetClientRect(&m_wndRect);
-			m_tree.m_wndHeader.SetWindowPos(&wndTop, m_tree.m_nOffset, 0, max(StretchWidth(m_tree.GetColumnsWidth(),m_wndRect.Width()),m_wndRect.Width()), m_headerRect.Height(), SWP_SHOWWINDOW);
+			CRect m_headerRect2;
+			m_tree.m_wndHeader.GetWindowRect(&m_headerRect2);
+			CRect m_wndRect2;
+			GetClientRect(&m_wndRect2);
+			m_tree.m_wndHeader.SetWindowPos(&wndTop, m_tree.m_nOffset, 0, max(StretchWidth(m_tree.GetColumnsWidth(),m_wndRect2.Width()),m_wndRect2.Width()), m_headerRect2.Height(), SWP_SHOWWINDOW);
 		}
 	}
 }

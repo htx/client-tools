@@ -138,15 +138,15 @@ void DialogExtra::OnButtonBrowseencounterdatatable()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server datatable", pathName);
+			message.Format ("%s\r\nis not a valid server datatable", pathName.GetString());
 			MessageBox (message);
 		}
 		else
 		{
 			IGNORE_RETURN (RecentDirectory::update ("EncounterDataTable", dlg.GetPathName ()));
 
-			CString pathName = dlg.GetPathName ();
-			FileName fileName (pathName);
+			CString pathName2 = dlg.GetPathName ();
+			FileName fileName (pathName2);
 			fileName.stripPathAndExt ();
 
 			m_encounterDataTableName = fileName;
@@ -174,7 +174,7 @@ void DialogExtra::OnButtonBrowseextraspawntemplate()
 		if (index == -1)
 		{
 			CString message;
-			message.Format ("%s\r\nis not a valid server object template", pathName);
+			message.Format ("%s\r\nis not a valid server object template", pathName.GetString());
 			MessageBox (message);
 		}
 		else

@@ -220,7 +220,7 @@ void WorldSnapshotViewerDoc::OnButtonExport()
 				Vector const & position_w = node->getTransform_p ().getPosition_p ();
 
 				CString buffer;
-				buffer.Format ("B %i %1.0f %1.0f %1.0f %s\n", node->getNetworkIdInt (), position_w.x, position_w.y, position_w.z, fileName);
+				buffer.Format ("B %i %1.0f %1.0f %1.0f %s\n", node->getNetworkIdInt (), position_w.x, position_w.y, position_w.z, fileName.GetString());
 				outfile.WriteString (buffer);
 			}
 		}

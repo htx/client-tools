@@ -732,7 +732,7 @@ void GameWidget::mouseMoveEvent(QMouseEvent*mouseEvent)
 	//-----------------------------------------------------------------
 	else if(m_autoDraggingObjects && !m_keyStates->hasAnyState())
 	{
-		const QPoint pt(mouseEvent->pos());
+		const QPoint pt2(mouseEvent->pos());
 
 		Vector result;
 		//if(GodClientData::getInstance().getTerrainIntersection(pt.x(), pt.y(), result))

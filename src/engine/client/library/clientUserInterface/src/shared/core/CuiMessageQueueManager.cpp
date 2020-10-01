@@ -238,7 +238,7 @@ void CuiMessageQueueManager::scanMessageQueue (MessageQueue & queue)
 
 		static const int clientCommandParser = CM_clientCommandParser;
 
-		if (message == clientCommandParser)
+  		if (message == clientCommandParser)
 		{
 			if (!data)
 				WARNING (true, ("Bad string"));

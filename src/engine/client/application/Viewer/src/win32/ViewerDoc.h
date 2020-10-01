@@ -59,7 +59,7 @@ public:
 #endif
 
 	BOOL    load (LPCTSTR lpszPathName);
-	Object * attachStandardAppearanceToHardpoint(Object * parent, char const * const filename, char const * const hardpointName);
+	Object * attachStandardAppearanceToHardpoint(Object * parent, char const * const filename9, char const * const hardpointName);
 	void removeAttachedObject(Object * child);
 
 public:
@@ -87,7 +87,7 @@ public:
 	void                            updateAnimationView (const CView* newView, bool force=false);
 
 	void							updateAnimationTreeView(const CView* newView, bool force=false);
-	void							playAnim(const char* filename, bool queueAnimation, bool usePrimarySkeleton);
+	void							playAnim(const char* filename11, bool queueAnimation, bool usePrimarySkeleton);
 
 	void                            newAnimation (void);
 	void                            removeAnimation (char key);
@@ -96,7 +96,7 @@ public:
 	bool                            hasVariableSetView() const;
 	bool                            hasSkeletalAppearanceTemplateView() const;
 
-	void                            saveSkeletalAppearanceTemplate(const char *filename);
+	void                            saveSkeletalAppearanceTemplate(const char *filename15);
 	SkeletalAppearanceTemplate     *getSkeletalAppearanceTemplate();
 	const CString                  &getSkeletalAppearanceTemplateFilename() const;
 
@@ -106,8 +106,8 @@ public:
 
 	const CString                  &getSkeletalAppearanceWorkspaceFilename() const;
 	void                            setSkeletalAppearanceWorkspaceFilename(const CString &filename);
-	bool                            saveSkeletalAppearanceWorkspace(const CString &filename);
-	bool                            loadSkeletalAppearanceWorkspace(const char *filename);
+	bool                            saveSkeletalAppearanceWorkspace(const CString &filename16);
+	bool                            loadSkeletalAppearanceWorkspace(const char *filename17);
 
 	Texture                        *getTexture();
 	TextureRenderer                *getTextureRenderer();
@@ -123,15 +123,15 @@ private:
 	bool                            loadSkeletalAppearanceWorkspace_0001(Iff *iff);
 	bool                            loadSkeletalAppearanceWorkspace_0002(Iff *iff);
 
-	bool                            loadShaderTemplate(const char *filename);
-	bool                            loadTexture(const char *filename);
-	bool                            loadTextureRendererTemplate(const char *filename);
-	bool                            loadSkeletonTemplate(const char *filename);
-	bool                            loadMeshGenerator(const char *filename);
-	bool                            loadSkeletalAppearanceTemplate(const char *filename);
-	bool                            loadStandardAppearance(const char *filename);
-	bool                            loadPortalObject(const char *filename);
-	bool                            loadHardpointHierarchy(const char *filename);
+	bool                            loadShaderTemplate(const char *filename2);
+	bool                            loadTexture(const char *filename3);
+	bool                            loadTextureRendererTemplate(const char *filename4);
+	bool                            loadSkeletonTemplate(const char *filename5);
+	bool                            loadMeshGenerator(const char *filename6);
+	bool                            loadSkeletalAppearanceTemplate(const char *filename7);
+	bool                            loadStandardAppearance(const char *filename8);
+	bool                            loadPortalObject(const char *filename10);
+	bool                            loadHardpointHierarchy(const char *filename19);
 	void                            loadAllHardpoints(Object * object, int depth);
 
 	void                            mapSkeletalAnimation (DialogMapAnimation& dlg);

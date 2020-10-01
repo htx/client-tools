@@ -266,7 +266,7 @@ CString const Configuration::getConfiguration()
 
 	CString result;
 
-	buffer.Format("%i spaceMobiles from %s\n", ms_spaceMobileList.size(), ms_spaceMobileDataTableFileName);
+	buffer.Format("%i spaceMobiles from %s\n", ms_spaceMobileList.size(), ms_spaceMobileDataTableFileName.GetString());
 	result += buffer;
 
 	{
@@ -530,7 +530,7 @@ bool Configuration::loadCfg()
 		Iff iff;
 		if (!iff.open(ms_spaceMobileDataTableFileName, true))
 		{
-			DEBUG_WARNING(true, ("Configuration::loadCfg: could not open file %s\n", ms_spaceMobileDataTableFileName));
+			DEBUG_WARNING(true, ("Configuration::loadCfg: could not open file %s\n", ms_spaceMobileDataTableFileName.GetString()));
 			return false;
 		}
 		
@@ -555,7 +555,7 @@ bool Configuration::loadCfg()
 		Iff iff;
 		if (!iff.open(ms_squadDataTableFileName, true))
 		{
-			DEBUG_WARNING(true, ("Configuration::loadCfg: could not open file %s\n", ms_squadDataTableFileName));
+			DEBUG_WARNING(true, ("Configuration::loadCfg: could not open file %s\n", ms_squadDataTableFileName.GetString()));
 			return false;
 		}
 		

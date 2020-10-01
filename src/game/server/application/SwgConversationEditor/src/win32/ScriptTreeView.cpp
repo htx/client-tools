@@ -69,9 +69,9 @@ namespace ScriptTreeViewNamespace
 		do
 		{
 			if (duplicate)
-				familyName.Format ("%s_%i", rootName, familyIndex++);
+				familyName.Format ("%s_%i", rootName.GetString(), familyIndex++);
 			else
-				familyName.Format ("%s%04i", rootName, familyIndex++);
+				familyName.Format ("%s%04i", rootName.GetString(), familyIndex++);
 		}
 		while (familyExists (scriptGroup, familyName));
 
@@ -691,7 +691,7 @@ void ScriptTreeView::OnButtonDelete()
 						else
 						{
 							CString message;
-							message.Format ("Are you sure you want to delete %s?", name);
+							message.Format ("Are you sure you want to delete %s?", name.GetString());
 
 							if (MessageBox (message, 0, MB_YESNO) == IDYES)
 								deleteCondition (treeItem);
@@ -719,7 +719,7 @@ void ScriptTreeView::OnButtonDelete()
 							else
 							{
 								CString message;
-								message.Format ("Are you sure you want to delete %s?", name);
+								message.Format ("Are you sure you want to delete %s?", name.GetString());
 
 								if (MessageBox (message, 0, MB_YESNO) == IDYES)
 									deleteAction (treeItem);
@@ -746,7 +746,7 @@ void ScriptTreeView::OnButtonDelete()
 								else
 								{
 									CString message;
-									message.Format ("Are you sure you want to delete %s?", name);
+									message.Format ("Are you sure you want to delete %s?", name.GetString());
 
 									if (MessageBox (message, 0, MB_YESNO) == IDYES)
 										deleteAction (treeItem);
@@ -779,7 +779,7 @@ void ScriptTreeView::OnButtonDelete()
 										else
 										{
 											CString message;
-											message.Format ("Are you sure you want to delete %s?", name);
+											message.Format ("Are you sure you want to delete %s?", name.GetString());
 
 											if (MessageBox (message, 0, MB_YESNO) == IDYES)
 												deleteLabel (treeItem);

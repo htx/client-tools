@@ -198,12 +198,12 @@ void ChassisEditorDetails::onListBoxContext(int id)
 			break;
 		case CMI_newTemplate:
 			{
-				std::string templateName;
+				std::string templateName2;
 				
 				if (NULL != st)
-					templateName = st->name;
+					templateName2 = st->name;
 				
-				TemplateNewDialog * const tnd = new TemplateNewDialog(NULL, "fff", std::string(), templateName);
+				TemplateNewDialog * const tnd = new TemplateNewDialog(NULL, "fff", std::string(), templateName2);
 				tnd->show();
 			}
 			break;

@@ -30,6 +30,7 @@ namespace MessageDispatch
 // ======================================================================
 
 //@todo get in the precompiled headers 
+#include <string>
 #include "../../../../../../engine/shared/library/sharedFoundation/include/public/sharedFoundation/StlForwardDeclaration.h"
 #include "sharedFoundationTypes/FoundationTypes.h"
 #include "../../../../../../engine/shared/library/sharedFoundation/include/public/sharedFoundation/NetworkId.h"

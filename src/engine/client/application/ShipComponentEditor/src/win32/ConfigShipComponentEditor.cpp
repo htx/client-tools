@@ -67,15 +67,15 @@ using namespace ConfigShipComponentEditorNamespace;
 
 void ConfigShipComponentEditor::install()
 {
-	KEY_STRING(serverPathDsrc, "c:/projects/swg/x1/dsrc/sku.0/sys.server/compiled/game");
-	KEY_STRING(serverPathData, "c:/projects/swg/x1/data/sku.0/sys.server/compiled/game");
-	KEY_STRING(sharedPathDsrc, "c:/projects/swg/x1/dsrc/sku.0/sys.shared/compiled/game");
-	KEY_STRING(sharedPathData, "c:/projects/swg/x1/data/sku.0/sys.shared/compiled/game");
-	KEY_STRING(serverTemplateCrcStringTable, "c:/projects/swg/x1/data/sku.0/sys.server/built/game/misc/object_template_crc_string_table.iff");
-	KEY_STRING(clientDataFilePathDsrc, "c:/projects/swg/x1/dsrc/sku.0/sys.client/compiled/game");
-	KEY_STRING(textEditorPath, "TextPad");
-	KEY_STRING(toolPath, "c:/projects/swg/x1/tools/");
-	KEY_STRING(branchName, "x1");
+	KEY_STRING(serverPathDsrc, "../../dsrc/sku.0/sys.server/compiled/game");
+	KEY_STRING(serverPathData, "../../data/sku.0/sys.server/compiled/game");
+	KEY_STRING(sharedPathDsrc, "../../dsrc/sku.0/sys.shared/compiled/game");
+	KEY_STRING(sharedPathData, "../../data/sku.0/sys.shared/compiled/game");
+	KEY_STRING(serverTemplateCrcStringTable, "../../data/sku.0/sys.server/built/game/misc/object_template_crc_string_table.iff");
+	KEY_STRING(clientDataFilePathDsrc, "../../dsrc/sku.0/sys.client/compiled/game");
+	KEY_STRING(textEditorPath, "NotePad");
+	KEY_STRING(toolPath, "../../tools/");
+	KEY_STRING(branchName, "o_o");
 
 }
 

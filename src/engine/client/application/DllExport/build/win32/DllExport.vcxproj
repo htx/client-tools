@@ -115,7 +115,8 @@
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\optimized\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -165,7 +166,8 @@
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -215,7 +217,8 @@
       <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

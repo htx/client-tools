@@ -132,7 +132,7 @@ bool ExportStaticMesh::processArguments(
 
 		if (argName == ExportArgs::cs_interactiveArgName)
 		{
-			MESSENGER_REJECT(argIndex != 0, ("%s must be first argument", ExportArgs::cs_interactiveArgName));
+			MESSENGER_REJECT(argIndex != 0, ("%s must be first argument", ExportArgs::cs_interactiveArgName.asChar()));
 			isInteractive = true;
 			interactive   = true;
 		}

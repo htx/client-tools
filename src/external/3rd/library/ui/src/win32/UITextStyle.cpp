@@ -1122,19 +1122,16 @@ void UITextStyle::RenderPrewrappedSelection  ( Alignment align, const UIStringCo
 const UIPoint        UITextStyle::FindLocationFromCharacter ( Alignment align, const UIStringConstIteratorVector & LinePointers,
 	                                                    const std::vector<long> & LineWidths, const UIPoint & loc, const UISize & size, int indexToFind) const
 {	
-	long FirstLineIndex = 0;
-	long LastLineIndex  = LinePointers.size () + 1;
-	
 	int ch_index = 0;
 
 	RenderLineData rld (0, align, loc, size.x, 0, 0, UIColor::white);
 	rld.truncateElipsis = false;
 	rld.selection       = false;
 
-	for (long i = FirstLineIndex; i < (LastLineIndex - 1) && ch_index < indexToFind; ++i)
+	for (size_t i = 0; i < LinePointers.size() && ch_index < indexToFind; ++i)
 	{
 		UIString::const_iterator CurrentChar = LinePointers[i];
-		UIString::const_iterator NextLine    = LinePointers[i+1];
+		UIString::const_iterator NextLine = (i < LinePointers.size() - 1) ? LinePointers[i+1] : LinePointers[i];
 
 		const int numCharsThisLine = static_cast<int>(std::distance (CurrentChar, NextLine));
 

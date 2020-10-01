@@ -257,7 +257,7 @@ void MainWindow::slotFileSaveAsAction()
 			if (!FileNameUtils::isWritable(newPath.latin1()))
 			{
 				QString text;
-				text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension));
+				text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", (FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension)).c_str());
 				QMessageBox::warning(this, "Error Saving File", text, "OK.");
 		
 				// Offer them to choose a new filename
@@ -318,7 +318,7 @@ void MainWindow::save(QString const &path)
 	else if (!newPath.isEmpty())
 	{
 		QString text;
-		text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension));
+		text.sprintf("Error saving: \"%s\". Make sure the file is not read only.", (FileNameUtils::get(newPath.latin1(), FileNameUtils::fileName | FileNameUtils::extension)).c_str());
 		QMessageBox::warning(this, "Error Saving File", text, "OK.");
 	}
 }
@@ -492,11 +492,11 @@ void MainWindow::writeLightningIff(Iff &iff)
 	LightningAppearanceTemplate lightningAppearanceTemplate;
 
 	{
-		float const red = static_cast<float>(m_largeBoltColor.red()) / 255.0f;
-		float const green = static_cast<float>(m_largeBoltColor.green()) / 255.0f;
-		float const blue = static_cast<float>(m_largeBoltColor.blue()) / 255.0f;
+		float const red2 = static_cast<float>(m_largeBoltColor.red()) / 255.0f;
+		float const green2 = static_cast<float>(m_largeBoltColor.green()) / 255.0f;
+		float const blue2 = static_cast<float>(m_largeBoltColor.blue()) / 255.0f;
 
-		lightningAppearanceTemplate.setLargeBoltColor(red, green, blue);
+		lightningAppearanceTemplate.setLargeBoltColor(red2, green2, blue2);
 		lightningAppearanceTemplate.setLargeBoltChaos(QtUtility::getFloat(m_largeBoltChaosLineEdit));
 		lightningAppearanceTemplate.setLargeBoltAlpha(QtUtility::getFloat(m_largeBoltAlphaLineEdit));
 		lightningAppearanceTemplate.setLargeBoltThickness(QtUtility::getFloat(m_largeBoltThicknessLineEdit));
@@ -505,11 +505,11 @@ void MainWindow::writeLightningIff(Iff &iff)
 	}
 
 	{
-		float const red = static_cast<float>(m_smallBoltColor.red()) / 255.0f;
-		float const green = static_cast<float>(m_smallBoltColor.green()) / 255.0f;
-		float const blue = static_cast<float>(m_smallBoltColor.blue()) / 255.0f;
+		float const red3 = static_cast<float>(m_smallBoltColor.red()) / 255.0f;
+		float const green3 = static_cast<float>(m_smallBoltColor.green()) / 255.0f;
+		float const blue3 = static_cast<float>(m_smallBoltColor.blue()) / 255.0f;
 
-		lightningAppearanceTemplate.setSmallBoltColor(red, green, blue);
+		lightningAppearanceTemplate.setSmallBoltColor(red3, green3, blue3);
 		lightningAppearanceTemplate.setSmallBoltChaos(QtUtility::getFloat(m_smallBoltChaosLineEdit));
 		lightningAppearanceTemplate.setSmallBoltAlpha(QtUtility::getFloat(m_smallBoltAlphaLineEdit));
 		lightningAppearanceTemplate.setSmallBoltThickness(QtUtility::getFloat(m_smallBoltThicknessLineEdit));
@@ -613,11 +613,11 @@ void MainWindow::loadIff(Iff &iff)
 		// Large Bolt
 
 		{
-			int const red = static_cast<int>(lightningAppearanceTemplate->getLargeBoltColor().r * 255.0f);
-			int const green = static_cast<int>(lightningAppearanceTemplate->getLargeBoltColor().g * 255.0f);
-			int const blue = static_cast<int>(lightningAppearanceTemplate->getLargeBoltColor().b * 255.0f);
+			int const red4 = static_cast<int>(lightningAppearanceTemplate->getLargeBoltColor().r * 255.0f);
+			int const green4 = static_cast<int>(lightningAppearanceTemplate->getLargeBoltColor().g * 255.0f);
+			int const blue4 = static_cast<int>(lightningAppearanceTemplate->getLargeBoltColor().b * 255.0f);
 
-			m_largeBoltColor.setRgb(red, green, blue);
+			m_largeBoltColor.setRgb(red4, green4, blue4);
 			QtUtility::setLineEditFloat(m_largeBoltChaosLineEdit, lightningAppearanceTemplate->getLargeBoltChaos(), 0.0f, 32.0f, 2);
 			QtUtility::setLineEditFloat(m_largeBoltThicknessLineEdit, lightningAppearanceTemplate->getLargeBoltThickness(), 0.01f, 16.0f, 2);
 			QtUtility::setLineEditFloat(m_largeBoltAlphaLineEdit, lightningAppearanceTemplate->getLargeBoltAlpha(), 0.0f, 1.0f, 2);
@@ -634,11 +634,11 @@ void MainWindow::loadIff(Iff &iff)
 		// Small Bolt
 
 		{
-			int const red = static_cast<int>(lightningAppearanceTemplate->getSmallBoltColor().r * 255.0f);
-			int const green = static_cast<int>(lightningAppearanceTemplate->getSmallBoltColor().g * 255.0f);
-			int const blue = static_cast<int>(lightningAppearanceTemplate->getSmallBoltColor().b * 255.0f);
+			int const red5 = static_cast<int>(lightningAppearanceTemplate->getSmallBoltColor().r * 255.0f);
+			int const green5 = static_cast<int>(lightningAppearanceTemplate->getSmallBoltColor().g * 255.0f);
+			int const blue5 = static_cast<int>(lightningAppearanceTemplate->getSmallBoltColor().b * 255.0f);
 
-			m_smallBoltColor.setRgb(red, green, blue);
+			m_smallBoltColor.setRgb(red5, green5, blue5);
 			QtUtility::setLineEditFloat(m_smallBoltChaosLineEdit, lightningAppearanceTemplate->getSmallBoltChaos(), 0.0f, 32.0f, 2);
 			QtUtility::setLineEditFloat(m_smallBoltThicknessLineEdit, lightningAppearanceTemplate->getSmallBoltThickness(), 0.01f, 16.0f, 2);
 			QtUtility::setLineEditFloat(m_smallBoltAlphaLineEdit, lightningAppearanceTemplate->getSmallBoltAlpha(), 0.01f, 1.0f, 2);
@@ -854,9 +854,9 @@ void MainWindow::slotSelectShaderPushButton()
 		FileNameUtils::swapChar(path, '/', '\\');
 		std::string strippedPath;
 
-		bool result = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
+		bool result2 = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
 
-		if (!result)
+		if (!result2)
 		{
 			strippedPath = path;
 
@@ -900,9 +900,9 @@ void MainWindow::slotSelectStartAppearancePushButton()
 		FileNameUtils::swapChar(path, '/', '\\');
 		std::string strippedPath;
 
-		bool result = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
+		bool result3 = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
 
-		if (!result)
+		if (!result3)
 		{
 			strippedPath = path;
 
@@ -944,9 +944,9 @@ void MainWindow::slotSelectEndAppearancePushButton()
 		FileNameUtils::swapChar(path, '/', '\\');
 		std::string strippedPath;
 
-		bool result = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
+		bool result4 = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
 
-		if (!result)
+		if (!result4)
 		{
 			strippedPath = path;
 
@@ -988,9 +988,9 @@ void MainWindow::slotSelectSoundPushButton()
 		FileNameUtils::swapChar(path, '/', '\\');
 		std::string strippedPath;
 
-		bool result = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
+		bool result5 = TreeFile::stripTreeFileSearchPathFromFile(path, strippedPath);
 
-		if (!result)
+		if (!result5)
 		{
 			strippedPath = path;
 

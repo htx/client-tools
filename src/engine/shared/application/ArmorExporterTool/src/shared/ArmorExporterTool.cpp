@@ -10,7 +10,7 @@
 #include "ArmorExporterTool.h"
 
 #include "ConfigArmorExporterTool.h"
-#include "serverGame/ServerObjectTemplate.h"
+#include "sharedTemplate/ServerObjectTemplate.h"
 #include "sharedCompression/SetupSharedCompression.h"
 #include "sharedDebug/SetupSharedDebug.h"
 #include "sharedFile/FileNameUtils.h"

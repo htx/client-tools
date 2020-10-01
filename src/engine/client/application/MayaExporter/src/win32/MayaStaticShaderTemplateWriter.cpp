@@ -242,8 +242,8 @@ bool MayaStaticShaderTemplateWriter::build(
 
 				//additional material ambient component
 				MESSENGER_REJECT(!attribute.isUsedAsColor(), ("the ambient color attribute isn't used as a color"));
-				bool result = plug.isConnected(&status);
-				MESSENGER_REJECT(result || !status, ("ambient color plug connected or unavailable"));
+				bool result3 = plug.isConnected(&status);
+				MESSENGER_REJECT(result3 || !status, ("ambient color plug connected or unavailable"));
 				const std::string prefix = attributePrefix + "ambientRGB_";
 				const std::string tagStr = MayaUtility::getTagFromAttributeName(attributeName, prefix);
 				Tag tag = MayaUtility::convertStringtoTag(tagStr);
@@ -263,8 +263,8 @@ bool MayaStaticShaderTemplateWriter::build(
 
 				//additional material specular component
 				MESSENGER_REJECT(!attribute.isUsedAsColor(), ("the specular color attribute isn't used as a color"));
-				bool result = plug.isConnected(&status);
-				MESSENGER_REJECT(result || !status, ("specular color plug connected or unavailable"));
+				bool result4 = plug.isConnected(&status);
+				MESSENGER_REJECT(result4 || !status, ("specular color plug connected or unavailable"));
 				const std::string prefix = attributePrefix + "specularRGB_";
 				const std::string tagStr = MayaUtility::getTagFromAttributeName(attributeName, prefix);
 				Tag tag = MayaUtility::convertStringtoTag(tagStr);
@@ -284,8 +284,8 @@ bool MayaStaticShaderTemplateWriter::build(
 
 				//additional material emissive component
 				MESSENGER_REJECT(!attribute.isUsedAsColor(), ("the emissive color attribute isn't used as a color"));
-				bool result = plug.isConnected(&status);
-				MESSENGER_REJECT(result || !status, ("emissive color plug connected or unavailable"));
+				bool result5 = plug.isConnected(&status);
+				MESSENGER_REJECT(result5 || !status, ("emissive color plug connected or unavailable"));
 				const std::string prefix = attributePrefix + "emissiveRGB_";
 				const std::string tagStr = MayaUtility::getTagFromAttributeName(attributeName, prefix);
 				Tag tag = MayaUtility::convertStringtoTag(tagStr);
@@ -305,8 +305,8 @@ bool MayaStaticShaderTemplateWriter::build(
 
 				//additional material diffuse component
 				MESSENGER_REJECT(!attribute.isUsedAsColor(), ("the diffuse color attribute isn't used as a color"));
-				bool result = plug.isConnected(&status);
-				MESSENGER_REJECT(result || !status, ("diffuse color plug connected or unavailable"));
+				bool result6 = plug.isConnected(&status);
+				MESSENGER_REJECT(result6 || !status, ("diffuse color plug connected or unavailable"));
 				const std::string prefix = attributePrefix + "diffuseRGB_";
 				const std::string tagStr = MayaUtility::getTagFromAttributeName(attributeName, prefix);
 				Tag tag = MayaUtility::convertStringtoTag(tagStr);
@@ -375,8 +375,8 @@ bool MayaStaticShaderTemplateWriter::build(
 				Tag tag = MayaUtility::convertStringtoTag(tagStr);
 				if(!attribute.isUsedAsColor())
 					continue;
-				bool result = plug.isConnected(&status);
-				MESSENGER_REJECT(result || !status, ("texture factor color plug connected or unavailable"));
+				bool result7 = plug.isConnected(&status);
+				MESSENGER_REJECT(result7 || !status, ("texture factor color plug connected or unavailable"));
 
 				MColor color = buildColorFromAttribute(attributeObject, phong);
 				addTextureFactor(tag, VectorArgb(1.0, color.r, color.g, color.b));
@@ -393,30 +393,30 @@ bool MayaStaticShaderTemplateWriter::build(
 
 				//get the compound attribute
 				MFnCompoundAttribute compoundAttribute;
-				MStatus status = compoundAttribute.setObject(attributeObject);
-				MESSENGER_REJECT(!status,("failed to set object into MFnCompoundAttribute\n"));
+				MStatus status2 = compoundAttribute.setObject(attributeObject);
+				MESSENGER_REJECT(!status2,("failed to set object into MFnCompoundAttribute\n"));
 				//validate that we have 2 children (uv set to use, then the dimension)
 				int numChildren = compoundAttribute.numChildren();
 				MESSENGER_REJECT(numChildren != 2, ("bad number of children for texCoordSet attribute"));
 
 				//get the uv value, from a plug
-				MObject uvObject = compoundAttribute.child(0, &status);
-				MESSENGER_REJECT(!status, ("could not get uv object\n"));
-				MPlug uvPlug = phong.findPlug(uvObject, &status);
-				MESSENGER_REJECT(!status, ("could not get uv plug\n"));
+				MObject uvObject = compoundAttribute.child(0, &status2);
+				MESSENGER_REJECT(!status2, ("could not get uv object\n"));
+				MPlug uvPlug = phong.findPlug(uvObject, &status2);
+				MESSENGER_REJECT(!status2, ("could not get uv plug\n"));
 				int uvValue = 0;
-				status = uvPlug.getValue(uvValue);
-				MESSENGER_REJECT(!status, ("could not get value from uv plug\n"));
+				status2 = uvPlug.getValue(uvValue);
+				MESSENGER_REJECT(!status2, ("could not get value from uv plug\n"));
 				MESSENGER_REJECT((uvValue < 0) || (uvValue >= cs_maxTextureCoordinateSetCount), ("texture coordinate set index [%d] out of valid range [0..%d]", uvValue, cs_maxTextureCoordinateSetCount - 1));
 
 				//get the dimension value, from a plug
-				MObject dimObject = compoundAttribute.child(1, &status);
-				MESSENGER_REJECT(!status, ("could not get dim object\n"));
-				MPlug dimPlug = phong.findPlug(dimObject, &status);
-				MESSENGER_REJECT(!status, ("could not get dim plug\n"));
+				MObject dimObject = compoundAttribute.child(1, &status2);
+				MESSENGER_REJECT(!status2, ("could not get dim object\n"));
+				MPlug dimPlug = phong.findPlug(dimObject, &status2);
+				MESSENGER_REJECT(!status2, ("could not get dim plug\n"));
 				int dimValue = 0;
-				status = dimPlug.getValue(dimValue);
-				MESSENGER_REJECT(!status, ("could not get value from dim plug\n"));
+				status2 = dimPlug.getValue(dimValue);
+				MESSENGER_REJECT(!status2, ("could not get value from dim plug\n"));
 				MESSENGER_REJECT((dimValue < 1) || (dimValue > cs_maxTextureCoordinateSetDimensionality), ("texture coordinate set dimensionality [%d] out of valid range [1..%d]", dimValue, cs_maxTextureCoordinateSetDimensionality));
 
 				const std::string prefix = attributePrefix + "texCoordSet_";
@@ -1181,9 +1181,9 @@ bool MayaStaticShaderTemplateWriter::buildTexture(
 
 			//convert the texture from a fully-pathed file to texture\<filename>.dds
 			char textureBaseName[128];
-			bool result;
-			result = MayaUtility::stripBaseName(filename.c_str(), textureBaseName, sizeof (textureBaseName), '/');
-			MESSENGER_REJECT (!result, ("failed to strip base name from shader group texture filename \"%s\"\n", filename.c_str()));
+			bool result8;
+			result8 = MayaUtility::stripBaseName(filename.c_str(), textureBaseName, sizeof (textureBaseName), '/');
+			MESSENGER_REJECT (!result8, ("failed to strip base name from shader group texture filename \"%s\"\n", filename.c_str()));
 			std::string textureRelativeName =  textureReferenceDirectory;
 			            textureRelativeName += textureBaseName;
 			            textureRelativeName += ".dds";
@@ -1289,12 +1289,12 @@ bool MayaStaticShaderTemplateWriter::buildTexture(
 							}
 
 							// Convert the texture from a fully-pathed file to texture\<filename>.dds.
-							bool result;
+							bool result9;
 							char textureBaseName[128];
 
 							std::string textureRelativeName = textureReferenceDirectory;
-							result = MayaUtility::stripBaseName(filename.c_str(), textureBaseName, sizeof (textureBaseName), '/');
-							MESSENGER_REJECT (!result, ("failed to strip base name from shader group texture filename \"%s\"\n", filename.c_str()));
+							result9 = MayaUtility::stripBaseName(filename.c_str(), textureBaseName, sizeof (textureBaseName), '/');
+							MESSENGER_REJECT (!result9, ("failed to strip base name from shader group texture filename \"%s\"\n", filename.c_str()));
 
 							textureRelativeName += textureBaseName;
 							textureRelativeName += ".dds";

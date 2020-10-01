@@ -347,7 +347,7 @@ BOOL CCrystalTextBuffer::LoadFromFile(LPCTSTR pszFileName, int nCrlfStyle /*= CR
 
 		ASSERT(nCrlfStyle >= 0 && nCrlfStyle <= 2);
 		m_nCRLFMode = nCrlfStyle;
-		const char *crlf = crlfs[nCrlfStyle];
+		const char *crlf2 = crlfs[nCrlfStyle];
 
 		m_aLines.SetSize(0, 4096);
 
@@ -377,10 +377,10 @@ BOOL CCrystalTextBuffer::LoadFromFile(LPCTSTR pszFileName, int nCrlfStyle /*= CR
 				pcLineBuf = pcNewBuf;
 			}
 
-			if ((char) c == crlf[nCrlfPtr])
+			if ((char) c == crlf2[nCrlfPtr])
 			{
 				nCrlfPtr ++;
-				if (crlf[nCrlfPtr] == 0)
+				if (crlf2[nCrlfPtr] == 0)
 				{
 					pcLineBuf[nCurrentLength - nCrlfPtr] = 0;
 					InsertLine(A2T(pcLineBuf));

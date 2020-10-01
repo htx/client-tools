@@ -478,7 +478,7 @@ bool ExportSkeletalAppearanceTemplate::createFromArgList(const MArgList &argList
 		}
 		else
 		{
-			MESSENGER_LOG_ERROR(("[%s] is not a valid branch, NOT submitting to Perforce\n", branch));
+			MESSENGER_LOG_ERROR(("[%s] is not a valid branch, NOT submitting to Perforce\n", branch.c_str()));
 		}
 
 		PerforceImporter::reset();

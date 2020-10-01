@@ -73,9 +73,9 @@ void IffDataView::OnInitialUpdate()
 	GetEditCtrl ().SetReadOnly (true);
 
 	//-- set the font
-	CFont* font = new CFont;
-	font->CreateFont(16, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH | FF_MODERN, NULL);
-	SetFont (font);
+	CFont* font2 = new CFont;
+	font2->CreateFont(16, 0, 0, 0, FW_NORMAL, 0, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH | FF_MODERN, NULL);
+	SetFont (font2);
 }
 
 //-------------------------------------------------------------------

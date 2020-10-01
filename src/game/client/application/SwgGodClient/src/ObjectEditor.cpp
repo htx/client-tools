@@ -513,7 +513,7 @@ void ObjectEditor::receiveMessage(const MessageDispatch::Emitter &, const Messag
 				}
 				char n[256];
 				int numScripts = 0;
-				int result = sscanf(lines[0].c_str(), "script list object %s, num %d\n", n, numScripts);
+				int result = sscanf(lines[0].c_str(), "script list object %s, num %d\n", n, &numScripts);
 				if(result > 0)
 				{
 					NetworkId nid(n);

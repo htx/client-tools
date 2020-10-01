@@ -154,6 +154,7 @@ AbstractFile *TreeFile::SearchPath::open(const char *fileName, AbstractFile::Pri
 TreeFile::SearchAbsolute::SearchAbsolute(int priority)
 : SearchNode(priority)
 {
+	
 }
 
 // ----------------------------------------------------------------------
@@ -172,16 +173,22 @@ void TreeFile::SearchAbsolute::debugPrint(void)
 
 bool TreeFile::SearchAbsolute::exists(const char *fileName, bool &) const
 {
-	DEBUG_FATAL(strlen(fileName) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileName) + 1, Os::MAX_PATH_LENGTH));
-	return FileStreamer::exists(fileName);
+	std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
+	fileNamePath += fileName;
+
+	DEBUG_FATAL(strlen(fileNamePath.c_str()) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileNamePath.c_str()) + 1, Os::MAX_PATH_LENGTH));
+	return FileStreamer::exists(fileNamePath.c_str());
 }
 
 // ----------------------------------------------------------------------
 
 int TreeFile::SearchAbsolute::getFileSize(const char *fileName, bool &) const
 {
-	DEBUG_FATAL(strlen(fileName) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileName) + 1, Os::MAX_PATH_LENGTH));
-	return FileStreamer::getFileSize(fileName);
+	std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
+	fileNamePath += fileName;
+
+	DEBUG_FATAL(strlen(fileNamePath.c_str()) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileNamePath.c_str()) + 1, Os::MAX_PATH_LENGTH));
+	return FileStreamer::getFileSize(fileNamePath.c_str());
 }
 
 // ----------------------------------------------------------------------
@@ -207,7 +214,10 @@ AbstractFile *TreeFile::SearchAbsolute::open(const char *fileName, AbstractFile:
 	NOT_NULL(fileName);
 	DEBUG_FATAL(strlen(fileName) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileName) + 1, Os::MAX_PATH_LENGTH));
 
-	FileStreamer::File *file = FileStreamer::open(fileName);
+	std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
+	fileNamePath += fileName;
+
+	FileStreamer::File *file = FileStreamer::open(fileNamePath.c_str());
 	if (!file)
 		return NULL;
 	return new FileStreamerFile(priority, *file);

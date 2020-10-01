@@ -150,15 +150,15 @@ void BrushData::serialize() const
 
 		Iff iff(10 * 1024);
 		const Tag TAG_BRSH = TAG(B,R,S,H);
-		const Tag TAG_DATA = TAG(D,A,T,A);
+		const Tag TAG_DATA2 = TAG(D,A,T,A);
 		const Tag TAG_CLIP = TAG(C,L,I,P);
 		iff.insertForm(TAG_BRSH);
 		{
 			iff.insertForm(TAG_0002);
 			{
-				iff.insertChunk(TAG_DATA);
+				iff.insertChunk(TAG_DATA2);
 					iff.insertChunkString(name.c_str());
-				iff.exitChunk(TAG_DATA);
+				iff.exitChunk(TAG_DATA2);
 
 				for(GodClientData::ClipboardList_t::const_iterator itr = brush.objects.begin(); itr != brush.objects.end(); ++itr)
 				{
@@ -209,7 +209,7 @@ void BrushData::unserialize()
 
 	const Tag TAG_CLIP = TAG(C,L,I,P);
 	const Tag TAG_BRSH = TAG(B,R,S,H);
-	const Tag TAG_DATA = TAG(D,A,T,A);
+	const Tag TAG_DATA2 = TAG(D,A,T,A);
 
 	FilesystemTree tree;
 	tree.setRootPath(readDirBuffer);
@@ -246,9 +246,9 @@ void BrushData::unserialize()
 							{
 								iff.enterForm (TAG_0000);
 								{
-									iff.enterChunk (TAG_DATA);
+									iff.enterChunk (TAG_DATA2);
 										iff.read_string (newBrush.name);
-									iff.exitChunk (TAG_DATA, true);
+									iff.exitChunk (TAG_DATA2, true);
 
 									while (iff.getNumberOfBlocksLeft ())
 									{
@@ -275,9 +275,9 @@ void BrushData::unserialize()
 							{
 								iff.enterForm (TAG_0001);
 								{
-									iff.enterChunk (TAG_DATA);
+									iff.enterChunk (TAG_DATA2);
 										iff.read_string (newBrush.name);
-									iff.exitChunk (TAG_DATA, true);
+									iff.exitChunk (TAG_DATA2, true);
 
 									while (iff.getNumberOfBlocksLeft ())
 									{
@@ -305,9 +305,9 @@ void BrushData::unserialize()
 
 								iff.enterForm (TAG_0002);
 								{
-									iff.enterChunk (TAG_DATA);
+									iff.enterChunk (TAG_DATA2);
 										iff.read_string (newBrush.name);
-									iff.exitChunk (TAG_DATA, true);
+									iff.exitChunk (TAG_DATA2, true);
 
 									while (iff.getNumberOfBlocksLeft ())
 									{

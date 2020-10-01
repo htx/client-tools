@@ -672,19 +672,19 @@ void CViewerView::OnDraw(CDC* pDC)
 			}
 
 			{
-				Object* object = pDoc->getObject();
-				Appearance *appearance = NULL;
+				Object* object2 = pDoc->getObject();
+				Appearance *appearance2 = NULL;
 				SkeletalAppearance2* skeletalAppearance2 = NULL;
 				TransformAnimationController* transformAnimationController = NULL;
 				StateHierarchyAnimationController* stateHierarchyAnimationController = NULL;
 
 				// drill down to the controller
-				if(object)
+				if(object2)
 				{
-					appearance = object->getAppearance();
-					if(appearance)
+					appearance2 = object2->getAppearance();
+					if(appearance2)
 					{
-						skeletalAppearance2 = dynamic_cast<SkeletalAppearance2 *>(appearance);
+						skeletalAppearance2 = dynamic_cast<SkeletalAppearance2 *>(appearance2);
 						if(skeletalAppearance2)
 						{
 							transformAnimationController = skeletalAppearance2->getAnimationController();
@@ -790,7 +790,7 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 	CViewerDoc* pDoc = GetDocument();
 
 	// TODO: Add your message handler code here and/or call default
-	static CPoint lastPoint = point;
+	static CPoint lastPoint2 = point;
 	static bool   first     = false;
 	static Vector lastVector;
 	static real   dist;
@@ -812,11 +812,11 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 				}
 				else
 				{
-					real yaw = PI_TIMES_2 * static_cast<real> (point.x - lastPoint.x) / rect.Width ();
-					real pitch = PI_TIMES_2 * static_cast<real> (point.y - lastPoint.y) / rect.Height ();
+					real yaw2 = PI_TIMES_2 * static_cast<real> (point.x - lastPoint2.x) / rect.Width ();
+					real pitch2 = PI_TIMES_2 * static_cast<real> (point.y - lastPoint2.y) / rect.Height ();
 
-					camera->yaw_o (yaw);
-					camera->pitch_o (pitch);
+					camera->yaw_o (yaw2);
+					camera->pitch_o (pitch2);
 
 					// keep the up vector pointed up
 					Vector up = camera->rotate_w2o(Vector::unitY);
@@ -826,13 +826,13 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 					Invalidate ();
 				}
 
-				lastPoint = point;
+				lastPoint2 = point;
 			}
 			else
 				if (nFlags & MK_MBUTTON)
 				{
-					real xMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.x - lastPoint.x) / rect.Width ();
-					real yMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.y - lastPoint.y) / rect.Height ();
+					real xMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.x - lastPoint2.x) / rect.Width ();
+					real yMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.y - lastPoint2.y) / rect.Height ();
 
 					camera->move_o (Vector (-xMod, yMod, 0));
 
@@ -848,7 +848,7 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 					first = false;
 
 					//-- calculate how far to move
-					real zoomMod = distanceToPoint * static_cast<real> (point.x - lastPoint.x) / rect.Width ();
+					real zoomMod = distanceToPoint * static_cast<real> (point.x - lastPoint2.x) / rect.Width ();
 
 					//-- move camera
 					camera->move_o (Vector (0, 0, zoomMod));
@@ -867,8 +867,8 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 					if (nFlags & MK_LBUTTON)
 					{
 						//--
-						CRect rect;
-						GetClientRect (&rect);
+						CRect rect2;
+						GetClientRect (&rect2);
 
 						if (!first)
 						{
@@ -879,10 +879,10 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 						}
 						else
 						{
-							real yawMod = PI_TIMES_2 * static_cast<real> (point.x - lastPoint.x) / rect.Width ();
+							real yawMod = PI_TIMES_2 * static_cast<real> (point.x - lastPoint2.x) / rect2.Width ();
 							yaw += yawMod;
 
-							real pitchMod = PI_TIMES_2 * static_cast<real> (point.y - lastPoint.y) / rect.Height ();
+							real pitchMod = PI_TIMES_2 * static_cast<real> (point.y - lastPoint2.y) / rect2.Height ();
 							pitch += pitchMod;
 							pitch = clamp (-PI_OVER_2, pitch, PI_OVER_2);
 
@@ -903,11 +903,11 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 							first = false;
 
 							//--
-							CRect rect;
-							GetClientRect (&rect);
+							CRect rect3;
+							GetClientRect (&rect3);
 
-							real xMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.x - lastPoint.x) / rect.Width ();
-							real yMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.y - lastPoint.y) / rect.Height ();
+							real xMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.x - lastPoint2.x) / rect3.Width ();
+							real yMod = pDoc->getObject ()->getAppearanceSphereRadius () * static_cast<real> (point.y - lastPoint2.y) / rect3.Height ();
 
 							camera->move_o (Vector (-xMod, yMod, 0));
 							
@@ -920,11 +920,11 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 								first = false;
 
 								//--
-								CRect rect;
-								GetClientRect (&rect);
+								CRect rect4;
+								GetClientRect (&rect4);
 
-								const float yawMod = PI_TIMES_2 * static_cast<real> (point.x - lastPoint.x) / rect.Width ();
-								const float pitchMod = PI_TIMES_2 * static_cast<real> (point.y - lastPoint.y) / rect.Height ();
+								const float yawMod = PI_TIMES_2 * static_cast<real> (point.x - lastPoint2.x) / rect4.Width ();
+								const float pitchMod = PI_TIMES_2 * static_cast<real> (point.y - lastPoint2.y) / rect4.Height ();
 
 								ViewerPreferences::setLightYaw (ViewerPreferences::getLightYaw () + yawMod);
 								ViewerPreferences::setLightPitch (ViewerPreferences::getLightPitch () + pitchMod);
@@ -941,7 +941,7 @@ void CViewerView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 
 	//-- 
-	lastPoint = point;
+	lastPoint2 = point;
 
 	CView::OnMouseMove(nFlags, point);
 }

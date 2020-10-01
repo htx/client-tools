@@ -295,9 +295,9 @@ void FormFilterBitmap::OnSelchangeFamily()
 		int numItems = m_familyCtrl.GetCount();
 		for(int i = 0; i < numItems;++i)
 		{
-			int famId = m_familyCtrl.GetItemData (i);
-			const Image* image = doc->getTerrainGenerator ()->getBitmapGroup ().getFamilyBitmap (famId);
-			if(image)
+			int famId2 = m_familyCtrl.GetItemData (i);
+			const Image* image2 = doc->getTerrainGenerator ()->getBitmapGroup ().getFamilyBitmap (famId2);
+			if(image2)
 			{
 				m_familyCtrl.SetCurSel(i);
 				break;

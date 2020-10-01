@@ -10,6 +10,8 @@
 #ifndef INCLUDED_FirstSwgSpaceZoneEditor_H
 #define INCLUDED_FirstSwgSpaceZoneEditor_H
 
+#pragma warning(disable : 4996 4838 4099)
+
 // ======================================================================
 
 #define NOMINMAX

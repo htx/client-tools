@@ -642,27 +642,27 @@ void CCrystalTextView::OnLButtonUp(UINT nFlags, CPoint point)
 		CPoint ptStart, ptEnd;
 		if (m_bLineSelection)
 		{
-			CPoint ptEnd;
+			CPoint ptEnd3;
 			if (ptNewCursorPos.y < m_ptAnchor.y ||
 				ptNewCursorPos.y == m_ptAnchor.y && ptNewCursorPos.x < m_ptAnchor.x)
 			{
-				ptEnd = m_ptAnchor;
-				if (ptEnd.y == GetLineCount() - 1)
+				ptEnd3 = m_ptAnchor;
+				if (ptEnd3.y == GetLineCount() - 1)
 				{
-					ptEnd.x = GetLineLength(ptEnd.y);
+					ptEnd3.x = GetLineLength(ptEnd3.y);
 				}
 				else
 				{
-					ptEnd.y ++;
-					ptEnd.x = 0;
+					ptEnd3.y ++;
+					ptEnd3.x = 0;
 				}
 				ptNewCursorPos.x = 0;
 				m_ptCursorPos = ptNewCursorPos;
 			}
 			else
 			{
-				ptEnd = m_ptAnchor;
-				ptEnd.x = 0;
+				ptEnd3 = m_ptAnchor;
+				ptEnd3.x = 0;
 				if (ptNewCursorPos.y == GetLineCount() - 1)
 				{
 					ptNewCursorPos.x = GetLineLength(ptNewCursorPos.y);
@@ -676,7 +676,7 @@ void CCrystalTextView::OnLButtonUp(UINT nFlags, CPoint point)
 			}
 			EnsureVisible(m_ptCursorPos);
 			UpdateCaret();
-			SetSelection(ptNewCursorPos, ptEnd);
+			SetSelection(ptNewCursorPos, ptEnd3);
 		}
 		else
 		{

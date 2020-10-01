@@ -57,22 +57,25 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\../../../../../../compile/win32/debugWindow/Debug\</OutDir>
-    <IntDir>.\../../../../../../compile/win32/debugWindow/Debug\</IntDir>
+    <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\../../../../../../compile/win32/debugWindow/Release\</OutDir>
-    <IntDir>.\../../../../../../compile/win32/debugWindow/Release\</IntDir>
+    <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
-    <OutDir>.\../../../../../../compile/win32/debugWindow/Optimized\</OutDir>
-    <IntDir>.\../../../../../../compile/win32/debugWindow/Optimized\</IntDir>
+    <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_o</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -87,7 +90,7 @@
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DEBUGWINDOW_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
@@ -105,7 +108,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\../../../../../../compile/win32/debugWindow/Debug/DebugWindow.dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)_d.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/debugWindow/Debug/DebugWindow.pdb</ProgramDatabaseFile>
@@ -117,6 +120,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\../../../../../../compile/win32/debugWindow/Debug/DebugWindow.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -148,7 +155,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\../../../../../../compile/win32/debugWindow/Release/DebugWindow.dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)_r.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/debugWindow/Release/DebugWindow.pdb</ProgramDatabaseFile>
       <BaseAddress>0x61B00000</BaseAddress>
@@ -159,6 +166,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\../../../../../../compile/win32/debugWindow/Release/DebugWindow.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <Midl>
@@ -188,7 +199,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\../../../../../../compile/win32/debugWindow/Optimized/DebugWindow.dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)_o.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/debugWindow/Optimized/DebugWindow.pdb</ProgramDatabaseFile>
@@ -200,6 +211,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\../../../../../../compile/win32/debugWindow/Optimized/DebugWindow.bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\win32\DebugWindow.cpp" />

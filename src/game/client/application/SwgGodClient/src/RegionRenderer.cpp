@@ -348,7 +348,7 @@ void RegionRenderer::setWorld(float const sizeX, float const sizeY, int const ce
 		m_cellCountX = cellCountX;
 		m_cellCountY = cellCountY;
 
-		m_worldCells.reserve(m_cellCountX * m_cellCountY);
+		m_worldCells.resize(m_cellCountX * m_cellCountY);
 
 		for (unsigned int i = 0; i < m_worldCells.capacity(); ++i)
 		{
@@ -482,27 +482,27 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		int g = 0;
 		int b = 0;
 
-		bool black = false;
+		bool black2 = false;
 
 	//filter on each requested type
 		if(i1->second->m_Mission == 0)
 		{
 			if(m_filterOnMission)
-				black = true;
+				black2 = true;
 		}
 		else
 			r += 128;
 		if(i1->second->m_Buildable == 0)
 		{
 			if(m_filterOnBuildable)
-				black = true;
+				black2 = true;
 		}
 		else
 			r += 127;
 		if(i1->second->m_Spawnable == 0)
 		{
 			if(m_filterOnSpawnable)
-				black = true;
+				black2 = true;
 		}
 		else
 			g += 85;
@@ -510,7 +510,7 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i1->second->m_PvP == 0)
 		{
 			if(m_filterOnPvp)
-				black = true;
+				black2 = true;
 		}
 		else
 			g += 85;
@@ -518,7 +518,7 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i1->second->m_Geographical == 0)
 		{
 			if(m_filterOnGeographical)
-				black = true;
+				black2 = true;
 		}
 		else
 			g += 85;
@@ -526,7 +526,7 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i1->second->m_MinDifficulty == 0)
 		{
 			if(m_filterOnDifficulty)
-				black = true;
+				black2 = true;
 		}
 		else
 			b += 128;
@@ -534,12 +534,12 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i1->second->m_Municipal == 0)
 		{
 			if(m_filterOnMunicipal)
-				black = true;
+				black2 = true;
 		}
 		else
 			b += 127;
 
-		if ( black )
+		if ( black2 )
 		{
 			r = g = b = 0;
 		}
@@ -570,27 +570,27 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		int g = 0;
 		int b = 0;
 
-		bool black = false;
+		bool black3 = false;
 
 		//filter on each requested type
 		if(i2->second->m_Mission == 0)
 		{
 			if(m_filterOnMission)
-				black = true;
+				black3 = true;
 		}
 		else
 			r += 128;
 		if(i2->second->m_Buildable == 0)
 		{
 			if(m_filterOnBuildable)
-				black = true;
+				black3 = true;
 		}
 		else
 			r += 127;
 		if(i2->second->m_Spawnable == 0)
 		{
 			if(m_filterOnSpawnable)
-				black = true;
+				black3 = true;
 		}
 		else
 			g += 85;
@@ -598,7 +598,7 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i2->second->m_PvP == 0)
 		{
 			if(m_filterOnPvp)
-				black = true;
+				black3 = true;
 		}
 		else
 			g += 85;
@@ -606,7 +606,7 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i2->second->m_Geographical == 0)
 		{
 			if(m_filterOnGeographical)
-				black = true;
+				black3 = true;
 		}
 		else
 			g += 85;
@@ -614,7 +614,7 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i2->second->m_MinDifficulty == 0)
 		{
 			if(m_filterOnDifficulty)
-				black = true;
+				black3 = true;
 		}
 		else
 			b += 128;
@@ -622,13 +622,13 @@ void RegionRenderer::drawRegions(QPainter &painter)
 		if(i2->second->m_Municipal == 0)
 		{
 			if(m_filterOnMunicipal)
-				black = true;
+				black3 = true;
 		}
 		else
 			b += 127;
 
 
-		if ( black )
+		if ( black3 )
 		{
 			r = g = b = 0;
 		}

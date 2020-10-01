@@ -10,6 +10,8 @@
 #ifndef INCLUDED_FirstSwgSpaceQuestEditor_H
 #define INCLUDED_FirstSwgSpaceQuestEditor_H
 
+#pragma warning(disable : 4996 4838 4099)
+
 // ======================================================================
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers

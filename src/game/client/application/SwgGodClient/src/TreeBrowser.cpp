@@ -507,7 +507,7 @@ void TreeBrowser::onObjectDoubleClicked(QListViewItem* item)
 	else
 	{
 		char buf [128];
-		IGNORE_RETURN(_snprintf(buf, 128, "Object id %d not found in world.", moli->m_objPtr->getNetworkId()));
+		IGNORE_RETURN(_snprintf(buf, 128, "Object id %d not found in world.", (int)moli->m_objPtr->getNetworkId().getValue()));
 		IGNORE_RETURN(QMessageBox::warning(this, "Warning", buf));
 		return;
 	}

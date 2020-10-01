@@ -352,10 +352,10 @@ void SwgSpaceQuestEditorDoc::scan(bool const showHeader)
 						StringList spaceMobileList;
 						Configuration::unpackString(m_spaceQuest.getProperty(propertyTemplate.m_columnName), spaceMobileList, '|');
 
-						for (size_t i = 0; i < spaceMobileList.size(); ++i)
+						for (size_t j = 0; j < spaceMobileList.size(); ++j)
 						{
 							//-- Make sure this is in the list of space mobiles
-							CString const & spaceMobile = spaceMobileList[i];
+							CString const & spaceMobile = spaceMobileList[j];
 
 							if (!Configuration::isValidSpaceMobile(spaceMobile))
 								warningList.push_back("ERROR: property [" + propertyTemplate.m_columnName + "] points invalid space mobile " + spaceMobile + "\n");
@@ -378,10 +378,10 @@ void SwgSpaceQuestEditorDoc::scan(bool const showHeader)
 						StringList navPointList;
 						Configuration::unpackString(m_spaceQuest.getProperty(propertyTemplate.m_columnName), navPointList, '|');
 
-						for (size_t i = 0; i < navPointList.size(); ++i)
+						for (size_t k = 0; k < navPointList.size(); ++k)
 						{
 							//-- Make sure this is in the list of nav points
-							CString const & navPoint = navPointList[i];
+							CString const & navPoint = navPointList[k];
 
 							if (!Configuration::isValidNavPoint(spaceZone, navPoint, missionTemplate->getAllowNavPointsInMultipleZones()))
 								warningList.push_back("ERROR: property [" + propertyTemplate.m_columnName + "] points invalid nav point " + navPoint + " for space zone " + (!spaceZone.IsEmpty() ? spaceZone : "<blank>") + "\n");
@@ -404,10 +404,10 @@ void SwgSpaceQuestEditorDoc::scan(bool const showHeader)
 						StringList spawnerList;
 						Configuration::unpackString(m_spaceQuest.getProperty(propertyTemplate.m_columnName), spawnerList, '|');
 
-						for (size_t i = 0; i < spawnerList.size(); ++i)
+						for (size_t l = 0; l < spawnerList.size(); ++l)
 						{
 							//-- Make sure this is in the list of spawners
-							CString const & spawner = spawnerList[i];
+							CString const & spawner = spawnerList[l];
 
 							if (!Configuration::isValidSpawner(spaceZone, spawner))
 								warningList.push_back("ERROR: property [" + propertyTemplate.m_columnName + "] points invalid spawner " + spawner + " for space zone " + spaceZone + "\n");

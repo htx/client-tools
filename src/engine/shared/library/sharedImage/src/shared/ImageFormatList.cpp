@@ -77,7 +77,7 @@ void ImageFormatList::addImageFormat(const ImageFormat *imageFormat)
 	{
 		//-- get lowercase extension
 		std::string extension = imageFormat->getCommonExtension(i);
-		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), [](char c){return static_cast<char>(std::tolower(c));}));
+		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), [](char c){return static_cast<unsigned char>(std::tolower(c));}));
 
 		//-- map extension to this image format
 		std::pair<ExtensionMap::iterator, bool> result = ms_extensionMap->insert(std::make_pair(extension, imageFormat));
@@ -97,27 +97,17 @@ void ImageFormatList::removeImageFormat(const ImageFormat *imageFormat)
 
 	//-- remove image format from extension map
 	{
-		ExtensionMap::iterator       it;
-		ExtensionMap::const_iterator itEnd;
-		do
+		ExtensionMap::iterator it = ms_extensionMap->begin();;
+
+		while(it != ms_extensionMap->end()) 
 		{
-			it    = ms_extensionMap->begin();
-			itEnd = ms_extensionMap->end();
-			for (; it != itEnd; ++it)
-			{
-				if ((*it).second == imageFormat)
-				{
-					// found one, remove it
-					ms_extensionMap->erase(it);
-
-					// we invalidate the iterator once we modify the container, so restart search
-					break;
-				}
-			}
+		   if((*it).second == imageFormat)
+			  it = ms_extensionMap->erase(it);
+		   else
+			  it++;
 		}
-		while (it != itEnd);
 	}
-
+	
 	//-- remove image format from image format list
 	{
 		// find the image format
@@ -165,7 +155,7 @@ Image *ImageFormatList::loadImage(const char *filename, bool readOnly)
 	{
 		// convert extension to lower case
 		std::string extension(extensionDot+1);
-		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), [](char c){return static_cast<char>(std::tolower(c));}));
+		IGNORE_RETURN(std::transform(extension.begin(), extension.end(), extension.begin(), [](char c){return static_cast<unsigned char>(std::tolower(c));}));
 
 		// see if we have a file format for this extension
 		NOT_NULL(ms_extensionMap);

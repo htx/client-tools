@@ -840,11 +840,11 @@ void GameWidget::mouseMoveEvent(QMouseEvent*mouseEvent)
 
 	else if(m_autoDraggingObjects && !m_keyStates->hasAnyState())
 	{
-		const QPoint pt(mouseEvent->pos());
+		const QPoint pt2(mouseEvent->pos());
 
 		const CellProperty* cellProperty = CellProperty::getWorldCellProperty ();
 		Vector result;
-		if(GodClientData::getInstance().findIntersection_p(pt.x(), pt.y(), cellProperty, result))
+		if(GodClientData::getInstance().findIntersection_p(pt2.x(), pt2.y(), cellProperty, result))
 		{
 			IGNORE_RETURN(GodClientData::getInstance().moveGhostsFollowingObject(*m_autoDragNetworkId, result, true));
 		}
@@ -1320,8 +1320,8 @@ void GameWidget::contextMenuEvent(QContextMenuEvent* evt)
 
 	if(m_menuIds.objNetworkId != NetworkId::cms_invalid)
 	{
-		Object const * const obj = NetworkIdManager::getObjectById(m_menuIds.objNetworkId);
-		ClientObject const * const clientObj = obj ? obj->asClientObject() : NULL;
+		Object const * const obj2 = NetworkIdManager::getObjectById(m_menuIds.objNetworkId);
+		ClientObject const * const clientObj = obj2 ? obj2->asClientObject() : NULL;
 
 		IGNORE_RETURN(m_pop->insertItem("Object Editing..."));
 
@@ -1992,7 +1992,7 @@ void GameWidget::onAddObjectBookmark()
 		if(obj == 0)
 		{
 			char buf [128];
-			IGNORE_RETURN(_snprintf(buf, 128, "Object with Network ID %d not found.\n", m_menuIds.objNetworkId));
+			IGNORE_RETURN(_snprintf(buf, 128, "Object with Network ID %d not found.\n", (int)m_menuIds.objNetworkId.getValue()));
 			IGNORE_RETURN(QMessageBox::warning(this, "Warning", buf));
 			return;
 		}

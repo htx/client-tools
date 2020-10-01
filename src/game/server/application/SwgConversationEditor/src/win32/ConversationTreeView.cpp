@@ -732,7 +732,7 @@ void ConversationTreeView::OnButtonDelete()
 			CString const name = GetTreeCtrl ().GetItemText (treeItem);
 
 			CString message;
-			message.Format ("Are you sure you want to delete %s?", name);
+			message.Format ("Are you sure you want to delete %s?", name.GetString());
 
 			if (MessageBox (message, 0, MB_YESNO) == IDYES)
 			{

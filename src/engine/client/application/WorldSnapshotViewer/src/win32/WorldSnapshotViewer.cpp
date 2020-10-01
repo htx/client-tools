@@ -101,6 +101,7 @@ BOOL WorldSnapshotViewerApp::InitInstance()
 	//-- install the engine
 	SetupSharedFoundation::Data engineSetupData(SetupSharedFoundation::Data::D_mfc);
 	engineSetupData.useWindowHandle  = false;
+	engineSetupData.configFile = "WorldSnapshotViewer.cfg";
 	SetupSharedFoundation::install(engineSetupData);
 
 	SetupSharedCompression::install();

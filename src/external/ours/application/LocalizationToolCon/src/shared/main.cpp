@@ -56,18 +56,18 @@ int runBatchMode(int argc, char ** argv)
 				const LocalizedStringTable::Map_t& map = table->getMap();
 				const LocalizedStringTable::NameMap_t& nameMap = table->getNameMap();
 
-				LocalizedStringTable::NameMap_t::const_iterator i;
-				LocalizedStringTable::Map_t::const_iterator j;
+				LocalizedStringTable::NameMap_t::const_iterator i2;
+				LocalizedStringTable::Map_t::const_iterator j2;
 
-				for (i = nameMap.begin(); i != nameMap.end(); ++i)
+				for (i2 = nameMap.begin(); i2 != nameMap.end(); ++i2)
 				{
-					j = map.find(i->second);
+					j2 = map.find(i2->second);
 
-					if (j != map.end())
+					if (j2 != map.end())
 					{
-						LocalizedString* str = j->second;
+						LocalizedString* str = j2->second;
 						Unicode::UTF8String s = Unicode::wideToUTF8(str->getString());
-						printf("%s -> %s\n", i->first.c_str(), s.c_str());
+						printf("%s -> %s\n", i2->first.c_str(), s.c_str());
 					}
 				}
 				break;
@@ -167,10 +167,10 @@ int runBatchMode(int argc, char ** argv)
 			std::string fixedFilename (arg);
 
 			const int len = static_cast<int>(fixedFilename.size ());
-			for (int i = 0; i <  len; ++i)
+			for (int m = 0; m <  len; ++m)
 			{
-				if (fixedFilename [i] == '\\')
-					fixedFilename [i] = '/';
+				if (fixedFilename [m] == '\\')
+					fixedFilename [m] = '/';
 			}
 
 

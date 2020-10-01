@@ -71,7 +71,7 @@ namespace TemplateNewDialogNamespace
 
 				std::string const cwd (_getcwd(buf, buf_size));
 				_chdir(tpfDirPath.c_str());
-				snprintf(buf, buf_size, "TemplateCompiler %s", tpfFileName);
+				snprintf(buf, buf_size, "TemplateCompiler %s", tpfFileName.c_str());
 				system(buf);
 				_chdir(cwd.c_str());
 			}
@@ -687,7 +687,7 @@ void TemplateNewDialog::updateTextFieldValidity()
 	//-- update new template field
 	{
 		std::string statusStr;
-		QPalette pal (m_lineEditNewTemplate->palette());
+		QPalette pal2 (m_lineEditNewTemplate->palette());
 		if (m_newTemplateValid)
 		{
 			if (m_creatingNewTemplate)
@@ -702,7 +702,7 @@ void TemplateNewDialog::updateTextFieldValidity()
 					break;
 				}
 				
-				pal.setColor(QColorGroup::Text, "blue");
+				pal2.setColor(QColorGroup::Text, "blue");
 			}
 			else
 			{
@@ -715,7 +715,7 @@ void TemplateNewDialog::updateTextFieldValidity()
 					statusStr = "Component template ALREADY EXISTS";
 					break;
 				}
-				pal.setColor(QColorGroup::Text, "red");
+				pal2.setColor(QColorGroup::Text, "red");
 			}
 		}
 		else
@@ -730,10 +730,10 @@ void TemplateNewDialog::updateTextFieldValidity()
 				break;
 			}
 			
-			pal.setColor(QColorGroup::Text, "red");
+			pal2.setColor(QColorGroup::Text, "red");
 		}
 		
-		m_lineEditNewTemplate->setPalette(pal);
+		m_lineEditNewTemplate->setPalette(pal2);
 		m_textLabelStatusNewTemplate->setText(QString(statusStr.c_str()));
 	}
 	
@@ -765,7 +765,7 @@ void TemplateNewDialog::updateTextFieldValidity()
 	//-- update base template field
 	{
 		std::string statusStr;
-		QPalette pal (m_lineEditBaseTemplate->palette());
+		QPalette pal3 (m_lineEditBaseTemplate->palette());
 		if (m_baseTemplateValid)
 		{
 			switch (m_mode)
@@ -777,7 +777,7 @@ void TemplateNewDialog::updateTextFieldValidity()
 				statusStr = "Using EXISTING component base template";
 				break;
 			}
-			pal.setColor(QColorGroup::Text, "black");
+			pal3.setColor(QColorGroup::Text, "black");
 		}
 		else
 		{
@@ -790,10 +790,10 @@ void TemplateNewDialog::updateTextFieldValidity()
 				statusStr = "INVALID name for new component base template";
 				break;
 			}
-			pal.setColor(QColorGroup::Text, "red");
+			pal3.setColor(QColorGroup::Text, "red");
 		}
 		
-		m_lineEditBaseTemplate->setPalette(pal);
+		m_lineEditBaseTemplate->setPalette(pal3);
 		m_textLabelStatusBaseTemplate->setText(QString(statusStr.c_str()));
 	}
 	
@@ -804,19 +804,19 @@ void TemplateNewDialog::updateTextFieldValidity()
 	//-- update shared template field
 	{
 		std::string statusStr;
-		QPalette pal (m_lineEditSharedTemplate->palette());
+		QPalette pal4 (m_lineEditSharedTemplate->palette());
 		QPalette palStatus (m_textLabelStatusSharedTemplate->palette());
 		if (m_sharedTemplateValid)
 		{
 			if (m_creatingSharedTemplate)
 			{
-				pal.setColor(QColorGroup::Text, "blue");
+				pal4.setColor(QColorGroup::Text, "blue");
 				palStatus.setColor(QColorGroup::Text, "blue");
 				statusStr = "Creating NEW shared Template";
 			}
 			else
 			{
-				pal.setColor(QColorGroup::Text, "black");
+				pal4.setColor(QColorGroup::Text, "black");
 				palStatus.setColor(QColorGroup::Text, "black");
 				statusStr = "Using EXISTING shared Template";
 			}
@@ -824,11 +824,11 @@ void TemplateNewDialog::updateTextFieldValidity()
 		else
 		{
 			palStatus.setColor(QColorGroup::Text, "red");
-			pal.setColor(QColorGroup::Text, "red");
+			pal4.setColor(QColorGroup::Text, "red");
 			statusStr = "INVALID Name for shared Template";
 		}
 		
-		m_lineEditSharedTemplate->setPalette(pal);
+		m_lineEditSharedTemplate->setPalette(pal4);
 		
 		m_textLabelStatusSharedTemplate->setPalette(palStatus);
 		m_textLabelStatusSharedTemplate->setText(QString(statusStr.c_str()));
@@ -866,19 +866,19 @@ void TemplateNewDialog::updateTextFieldValidity()
 	//-- update shared base template field
 	{
 		std::string statusStr;
-		QPalette pal (m_lineEditSharedBaseTemplate->palette());
+		QPalette pal5 (m_lineEditSharedBaseTemplate->palette());
 		if (m_sharedBaseTemplateValid)
 		{
 			statusStr = "Using EXISTING shared base template";
-			pal.setColor(QColorGroup::Text, "black");
+			pal5.setColor(QColorGroup::Text, "black");
 		}
 		else
 		{
 			statusStr = "INVALID name for shared base template";
-			pal.setColor(QColorGroup::Text, "red");
+			pal5.setColor(QColorGroup::Text, "red");
 		}
 		
-		m_lineEditSharedBaseTemplate->setPalette(pal);
+		m_lineEditSharedBaseTemplate->setPalette(pal5);
 		m_textLabelStatusSharedBaseTemplate->setText(QString(statusStr.c_str()));
 		
 	}

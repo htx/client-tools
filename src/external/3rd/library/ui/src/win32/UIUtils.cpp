@@ -297,7 +297,7 @@ bool UIUtils::ParseColorARGB( const UIString &s, UIColor &out )
 
 	++i;
 
-	for( ; isspace(*i) && (i != s.end()); ++i )
+	for( ; (i != s.end() && isspace(*i) ); ++i )
 		;
 
 	if( i != s.end() )	// gunk on the end of the string

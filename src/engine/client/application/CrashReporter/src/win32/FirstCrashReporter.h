@@ -11,7 +11,7 @@
 
 // ======================================================================
 
-#define _WIN32_WINNT 0x0501
+#define _WIN32_WINNT 0x0503
 
 #include <windows.h>
 
@@ -20,23 +20,5 @@
 
 #pragma warning (disable: 4786)
 #pragma warning (disable: 4702)
-
-// ======================================================================
-
-/* These are needed to allow this non-engine app to link with our engine-bound stl libs
- */
-// <hack>
-enum MemoryManagerNotALeak
-{
-	MM_notALeak
-};
-
-void *operator new(size_t size, MemoryManagerNotALeak)
-{
-	return operator new(size);
-}
-// </hack>
-
-// ======================================================================
 
 #endif

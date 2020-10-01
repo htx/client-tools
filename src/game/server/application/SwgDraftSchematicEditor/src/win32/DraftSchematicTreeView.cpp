@@ -302,7 +302,7 @@ void DraftSchematicTreeView::OnTreeDelete()
 				else
 				{
 					CString message;
-					message.Format ("Are you sure you want to delete %s?", itemData->getName ());
+					message.Format ("Are you sure you want to delete %s?", itemData->getName().GetString());
 
 					if (MessageBox (message, 0, MB_YESNO) == IDYES)
 					{

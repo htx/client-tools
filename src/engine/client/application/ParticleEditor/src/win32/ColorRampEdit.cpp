@@ -85,7 +85,7 @@ class TableItemColor : public QTableItem
 {
 public:
 
-	TableItemColor(QTable *table, EditType editType, int const red, int const green, int const blue);
+	TableItemColor(QTable *table, EditType editType, int const red2, int const green2, int const blue2);
 
 	virtual void paint(QPainter *painter, QColorGroup const &colorGroup, QRect const &rect, bool selected);
 
@@ -102,11 +102,11 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-TableItemColor::TableItemColor(QTable *table, EditType editType, int const red, int const green, int const blue)
+TableItemColor::TableItemColor(QTable *table, EditType editType, int const red2, int const green2, int const blue2)
  : QTableItem(table, editType, "")
- , m_red(red)
- , m_green(green)
- , m_blue(blue)
+ , m_red(red2)
+ , m_green(green2)
+ , m_blue(blue2)
 {
 }
 
@@ -570,11 +570,11 @@ void ColorRampEdit::mouseMoveEvent(QMouseEvent *mouseEvent)
 				// Some handle is selected so lets move it
 
 				float const percent = (m_colorRampFrame->getViewPortRectGlobal().width() < 0) ? 0.0f : (static_cast<float>(mouseEvent->globalPos().x() - m_colorRampFrame->getViewPortRectGlobal().left()))  / (static_cast<float>(m_colorRampFrame->getViewPortRectGlobal().width() - 1));
-				float const red = m_selectedControlPoint->getRed();
-				float const green = m_selectedControlPoint->getGreen();
-				float const blue = m_selectedControlPoint->getBlue();
+				float const red3 = m_selectedControlPoint->getRed();
+				float const green3 = m_selectedControlPoint->getGreen();
+				float const blue3 = m_selectedControlPoint->getBlue();
 
-				ColorRampControlPoint controlPoint(percent, red, green, blue);
+				ColorRampControlPoint controlPoint(percent, red3, green3, blue3);
 				m_colorRamp.setControlPoint(m_selectedControlPoint, controlPoint);
 
 				// Let things know the color ramp changed but a rebuild is not
@@ -657,12 +657,12 @@ void ColorRampEdit::drawColorRamp(QPainter &painter, ColorRamp const &colorRamp,
 			{
 				float const percent = static_cast<float>(x) / static_cast<float>(destRect.width() - 1);
 	
-				float red;
-				float green;
-				float blue;
+				float red4;
+				float green4;
+				float blue4;
 	
-				colorRamp.getColorAtPercent(percent, red, green, blue);
-				painter.setPen(QColor(static_cast<int>(255.0f * red), static_cast<int>(255.0f * green), static_cast<int>(255.0f * blue)));
+				colorRamp.getColorAtPercent(percent, red4, green4, blue4);
+				painter.setPen(QColor(static_cast<int>(255.0f * red4), static_cast<int>(255.0f * green4), static_cast<int>(255.0f * blue4)));
 				painter.drawLine(destRect.left() + x, destRect.top(), destRect.left() + x, destRect.bottom());
 			}
 		}
@@ -952,11 +952,11 @@ void ColorRampEdit::openColorDialog()
 	if (resultColor.isValid())
 	{
 		float const percent = m_anchoredControlPoint->getPercent();
-		float const red = (static_cast<float>(resultColor.red())) / 255.0f;
-		float const green = (static_cast<float>(resultColor.green())) / 255.0f;
-		float const blue = (static_cast<float>(resultColor.blue())) / 255.0f;
+		float const red5 = (static_cast<float>(resultColor.red())) / 255.0f;
+		float const green5 = (static_cast<float>(resultColor.green())) / 255.0f;
+		float const blue5 = (static_cast<float>(resultColor.blue())) / 255.0f;
 
-		*m_anchoredControlPoint = ColorRampControlPoint(percent, red, green, blue);
+		*m_anchoredControlPoint = ColorRampControlPoint(percent, red5, green5, blue5);
 	}
 
 	emitColorRampChanged(m_colorRamp, m_alphaWaveForm, true);
@@ -993,18 +993,18 @@ void ColorRampEdit::slotColorTableValueChanged(int row, int col)
 				// Get the new control point values
 
 				float const percent = atof(m_colorTable->text(index, 0)) / 100.0f;
-				float const red = atof(m_colorTable->text(index, 1)) / 255.0f;
-				float const green = atof(m_colorTable->text(index, 2)) / 255.0f;
-				float const blue = atof(m_colorTable->text(index, 3)) / 255.0f;
+				float const red6 = atof(m_colorTable->text(index, 1)) / 255.0f;
+				float const green6 = atof(m_colorTable->text(index, 2)) / 255.0f;
+				float const blue6 = atof(m_colorTable->text(index, 3)) / 255.0f;
 
 				// Make sure the values actually changed
 
 				if ((iterControlPointList->getPercent() != percent) ||
-				    (iterControlPointList->getRed() != red) ||
-					(iterControlPointList->getGreen() != green) ||
-					(iterControlPointList->getBlue() != blue))
+				    (iterControlPointList->getRed() != red6) ||
+					(iterControlPointList->getGreen() != green6) ||
+					(iterControlPointList->getBlue() != blue6))
 				{
-					m_colorRamp.setControlPoint(iterControlPointList, ColorRampControlPoint(percent, red, green, blue));
+					m_colorRamp.setControlPoint(iterControlPointList, ColorRampControlPoint(percent, red6, green6, blue6));
 
 					emitColorRampChanged(m_colorRamp, m_alphaWaveForm, true);
 				}
@@ -1099,15 +1099,15 @@ void ColorRampEdit::setColorTable(ColorRamp const &colorRamp)
 	for (; iterColorRampControlPoint != colorRamp.getIteratorEnd(); ++iterColorRampControlPoint)
 	{
 		int const percent = static_cast<int>(iterColorRampControlPoint->getPercent() * 100.0f);
-		int const red = static_cast<int>(iterColorRampControlPoint->getRed() * 255.0f);
-		int const green = static_cast<int>(iterColorRampControlPoint->getGreen() * 255.0f);
-		int const blue = static_cast<int>(iterColorRampControlPoint->getBlue() * 255.0f);
+		int const red7 = static_cast<int>(iterColorRampControlPoint->getRed() * 255.0f);
+		int const green7 = static_cast<int>(iterColorRampControlPoint->getGreen() * 255.0f);
+		int const blue7 = static_cast<int>(iterColorRampControlPoint->getBlue() * 255.0f);
 
 		m_colorTable->setItem(row, 0, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(percent), 0, 100));
-		m_colorTable->setItem(row, 1, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(red), 0, 255));
-		m_colorTable->setItem(row, 2, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(green), 0, 255));
-		m_colorTable->setItem(row, 3, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(blue), 0, 255));
-		m_colorTable->setItem(row, 4, new TableItemColor(m_colorTable, QTableItem::Never, red, green, blue));
+		m_colorTable->setItem(row, 1, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(red7), 0, 255));
+		m_colorTable->setItem(row, 2, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(green7), 0, 255));
+		m_colorTable->setItem(row, 3, new TableItemInt(m_colorTable, QTableItem::WhenCurrent, QString::number(blue7), 0, 255));
+		m_colorTable->setItem(row, 4, new TableItemColor(m_colorTable, QTableItem::Never, red7, green7, blue7));
 		++row;
 	}
 }

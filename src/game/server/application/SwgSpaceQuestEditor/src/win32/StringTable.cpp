@@ -119,8 +119,8 @@ bool StringTable::save(char const * const fileName) const
 	LocalizedStringTableRW stringTable("temp");
 
 	{
-		typedef std::vector<std::pair<std::string, std::string> > StringList;
-		StringList stringList;
+		typedef std::vector<std::pair<std::string, std::string> > StringList2;
+		StringList2 stringList;
 
 		{
 			StringMap::const_iterator end = m_stringMap.end();
@@ -131,8 +131,8 @@ bool StringTable::save(char const * const fileName) const
 		{
 			int id = 0;
 
-			StringList::const_iterator end = stringList.end();
-			for (StringList::const_iterator iter = stringList.begin(); iter != end; ++iter)
+			StringList2::const_iterator end = stringList.end();
+			for (StringList2::const_iterator iter = stringList.begin(); iter != end; ++iter)
 			{
 				std::string result;
 				stringTable.addString(new LocalizedString(++id, 0, Unicode::narrowToWide(iter->second)), iter->first, result);

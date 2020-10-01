@@ -178,7 +178,7 @@ const CString FractalView::createUniqueFamilyName (const CString* base) const
 
 	if (base)
 	{
-		familyName.Format ("%s", *base);
+		familyName.Format ("%s", *base->GetString());
 	}
 	else
 	{

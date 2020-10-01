@@ -381,7 +381,7 @@ void DefaultObjectPropertiesManager::SaveTo( FILE *fp )
 	for( DefaultObjectPropertiesList::iterator i = mDefaultObjectProperties.begin();
 	     i != mDefaultObjectProperties.end(); ++i )
 	{
-		fprintf( fp, "<%s>\n", i->TypeName );
+		fprintf( fp, "<%s>\n", i->TypeName.c_str() );
 
 		for( StringMap::iterator j = i->Properties.begin(); j != i->Properties.end(); ++j )
 		{
@@ -391,7 +391,7 @@ void DefaultObjectPropertiesManager::SaveTo( FILE *fp )
 			fprintf( fp, "'%s' = '%s'\n", name.c_str (), value.c_str ());
 		}
 
-		fprintf( fp, "</%s>\n", i->TypeName );
+		fprintf( fp, "</%s>\n", i->TypeName.c_str() );
 	}
 
 	fprintf( fp, "</DefaultObjectPropertiesManager>\n" );

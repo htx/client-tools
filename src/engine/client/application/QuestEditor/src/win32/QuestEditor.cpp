@@ -240,10 +240,10 @@ void QuestEditor::saveAs()
 		
 		if (QFile::exists(path.c_str()))
 		{
-			int result = QMessageBox::warning(this, "File exists!", "Do you want to overwrite?",
+			int result2 = QMessageBox::warning(this, "File exists!", "Do you want to overwrite?",
 				QMessageBox::Yes, QMessageBox::No);
 
-			if (result == QMessageBox::No)
+			if (result2 == QMessageBox::No)
 				return;
 		}
 
@@ -306,9 +306,9 @@ void QuestEditor::rmbClicked(QListViewItem *i, const QPoint& pos)
 
 			QDomNodeList tasks = editor.elementsByTagName(cs_Task);
 
-			for (uint i=0; i<tasks.count(); ++i)
+			for (uint k=0; k<tasks.count(); ++k)
 			{
-				QDomElement task = tasks.item(i).toElement();
+				QDomElement task = tasks.item(k).toElement();
 				QString icon = QuestEditorConfig::getFileAttribute(task, cs_Icon);
 				int id = taskMenu.insertItem(QIconSet(QPixmap(icon)), task.attribute(cs_Type));
 
@@ -898,7 +898,7 @@ void QuestEditor::slotCurrentChanged(QListViewItem * current)
 		QDomElement task = i->getNode().toElement();
 		m_taskPropertyEditor->setTask(task);
 
-		DEBUG_REPORT_LOG(false, ("QuestEditor::slotCurrentChanged() - [%s]\n", task.attribute(cs_Type)));
+		DEBUG_REPORT_LOG(false, ("QuestEditor::slotCurrentChanged() - [%s]\n", (task.attribute(cs_Type)).ascii()));
 	}
 	else
 	{

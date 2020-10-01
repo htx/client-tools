@@ -133,7 +133,8 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy debug dll</Message>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
@@ -188,7 +189,8 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy optimized dll</Message>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\optimized\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -246,7 +248,8 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copy production dll</Message>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

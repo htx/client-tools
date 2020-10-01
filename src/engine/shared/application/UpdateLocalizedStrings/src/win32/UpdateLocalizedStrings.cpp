@@ -83,8 +83,8 @@ bool UpdateLocalizedStringsNamespace::updateCrcs(char const * const baseFileEngl
 	//-- Since the source file may change when loaded, go ahead and save it out anyway.  Let Perforce iron out the real changes
 	if (currentStringFile->getVersion() < s_latestVersion)
 	{
-		StdioFileFactory fileFactoryCurrent;
-		if (!currentStringFile->writeRW(fileFactoryCurrent, std::string(currentFileEnglish)))
+		StdioFileFactory fileFactoryCurrent2;
+		if (!currentStringFile->writeRW(fileFactoryCurrent2, std::string(currentFileEnglish)))
 			DEBUG_WARNING(true, ("Could not write %s", currentFileEnglish));
 	}
 

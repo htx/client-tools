@@ -853,10 +853,10 @@ bool LocalizationTool::doFileSaveAs (int index)
 		{
 			fclose (fl);
 			
-			int result = QMessageBox::warning (this, "Overwrite file?", "The specified file already exists.\nOverwrite?", "Overwrite", "Don't Overwrite", "Cancel", 0, 2);
+			int result2 = QMessageBox::warning (this, "Overwrite file?", "The specified file already exists.\nOverwrite?", "Overwrite", "Don't Overwrite", "Cancel", 0, 2);
 			
-			if (result == 2 ||  //-- cancel
-				result == 1)    //-- don't overwrite
+			if (result2 == 2 ||  //-- cancel
+				result2 == 1)    //-- don't overwrite
 			{
 				saveFile = false;
 			}

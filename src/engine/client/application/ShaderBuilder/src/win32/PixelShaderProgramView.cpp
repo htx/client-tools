@@ -234,7 +234,7 @@ bool CPixelShaderProgramView::CompileAsm()
 	if (!m_pixelShaderProgramNode->Save())
 	{
 		char buffer[1024];
-		sprintf(buffer, "Save failed %s (%d)", m_pixelShaderProgramNode->m_absoluteFileName, m_pixelShaderProgramNode->m_compiledIndex);
+		sprintf(buffer, "Save failed %s (%d)", m_pixelShaderProgramNode->m_absoluteFileName.GetString(), m_pixelShaderProgramNode->m_compiledIndex);
 		m_error.SetWindowText(buffer);
 		return false;
 	}
@@ -409,7 +409,7 @@ bool CPixelShaderProgramView::CompileHlsl()
 	if (!m_pixelShaderProgramNode->Save())
 	{
 		char buffer[1024];
-		sprintf(buffer, "Save failed %s (%d)", m_pixelShaderProgramNode->m_absoluteFileName, m_pixelShaderProgramNode->m_compiledIndex);
+		sprintf(buffer, "Save failed %s (%d)", m_pixelShaderProgramNode->m_absoluteFileName.GetString(), m_pixelShaderProgramNode->m_compiledIndex);
 		m_error.SetWindowText(buffer);
 		return false;
 	}

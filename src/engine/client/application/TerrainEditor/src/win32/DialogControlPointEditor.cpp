@@ -282,10 +282,10 @@ void DialogControlPointEditor::OnDblclkListControlPoints(NMHDR* /*pNMHDR*/, LRES
 				m_listCtrl.SetItemText (item, 0, sx);
 				m_listCtrl.SetItemText (item, 1, sz);
 
-				CString sHeight;
-				float height = dlg.getHeight();
-				sHeight.Format(numericFormatString, height);
-				m_listCtrl.SetItemText (item, 2, sHeight);
+				CString sHeight2;
+				float height2 = dlg.getHeight();
+				sHeight2.Format(numericFormatString, height2);
+				m_listCtrl.SetItemText (item, 2, sHeight2);
 				
 			}
 		}

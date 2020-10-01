@@ -191,7 +191,7 @@ void CNewTreeListCtrl::RecalcHeaderPosition()
 
 		if(GetColumnsWidth() > m_clientRect.Width())
 		{
-			int m_nOffset = m_clientRect.Width() - GetColumnsWidth();
+			int m_nOffset2 = m_clientRect.Width() - GetColumnsWidth();
 
 			CTLFrame *pFrame = (CTLFrame *)GetParent();
 			CRect m_wndRect;
@@ -199,7 +199,7 @@ void CNewTreeListCtrl::RecalcHeaderPosition()
 			CRect m_headerRect;
 			m_wndHeader.GetClientRect(&m_headerRect);
 
-			m_wndHeader.SetWindowPos(&wndTop, m_nOffset, 0, max(pFrame->StretchWidth(GetColumnsWidth(),m_clientRect.Width()),m_wndRect.Width()), m_headerRect.Height(), SWP_SHOWWINDOW);
+			m_wndHeader.SetWindowPos(&wndTop, m_nOffset2, 0, max(pFrame->StretchWidth(GetColumnsWidth(),m_clientRect.Width()),m_wndRect.Width()), m_headerRect.Height(), SWP_SHOWWINDOW);
 		}
 	}
 }

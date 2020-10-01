@@ -85,8 +85,8 @@ void SoundDebugInformationWidget::slot3dProviderComboBoxActivated(const QString 
 
 	if (currentProvider != newProvider)
 	{
-		QString text("WARNING: Unable to set 3d sound provider: " + newProvider);
-		SoundEditorUtility::report(text);
+		QString text2("WARNING: Unable to set 3d sound provider: " + newProvider);
+		SoundEditorUtility::report(text2);
 	}
 
 	m_roomTypeComboBox->setEnabled(Audio::isRoomTypeSupported());

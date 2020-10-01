@@ -7,6 +7,7 @@
 
 #pragma warning (disable:4275) // non dll-interface class 'QPtrVector<class QConnectionList>' used as base for dll-interface class 'QSignalVec'
 #pragma warning (disable:4800) // 'unsigned char' : forcing value to bool 'true' or 'false' (performance warning)
+#pragma warning (disable:4099)
 
 #include "../../../../../../engine/shared/library/sharedFoundation/include/public/sharedFoundation/FirstSharedFoundation.h"
 #include "sharedMessageDispatch/Emitter.h"

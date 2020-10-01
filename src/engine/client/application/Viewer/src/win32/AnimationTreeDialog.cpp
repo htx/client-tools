@@ -63,7 +63,7 @@ END_MESSAGE_MAP()
 
 //-------------------------------------------------------------------
 
-static enum DirectoryIconList
+enum DirectoryIconList
 {
 	DIL_unknown,
 	DIL_closedFolder,

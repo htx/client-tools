@@ -110,7 +110,7 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Configuration)\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -166,7 +166,7 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Configuration)\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

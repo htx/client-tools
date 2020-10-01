@@ -119,11 +119,11 @@ BOOL SwgSpaceQuestEditorApp::InitInstance()
 		char buffer[1024];
 		if (GetCurrentDirectory(1024, buffer) != 0)
 		{
-			CString temp(buffer);
+			/*CString temp(buffer);
 			temp.Remove('/');
 			temp.Remove('\\');
 			if (temp.Find("exewin32") == -1)
-				AfxMessageBox ("SwgSpaceQuestEditor is not running from <branch>\\exe\\win32.  You may be running an older version.");
+				AfxMessageBox ("SwgSpaceQuestEditor is not running from <branch>\\exe\\win32.  You may be running an older version.");*/
 		}
 
 		//-- Load ini file

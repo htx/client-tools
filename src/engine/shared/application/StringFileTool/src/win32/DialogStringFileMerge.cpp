@@ -153,7 +153,7 @@ BOOL DialogStringFileMerge::OnInitDialog()
 	//-- Add columns to list ctrl
 	IGNORE_RETURN(m_imageList.Create(IDB_BITMAP_ICONS, 16, 5, RGB(255,255,255)));
 	IGNORE_RETURN(GetListCtrl().SetImageList(&m_imageList, LVSIL_SMALL));
-	IGNORE_RETURN(GetListCtrl().InsertColumn(0, Unicode::narrowToWide("StringId").c_str(), LVCFMT_LEFT, 256, 0));
+	IGNORE_RETURN(GetListCtrl().InsertColumn(0, (LPCTSTR)Unicode::narrowToWide("StringId").c_str(), LVCFMT_LEFT, 256, 0));
 
 	//-- Populate list ctrl
 	populate();
@@ -312,7 +312,7 @@ void DialogStringFileMerge::populate()
 			if (iter->second->getIconType() == StringFileTool::IT_merged)
 				m_mergedStringTable.setString(iter->first, iter->second->m_merged);
 			else
-				GetListCtrl().InsertItem(GetListCtrl().GetItemCount(), Unicode::narrowToWide(iter->first).c_str(), iter->second->getIconType()); 
+				GetListCtrl().InsertItem(GetListCtrl().GetItemCount(), (LPCTSTR)Unicode::narrowToWide(iter->first).c_str(), iter->second->getIconType()); 
 
 			delete iter->second;
 		}

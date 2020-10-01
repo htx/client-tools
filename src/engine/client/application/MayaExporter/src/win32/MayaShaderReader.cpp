@@ -272,9 +272,9 @@ bool MayaShaderReader::_getChannelTextures(
 
 		//convert the texture from a fully-pathed file to texture\<filename>.dds
 		char textureBaseName[128];
-		bool result;
-		result = MayaUtility::stripBaseName(filename.c_str(), textureBaseName, sizeof (textureBaseName), '/');
-		MESSENGER_REJECT (!result, ("failed to strip base name from shader group texture filename \"%s\"\n", filename.c_str()));
+		bool result2;
+		result2 = MayaUtility::stripBaseName(filename.c_str(), textureBaseName, sizeof (textureBaseName), '/');
+		MESSENGER_REJECT (!result2, ("failed to strip base name from shader group texture filename \"%s\"\n", filename.c_str()));
 		std::string textureRelativeName =  i_textureReferenceDirectory;
 			         textureRelativeName += textureBaseName;
 			         textureRelativeName += ".dds";

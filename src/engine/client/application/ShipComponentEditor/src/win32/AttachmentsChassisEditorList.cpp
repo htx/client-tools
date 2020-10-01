@@ -43,13 +43,13 @@ namespace AttachmentsChassisEditorListNamespace
 			QColorGroup g (cg);
 			
 			QColor const & normalBase = g.base();
-			QColor const yellow(255, 200, 0); //lint !e578 //hides Qt:: member
-			QColor const myBaseYellow((normalBase.red() * 3 + yellow.red()) / 4, (normalBase.green() * 3 + yellow.green()) / 4, (normalBase.blue() * 3 + yellow.blue()) / 4);
-			QColor const green(0, 255, 0); //lint !e578 //hides Qt:: member
-			QColor const myBaseGreen((normalBase.red() * 3 + green.red()) / 4, (normalBase.green() * 3 + green.green()) / 4, (normalBase.blue() * 3 + green.blue()) / 4);
+			QColor const yellow2(255, 200, 0); //lint !e578 //hides Qt:: member
+			QColor const myBaseYellow((normalBase.red() * 3 + yellow2.red()) / 4, (normalBase.green() * 3 + yellow2.green()) / 4, (normalBase.blue() * 3 + yellow2.blue()) / 4);
+			QColor const green2(0, 255, 0); //lint !e578 //hides Qt:: member
+			QColor const myBaseGreen((normalBase.red() * 3 + green2.red()) / 4, (normalBase.green() * 3 + green2.green()) / 4, (normalBase.blue() * 3 + green2.blue()) / 4);
 
-			QColor const blue(0, 100, 255); //lint !e578 //hides Qt:: member
-			QColor const myBaseBlue((normalBase.red() * 3 + blue.red()) / 4, (normalBase.green() * 3 + blue.green()) / 4, (normalBase.blue() * 3 + blue.blue()) / 4);
+			QColor const blue2(0, 100, 255); //lint !e578 //hides Qt:: member
+			QColor const myBaseBlue((normalBase.red() * 3 + blue2.red()) / 4, (normalBase.green() * 3 + blue2.green()) / 4, (normalBase.blue() * 3 + blue2.blue()) / 4);
 
 			if (0 != m_count)
 			{

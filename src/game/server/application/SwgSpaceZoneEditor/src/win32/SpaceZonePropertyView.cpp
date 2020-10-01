@@ -227,7 +227,7 @@ LONG SpaceZonePropertyView::OnPropertyChanged(UINT const hiControlId_loItemChang
 			{
 				CString value;
 				if (!m_properties->getProperty(itemChanged, value))
-					FATAL(true, ("getProperty failed for property key=%s, value=%s\n", key, value));
+					FATAL(true, ("getProperty failed for property key=%s, value=%s\n", key.GetString(), value.GetString()));
 
 				CString const currentValue = m_object->getObjVar(key);
 				if (currentValue != value)
@@ -337,7 +337,7 @@ void SpaceZonePropertyView::OnUpdate(CView * const pSender, LPARAM const lHint, 
 							CString const & propertyToolTip = propertyTemplate.m_toolTipText;
 
 							if (!m_properties->addString(propertyName, propertyType, propertyData, propertyToolTip, propertySelection, DT_RIGHT, FALSE, FALSE))
-								FATAL(true, ("AddString failed for property name=%s, type=%i, data=%s, selection=%i\n", propertyName, propertyType, propertyData, propertySelection));
+								FATAL(true, ("AddString failed for property name=%s, type=%i, data=%s, selection=%i\n", propertyName.GetString(), propertyType, propertyData.GetString(), propertySelection));
 						}
 					}
 

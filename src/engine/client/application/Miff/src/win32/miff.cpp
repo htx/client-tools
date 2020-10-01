@@ -30,6 +30,8 @@
 //
 //===========================================================================
 
+#pragma warning (disable : 4996)
+
 //========================================================== include files ==
 #include "sharedFoundation/FirstSharedFoundation.h"
 
@@ -173,7 +175,7 @@ extern "C" void MIFFSetError(void);
 extern "C" void MIFFSetIFFName(const char *newFileName);
 extern "C" void MIFFinsertForm(const char *formName);
 extern "C" void MIFFinsertChunk(const char *chunkName);
-extern "C" void MIFFinsertChunkData(void * buffer, unsigned bufferSize);
+extern "C" void MIFFinsertChunkData(void * buffer, unsigned bufferSize2);
 extern "C" int  MIFFloadRawData(char *fname, void * buffer, unsigned maxBufferSize);
 extern "C" void MIFFexitChunk(void);
 extern "C" void MIFFexitForm(void);
@@ -892,13 +894,13 @@ extern "C" void MIFFinsertChunk(const char *chunkName)
 		outfileHandler->insertChunk(chunkName);
 }	
 
-extern "C" void MIFFinsertChunkData(void * buffer, unsigned bufferSize)
+extern "C" void MIFFinsertChunkData(void * buffer, unsigned bufferSize2)
 {
 	if (ERR_NONE != errorFlag)
 		return;
 		
 	if (outfileHandler)
-		outfileHandler->insertChunkData(buffer, bufferSize);
+		outfileHandler->insertChunkData(buffer, bufferSize2);
 }	
 
 extern "C" int MIFFloadRawData(char *fname, void * buffer, unsigned maxBufferSize)
@@ -908,16 +910,16 @@ extern "C" int MIFFloadRawData(char *fname, void * buffer, unsigned maxBufferSiz
 	if (ERR_NONE != errorFlag)
 		return(sizeRead);		// should be -1
 		
-	InputFileHandler * inFileName = new InputFileHandler(fname);
-	if (inFileName)
+	InputFileHandler * inFileName2 = new InputFileHandler(fname);
+	if (inFileName2)
 	{
-		sizeRead = inFileName->read(buffer, maxBufferSize);
+		sizeRead = inFileName2->read(buffer, maxBufferSize);
 		if (static_cast<unsigned>(sizeRead) >= maxBufferSize)
 		{
 			handleError(ERR_BUFFERTOOSMALL);
 			sizeRead = -1;
 		}
-		delete inFileName;
+		delete inFileName2;
 	}
 
 	return(sizeRead);

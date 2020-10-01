@@ -35,7 +35,7 @@ bool IdleTextListItem::modifyCandidateText(std::string &candidateText) const
 		return false;
 
 	//-- Convert string to lower case (we only support lower case).
-	std::transform(candidateText.begin(), candidateText.end(), candidateText.begin(), tolower);
+	std::transform(candidateText.begin(), candidateText.end(), candidateText.begin(), [](char c){return static_cast<unsigned char>(std::tolower(c));});
 
 	//-- Allow it to pass.
 	return true;

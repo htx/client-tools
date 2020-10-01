@@ -10,7 +10,7 @@
 #include "CoreWeaponExporterTool.h"
 
 #include "ConfigCoreWeaponExporterTool.h"
-#include "serverGame/ServerObjectTemplate.h"
+#include "sharedTemplate/ServerObjectTemplate.h"
 #include "sharedCompression/SetupSharedCompression.h"
 #include "sharedDebug/SetupSharedDebug.h"
 #include "sharedFile/FileNameUtils.h"

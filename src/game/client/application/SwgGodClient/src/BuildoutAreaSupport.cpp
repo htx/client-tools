@@ -208,7 +208,7 @@ void BuildoutAreaSupport::getBuildoutAreaList(std::string const &sceneName, std:
 					if (!found)
 					{
 						areaNames.push_back(name);
-						areaLocations.push_back();
+						areaLocations.emplace_back();
 						areaStatuses.push_back("Inactive");
 					}
 				}
@@ -241,7 +241,7 @@ void BuildoutAreaSupport::getBuildoutAreaList(std::string const &sceneName, std:
 					if (!found)
 					{
 						areaNames.push_back(name);
-						areaLocations.push_back();
+						areaLocations.emplace_back();
 						areaStatuses.push_back("New+Inactive");
 					}
 				}
@@ -274,7 +274,7 @@ void BuildoutAreaSupport::getBuildoutAreaList(std::string const &sceneName, std:
 					if (!found)
 					{
 						areaNames.push_back(name);
-						areaLocations.push_back();
+						areaLocations.emplace_back();
 						areaStatuses.push_back("Edit+Inactive");
 					}
 				}
@@ -312,7 +312,7 @@ void BuildoutAreaSupport::getBuildoutAreaList(std::string const &sceneName, std:
 				if (!found)
 				{
 					areaNames.push_back(name);
-					areaLocations.push_back();
+					areaLocations.emplace_back();
 					areaStatuses.push_back("Inactive");
 				}
 			}
@@ -519,31 +519,31 @@ void BuildoutAreaSupport::saveBuildoutArea(std::string const &areaName)
 			
 			// save the server rows
 			{
-				for (std::vector<ServerBuildoutAreaRow>::const_iterator i = serverRows.begin(); i != serverRows.end(); ++i)
+				for (std::vector<ServerBuildoutAreaRow>::const_iterator it = serverRows.begin(); it != serverRows.end(); ++it)
 				{
-					ConstCharCrcString const &serverTemplateName = getServerTemplateName((*i).serverTemplateCrc);
+					ConstCharCrcString const &serverTemplateName = getServerTemplateName((*it).serverTemplateCrc);
 					char buf[512];
 					IGNORE_RETURN(snprintf(buf, sizeof(buf)-1, "%d\t%d\t%s\t%d\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t",
-						(*i).id,
-						(*i).container,
+						(*it).id,
+						(*it).container,
 						serverTemplateName.getString(),
-						(*i).cellIndex,
-						(*i).position.x, (*i).position.y, (*i).position.z,
-						(*i).orientation.w, (*i).orientation.x, (*i).orientation.y, (*i).orientation.z));
+						(*it).cellIndex,
+						(*it).position.x, (*it).position.y, (*it).position.z,
+						(*it).orientation.w, (*it).orientation.x, (*it).orientation.y, (*it).orientation.z));
 					buf[sizeof(buf)-1] = '\0';
-					std::string::size_type index = (*i).objvars.find("eventRequired");
+					std::string::size_type index = (*it).objvars.find("eventRequired");
 
 					if(index != std::string::npos )
 					{
-						std::string::size_type eventSubStringStart = (*i).objvars.find("|", index );
+						std::string::size_type eventSubStringStart = (*it).objvars.find("|", index );
 						if(eventSubStringStart == std::string::npos)
 							continue; //Malformed event obj var. TODO: Warning goes here!
 
-						eventSubStringStart = (*i).objvars.find("|", eventSubStringStart + 1);
+						eventSubStringStart = (*it).objvars.find("|", eventSubStringStart + 1);
 
-						std::string::size_type eventSubStringEnd = (*i).objvars.find("|", eventSubStringStart + 1);
+						std::string::size_type eventSubStringEnd = (*it).objvars.find("|", eventSubStringStart + 1);
 
-						std::string eventName = (*i).objvars.substr(eventSubStringStart + 1, (eventSubStringEnd - 1) - eventSubStringStart );
+						std::string eventName = (*it).objvars.substr(eventSubStringStart + 1, (eventSubStringEnd - 1) - eventSubStringStart );
 
 						DEBUG_WARNING(true, ("Found an Event Object! Event Name [%s]", eventName.c_str()));
 			
@@ -553,7 +553,7 @@ void BuildoutAreaSupport::saveBuildoutArea(std::string const &areaName)
 						if(eventIter == serverEventObjectMap.end())
 						{
 							std::pair<std::map<std::string, std::vector<std::string>>::iterator, bool> insertIter;
-							insertIter = serverEventObjectMap.insert(std::make_pair<std::string, std::vector<std::string>>(eventName, std::vector<std::string>()));
+							insertIter = serverEventObjectMap.insert(std::make_pair(eventName, std::vector<std::string>()));
 							if(insertIter.second)
 								eventList = &(*insertIter.first).second;
 						}
@@ -562,9 +562,9 @@ void BuildoutAreaSupport::saveBuildoutArea(std::string const &areaName)
 
 						std::string objectOutputString;
 						objectOutputString.append(buf);
-						objectOutputString.append((*i).scripts);
+						objectOutputString.append((*it).scripts);
 						objectOutputString.append("\t", 1);
-						objectOutputString.append((*i).objvars);
+						objectOutputString.append((*it).objvars);
 						objectOutputString.append("\n", 1);
 						
 						if(eventList)
@@ -574,29 +574,29 @@ void BuildoutAreaSupport::saveBuildoutArea(std::string const &areaName)
 					}
 
 					serverOutputFile.write(strlen(buf), buf);
-					serverOutputFile.write((*i).scripts.length(), (*i).scripts.c_str());
+					serverOutputFile.write((*it).scripts.length(), (*it).scripts.c_str());
 					serverOutputFile.write(1, "\t");
-					serverOutputFile.write((*i).objvars.length(), (*i).objvars.c_str());
+					serverOutputFile.write((*it).objvars.length(), (*it).objvars.c_str());
 					serverOutputFile.write(1, "\n");
 				}
 			}
 			
 			// save the client rows
 			{
-				for (std::vector<ClientBuildoutAreaRow>::const_iterator i = clientRows.begin(); i != clientRows.end(); ++i)
+				for (std::vector<ClientBuildoutAreaRow>::const_iterator it2 = clientRows.begin(); it2 != clientRows.end(); ++it2)
 				{
-					ConstCharCrcString const &sharedTemplateName = getSharedTemplateName((*i).sharedTemplateCrc);
+					ConstCharCrcString const &sharedTemplateName = getSharedTemplateName((*it2).sharedTemplateCrc);
 					char buf[512];
 					IGNORE_RETURN(snprintf(buf, sizeof(buf)-1, "%d\t%d\t%d\t%s\t%d\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%d\n",
-						(*i).id,
-						(*i).container,
-						(*i).type,
+						(*it2).id,
+						(*it2).container,
+						(*it2).type,
 						sharedTemplateName.getString(),
-						(*i).cellIndex,
-						(*i).position.x, (*i).position.y, (*i).position.z,
-						(*i).orientation.w, (*i).orientation.x, (*i).orientation.y, (*i).orientation.z,
-						(*i).radius,
-						static_cast<int>((*i).portalLayoutCrc)));
+						(*it2).cellIndex,
+						(*it2).position.x, (*it2).position.y, (*it2).position.z,
+						(*it2).orientation.w, (*it2).orientation.x, (*it2).orientation.y, (*it2).orientation.z,
+						(*it2).radius,
+						static_cast<int>((*it2).portalLayoutCrc)));
 					buf[sizeof(buf)-1] = '\0';
 					clientOutputFile.write(strlen(buf), buf);
 				}
@@ -697,7 +697,7 @@ Object* BuildoutAreaSupport::createNewObject(CrcString const &templateName, Cell
 				++rowIter;
 		}
 
-		ServerBuildoutAreaRow &serverRow = *(cachedBuildoutArea->serverRows.insert(rowIter));
+		ServerBuildoutAreaRow &serverRow = *(cachedBuildoutArea->serverRows.insert(cachedBuildoutArea->serverRows.end(), *rowIter));
 
 		serverRow.id = newId;
 		serverRow.container = container ? container->getNetworkId().getValue() : 0;
@@ -717,12 +717,12 @@ Object* BuildoutAreaSupport::createNewObject(CrcString const &templateName, Cell
 
 		for (int cell = 0; cell < cellCount; ++cell)
 		{
-			ServerBuildoutAreaRow &serverRow = *( cachedBuildoutArea->serverRows.insert( cachedBuildoutArea->serverRows.end() ) );
+			ServerBuildoutAreaRow &serverRow2 = *( cachedBuildoutArea->serverRows.insert( cachedBuildoutArea->serverRows.end(), *cachedBuildoutArea->serverRows.end() ) );
 
-			serverRow.id = newId+cell+1;
-			serverRow.container = newId;
-			serverRow.serverTemplateCrc = s_cellServerTemplateName.getCrc();
-			serverRow.cellIndex = cell+1;
+			serverRow2.id = newId+cell+1;
+			serverRow2.container = newId;
+			serverRow2.serverTemplateCrc = s_cellServerTemplateName.getCrc();
+			serverRow2.cellIndex = cell+1;
 		}
 	}
 
@@ -737,7 +737,7 @@ Object* BuildoutAreaSupport::createNewObject(CrcString const &templateName, Cell
 			while (rowIter != cachedBuildoutArea->clientRows.end() && (*rowIter).cellIndex)
 				++rowIter;
 		}
-		ClientBuildoutAreaRow &clientRow = *(cachedBuildoutArea->clientRows.insert(rowIter));
+		ClientBuildoutAreaRow &clientRow = *(cachedBuildoutArea->clientRows.insert(cachedBuildoutArea->clientRows.end(), *rowIter));
 
 		clientRow.id = newId;
 		clientRow.container = container ? container->getNetworkId().getValue() : 0;
@@ -750,15 +750,15 @@ Object* BuildoutAreaSupport::createNewObject(CrcString const &templateName, Cell
 
 		for (int cell = 0; cell < cellCount; ++cell)
 		{
-			cachedBuildoutArea->clientRows.push_back();
-			ClientBuildoutAreaRow &clientRow = cachedBuildoutArea->clientRows.back();
+			cachedBuildoutArea->clientRows.emplace_back();
+			ClientBuildoutAreaRow &clientRow2 = cachedBuildoutArea->clientRows.back();
 
-			clientRow.id = newId+cell+1;
-			clientRow.container = newId;
-			clientRow.sharedTemplateCrc = s_cellSharedTemplateName.getCrc();
-			clientRow.cellIndex = cell+1;
-			clientRow.radius = 0;
-			clientRow.portalLayoutCrc = 0;
+			clientRow2.id = newId+cell+1;
+			clientRow2.container = newId;
+			clientRow2.sharedTemplateCrc = s_cellSharedTemplateName.getCrc();
+			clientRow2.cellIndex = cell+1;
+			clientRow2.radius = 0;
+			clientRow2.portalLayoutCrc = 0;
 		}
 	}
 
@@ -1459,7 +1459,7 @@ CachedBuildoutArea *BuildoutAreaSupportNamespace::loadBuildoutArea(BuildoutArea 
 
 			for (int buildoutRow = 0; buildoutRow < buildoutRowCount; ++buildoutRow)
 			{
-				cachedBuildoutArea.serverRows.push_back();
+				cachedBuildoutArea.serverRows.emplace_back();
 				ServerBuildoutAreaRow &serverBuildoutAreaRow = cachedBuildoutArea.serverRows.back();
 
 
@@ -1578,7 +1578,7 @@ CachedBuildoutArea *BuildoutAreaSupportNamespace::loadBuildoutArea(BuildoutArea 
 
 			for (int buildoutRow = 0; buildoutRow < buildoutRowCount; ++buildoutRow)
 			{
-				cachedBuildoutArea.clientRows.push_back();
+				cachedBuildoutArea.clientRows.emplace_back();
 				ClientBuildoutAreaRow &clientBuildoutAreaRow = cachedBuildoutArea.clientRows.back();
 
 				clientBuildoutAreaRow.sharedTemplateCrc = static_cast<uint32>(areaBuildoutTable.getIntValue(sharedTemplateCrcColumn, buildoutRow));

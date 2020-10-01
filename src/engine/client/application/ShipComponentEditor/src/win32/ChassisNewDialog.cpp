@@ -80,16 +80,16 @@ void ChassisNewDialog::onNameTextChanged(const QString & s)
 		ShipChassis const * const chassis = ShipChassis::findShipChassisByName(PersistentCrcString(nameStr.c_str(), true));
 		if (NULL == chassis)
 		{
-			QPalette pal (m_lineEditName->palette());
-			pal.setColor(QColorGroup::Text, "black");
-			m_lineEditName->setPalette(pal);
+			QPalette pal2 (m_lineEditName->palette());
+			pal2.setColor(QColorGroup::Text, "black");
+			m_lineEditName->setPalette(pal2);
 			m_buttonCreate->setEnabled(true);
 		}
 		else
 		{
-			QPalette pal (m_lineEditName->palette());
-			pal.setColor(QColorGroup::Text, "red"), 
-			m_lineEditName->setPalette(pal);
+			QPalette pal3 (m_lineEditName->palette());
+			pal3.setColor(QColorGroup::Text, "red"), 
+			m_lineEditName->setPalette(pal3);
 			m_buttonCreate->setEnabled(false);
 		}
 	}

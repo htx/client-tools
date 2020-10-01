@@ -101,9 +101,9 @@ public:
     virtual void setAutoAdvance( bool advance );
     bool autoAdvance() const;
 
-    virtual void setMinValue( const QDate& d ) { setRange( d, maxValue() ); }
+    virtual void setMinValue( const QDate& d2 ) { setRange( d2, maxValue() ); }
     QDate minValue() const;
-    virtual void setMaxValue( const QDate& d ) { setRange( minValue(), d ); }
+    virtual void setMaxValue( const QDate& d3 ) { setRange( minValue(), d3 ); }
     QDate maxValue() const;
     virtual void setRange( const QDate& min, const QDate& max );
     QString separator() const;
@@ -185,9 +185,9 @@ public:
     virtual void setAutoAdvance( bool advance );
     bool autoAdvance() const;
 
-    virtual void setMinValue( const QTime& d ) { setRange( d, maxValue() ); }
+    virtual void setMinValue( const QTime& d4 ) { setRange( d4, maxValue() ); }
     QTime minValue() const;
-    virtual void setMaxValue( const QTime& d ) { setRange( minValue(), d ); }
+    virtual void setMaxValue( const QTime& d5 ) { setRange( minValue(), d5 ); }
     QTime maxValue() const;
     virtual void setRange( const QTime& min, const QTime& max );
     QString separator() const;

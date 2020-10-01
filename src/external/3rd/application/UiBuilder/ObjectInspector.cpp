@@ -251,7 +251,7 @@ void ObjectInspector::LoadListboxWithObjectProperties( void )
 		mObject->GetProperty(UIBaseObject::PropertyName::SourceFile, sourcePath);
 	}
 
-	sprintf(ObjectType, "%s", Unicode::wideToNarrow(sourcePath).c_str(), mObject->GetTypeName());
+	sprintf(ObjectType, "%s%s", Unicode::wideToNarrow(sourcePath).c_str(), mObject->GetTypeName());
 	SetWindowText(GetDlgItem( hParent, IDC_OBJECTPROPERTIES_LABEL), ObjectType);
 
 	UpdateButtonEnabledState();

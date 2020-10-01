@@ -15,6 +15,8 @@
 #define NOMINMAX
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
+#pragma warning(disable : 4996 4838 4099)
+
 //-------------------------------------------------------------------
 
 #include <afxwin.h>         // MFC core and standard components

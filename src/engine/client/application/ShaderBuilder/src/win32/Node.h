@@ -122,13 +122,13 @@ protected:
 
 	CNode       *GetFirstChild();
 	CNode       *GetNextChild(const CNode &node);
-	CNode       *GetFirstChild(CNode::Type type);
-	CNode       *GetNextChild(CNode::Type type, const CNode &node);
+	CNode       *GetFirstChild(CNode::Type type2);
+	CNode       *GetNextChild(CNode::Type type3, const CNode &node);
 
 	const CNode  *GetFirstChild() const;
 	const CNode  *GetNextChild(const CNode &node) const;
-	const CNode  *GetFirstChild(CNode::Type type) const;
-	const CNode  *GetNextChild(CNode::Type type, const CNode &node) const;
+	const CNode  *GetFirstChild(CNode::Type type4) const;
+	const CNode  *GetNextChild(CNode::Type type5, const CNode &node) const;
 
 protected:
 

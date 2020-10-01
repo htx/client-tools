@@ -47,6 +47,7 @@ public:
 	{
 	public:
 
+		virtual ~ParentInterface() {}
 		virtual void onPropertyChanged(UINT hiControlId_loItemChanged, LONG lPropertyType) const=0;
 	};
 

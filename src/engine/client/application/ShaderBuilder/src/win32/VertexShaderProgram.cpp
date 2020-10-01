@@ -231,7 +231,7 @@ bool CVertexShaderProgram::CompileAsm()
 	if (!m_vertexShaderProgramNode->Save())
 	{
 		char buffer[1024];
-		sprintf(buffer, "Save failed %s", m_vertexShaderProgramNode->m_absoluteFileName);
+		sprintf(buffer, "Save failed %s", m_vertexShaderProgramNode->m_absoluteFileName.GetString());
 		m_error.SetWindowText(buffer);
 		compiledShader->Release();
 		return false;
@@ -392,7 +392,7 @@ bool CVertexShaderProgram::CompileHlsl()
 	if (!m_vertexShaderProgramNode->Save())
 	{
 		char buffer[1024];
-		sprintf(buffer, "Save failed %s", m_vertexShaderProgramNode->m_absoluteFileName);
+		sprintf(buffer, "Save failed %s", m_vertexShaderProgramNode->m_absoluteFileName.GetString());
 		m_error.SetWindowText(buffer);
 		m_error.Invalidate();
 		return false;

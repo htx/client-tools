@@ -114,7 +114,8 @@
       <OutputFile>.\..\..\lib\win32-x86/dpvs.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\debug\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -167,7 +168,8 @@
       <OutputFile>.\..\..\lib\win32-x86/dpvs.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).dll" "$(SolutionDir)..\..\compile\win32\bin\release\"  /I /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='IntelCPP|Win32'">

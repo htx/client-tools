@@ -504,57 +504,57 @@ const CNode *CNode::GetNextChild(const CNode &node) const
 
 // ----------------------------------------------------------------------
 
-CNode *CNode::GetFirstChild(CNode::Type type)
+CNode *CNode::GetFirstChild(CNode::Type type2)
 {
-	UNREF(type);
+	UNREF(type2);
 	HTREEITEM childPassItem = treeCtrl->GetChildItem(treeItem);
 	if (!childPassItem)
 		return false;
 	Children::const_iterator childPassIterator = children.find(childPassItem);
 	ASSERT(childPassIterator != children.end());
-	ASSERT(childPassIterator->second->GetType() == type);
+	ASSERT(childPassIterator->second->GetType() == type2);
 	return childPassIterator->second;
 }
 
 // ----------------------------------------------------------------------
 
-CNode *CNode::GetNextChild(CNode::Type type, const CNode &node)
+CNode *CNode::GetNextChild(CNode::Type type3, const CNode &node)
 {
-	UNREF(type);
+	UNREF(type3);
 	HTREEITEM nextPassItem = treeCtrl->GetNextSiblingItem(node.treeItem);
 	if (!nextPassItem)
 		return false;
 	Children::const_iterator nextPass = children.find(nextPassItem);
 	ASSERT(nextPass != children.end());
-	ASSERT(nextPass->second->GetType() == type);
+	ASSERT(nextPass->second->GetType() == type3);
 	return nextPass->second;
 }
 
 // ----------------------------------------------------------------------
 
-const CNode *CNode::GetFirstChild(CNode::Type type) const
+const CNode *CNode::GetFirstChild(CNode::Type type4) const
 {
-	UNREF(type);
+	UNREF(type4);
 	HTREEITEM childPassItem = treeCtrl->GetChildItem(treeItem);
 	if (!childPassItem)
 		return false;
 	Children::const_iterator childPassIterator = children.find(childPassItem);
 	ASSERT(childPassIterator != children.end());
-	ASSERT(childPassIterator->second->GetType() == type);
+	ASSERT(childPassIterator->second->GetType() == type4);
 	return childPassIterator->second;
 }
 
 // ----------------------------------------------------------------------
 
-const CNode *CNode::GetNextChild(CNode::Type type, const CNode &node) const
+const CNode *CNode::GetNextChild(CNode::Type type5, const CNode &node) const
 {
-	UNREF(type);
+	UNREF(type5);
 	HTREEITEM nextPassItem = treeCtrl->GetNextSiblingItem(node.treeItem);
 	if (!nextPassItem)
 		return false;
 	Children::const_iterator nextPass = children.find(nextPassItem);
 	ASSERT(nextPass != children.end());
-	ASSERT(nextPass->second->GetType() == type);
+	ASSERT(nextPass->second->GetType() == type5);
 	return nextPass->second;
 }
 
@@ -1699,9 +1699,9 @@ bool CEffectNode::Load(Iff &iff)
 
 			if (!newIff.open(namedIff, true))
 			{
-				char buffer[256];
-				sprintf(buffer, "Could not find effect file '%s'", namedIff);
-				MessageBox(NULL, buffer, "Error", MB_ICONERROR | MB_OK);
+				char buffer2[256];
+				sprintf(buffer2, "Could not find effect file '%s'", namedIff.GetString());
+				MessageBox(NULL, buffer2, "Error", MB_ICONERROR | MB_OK);
 				return false;
 			}
 		}
@@ -1984,9 +1984,9 @@ bool CImplementationNode::Load(Iff &iff)
 		Iff newIff;
 		if (!newIff.open(static_cast<LPCSTR>(namedIff), true))
 		{
-			char buffer[256];
-			sprintf(buffer, "Could not find implementation file '%s'", namedIff);
-			MessageBox(NULL, buffer, "Error", MB_ICONERROR | MB_OK);
+			char buffer3[256];
+			sprintf(buffer3, "Could not find implementation file '%s'", namedIff.GetString());
+			MessageBox(NULL, buffer3, "Error", MB_ICONERROR | MB_OK);
 			return false;
 		}
 		if (!Load(newIff))
@@ -3077,8 +3077,8 @@ bool CPassNode::Load_0002(Iff &iff)
 
 		if (pixelShader)
 		{
-			CPixelShaderNode *pixelShader = new CPixelShaderNode(*this);
-			if (!pixelShader->Load(iff))
+			CPixelShaderNode *pixelShader2 = new CPixelShaderNode(*this);
+			if (!pixelShader2->Load(iff))
 				return false;
 			++m_pixelShaderCount;
 		}
@@ -3160,8 +3160,8 @@ bool CPassNode::Load_0003(Iff &iff)
 
 		if (pixelShader)
 		{
-			CPixelShaderNode *pixelShader = new CPixelShaderNode(*this);
-			if (!pixelShader->Load(iff))
+			CPixelShaderNode *pixelShader3 = new CPixelShaderNode(*this);
+			if (!pixelShader3->Load(iff))
 				return false;
 			++m_pixelShaderCount;
 		}
@@ -3246,8 +3246,8 @@ bool CPassNode::Load_0004(Iff &iff)
 
 		if (pixelShader)
 		{
-			CPixelShaderNode *pixelShader = new CPixelShaderNode(*this);
-			if (!pixelShader->Load(iff))
+			CPixelShaderNode *pixelShader4 = new CPixelShaderNode(*this);
+			if (!pixelShader4->Load(iff))
 				return false;
 			++m_pixelShaderCount;
 		}

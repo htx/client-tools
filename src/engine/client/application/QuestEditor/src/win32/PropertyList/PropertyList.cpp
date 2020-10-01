@@ -5,7 +5,7 @@
 //
 // ======================================================================
 
-#include "FirstQuestEditor.h"
+#include "../FirstQuestEditor.h"
 
 // ----------------------------------------------------------------------
 
@@ -331,15 +331,15 @@ bool PropertyList::eventFilter(QObject *o, QEvent *e)
 	else if (o == viewport())
 	{
 		QMouseEvent *me;
-		PropertyListItem* i;
+		PropertyListItem* j;
 		switch (e->type())
 		{
 		case QEvent::MouseButtonPress:
 			me = (QMouseEvent*)e;
-			i = (PropertyListItem*) itemAt(me->pos());
-			if (i && (::qt_cast<PropertyColorItem*>(i) || ::qt_cast<PropertyPixmapItem*>(i)))
+			j = (PropertyListItem*) itemAt(me->pos());
+			if (j && (::qt_cast<PropertyColorItem*>(j) || ::qt_cast<PropertyPixmapItem*>(j)))
 			{
-				pressItem = i;
+				pressItem = j;
 				pressPos = me->pos();
 				mousePressed = TRUE;
 			}
@@ -348,15 +348,15 @@ bool PropertyList::eventFilter(QObject *o, QEvent *e)
 			me = (QMouseEvent*)e;
 			if (me && me->state() & LeftButton && mousePressed)
 			{
-				i = (PropertyListItem*) itemAt(me->pos());
-				if (i  && i == pressItem)
+				j = (PropertyListItem*) itemAt(me->pos());
+				if (j  && j == pressItem)
 				{
 					
 					if ((pressPos - me->pos()).manhattanLength() > QApplication::startDragDistance())
 					{
-						if (::qt_cast<PropertyColorItem*>(i))
+						if (::qt_cast<PropertyColorItem*>(j))
 						{
-							QColor col = i->value().asColor();
+							QColor col = j->value().asColor();
 							QColorDrag *drg = new QColorDrag(col, this);
 							QPixmap pix(25, 25);
 							pix.fill(col);
@@ -367,9 +367,9 @@ bool PropertyList::eventFilter(QObject *o, QEvent *e)
 							mousePressed = FALSE;
 							drg->dragCopy();
 						}
-						else if (::qt_cast<PropertyPixmapItem*>(i))
+						else if (::qt_cast<PropertyPixmapItem*>(j))
 						{
-							QPixmap pix = i->value().asPixmap();
+							QPixmap pix = j->value().asPixmap();
 							if(!pix.isNull())
 							{
 								QImage img = pix.convertToImage();

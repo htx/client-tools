@@ -179,7 +179,7 @@ const CString BitmapView::createUniqueFamilyName (const CString* base) const
 
 	if (base)
 	{
-		familyName.Format ("%s", *base);
+		familyName.Format ("%s", *base->GetString());
 	}
 	else
 	{
@@ -648,13 +648,13 @@ void BitmapView::OnFindBitmap()
 
 				//-- tell the properties view about it
 				{
-					TerrainEditorDoc* pDoc = static_cast<TerrainEditorDoc*> (GetDocument());
+					TerrainEditorDoc* pDoc2 = static_cast<TerrainEditorDoc*> (GetDocument());
 							
 					FormBitmapFamily::FormBitmapFamilyViewData vd;
 					vd.familyId = GetTreeCtrl ().GetItemData (selectedFamily);
 					vd.bitmapGroup = bitmapGroup;
 
-					pDoc->SetPropertyView (RUNTIME_CLASS(FormBitmapFamily), &vd);
+					pDoc2->SetPropertyView (RUNTIME_CLASS(FormBitmapFamily), &vd);
 				}
 					
 			}

@@ -108,12 +108,12 @@ namespace ConfigurationNamespace
 	{
 		BOOL result = CreateDirectory(directoryName, 0);
 		if (result)
-			DEBUG_REPORT_LOG(true, ("%s created\n", directoryName));
+			DEBUG_REPORT_LOG(true, ("%s created\n", directoryName.GetString()));
 		else
 			if (GetLastError() == ERROR_ALREADY_EXISTS)
-				DEBUG_REPORT_LOG(true, ("%s exists\n", directoryName));
+				DEBUG_REPORT_LOG(true, ("%s exists\n", directoryName.GetString()));
 			else
-				DEBUG_REPORT_LOG(true, ("%s ERROR\n", directoryName));
+				DEBUG_REPORT_LOG(true, ("%s ERROR\n", directoryName.GetString()));
 	}
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -769,7 +769,7 @@ CString const Configuration::getConfiguration()
 			result += "  category = " + *iter + "\n";
 	}
 
-	buffer.Format("%i spaceMobiles and %i factions from %s\n", ms_spaceMobileList.size(), ms_spaceFactions.size(), ms_spaceMobileDataTableFileName);
+	buffer.Format("%i spaceMobiles and %i factions from %s\n", ms_spaceMobileList.size(), ms_spaceFactions.size(), ms_spaceMobileDataTableFileName.GetString());
 	result += buffer;
 
 	{
@@ -1048,8 +1048,8 @@ bool Configuration::isValidNavPoint(CString const & spaceZone, CString const & n
 			if (spaceZone != stringList[0])
 				return false;
 
-			SpaceZone const & spaceZone = iter->second;
-			return std::find(spaceZone.m_navPointList.begin(), spaceZone.m_navPointList.end(), stringList[1]) != spaceZone.m_navPointList.end();
+			SpaceZone const & spaceZone2 = iter->second;
+			return std::find(spaceZone2.m_navPointList.begin(), spaceZone2.m_navPointList.end(), stringList[1]) != spaceZone2.m_navPointList.end();
 		}
 	}
 
@@ -1072,8 +1072,8 @@ bool Configuration::isValidSpawner(CString const & spaceZone, CString const & sp
 		if (spaceZone != stringList[0])
 			return false;
 
-		SpaceZone const & spaceZone = iter->second;
-		return std::find(spaceZone.m_spawnerList.begin(), spaceZone.m_spawnerList.end(), stringList[1]) != spaceZone.m_spawnerList.end();
+		SpaceZone const & spaceZone3 = iter->second;
+		return std::find(spaceZone3.m_spawnerList.begin(), spaceZone3.m_spawnerList.end(), stringList[1]) != spaceZone3.m_spawnerList.end();
 	}
 
 	return false;
@@ -1291,8 +1291,8 @@ void Configuration::populateNavPoints(CTreeCtrl & treeCtrl)
 			continue;
 
 		HTREEITEM treeItem = treeCtrl.InsertItem(iter->first, TVI_ROOT, TVI_SORT);
-		for (StringList::const_iterator iter = spaceZone.m_navPointList.begin(); iter != spaceZone.m_navPointList.end(); ++iter)
-			treeCtrl.InsertItem(*iter, treeItem, TVI_SORT);
+		for (StringList::const_iterator iter2 = spaceZone.m_navPointList.begin(); iter2 != spaceZone.m_navPointList.end(); ++iter2)
+			treeCtrl.InsertItem(*iter2, treeItem, TVI_SORT);
 	}
 }
 
@@ -1311,8 +1311,8 @@ void Configuration::populateSpawners(CTreeCtrl & treeCtrl)
 			continue;
 
 		HTREEITEM treeItem = treeCtrl.InsertItem(iter->first, TVI_ROOT, TVI_SORT);
-		for (StringList::const_iterator iter = spaceZone.m_spawnerList.begin(); iter != spaceZone.m_spawnerList.end(); ++iter)
-			treeCtrl.InsertItem(*iter, treeItem, TVI_SORT);
+		for (StringList::const_iterator iter3 = spaceZone.m_spawnerList.begin(); iter3 != spaceZone.m_spawnerList.end(); ++iter3)
+			treeCtrl.InsertItem(*iter3, treeItem, TVI_SORT);
 	}
 }
 
@@ -1371,7 +1371,7 @@ bool Configuration::loadCfg()
 		Iff iff;
 		if (!iff.open(ms_spaceMobileDataTableFileName, true))
 		{
-			DEBUG_WARNING(true, ("Configuration::loadCfg: could not open file %s\n", ms_spaceMobileDataTableFileName));
+			DEBUG_WARNING(true, ("Configuration::loadCfg: could not open file %s\n", ms_spaceMobileDataTableFileName.GetString()));
 			return false;
 		}
 		
@@ -1451,10 +1451,10 @@ bool Configuration::loadIni()
 				unpackString(stringButton, stringList, '|');
 				if (stringList.size() == 2)
 				{
-					StringButton stringButton;
-					stringButton.m_name = stringList[0];
-					stringButton.m_data = stringList[1];
-					ms_stringButtonList.push_back(stringButton);
+					StringButton stringButton2;
+					stringButton2.m_name = stringList[0];
+					stringButton2.m_data = stringList[1];
+					ms_stringButtonList.push_back(stringButton2);
 				}
 
 				++i;
@@ -1488,26 +1488,26 @@ bool Configuration::loadIni()
 						CString const spawnerIdentifier("strSpawnerName|4|");
 
 						std::string const columnName("strObjVars");
-						for (int i = 0; i < dataTable.getNumRows(); ++i)
+						for (int j = 0; j < dataTable.getNumRows(); ++j)
 						{
-							CString objVar = dataTable.getStringValue(columnName, i);
+							CString objVar = dataTable.getStringValue(columnName, j);
 
 							int index = objVar.Find(navPointIdentifier, 0);
 							if (index != -1)
 							{
 								objVar = objVar.Right(objVar.GetLength() - index - navPointIdentifier.GetLength());
 
-								int const index = objVar.Find('|');
-								objVar = objVar.Left(index);
+								int const index2 = objVar.Find('|');
+								objVar = objVar.Left(index2);
 
 								if (!objVar.IsEmpty())
 								{
 									spaceZone.m_navPointList.push_back(objVar);
 
 									//-- grab x, y, z here
-									spaceZone.m_navPointLocationMap[objVar].x = dataTable.getFloatValue("fltPX", i);
-									spaceZone.m_navPointLocationMap[objVar].y = dataTable.getFloatValue("fltPY", i);
-									spaceZone.m_navPointLocationMap[objVar].z = dataTable.getFloatValue("fltPZ", i);
+									spaceZone.m_navPointLocationMap[objVar].x = dataTable.getFloatValue("fltPX", j);
+									spaceZone.m_navPointLocationMap[objVar].y = dataTable.getFloatValue("fltPY", j);
+									spaceZone.m_navPointLocationMap[objVar].z = dataTable.getFloatValue("fltPZ", j);
 								}
 							}
 
@@ -1516,8 +1516,8 @@ bool Configuration::loadIni()
 							{
 								objVar = objVar.Right(objVar.GetLength() - index - spawnerIdentifier.GetLength());
 
-								int const index = objVar.Find('|');
-								objVar = objVar.Left(index);
+								int const index3 = objVar.Find('|');
+								objVar = objVar.Left(index3);
 
 								if (!objVar.IsEmpty())
 									spaceZone.m_spawnerList.push_back(objVar);
@@ -1715,7 +1715,7 @@ void Configuration::loadCargo(CString const & cargoName)
 		}
 
 		ms_cargoMap.insert(std::make_pair(cargoName, stringList));
-		DEBUG_REPORT_LOG(stringList.empty(), ("cargo list for %s is empty\n", cargoName));		
+		DEBUG_REPORT_LOG(stringList.empty(), ("cargo list for %s is empty\n", cargoName.GetString()));		
 	}
 }
 
@@ -1727,10 +1727,10 @@ Vector Configuration::getNavPointLocation(CString const & spaceZone, CString con
 
 	if (iter != ms_spaceZoneMap.end())
 	{
-		SpaceZone const & spaceZone = iter->second;
-		SpaceZone::NavPointLocationMap::const_iterator navLocationIter = spaceZone.m_navPointLocationMap.find(navPoint);
+		SpaceZone const & spaceZone4 = iter->second;
+		SpaceZone::NavPointLocationMap::const_iterator navLocationIter = spaceZone4.m_navPointLocationMap.find(navPoint);
 
-		if (navLocationIter != spaceZone.m_navPointLocationMap.end())
+		if (navLocationIter != spaceZone4.m_navPointLocationMap.end())
 			return navLocationIter->second;
 	}
 
