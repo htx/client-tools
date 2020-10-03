@@ -72,7 +72,7 @@ void NetworkController::conclude()
 						clearMessageAndData (i);						
 						
 						delete data;  
-						data = 0;
+						data = nullptr;
 					}
 				}
 			}
