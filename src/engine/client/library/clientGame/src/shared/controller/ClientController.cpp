@@ -32,6 +32,7 @@
 #include "clientUserInterface/CuiResourceManager.h"
 #include "clientUserInterface/CuiSystemMessageManager.h"
 #include "clientUserInterface/CuiTextManager.h"
+#include "math.h"
 #include "sharedFoundation/Crc.h"
 #include "sharedFoundation/GameControllerMessage.h"
 #include "sharedFoundation/MessageQueue.h"
@@ -798,17 +799,19 @@ float ClientController::realAlter(float deltaTime)
 {
 	DEBUG_FATAL(!m_initialized, ("ClientController::realAlter: controller for object [id=%s, template=%s] has not had endBaselines called on it", getOwner()->getNetworkId().getValueString().c_str(), getOwner()->getObjectTemplateName()));
 
-	int message;
-	float value;
-	MessageQueue::Data* data;
-	uint32 flags;
+	int message = 0;
+	float value = NAN;
+	MessageQueue::Data* data = nullptr;
+	uint32 flags = 0;
 
 	Object *target = getOwner();
 
 	int const messageCount = getNumberOfMessages();
+	
 	for (int i = 0; i < messageCount; ++i)
 	{
 		getMessage(i, &message, &value, &data, &flags);
+		
 		if (message)
 		{
 			bool processMessage = false;

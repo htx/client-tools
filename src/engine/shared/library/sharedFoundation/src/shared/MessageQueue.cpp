@@ -16,12 +16,6 @@
 // PUBLIC MessageQueue::Data
 // ======================================================================
 
-MessageQueue::Data::Data()
-{
-}
-
-// ----------------------------------------------------------------------
-
 MessageQueue::Data::~Data()
 {
 }
@@ -29,12 +23,6 @@ MessageQueue::Data::~Data()
 // ======================================================================
 // PUBLIC MessageQueue::Notification
 // ======================================================================
-
-MessageQueue::Notification::Notification()
-{
-}
-
-// ----------------------------------------------------------------------
 
 MessageQueue::Notification::~Notification()
 {
@@ -47,7 +35,7 @@ MessageQueue::Notification::~Notification()
 MessageQueue::Message::Message() :
 	m_message(0),
 	m_value(0),
-	m_data(0),
+	m_data(nullptr),
 	m_flags(0)
 {
 }
@@ -56,7 +44,7 @@ MessageQueue::Message::Message() :
 
 MessageQueue::Message::~Message()
 {
-	m_data = 0;
+	m_data = nullptr;
 }
 
 // ======================================================================
@@ -68,7 +56,7 @@ MessageQueue::MessageQueue(const int initialSize) :
 	m_messageQueue2(new MessageList),
 	m_messageQueueRead(m_messageQueue1),
 	m_messageQueueWrite(m_messageQueue2),
-	m_notification(0)
+	m_notification(nullptr)
 {
 	DEBUG_WARNING(initialSize < 0, ("initialSize < 0"));
 	m_messageQueue1->reserve(static_cast<uint>(std::max(initialSize, 0)));
@@ -86,9 +74,9 @@ MessageQueue::~MessageQueue()
 	clearDataFromMessageList(*m_messageQueue2, true);
 	delete m_messageQueue1;
 	delete m_messageQueue2;
-	m_messageQueueRead = 0;
-	m_messageQueueWrite = 0;
-	m_notification = 0;
+	m_messageQueueRead = nullptr;
+	m_messageQueueWrite = nullptr;
+	m_notification = nullptr;
 }
 
 // ----------------------------------------------------------------------
@@ -96,15 +84,15 @@ MessageQueue::~MessageQueue()
 void MessageQueue::clearDataFromMessageList(MessageList &messageList, bool destructor)
 {
 	UNREF(destructor);
-	MessageList::iterator iEnd = messageList.end();
-	for (MessageList::iterator i = messageList.begin(); i != iEnd; ++i)
+
+	for(auto& message : messageList)
 	{
-		Message & message = *i;
 		if (message.m_data)
 		{
 			DEBUG_WARNING(!destructor, ("clearing message data from beginFrame"));
+			
 			delete message.m_data;
-			message.m_data = NULL;
+			message.m_data = nullptr;
 		}
 	}
 }
@@ -132,6 +120,7 @@ void MessageQueue::getMessage(const int index, int *const message, float *const 
 	const Message &currentMessage = (*m_messageQueueRead)[static_cast<uint>(index)];
 	*message = currentMessage.m_message;
 	*value   = currentMessage.m_value;
+	
 	if (flags)
 		*flags = currentMessage.m_flags;
 }
@@ -217,7 +206,7 @@ void MessageQueue::clearMessageData(const int index)
 	VALIDATE_RANGE_INCLUSIVE_EXCLUSIVE(0, index, getNumberOfMessages());
 
 	Message& message = (*m_messageQueueRead)[static_cast<uint>(index)];
-	message.m_data = 0;
+	message.m_data = nullptr;
 }
 
 // ----------------------------------------------------------------------
@@ -249,12 +238,7 @@ void MessageQueue::appendMessage(const int message, const float value, Data *con
 	}
 #endif
 
-	Message newMessage;
-	newMessage.m_message = message;
-	newMessage.m_value   = value;
-	newMessage.m_data    = data;
-	newMessage.m_flags   = flags;
-	m_messageQueueWrite->push_back(newMessage);
+	m_messageQueueWrite->emplace_back(message, value, data, flags);
 
 	if (m_notification)
 		m_notification->onChanged();
@@ -273,7 +257,7 @@ void MessageQueue::appendMessage(const int message, const float value, Data *con
 
 void MessageQueue::appendMessage(const int message, const float value, const uint32 flags)
 {
-	appendMessage(message, value, 0, flags);
+	appendMessage(message, value, nullptr, flags);
 }
 
 // ----------------------------------------------------------------------

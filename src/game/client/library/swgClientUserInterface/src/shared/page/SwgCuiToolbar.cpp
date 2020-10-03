@@ -5,6 +5,7 @@
 //
 //======================================================================
 
+#include "math.h"
 #include "swgClientUserInterface/FirstSwgClientUserInterface.h"
 #include "swgClientUserInterface/SwgCuiToolbar.h"
 
@@ -143,13 +144,13 @@ namespace SwgCuiToolbarNamespace
 	class KeybindingChangedCallbackReceiver : public CallbackReceiver 
 	{
 	public:
-		void performCallback ()
+		void performCallback () override
 		{
 			if (toolbar)
 				toolbar->updateKeyBindings ();
 		}
 
-		SwgCuiToolbar * toolbar;
+		SwgCuiToolbar * toolbar{};
 	};
 
 	
@@ -181,7 +182,7 @@ namespace SwgCuiToolbarNamespace
 	{
 	public:
 		DefaultCommand(const char * const command, int const toolBarIndex, bool const ground, bool const space, bool const waitForGrant);
-	public:
+
 		std::string m_command;
 		int m_toolBarIndex;
 		bool m_ground;
@@ -229,7 +230,7 @@ namespace SwgCuiToolbarNamespace
 	StringId s_queuedStringId("ui", "queued");
 	Unicode::String s_queuedString;
 
-	SwgCuiToolbar * s_activeToolbar = NULL;
+	SwgCuiToolbar * s_activeToolbar = nullptr;
 
 	//A number from 0 to 1 that keeps the timer from being choppy when receiving server updates
 	const float MIN_DIFFERENCE_TO_MOVE_TIMER_BACKWARDS = 0.25f;
@@ -286,7 +287,7 @@ bool SwgCuiToolbarNamespace::canBeSlotted(Object * const object)
 {
 	bool result = false;
 
-	if (object != 0)
+	if (object != nullptr)
 	{
 		ClientObject const * const clientObject = object->asClientObject();
 		SharedObjectTemplate::GameObjectType got  = SharedObjectTemplate::GOT_none;
@@ -295,7 +296,7 @@ bool SwgCuiToolbarNamespace::canBeSlotted(Object * const object)
 
 		if (got != SharedObjectTemplate::GOT_tool_survey)
 		{
-			Cui::MenuInfoTypes::Type const type = static_cast<Cui::MenuInfoTypes::Type>(CuiRadialMenuManager::findDefaultAction(*object));
+			auto const type = static_cast<Cui::MenuInfoTypes::Type>(CuiRadialMenuManager::findDefaultAction(*object));
 			//WARNING(true, ("%d", type));
 
 			switch (type)
@@ -329,7 +330,7 @@ public:
 	
 	explicit SwgCuiToolbarAction (SwgCuiToolbar * toolbar) : CuiAction (), m_toolbar (NON_NULL (toolbar)) {}
 	
-	bool  performAction (const std::string & id, const Unicode::String &) const
+	bool  performAction (const std::string & id, const Unicode::String &) const override
 	{
 		NOT_NULL (m_toolbar);
 		if(Game::getHudSceneType() != m_toolbar->getSceneType())
@@ -388,7 +389,7 @@ public:
 	
 	private:
 		SwgCuiToolbar * m_toolbar;
-		SwgCuiToolbarAction ();
+		SwgCuiToolbarAction () = delete;
 };
 
 //----------------------------------------------------------------------
@@ -407,8 +408,8 @@ void SwgCuiToolbar::install()
 
 void SwgCuiToolbarNamespace::remove()
 {
-	GroundCombatActionManager::registerPrimaryAttackCallback(0);
-	GroundCombatActionManager::registerSecondaryAttackCallback(0);
+	GroundCombatActionManager::registerPrimaryAttackCallback(nullptr);
+	GroundCombatActionManager::registerSecondaryAttackCallback(nullptr);
 
 }
 
@@ -421,9 +422,11 @@ m_toolbarPage		(0),
 m_petToolbarPage	(0),
 m_volumePage        (0),
 m_volumeBackgroundPage (0),
+m_volumeTimersPage  (0),
 m_petVolumePage        (0),
-m_petVolumeHighlightsPage (0),
 m_petVolumeBackgroundPage (0),
+m_petVolumeHighlightsPage (0),
+m_petVolumeTimersPage  (0),
 m_tabs              (0),
 m_action            (0),
 m_toolbarItemPanes  (0),
@@ -431,39 +434,30 @@ m_petToolbarItemPane(0),
 m_draggingPane      (-1),
 m_draggingSlot      (-1),
 m_dragCounter       (0),
-m_popupPoint        (),
 m_popupSlot         (-1),
 m_sampleItemPage    (0),
 m_callback          (new MessageDispatch::Callback),
-m_iconMargin        (),
 m_effectorUse       (new UIColorEffector (UIColor::white, 3.0f, false,  false, false)),
 m_effectorUseChild  (new UIColorEffector (UIColor::white, 3.0f, false, false, false)),
 m_sendEquipToolbar  (false),
 m_volumeKeyBindings (0),
 m_textPane          (0),
 m_mouseDownOnSlot   (-1),
-m_lastSize          (),
-m_palIconFlashColor (),
 m_sampleItemButton  (0),
 m_playerIsSetup     (false),
 m_toolbarHasLocalSettings (false),
-m_sceneType(sceneType),
 m_currentActionPage (0),
 m_failedActionPage  (0),
 m_whiteFlashPage    (0),
-m_currentActionPages(),
-m_failedActionPages (),
-m_whiteFlashPages   (),
 m_nextNextActionPage(0),
 m_nextCurrentActionPage(0),
 m_nextFailedActionPage(0),
 m_nextWhiteFlashPage(0),
-m_volumeTimersPage  (0),
-m_petVolumeTimersPage  (0),
 m_executeMaxTimer   (0.0f),
 m_executeTimer      (0.0f),
 m_warmupMaxTimer    (0.0f),
 m_warmupTimer       (0.0f),
+m_sceneType(sceneType),
 m_commandExecutingCrc(0),
 m_commandFailedCrc(0),
 m_lastCooldownGroupReceived(-1),
@@ -515,8 +509,8 @@ m_doubleToolbar(false)
 
 	m_effectorUseChild->SetPropertyNarrow (UILowerString ("PalTarget"), "icon");
 
-	m_toolbarItemPanes = new ToolbarItemPaneVector (DEFAULT_PANE_COUNT);
-	m_petToolbarItemPane = new ToolbarItemPane(DEFAULT_ITEM_COUNT_PER_PANE);
+m_toolbarItemPanes = new ToolbarItemPaneVector(DEFAULT_PANE_COUNT);
+m_petToolbarItemPane = new ToolbarItemPane(DEFAULT_ITEM_COUNT_PER_PANE);
 
 	getCodeDataObject (TUIPage, m_toolbarPage,      "ToolBar", true);
 	getCodeDataObject (TUIPage, m_petToolbarPage,      "PetToolBar", true);
@@ -620,12 +614,13 @@ m_doubleToolbar(false)
 		if(!page2)
 			continue;
 		const UIBaseObject::UIObjectList & olist = page2->GetChildrenRef ();
-		for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+		
+		for(auto obj : olist)
 		{
-			UIBaseObject * const obj = *it;
 			NOT_NULL (obj);
+			
 			if (obj->IsA (TUIWidget))
-				safe_cast<UIWidget *>(obj)->AddCallback (this);
+				dynamic_cast<UIWidget *>(obj)->AddCallback (this);
 		}
 	}
 
@@ -809,7 +804,7 @@ void SwgCuiToolbar::receiveMessage(const MessageDispatch::Emitter & , const Mess
 	else if (message.isType (NewbieTutorialRequest::cms_name))
 	{
 		//-- what type of request is it?
-		Archive::ReadIterator ri = NON_NULL (safe_cast<const GameNetworkMessage*> (&message))->getByteStream ().begin ();
+		Archive::ReadIterator ri = NON_NULL (dynamic_cast<const GameNetworkMessage*> (&message))->getByteStream ().begin ();
 		const NewbieTutorialRequest newbieTutorialRequest (ri);
 
 		if (newbieTutorialRequest.getRequest () == cms_newbieTutorialRequestEquipToolbar)
@@ -821,7 +816,7 @@ void SwgCuiToolbar::receiveMessage(const MessageDispatch::Emitter & , const Mess
 	else if (message.isType (NewbieTutorialSetToolbarElement::cms_name))
 	{
 		//-- what type of request is it?
-		Archive::ReadIterator ri = NON_NULL (safe_cast<const GameNetworkMessage*> (&message))->getByteStream ().begin ();
+		Archive::ReadIterator ri = NON_NULL (dynamic_cast<const GameNetworkMessage*> (&message))->getByteStream ().begin ();
 		const NewbieTutorialSetToolbarElement newbieTutorialSetToolbarElement (ri);
 
 		int slot = newbieTutorialSetToolbarElement.getSlot();
@@ -883,10 +878,8 @@ int SwgCuiToolbar::discoverToolbarSlot (UIWidget * context, bool pet)
 	if(!page)
 		return -1;
 	const UIBaseObject::UIObjectList & olist = page->GetChildrenRef ();
-	for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+	for(auto obj : olist)
 	{
-		const UIBaseObject * const obj = *it;
-		
 		if (!obj->IsA (TUIWidget))
 			continue;
 
@@ -910,7 +903,6 @@ UIWidget * SwgCuiToolbar::createToolbarWidget (const CuiDragInfo & item)
 {
 	UIWidget * widget = 0;
 
-	static const UILowerString   iconPalProp  = UILowerString         ("PalColor");
 	static const Unicode::String iconPalColor = Unicode::narrowToWide ("icon");
 
 	if (item.type == CuiDragInfoTypes::CDIT_command)
@@ -919,7 +911,7 @@ UIWidget * SwgCuiToolbar::createToolbarWidget (const CuiDragInfo & item)
 
 		if (imageStyle)
 		{
-			UIButton * const button = safe_cast<UIButton*>(m_sampleItemButton->DuplicateObject ());
+			const auto button = dynamic_cast<UIButton*>(m_sampleItemButton->DuplicateObject ());
 			button->SetAutoPressByDrag (false);
 
 			UIButtonStyle * const buttonStyle = CuiIconManager::findButtonStyle (item);
@@ -952,7 +944,7 @@ UIWidget * SwgCuiToolbar::createToolbarWidget (const CuiDragInfo & item)
 			
 			if (imageStyle)
 			{
-				UIButton * const button = safe_cast<UIButton*>(m_sampleItemButton->DuplicateObject ());
+				const auto button = dynamic_cast<UIButton*>(m_sampleItemButton->DuplicateObject ());
 				button->SetAutoPressByDrag (false);
 				
 				UIButtonStyle * const buttonStyle = CuiIconManager::findButtonStyle (item);
@@ -1015,7 +1007,7 @@ UIWidget * SwgCuiToolbar::createToolbarWidget (const CuiDragInfo & item)
 	}
 
 	if (!widget)
-		widget = safe_cast<UIWidget *>(m_sampleItemPage->DuplicateObject ());
+		widget = dynamic_cast<UIWidget *>(m_sampleItemPage->DuplicateObject ());
 
 	if (widget)
 		item.setWidget (*widget);
@@ -1036,8 +1028,8 @@ void SwgCuiToolbar::populateSlot (int slot, bool pet)
 
 	if (!parent)
 		return;
-	
-	CuiWidget3dObjectListViewer * const viewer = dynamic_cast<CuiWidget3dObjectListViewer *>(parent);
+
+	const auto viewer = dynamic_cast<CuiWidget3dObjectListViewer *>(parent);
 	if (viewer)
 	{
 		CuiIconManager::unregisterObjectIcon (*viewer);
@@ -1133,7 +1125,7 @@ void SwgCuiToolbar::populateSlot (int slot, bool pet)
 
 	if (!content)
 	{
-		content = safe_cast<UIWidget *>(m_sampleItemPage->DuplicateObject ());
+		content = dynamic_cast<UIWidget *>(m_sampleItemPage->DuplicateObject ());
 		content->CopyPropertiesFrom (*parent);
 	}
 
@@ -1264,7 +1256,7 @@ UIWidget * SwgCuiToolbar::getToolbarItemWidget (int slot, bool pet)
 	UIVolumePage *page = pet ? m_petVolumePage : m_volumePage;
 	if(!page)
 		return NULL;
-	return static_cast<UIWidget *>(page->GetChild (numbuf));
+	return dynamic_cast<UIWidget *>(page->GetChild (numbuf));
 }
 
 //----------------------------------------------------------------------
@@ -1277,7 +1269,7 @@ UIWidget * SwgCuiToolbar::getToolbarItemBackgroundWidget (int slot, bool pet)
 	UIVolumePage *page = pet ? m_petVolumeBackgroundPage : m_volumeBackgroundPage;
 	if(!page)
 		return NULL;
-	return static_cast<UIWidget *>(page->GetChild (numbuf));
+	return dynamic_cast<UIWidget *>(page->GetChild (numbuf));
 }
 
 //----------------------------------------------------------------------
@@ -1292,7 +1284,7 @@ UIWidget * SwgCuiToolbar::getToolbarItemShadeWidget (int slot, bool pet)
 	UIPage *page = pet ? m_petVolumeTimersPage : m_volumeTimersPage;
 	if(!page)
 		return NULL;
-	return static_cast<UIWidget *>(page->GetChild (numbuf));
+	return dynamic_cast<UIWidget *>(page->GetChild (numbuf));
 }
 
 //----------------------------------------------------------------------
@@ -1303,17 +1295,16 @@ void SwgCuiToolbar::clearWidgets(bool pet)
 	if(!page)
 		return;
 	const UIBaseObject::UIObjectList & olist = page->GetChildrenRef ();
-	for (UIBaseObject::UIObjectList::const_iterator vit = olist.begin (); vit != olist.end (); ++vit)
+	for(auto* parent : olist)
 	{
-		UIBaseObject * const parent = *vit;
 		if (!parent->IsA (TUIWidget))
 			continue;
 
-		UIWidget * const parentWidget = safe_cast<UIWidget *>(parent);
+		auto* const parentWidget = dynamic_cast<UIWidget *>(parent);
 
 		parentWidget->RemoveCallback (this);
 
-		CuiWidget3dObjectListViewer * const viewer = dynamic_cast<CuiWidget3dObjectListViewer *>(parentWidget);
+		auto* const viewer = dynamic_cast<CuiWidget3dObjectListViewer *>(parentWidget);
 		if (viewer)
 		{
 			CuiIconManager::unregisterObjectIcon (*viewer);
@@ -1597,7 +1588,7 @@ bool SwgCuiToolbar::OnMessage(UIWidget *context, const UIMessage & msg)
 			{
 				if(isPetToolbarParent)
 				{
-					int group;
+					int group = 0;
 					UIWidget *widget = getToolbarItemWidget(slot, true);
 					if(widget->HasProperty(SHADE_COMMAND_GROUP))
 					{						
@@ -1610,7 +1601,7 @@ bool SwgCuiToolbar::OnMessage(UIWidget *context, const UIMessage & msg)
 							}					
 						}
 					}
-					int group2;
+					int group2 = 0;
 					if(widget->HasProperty(SHADE_COMMAND_GROUP2))
 					{						
 						widget->GetPropertyInteger(SHADE_COMMAND_GROUP2, group2);
@@ -1686,7 +1677,7 @@ void SwgCuiToolbar::OnPopupMenuSelection (UIWidget * context)
 	if (!context->IsA (TUIPopupMenu))
 		return;
 
-	UIPopupMenu * const pop = static_cast<UIPopupMenu *>(context);
+	UIPopupMenu * const pop = dynamic_cast<UIPopupMenu *>(context);
 	const UINarrowString & sel = pop->GetSelectedName ();
 	
 	//----------------------------------------------------------------------
@@ -1952,7 +1943,7 @@ void SwgCuiToolbar::performPrimaryAttack(NetworkId const & target)
 		if(player->getPrimaryActionIsLocationBased())
 		{
 			const NetworkId &cellNetworkId = ReticleManager::getLastGroundReticleCell();
-			CellObject *cellObject = safe_cast<CellObject *>(NetworkIdManager::getObjectById(cellNetworkId));
+			auto cellObject = dynamic_cast<CellObject *>(NetworkIdManager::getObjectById(cellNetworkId));
 			Vector const &reticlePoint = ReticleManager::getLastGroundReticlePoint();
 			char tmp[512];
 			Vector localPoint;
@@ -2080,84 +2071,81 @@ bool SwgCuiToolbar::performToolbarAction(int slot, bool pet)
 		}
 		if (!compareString.empty())
 		{
-			if(compareString.size() >= 1)
-			{						
-				//Note: command strings from CuiMessageQueueManager have a slash prepended, but clientcommandqueue entries do not
-				const char *compareStringMinusSlash = &compareString.c_str()[1];
-				const uint32 compareCrc = Crc::normalizeAndCalculate(compareStringMinusSlash);
+			//Note: command strings from CuiMessageQueueManager have a slash prepended, but clientcommandqueue entries do not
+			const char *compareStringMinusSlash = &compareString.c_str()[1];
+			const uint32 compareCrc = Crc::normalizeAndCalculate(compareStringMinusSlash);
 
-				bool hasNextAction = false;
-				uint32 sequenceId = CuiCombatManager::getPendingCommand();
-				if(sequenceId)
-				{			
-					const ClientCommandQueueEntry * const entry = ClientCommandQueue::findEntry (sequenceId);
+			bool hasNextAction = false;
+			uint32 sequenceId = CuiCombatManager::getPendingCommand();
+			if(sequenceId)
+			{			
+				const ClientCommandQueueEntry * const entry = ClientCommandQueue::findEntry (sequenceId);
 
-					if (entry)
-					{
-						hasNextAction = true;
-						m_clientOverrideNextActionCommandCrc = compareCrc;
-					}
-				}				
-								// Otherwise, if there is a pending override action, this becomes the next action
-				if(!hasNextAction)
+				if (entry)
 				{
-					if(m_clientOverrideCurrentActionCrc)
+					hasNextAction = true;
+					m_clientOverrideNextActionCommandCrc = compareCrc;
+				}
+			}				
+							// Otherwise, if there is a pending override action, this becomes the next action
+			if(!hasNextAction)
+			{
+				if(m_clientOverrideCurrentActionCrc)
+				{
+					hasNextAction = true;
+					m_clientOverrideNextActionCommandCrc = compareCrc;
+				}
+			}
+			// Otherwise, if the action you want to execute is waiting for cooldown, this becomes the next action
+			if(!hasNextAction)
+			{
+				int group = 0;
+				if(parent->HasProperty(SHADE_COMMAND_GROUP))
+				{						
+					parent->GetPropertyInteger(SHADE_COMMAND_GROUP, group);
+					if(group != 0)
 					{
-						hasNextAction = true;
-						m_clientOverrideNextActionCommandCrc = compareCrc;
+						if(!isCooldownFinished(group))
+						{
+							hasNextAction = true;
+							m_clientOverrideNextActionCommandCrc = compareCrc;
+						}					
 					}
 				}
-				// Otherwise, if the action you want to execute is waiting for cooldown, this becomes the next action
-				if(!hasNextAction)
-				{
-					int group;
-					if(parent->HasProperty(SHADE_COMMAND_GROUP))
-					{						
-						parent->GetPropertyInteger(SHADE_COMMAND_GROUP, group);
-						if(group != 0)
+				int group2 = 0;
+				if(parent->HasProperty(SHADE_COMMAND_GROUP2))
+				{						
+					parent->GetPropertyInteger(SHADE_COMMAND_GROUP2, group2);
+					if(group2 != 0)
+					{
+						if(!isCooldownFinished(group2))
 						{
-							if(!isCooldownFinished(group))
-							{
-								hasNextAction = true;
-								m_clientOverrideNextActionCommandCrc = compareCrc;
-							}					
-						}
-					}
-					int group2;
-					if(parent->HasProperty(SHADE_COMMAND_GROUP2))
-					{						
-						parent->GetPropertyInteger(SHADE_COMMAND_GROUP2, group2);
-						if(group2 != 0)
-						{
-							if(!isCooldownFinished(group2))
-							{
-								hasNextAction = true;
-								m_clientOverrideNextActionCommandCrc = compareCrc;
-							}					
-						}
+							hasNextAction = true;
+							m_clientOverrideNextActionCommandCrc = compareCrc;
+						}					
 					}
 				}
-				// Otherwise, this becomes the current action
-				if(!hasNextAction)
-				{
-					int group;
-					if(parent->HasProperty(SHADE_COMMAND_GROUP))
-					{						
-						parent->GetPropertyInteger(SHADE_COMMAND_GROUP, group);
-						if(group != 0)
+			}
+			// Otherwise, this becomes the current action
+			if(!hasNextAction)
+			{
+				int group = 0;
+				if(parent->HasProperty(SHADE_COMMAND_GROUP))
+				{						
+					parent->GetPropertyInteger(SHADE_COMMAND_GROUP, group);
+					if(group != 0)
+					{
+						// don't set this command as the override cooldown if it has no cooldown
+						// this is to fix an issue where non-combat queue commands with no cooldown
+						// were getting set as the override and never cleaned up
+						int noCooldown = 0;
+						if( !parent->GetPropertyInteger (SHADE_HAS_NO_COOLDOWN, noCooldown) || !noCooldown)
 						{
-							// don't set this command as the override cooldown if it has no cooldown
-							// this is to fix an issue where non-combat queue commands with no cooldown
-							// were getting set as the override and never cleaned up
-							int noCooldown = 0;
-							if( !parent->GetPropertyInteger (SHADE_HAS_NO_COOLDOWN, noCooldown) || !noCooldown)
-							{
-								m_clientOverrideCooldownGroup = group;
-								m_clientOverrideCurrentActionCrc = compareCrc;
-							}
-
-							setCommandExecuting(compareCrc);					
+							m_clientOverrideCooldownGroup = group;
+							m_clientOverrideCurrentActionCrc = compareCrc;
 						}
+
+						setCommandExecuting(compareCrc);					
 					}
 				}
 			}
@@ -2281,11 +2269,9 @@ void SwgCuiToolbar::onCommandRemoved (const CreatureObject::Messages::CommandRem
 	// we don't need to search the pet toolbar items, as they're only set/
 	// unset manually.
 	bool found = false;
-	for (ToolbarItemPaneVector::iterator pit = m_toolbarItemPanes->begin (); pit != m_toolbarItemPanes->end (); ++pit)
+	for(auto& items : *m_toolbarItemPanes)
 	{
-		ToolbarItemPane & items = *pit;
-		
-		for (ToolbarItemPane::iterator it = items.begin (); it != items.end (); ++it)
+		for (auto it = items.begin (); it != items.end (); ++it)
 		{
 			CuiDragInfo * item = it._Ptr;
 			if(!item)
@@ -2342,14 +2328,10 @@ void SwgCuiToolbar::onCommandAdded (const CreatureObject::Messages::CommandAdded
 
 	// we won't look in the pet toolbar item pane here, as we don't
 	// want it to automatically add anything, ever.
-	for (ToolbarItemPaneVector::const_iterator pit = m_toolbarItemPanes->begin (); pit != m_toolbarItemPanes->end (); ++pit)
+	for(const auto& items : *m_toolbarItemPanes)
 	{
-		const ToolbarItemPane & items = *pit;
-		
-		for (ToolbarItemPane::const_iterator it = items.begin (); it != items.end (); ++it)
+		for(const auto& item : items)
 		{
-			const CuiDragInfo & item = *it;
-			
 			if (item.str == slashCommand)
 			{
 				return;
@@ -2366,9 +2348,8 @@ void SwgCuiToolbar::onCommandAdded (const CreatureObject::Messages::CommandAdded
 	
 	//-- look for this skill in the default list to see if it has a default
 	const int count = sizeof (cs_defaultCombatItems) / sizeof (cs_defaultCombatItems [0]);
-	for (int i = 0; i < count; ++i)
+	for(const auto& command : cs_defaultCombatItems)
 	{
-		DefaultCommand const & command = cs_defaultCombatItems[i];
 		if(command.m_waitForGrant && (_stricmp(command.m_command.c_str(), slashCommand.c_str()) == 0))
 		{
 			int slot = command.m_toolBarIndex;			
@@ -2506,7 +2487,7 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 				}
 			}
 
-			for(CooldownTimerMap::iterator cooldowns = s_cooldownTimers.begin(); cooldowns != s_cooldownTimers.end();)
+			for(auto cooldowns = s_cooldownTimers.begin(); cooldowns != s_cooldownTimers.end();)
 			{
 				cooldowns->second.second += elapsedTimeMs;
 
@@ -2544,16 +2525,14 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 			page->GetChildren(olist);
 			int slot = 0;
 			float fadedHeight = 0.0f;
-			for (UIBaseObject::UIObjectList::iterator itObj = olist.begin (); itObj != olist.end (); ++itObj)
-			{			
-				UIBaseObject * obj = *itObj;
-				
+			for(auto obj : olist)
+			{
 				if (!obj->IsA (TUIWidget))
 				{
 					continue;
 				}
 
-				UIWidget *objAsWidget = static_cast<UIWidget *>(obj);
+				auto objAsWidget = dynamic_cast<UIWidget *>(obj);
 
 				if(!objAsWidget->IsA(TUIPie) && (objAsWidget->GetBackgroundOpacity() == 0.0f))  //seperator
 				{
@@ -2628,7 +2607,6 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 					m_lastFadedHeight[heightIndex] = fadedHeight;
 				}
 
-				UISize oldSize = objAsWidget->GetSize();
 				UIPoint toolLocation = toolWidget->GetLocation();
 				UIPoint newLocation = toolLocation + SHADE_WIDGET_TOOL_OFFSET;
 				objAsWidget->SetVisible(true);
@@ -2642,7 +2620,6 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 				
 				if((slot == m_defaultActionSlot) && m_bigShade && !pet)
 				{
-					UISize oldSize2 = m_bigShade->GetSize();
 					UIPoint toolLocation2 = m_bigButton->GetParentWidget()->GetLocation();
 					UIPoint newLocation2 = toolLocation2 + BIG_SHADE_WIDGET_TOOL_OFFSET;
 					m_bigShade->SetVisible(true);
@@ -2711,7 +2688,7 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 
 	std::set<int> populateSlotRequests;
 	
-	for (ToolbarItemPane::iterator it = pane.begin (); it != pane.end () && slot < DEFAULT_ITEM_COUNT_PER_PANE; ++it, ++slot)
+	for (auto it = pane.begin (); it != pane.end () && slot < DEFAULT_ITEM_COUNT_PER_PANE; ++it, ++slot)
 	{
 		UIWidget * const widget = getToolbarItemWidget (slot);
 
@@ -2828,7 +2805,7 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 				if((widget->GetLocation().x < widget->GetParentWidget()->GetSize().x) &&
 					(widget->GetLocation().y < widget->GetParentWidget()->GetSize().y))
 				{				
-					if(compareString.size() >= 1)
+					if(!compareString.empty())
 					{						
 						//Note: command strings from CuiMessageQueueManager have a slash prepended, but clientcommandqueue entries do not
 
@@ -2885,7 +2862,7 @@ void SwgCuiToolbar::update (float deltaTimeSecs)
 						}
 						if ((widget->HasProperty(MIN_RANGE) && widget->HasProperty(MAX_RANGE)) && widget->IsVisible())
 						{
-							float minRange, maxRange;
+							float minRange = NAN, maxRange = NAN;
 							widget->GetPropertyFloat(MIN_RANGE, minRange);
 							widget->GetPropertyFloat(MAX_RANGE, maxRange);
 
@@ -3026,7 +3003,7 @@ void SwgCuiToolbar::doWhiteFlash (const uint32 strCrc)
 						}
 					}
 				}
-				if(compareString.size() >= 1)
+				if(!compareString.empty())
 				{						
 					const char *compareStringMinusSlash = &compareString.c_str()[1];
 					uint32 compareCrc = Crc::normalizeAndCalculate(compareStringMinusSlash);
@@ -3072,13 +3049,13 @@ void SwgCuiToolbar::updateFromSizes ()
 	{
 		const UIBaseObject::UIObjectList & olist = m_volumeKeyBindings->GetChildrenRef ();
 		
-		for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+		for(auto it : olist)
 		{
-			UIBaseObject * const obj = *it;
+			UIBaseObject * const obj = it;
 			if (!obj->IsA (TUIWidget))
 				continue;
-			
-			UIWidget * const wid = safe_cast<UIWidget *>(*it);
+
+			const auto wid = dynamic_cast<UIWidget *>(it);
 			
 			if (wid->IsA (TUIText))
 				continue;
@@ -3187,7 +3164,7 @@ void SwgCuiToolbar::saveSettings         () const
 		CuiSettings::saveInteger (getMediatorDebugName (), buf, numItems);
 
 		int itemIndex = 0;
-		for (ToolbarItemPane::const_iterator iit = items.begin (); iit != items.end (); ++iit, ++itemIndex)
+		for (auto iit = items.begin (); iit != items.end (); ++iit, ++itemIndex)
 		{
 			const CuiDragInfo & item = *iit;
 
@@ -3253,8 +3230,8 @@ void SwgCuiToolbar::loadSettings         ()
 	}
 
 	{
-		int locationX;
-		int locationY;
+		int locationX = 0;
+		int locationY = 0;
 		if (CuiSettings::loadInteger(getMediatorDebugName(), Settings::toolbarLocationX, locationX) &&
 			CuiSettings::loadInteger(getMediatorDebugName(), Settings::toolbarLocationY, locationY))
 		{
@@ -3283,7 +3260,7 @@ void SwgCuiToolbar::loadSettings         ()
 	int firstNumItems = 0;
 
 	int pane = 0;
-	for (ToolbarItemPaneVector::iterator it = m_toolbarItemPanes->begin (); it != m_toolbarItemPanes->end (); ++it, ++pane)
+	for (auto it = m_toolbarItemPanes->begin (); it != m_toolbarItemPanes->end (); ++it, ++pane)
 	{
 		ToolbarItemPane & items = *it;
 
@@ -3309,7 +3286,7 @@ void SwgCuiToolbar::loadSettings         ()
 		items.resize (DEFAULT_ITEM_COUNT_PER_PANE);
 				
 		int itemIndex = 0;
-		for (ToolbarItemPane::iterator iit = items.begin (); iit != items.end (); ++iit, ++itemIndex)
+		for (auto iit = items.begin (); iit != items.end (); ++iit, ++itemIndex)
 		{
 			CuiDragInfo & item = *iit;
 			
@@ -3378,12 +3355,11 @@ void SwgCuiToolbar::updateKeyBindings ()
 
 	int index = 0;
 
-	for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+	for(auto obj : olist)
 	{
-		UIBaseObject * const obj = *it;
 		if (obj->IsA (TUIText))
 		{
-			UIText * const text = safe_cast<UIText *>(obj);
+			const auto text = dynamic_cast<UIText *>(obj);
 
 			snprintf (cmdname, cmdname_size, "CMD_uiToolbarSlot%02d", index);
 			bindStr.clear ();
@@ -3664,8 +3640,8 @@ UIPage *SwgCuiToolbar::getPageFromPool(UIPage *original, std::vector<UIPage *> &
 {
 	if(index >= static_cast<int>(duplicates.size()))
 	{
-		UIPage * const dupe = NON_NULL (safe_cast<UIPage *>(original->DuplicateObject ()));
-		UIPage &parent = toOriginalParent ? *(safe_cast<UIPage *>(original->GetParent())) : getPage();
+		UIPage * const dupe = NON_NULL (dynamic_cast<UIPage *>(original->DuplicateObject ()));
+		UIPage &parent = toOriginalParent ? *(dynamic_cast<UIPage *>(original->GetParent())) : getPage();
 		parent.AddChild (dupe);		
 		parent.MoveChild (dupe, UIBaseObject::Top);
 		dupe->SetOpacity(0.8f);
@@ -3686,9 +3662,8 @@ UIPage *SwgCuiToolbar::getPageFromPool(UIPage *original, std::vector<UIPage *> &
 
 void SwgCuiToolbar::resetAllPagesInPool(std::vector<UIPage *> const &duplicates, int &index)
 {
-	for(std::vector<UIPage *>::const_iterator i = duplicates.begin(); i != duplicates.end(); ++i)
+	for(auto page : duplicates)
 	{
-		UIPage *page = *i;
 		page->SetVisible(false);
 	}
 	index = 0;
@@ -3698,9 +3673,8 @@ void SwgCuiToolbar::resetAllPagesInPool(std::vector<UIPage *> const &duplicates,
 
 void SwgCuiToolbar::deleteAllPagesInPool(std::vector<UIPage *> &duplicates)
 {
-	for(std::vector<UIPage *>::iterator i = duplicates.begin(); i != duplicates.end(); ++i)
+	for(auto page : duplicates)
 	{
-		UIPage *page = *i;
 		page->GetParent()->RemoveChild(page);		
 	}
 	duplicates.clear();
@@ -3735,6 +3709,7 @@ bool SwgCuiToolbar::isMeleeWeapon(int weaponType)
 		case Command::CWT_Unarmed:
 		case Command::CWT_Polearm:
 				return true;
+			default: ;
 	}
 
 	return false;
@@ -3801,6 +3776,7 @@ bool SwgCuiToolbar::isRangedWeapon(int weaponType)
 		case Command::CWT_Unarmed:
 		case Command::CWT_Polearm:
 				return false;
+		default: ;
 	}
 
 	return false;
@@ -3827,6 +3803,7 @@ bool SwgCuiToolbar::isLightsaberWeapon(int weaponType)
 		case Command::CWT_Unarmed:
 		case Command::CWT_Polearm:
 			return false;
+		default: ;
 	}
 	return false;
 }
@@ -4394,7 +4371,7 @@ void SwgCuiToolbar::updateCommandRange(int slot, bool pet)
 		if (cmd.m_targetType == Command::CTT_None || cmd.m_targetType == Command::CTT_Location || cmd.m_targetType == Command::CTT_All)
 			needRangeCheck = false;
 
-		if (needRangeCheck && (minWeaponRange != -1 || minWeaponRange != -1))
+		if (needRangeCheck && (minWeaponRange != -1 || maxWeaponRange != -1))
 		{
 			widget->SetPropertyFloat(MIN_RANGE, minWeaponRange);
 			widget->SetPropertyFloat(MAX_RANGE, maxWeaponRange);
@@ -4440,7 +4417,7 @@ void SwgCuiToolbar::onPetToggledCommandsChanged(const PlayerObject & payload)
 	PlayerObject const * const player = Game::getPlayerObject();
 	if (player && (player == &payload)) 
 	{
-		for(unsigned i = 0; i < MAX_PET_TOOLBAR_BUTTONS; ++i)
+		for(int i = 0; i < MAX_PET_TOOLBAR_BUTTONS; ++i)
 		{
 			updatePetToolbarToggle(i);
 		}
@@ -4461,7 +4438,7 @@ void SwgCuiToolbar::onPetCommandsChanged(const PlayerObject & payload)
 	{
 		std::vector<std::string> const &commands = player->getPetCommands();
 		bool atLeastOneCommand = false;
-		for(unsigned i = 0; i < MAX_PET_TOOLBAR_BUTTONS; ++i)
+		for(size_t i = 0; i < MAX_PET_TOOLBAR_BUTTONS; ++i)
 		{
 			// if we're still at a valid index, add the new command to the current toolbar slot.
 			if(i < commands.size())
@@ -4483,7 +4460,7 @@ void SwgCuiToolbar::onPetCommandsChanged(const PlayerObject & payload)
 					backgroundEntry->SetColor(DISABLED_TOOLBAR_COLOR);
 				}
 				// build the command if it's valid
-				else if(commands[i] != "")
+				else if(!commands[i].empty())
 				{
 					CuiDragInfo newItem;
 					newItem.type    = CuiDragInfoTypes::CDIT_command;
@@ -4522,7 +4499,7 @@ void SwgCuiToolbar::updatePetToolbarToggle(int const slot)
 
 	std::vector<std::string> const &commands = player->getPetToggledCommands();
 
-	if(info && info->type == CuiDragInfoTypes::CDIT_command && info->str != "")
+	if(info && info->type == CuiDragInfoTypes::CDIT_command && !info->str.empty())
 	{
 		for(unsigned j = 0; j < commands.size(); ++j)
 		{

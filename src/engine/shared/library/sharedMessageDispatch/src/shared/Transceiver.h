@@ -247,7 +247,7 @@ pendingRemoves()
 //---------------------------------------------------------------------
 
 template<typename MessageType, typename IdentifierType>
-inline Transceiver<MessageType, IdentifierType>::~Transceiver()
+Transceiver<MessageType, IdentifierType>::~Transceiver()
 {
 	typename std::vector<Transceiver<MessageType, IdentifierType> *>::iterator i;
 	typename std::set<Transceiver<MessageType, IdentifierType> *>::iterator f;
@@ -300,7 +300,7 @@ inline Transceiver<MessageType, IdentifierType>::~Transceiver()
 //-----------------------------------------------------------------------
 
 template<typename MessageType, typename IdentifierType>
-inline void Transceiver<MessageType, IdentifierType>::addReceiver(Transceiver<MessageType, IdentifierType> * target)
+void Transceiver<MessageType, IdentifierType>::addReceiver(Transceiver<MessageType, IdentifierType> * target)
 {
 	// do not add a transceiver to the receiver list if this transceiver
 	// is busy dispatching a message. 
@@ -322,7 +322,7 @@ inline void Transceiver<MessageType, IdentifierType>::addReceiver(Transceiver<Me
 //---------------------------------------------------------------------
 
 template<typename MessageType, typename IdentifierType>
-inline void Transceiver<MessageType, IdentifierType>::emitMessage(MessageType message) const
+void Transceiver<MessageType, IdentifierType>::emitMessage(MessageType message) const
 {
 	
 	//-----------------------------------------------------------------------
@@ -447,7 +447,7 @@ inline void Transceiver<MessageType, IdentifierType>::emitMessage(MessageType me
 //---------------------------------------------------------------------
 
 template<typename MessageType, typename IdentifierType>
-inline void Transceiver<MessageType, IdentifierType>::listenForAny()
+void Transceiver<MessageType, IdentifierType>::listenForAny()
 {
 	GlobalReceiverInfo & info = getGlobalReceiverInfo(typeid(this));
 
@@ -473,7 +473,7 @@ inline void Transceiver<MessageType, IdentifierType>::listenForAny()
 //-----------------------------------------------------------------------
 
 template<typename MessageType, typename IdentifierType>
-inline void Transceiver<MessageType, IdentifierType>::removeReceiver(Transceiver<MessageType, IdentifierType> * target)
+void Transceiver<MessageType, IdentifierType>::removeReceiver(Transceiver<MessageType, IdentifierType> * target)
 {
 	if(locked)
 	{
@@ -538,7 +538,7 @@ private:
 //---------------------------------------------------------------------
 
 template<typename MessageType, typename ObjectType, typename IdentifierType>
-inline OwnedTransceiver<MessageType, ObjectType, IdentifierType>::OwnedTransceiver(Transceiver<MessageType, IdentifierType> * s, ObjectType & o) :
+OwnedTransceiver<MessageType, ObjectType, IdentifierType>::OwnedTransceiver(Transceiver<MessageType, IdentifierType> * s, ObjectType & o) :
 source(s),
 owner(o),
 callback(0)
@@ -548,7 +548,7 @@ callback(0)
 //-----------------------------------------------------------------------
 
 template<typename MessageType, typename ObjectType, typename IdentifierType>
-inline OwnedTransceiver<MessageType, ObjectType, IdentifierType>::~OwnedTransceiver()
+OwnedTransceiver<MessageType, ObjectType, IdentifierType>::~OwnedTransceiver()
 {
 }
 
@@ -576,7 +576,7 @@ public:
 	}
 
 	template<typename MessageType, typename ObjectType>
-		inline void connect(ObjectType & object, void (ObjectType::*callback)(MessageType))
+		void connect(ObjectType & object, void (ObjectType::*callback)(MessageType))
 	{
 		OwnedTransceiver<MessageType, ObjectType> * target = new OwnedTransceiver<MessageType, ObjectType>(0, object);
 		receivers.push_back(target);
@@ -586,7 +586,7 @@ public:
 	}
 
 	template<typename MessageType, typename ObjectType, typename IdentifierType>
-		inline void connect(ObjectType & object, void (ObjectType::*callback)(MessageType), IdentifierType *)
+		void connect(ObjectType & object, void (ObjectType::*callback)(MessageType), IdentifierType *)
 	{
 		OwnedTransceiver<MessageType, ObjectType, IdentifierType> * target = new OwnedTransceiver<MessageType, ObjectType, IdentifierType>(0, object);
 		receivers.push_back(target);

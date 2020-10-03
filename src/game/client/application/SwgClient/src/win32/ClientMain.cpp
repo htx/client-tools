@@ -84,14 +84,12 @@
 //#include "libMozilla/libMozilla.h"
 
 
-#include "Resource.h"
+#include "resource.h"
 
 #include "sharedGame/PlatformFeatureBits.h"
 
 #include <dinput.h>
-#include <string>
 #include <ctime>
-#include <cstdio>
 
 extern void externalCommandHandler(const char*);
 
@@ -381,13 +379,17 @@ int ClientMain(
 			//-- save options
 			// @todo: write a flexible options load/save system, both of ours suck
 			CuiWorkspace * workspace = CuiWorkspace::getGameWorkspace();
-			if (workspace != NULL)
+			
+			if (workspace != nullptr)
 			{
 				workspace->saveAllSettings();
-				SwgCuiChatWindow * chatWindow = safe_cast<SwgCuiChatWindow *>(workspace->findMediatorByType(typeid(SwgCuiChatWindow)));
-				if (chatWindow != NULL)
+
+				auto* chatWindow = dynamic_cast<SwgCuiChatWindow *>(workspace->findMediatorByType(typeid(SwgCuiChatWindow)));
+				
+				if (chatWindow != nullptr)
 					chatWindow->saveSettings();
 			}
+			
 			CuiSettings::save();
 			CuiChatHistory::save();
 			CurrentUserOptionManager::save();
@@ -402,6 +404,7 @@ int ClientMain(
 
 	if (semaphore)
 		CloseHandle(semaphore);
+	
 	return 0;
 
 }

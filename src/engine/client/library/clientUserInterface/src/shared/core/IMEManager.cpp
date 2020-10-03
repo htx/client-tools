@@ -65,7 +65,7 @@
 #define IMEID_CHS_VER42	( LANG_CHS | MAKEIMEVERSION( 4, 2 ) )	// MSPY2	// Win2k/WinME
 #define IMEID_CHS_VER53	( LANG_CHS | MAKEIMEVERSION( 5, 3 ) )	// MSPY3	// WinXP
 
-	static const int MAX_CANDLIST;
+//	static const int MAX_CANDLIST;
 
 	enum IMESTATE
 	{

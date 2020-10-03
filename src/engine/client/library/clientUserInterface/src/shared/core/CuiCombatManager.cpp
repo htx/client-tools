@@ -2693,19 +2693,19 @@ void CuiCombatManager::update  (float deltaTime)
 
 void CuiCombatManager::updateDeferredCombatActions(float deltaTime)
 {
-	DelayedCombatActionMap::iterator itr = s_delayedDamageAction.begin();
+	auto itr = s_delayedDamageAction.begin();
+	
 	while (itr != s_delayedDamageAction.end())
 	{
 		bool foundExpiredActions = false;
-
 		NetworkId const &defenderId = ((*itr).first).second;
-
 		CombatActionList &combatActions = (*itr).second;
+		auto combatActionItr = combatActions.begin();
 		
-		CombatActionList::iterator combatActionItr = combatActions.begin();
 		while (combatActionItr != combatActions.end())
 		{
 			DelayedCombatActionObject &combatActionObject = (*combatActionItr);
+			
 			if (combatActionObject.m_elapsedTime < 0.f)
 			{
 				// make sure that the action gets at least one full frame before being processed
@@ -2714,6 +2714,7 @@ void CuiCombatManager::updateDeferredCombatActions(float deltaTime)
 			else
 			{
 				combatActionObject.m_elapsedTime += deltaTime;
+				
 				if (combatActionObject.m_elapsedTime >= s_maxDelayForCombatAction)
 				{
 					foundExpiredActions = true;
@@ -2722,7 +2723,8 @@ void CuiCombatManager::updateDeferredCombatActions(float deltaTime)
 
 					// only warn once per attacker per session
 					static std::map<NetworkId, int> objectsReported;
-					std::map<NetworkId, int>::iterator reportItr = objectsReported.find(attackerId);
+					auto reportItr = objectsReported.find(attackerId);
+					
 					if (reportItr == objectsReported.end())
 					{
 						Object const * const attackerObj = NetworkIdManager::getObjectById(attackerId);
@@ -2750,11 +2752,14 @@ void CuiCombatManager::updateDeferredCombatActions(float deltaTime)
 		// if there are no more combat actions for this key, remove it
 		combatActions = (*itr).second;
 
-		if (combatActions.begin() == combatActions.end())
+		if (combatActions.empty())
 		{
-			s_delayedDamageAction.erase(itr);
+			itr = s_delayedDamageAction.erase(itr);
 		}
-		++itr;
+		else
+		{
+			++itr;
+		}
 	}
 }
 
@@ -2763,13 +2768,14 @@ void CuiCombatManager::updateDeferredCombatActions(float deltaTime)
 void CuiCombatManager::removeCompletedCombatAction(const NetworkId & attackerId, const NetworkId & defenderId)
 {
 	CombatActionPair key = std::make_pair(attackerId, defenderId);
-
-	DelayedCombatActionMap::iterator itr = s_delayedDamageAction.find(key);
+	auto itr = s_delayedDamageAction.find(key);
+	
 	if (itr != s_delayedDamageAction.end())
 	{
 		processCombatActions(itr, defenderId);
 
 		CombatActionList &combatActions = (*itr).second;
+		
 		if (combatActions.begin() == combatActions.end())
 		{
 			s_delayedDamageAction.erase(itr);

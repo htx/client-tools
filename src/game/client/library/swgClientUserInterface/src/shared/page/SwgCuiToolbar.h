@@ -12,14 +12,11 @@
 
 #include "clientGame/ClientCommandQueue.h"
 #include "clientGame/Game.h"
-#include "../../../../../../engine/shared/library/sharedFoundation/include/public/sharedFoundation/NetworkId.h"
 #include "sharedMessageDispatch/Receiver.h"
-#include "sharedObject/CachedNetworkId.h"
 #include "swgClientUserInterface/SwgCuiLockableMediator.h"
 #include "UITypes.h"
 #include "UILowerString.h"
 
-#include <map>
 #include <vector>
 
 
@@ -186,6 +183,7 @@ private:
 
 private:
 	class SwgCuiToolbarAction;
+
 	typedef stdvector<CuiDragInfo>::fwd     ToolbarItemPane;
 	typedef stdvector<ToolbarItemPane>::fwd ToolbarItemPaneVector;
 
@@ -283,7 +281,7 @@ private:
 	stdvector<UIPage *>::fwd      m_wrongWeaponTypePages;
 	int                           m_nextWrongWeaponTypePage;
 	
-	UIEffector *         m_effectorCurrent;
+	UIEffector *				  m_effectorCurrent;
 
 	float *                       m_lastFadedHeight;
 

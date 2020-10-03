@@ -15,6 +15,7 @@
 #include "clientGame/Game.h"
 #include "clientUserInterface/CuiDragInfo.h"
 #include "clientUserInterface/CuiInputNames.h"
+#include "math.h"
 #include "sharedFoundation/MessageQueue.h"
 #include "sharedFoundation/MessageQueueDataTemplate.h"
 #include "sharedInputMap/InputMap_Command.h"
@@ -76,12 +77,13 @@ void CuiMessageQueueManager::scanMessageQueue ()
 
 //----------------------------------------------------------------------
 
-bool CuiMessageQueueManager::executeCommandByName   (const std::string & str)
+bool CuiMessageQueueManager::executeCommandByName (const std::string & str)
 {
 	InputMap * const imap = Game::getGameInputMap ();
+	
 	if (imap)
 	{
-		if (imap->executeCommandByName (str.c_str (), 0, 0, 0))
+		if (imap->executeCommandByName (str.c_str (), nullptr, nullptr, nullptr))
 			return true;
 		
 		WARNING (true, ("CuiMessageQueueManager failed to execute command by name: '%s'", str.c_str ()));
@@ -112,6 +114,7 @@ bool CuiMessageQueueManager::executeCommandByString (const std::string & str, bo
 
 	Messages::CommandParserRequest::Payload payload (transformed, false);
 	Transceivers::commandParserRequest.emitMessage (payload);
+	
 	return true;
 }
 
@@ -229,9 +232,10 @@ void CuiMessageQueueManager::scanMessageQueue (MessageQueue & queue)
 {
 	for (int i = 0; i < queue.getNumberOfMessages (); i++)
 	{
-		int   message;
-		float value;	
-		MessageQueue::Data * data = 0;
+		int   message = 0;
+		float value = NAN;	
+		MessageQueue::Data * data = nullptr;
+		
 		queue.getMessage (i, &message, &value, &data);
 
 		typedef MessageQueueDataTemplate<std::string> MessageQueueDataString;
@@ -247,7 +251,8 @@ void CuiMessageQueueManager::scanMessageQueue (MessageQueue & queue)
 				const MessageQueueDataString * const mqds = safe_cast<MessageQueueDataString *>(data);
 				NOT_NULL (mqds);
 
-				const std::string & str = mqds->getData ();
+				const std::string & str = mqds->getData();
+				
 				if (!executeCommandByString (str, true))
 					WARNING (true, ("CM_clientCommandParser failed for command '%s'", str.c_str ()));
 
@@ -257,7 +262,7 @@ void CuiMessageQueueManager::scanMessageQueue (MessageQueue & queue)
 					queue.clearMessage     (i);
 						
 					delete data;
-					data = 0;
+					data = nullptr;
 				}
 			}
 		}

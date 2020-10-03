@@ -10,26 +10,24 @@
 #include "sharedFile/FirstSharedFile.h"
 #include "sharedFile/TreeFile_SearchNode.h"
 
-#include "sharedCompression/Compressor.h"
 #include "sharedCompression/ZlibCompressor.h"
-#include "sharedDebug/DebugFlags.h"
 #include "sharedFile/FileStreamerFile.h"
 #include "sharedFile/FileStreamer.h"
 #include "sharedFile/MemoryFile.h"
 #include "sharedFile/ZlibFile.h"
 #include "sharedFoundation/ConfigFile.h"
 #include "sharedFoundation/Crc.h"
-#include "sharedFoundation/MemoryBlockManager.h"
 #include "sharedFoundation/Os.h"
 #include "sharedFoundation/PersistentCrcString.h"
 #include "sharedFoundation/PointerDeleter.h"
 #include "sharedFoundation/Production.h"
 #include "sharedFoundation/TemporaryCrcString.h"
-#include "sharedSynchronization/Mutex.h"
 
 #include <algorithm>
 #include <map>
 #include <vector>
+
+#include "../../../sharedDebug/src/shared/DebugFlags.h"
 
 // ======================================================================
 
@@ -53,7 +51,7 @@ TreeFile::SearchNode::~SearchNode(void)
 
 TreeFile::SearchPath::SearchPath(int priority, const char *path)
 : SearchNode(priority),
-	m_pathName(NULL),
+	m_pathName(nullptr),
 	m_pathNameLength(0)
 {
 	NOT_NULL(path);
@@ -78,14 +76,14 @@ TreeFile::SearchPath::SearchPath(int priority, const char *path)
 
 // ----------------------------------------------------------------------
 
-TreeFile::SearchPath::~SearchPath(void)
+TreeFile::SearchPath::~SearchPath()
 {
 	delete [] m_pathName;
 }
 
 // ----------------------------------------------------------------------
 
-void TreeFile::SearchPath::debugPrint(void)
+void TreeFile::SearchPath::debugPrint()
 {
 	DEBUG_REPORT_PRINT(true, ("  %d=priority %s=path\n", getPriority(), m_pathName));
 	DEBUG_OUTPUT_STATIC_VIEW("Foundation\\Treefile", ("  %d=priority %s=path\n", getPriority(), m_pathName));
@@ -142,10 +140,14 @@ void TreeFile::SearchPath::getPathName(const char *fileName, char *outPathName, 
 AbstractFile *TreeFile::SearchPath::open(const char *fileName, AbstractFile::PriorityType priority, bool &)
 {
 	char buffer[Os::MAX_PATH_LENGTH];
+	
 	makeAbsolutePath(fileName, buffer);
+	
 	FileStreamer::File *file = FileStreamer::open(buffer);
+	
 	if (!file)
-		return NULL;
+		return nullptr;
+	
 	return new FileStreamerFile(priority, *file);
 }
 
@@ -174,10 +176,17 @@ void TreeFile::SearchAbsolute::debugPrint(void)
 bool TreeFile::SearchAbsolute::exists(const char *fileName, bool &) const
 {
 	std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
-	fileNamePath += fileName;
+	bool exists = FileStreamer::exists(fileName);
+
+	if (!exists && !fileNamePath.empty())
+	{
+		fileNamePath += fileName;
+		exists = FileStreamer::exists(fileNamePath.c_str());
+	}
 
 	DEBUG_FATAL(strlen(fileNamePath.c_str()) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileNamePath.c_str()) + 1, Os::MAX_PATH_LENGTH));
-	return FileStreamer::exists(fileNamePath.c_str());
+
+	return exists;
 }
 
 // ----------------------------------------------------------------------
@@ -185,10 +194,17 @@ bool TreeFile::SearchAbsolute::exists(const char *fileName, bool &) const
 int TreeFile::SearchAbsolute::getFileSize(const char *fileName, bool &) const
 {
 	std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
-	fileNamePath += fileName;
+	int fileSize = FileStreamer::getFileSize(fileName);
 
+	if (!fileSize && !fileNamePath.empty())
+	{
+		fileNamePath += fileName;
+		fileSize = FileStreamer::getFileSize(fileNamePath.c_str());
+	}
+	
 	DEBUG_FATAL(strlen(fileNamePath.c_str()) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileNamePath.c_str()) + 1, Os::MAX_PATH_LENGTH));
-	return FileStreamer::getFileSize(fileNamePath.c_str());
+
+	return fileSize;
 }
 
 // ----------------------------------------------------------------------
@@ -215,12 +231,15 @@ AbstractFile *TreeFile::SearchAbsolute::open(const char *fileName, AbstractFile:
 	DEBUG_FATAL(strlen(fileName) + 1 > Os::MAX_PATH_LENGTH, ("Filename too long %d/%d", strlen(fileName) + 1, Os::MAX_PATH_LENGTH));
 
 	std::string fileNamePath = ConfigFile::getKeyString("SharedFile", "relativeAbsolutePath", "");
-	fileNamePath += fileName;
+	FileStreamer::File *file = FileStreamer::open(fileName);
 
-	FileStreamer::File *file = FileStreamer::open(fileNamePath.c_str());
-	if (!file)
-		return NULL;
-	return new FileStreamerFile(priority, *file);
+	if (!file && !fileNamePath.empty())
+	{
+		fileNamePath += fileName;
+		file = FileStreamer::open(fileNamePath.c_str());
+	}
+
+	return !file ? nullptr : new FileStreamerFile(priority, *file);
 }
 
 // ======================================================================
@@ -233,7 +252,7 @@ bool TreeFile::SearchTree::validate(const char *fileName)
 		return false;
 
 	// read the header
-	Header header;
+	Header header{};
 	const int readPos = file->read(0, &header, sizeof(header), AbstractFile::PriorityData);
 
 	// close the file
@@ -274,7 +293,7 @@ TreeFile::SearchTree::SearchTree(int priority, const char *fileName)
 	DEBUG_FATAL(!m_treeFile, ("failed to open TreeFile %s", m_treeFileName));
 
 	// read the header (the first 32 bytes of the tree file) 
-	Header header;
+	Header header{};
 	m_treeFile->read(0, &header, sizeof(header), AbstractFile::PriorityData);
 	DEBUG_FATAL(header.token != TAG_TREE, ("file does not look like a tree file"));
 
@@ -520,7 +539,7 @@ bool TreeFile::SearchTOC::validate(const char *fileName)
 		return false;
 
 	// read the header
-	Header header;
+	Header header{};
 	const int readPos = file->read(0, &header, sizeof(header), AbstractFile::PriorityData);
 
 	// close the file
@@ -563,7 +582,7 @@ TreeFile::SearchTOC::SearchTOC(int priority, const char *fileName)
 	DEBUG_FATAL(!m_TOCFile, ("failed to open TOCFile %s", m_TOCFileName));
 
 	// read the header
-	Header header;
+	Header header{};
 	m_TOCFile->read(0, &header, sizeof(header), AbstractFile::PriorityData);
 	DEBUG_FATAL(header.token != TAG_TOC, ("file does not look like a table of contents file"));
 
@@ -575,140 +594,142 @@ TreeFile::SearchTOC::SearchTOC(int priority, const char *fileName)
 
 	// set the read position to after the header (beginning of patch tree names)
 	int readPosition = isizeof(Header);
-	uint32 version = header.version;
+	const uint32 version = header.version;
+	
 	switch (version)
 	{
 		case TAG_0001:
+		{
+			m_tableOfContents = new TableOfContentsEntry [m_numberOfFiles];
+			m_fileNames = new char [header.uncompSizeOfNameBlock];
+			m_treeFileNames = new char [header.sizeOfTreeFileNameBlock];
+			m_treeFiles = new FileStreamer::File* [header.numberOfTreeFiles];
+			m_treeFileNamePointers = new char* [header.numberOfTreeFiles];
+
 			{
-				m_tableOfContents = new TableOfContentsEntry [m_numberOfFiles];
-				m_fileNames = new char [header.uncompSizeOfNameBlock];
-				m_treeFileNames = new char [header.sizeOfTreeFileNameBlock];
-				m_treeFiles = new FileStreamer::File* [header.numberOfTreeFiles];
-				m_treeFileNamePointers = new char* [header.numberOfTreeFiles];
+				// get any paths we need to check to open the tree files
+				std::vector<const char *> treePaths;
+				char *treePathBuffer = new char[Os::MAX_PATH_LENGTH];
+				
+				// add on the current path (an empty string) to the list of paths
+				char *emptyPath = new char('\0');
+				treePaths.push_back(emptyPath);
 
+				// add on all paths in config file
+				const char * result = nullptr;
+				
+				for (int index = 0; (result = ConfigFile::getKeyString("SharedFile", "TOCTreePath", index, nullptr)) != nullptr; ++index)
+					treePaths.push_back(result);
+
+				// read in the tree file names and open the files
+				const int bytesRead = m_TOCFile->read(readPosition, m_treeFileNames, header.sizeOfTreeFileNameBlock, AbstractFile::PriorityData);
+				DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfTreeFileNameBlock), ("failed to read tree file name entries"));
+				readPosition += bytesRead;
+
+				for (int treeFileNameIndex = 0, treeFileNameReadPosition = 0; treeFileNameIndex < static_cast<int>(header.numberOfTreeFiles); treeFileNameIndex++)
 				{
-					// get any paths we need to check to open the tree files
-					std::vector<const char *> treePaths;
-					char *treePathBuffer = new char[Os::MAX_PATH_LENGTH];
-					
-					// add on the current path (an empty string) to the list of paths
-					char *emptyPath = new char('\0');
-					treePaths.push_back(emptyPath);
+					m_treeFileNamePointers[treeFileNameIndex] = (m_treeFileNames + treeFileNameReadPosition);
+					m_treeFiles[treeFileNameIndex] = nullptr;						
 
-					// add on all paths in config file
-					const char * result;
-					for (int index = 0; (result = ConfigFile::getKeyString("SharedFile", "TOCTreePath", index, NULL)) != NULL; ++index)
-						treePaths.push_back(result);
-
-					// read in the tree file names and open the files
-					const int bytesRead = m_TOCFile->read(readPosition, m_treeFileNames, header.sizeOfTreeFileNameBlock, AbstractFile::PriorityData);
-					DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfTreeFileNameBlock), ("failed to read tree file name entries"));
-					readPosition += bytesRead;
-
-					for (int treeFileNameIndex = 0, treeFileNameReadPosition = 0; treeFileNameIndex < static_cast<int>(header.numberOfTreeFiles); treeFileNameIndex++)
+					// try to open the tree file in each of the relative paths 
+					for(const auto* treePath : treePaths)
 					{
-						m_treeFileNamePointers[treeFileNameIndex] = (m_treeFileNames + treeFileNameReadPosition);
-						m_treeFiles[treeFileNameIndex] = NULL;						
+						strcpy(treePathBuffer, treePath);
+						strcat(treePathBuffer, (m_treeFileNames + treeFileNameReadPosition));
 
-						// try to open the tree file in each of the relative paths 
-						for (std::vector<const char *>::const_iterator pathIter = treePaths.begin(); pathIter != treePaths.end(); ++pathIter)
+						if (FileStreamer::exists (treePathBuffer))
 						{
-							strcpy(treePathBuffer, *pathIter);
-							strcat(treePathBuffer, (m_treeFileNames + treeFileNameReadPosition));
-
-							if (FileStreamer::exists (treePathBuffer))
-							{
-								m_treeFiles[treeFileNameIndex] = FileStreamer::open(treePathBuffer, true);
-								break;
-							}
+							m_treeFiles[treeFileNameIndex] = FileStreamer::open(treePathBuffer, true);
+							break;
 						}
-
-						FATAL(!m_treeFiles[treeFileNameIndex], ("failed to open tree file index %d, offset %d, name %s", treeFileNameIndex, treeFileNameReadPosition, m_treeFileNames + treeFileNameReadPosition));
-
-						treeFileNameReadPosition += (strlen(m_treeFileNames + treeFileNameReadPosition) + 1);
 					}
 
-					delete [] treePathBuffer;
-					delete emptyPath;
+					FATAL(!m_treeFiles[treeFileNameIndex], ("failed to open tree file index %d, offset %d, name %s", treeFileNameIndex, treeFileNameReadPosition, m_treeFileNames + treeFileNameReadPosition));
+
+					treeFileNameReadPosition += strlen(m_treeFileNames + treeFileNameReadPosition) + 1;
 				}
 
-				// prepare table of contents by zeroing out the total size of data to be stored
-				const int tableOfContentsSize = isizeof(TableOfContentsEntry) * m_numberOfFiles;
-				if (isCompressed(header.tocCompressor))
-				{
-					// create temp buffer to store the compressed TOC entry data
-					byte *entryBuffer = new byte[header.sizeOfTOC];
-
-					// read the compressed table of contents data into buffer
-					const int bytesRead = m_TOCFile->read(readPosition, entryBuffer, header.sizeOfTOC, AbstractFile::PriorityData);
-					DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfTOC), ("failed to read tableOfContents entries"));
-					readPosition += bytesRead;
-
-					// decompress data into toc
-					static_cast<void>(ZlibCompressor().expand(entryBuffer, header.sizeOfTOC, m_tableOfContents, tableOfContentsSize));
-
-					delete [] entryBuffer;
-				}
-				else
-				{
-					// read the uncompressed table of contents data
-					const int bytesRead = m_TOCFile->read(readPosition, m_tableOfContents, tableOfContentsSize, AbstractFile::PriorityData);
-					DEBUG_FATAL(bytesRead != tableOfContentsSize, ("failed to read tableOfContents entries"));
-					readPosition += bytesRead;
-				}
-
-				// After the TableOfContents is read into memory, the fileNameLengths must be changed to fileNameOffsets
-				{
-					int currentFileNameOffset = 0;
-					int currentFileNameLength = 0;
-
-					for (uint32 i = 0; i < m_numberOfFiles; ++i)
-					{
-						currentFileNameLength = m_tableOfContents[i].fileNameOffset;
-						m_tableOfContents[i].fileNameOffset = currentFileNameOffset;
-						// + 1 for the null termination
-						currentFileNameOffset += (currentFileNameLength + 1);
-					}
-				}
-
-				if (isCompressed(header.fileNameBlockCompressor))
-				{
-					// create temp buffer to store the compressed name block data
-					byte *nameBuffer  = new byte[header.uncompSizeOfNameBlock];
-
-					// read the compressed table of contents data into buffer
-					const int bytesRead = m_TOCFile->read(readPosition, nameBuffer, header.sizeOfNameBlock, AbstractFile::PriorityData);
-					UNREF(bytesRead);
-					DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfNameBlock), ("failed to read file name block"));
-
-					// decompress data into tocFileNames
-					static_cast<void>(ZlibCompressor().expand(nameBuffer, header.sizeOfNameBlock, m_fileNames, header.uncompSizeOfNameBlock));
-
-					delete [] nameBuffer;
-				}
-				else
-				{
-					// read the uncompressed name block data
-					const int bytesRead = m_TOCFile->read(readPosition, m_fileNames, header.sizeOfNameBlock, AbstractFile::PriorityData);
-					UNREF(bytesRead);
-					DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfNameBlock), ("failed to read file name block"));
-				}
-
+				delete [] treePathBuffer;
+				delete emptyPath;
 			}
-			break;
+
+			// prepare table of contents by zeroing out the total size of data to be stored
+			const int tableOfContentsSize = isizeof(TableOfContentsEntry) * m_numberOfFiles;
+			if (isCompressed(header.tocCompressor))
+			{
+				// create temp buffer to store the compressed TOC entry data
+				byte *entryBuffer = new byte[header.sizeOfTOC];
+
+				// read the compressed table of contents data into buffer
+				const int bytesRead = m_TOCFile->read(readPosition, entryBuffer, header.sizeOfTOC, AbstractFile::PriorityData);
+				DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfTOC), ("failed to read tableOfContents entries"));
+				readPosition += bytesRead;
+
+				// decompress data into toc
+				static_cast<void>(ZlibCompressor().expand(entryBuffer, header.sizeOfTOC, m_tableOfContents, tableOfContentsSize));
+
+				delete [] entryBuffer;
+			}
+			else
+			{
+				// read the uncompressed table of contents data
+				const int bytesRead = m_TOCFile->read(readPosition, m_tableOfContents, tableOfContentsSize, AbstractFile::PriorityData);
+				DEBUG_FATAL(bytesRead != tableOfContentsSize, ("failed to read tableOfContents entries"));
+				readPosition += bytesRead;
+			}
+
+			// After the TableOfContents is read into memory, the fileNameLengths must be changed to fileNameOffsets
+			{
+				int currentFileNameOffset = 0;
+				int currentFileNameLength = 0;
+
+				for (uint32 i = 0; i < m_numberOfFiles; ++i)
+				{
+					currentFileNameLength = m_tableOfContents[i].fileNameOffset;
+					m_tableOfContents[i].fileNameOffset = currentFileNameOffset;
+					// + 1 for the null termination
+					currentFileNameOffset += (currentFileNameLength + 1);
+				}
+			}
+
+			if (isCompressed(header.fileNameBlockCompressor))
+			{
+				// create temp buffer to store the compressed name block data
+				byte *nameBuffer  = new byte[header.uncompSizeOfNameBlock];
+
+				// read the compressed table of contents data into buffer
+				const int bytesRead = m_TOCFile->read(readPosition, nameBuffer, header.sizeOfNameBlock, AbstractFile::PriorityData);
+				UNREF(bytesRead);
+				DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfNameBlock), ("failed to read file name block"));
+
+				// decompress data into tocFileNames
+				static_cast<void>(ZlibCompressor().expand(nameBuffer, header.sizeOfNameBlock, m_fileNames, header.uncompSizeOfNameBlock));
+
+				delete [] nameBuffer;
+			}
+			else
+			{
+				// read the uncompressed name block data
+				const int bytesRead = m_TOCFile->read(readPosition, m_fileNames, header.sizeOfNameBlock, AbstractFile::PriorityData);
+				UNREF(bytesRead);
+				DEBUG_FATAL(bytesRead != static_cast<int>(header.sizeOfNameBlock), ("failed to read file name block"));
+			}
+
+		}
+		break;
 
 		default:
-			{
-				delete m_TOCFile;
+		{
+			delete m_TOCFile;
 
 #if PRODUCTION
-				FATAL(true, ("Table of Contents File corruption detected.  Please do a \"Full Scan\" from the launchpad. (%08x %s)", version, m_TOCFileName));
+			FATAL(true, ("Table of Contents File corruption detected.  Please do a \"Full Scan\" from the launchpad. (%08x %s)", version, m_TOCFileName));
 #else
-				FATAL(true, ("unsupported version %d in %s", version, m_TOCFileName));
+			FATAL(true, ("unsupported version %d in %s", version, m_TOCFileName));
 #endif
 
-			}
-			break;
+		}
+		break;
 	}
 
 }
@@ -726,8 +747,8 @@ TreeFile::SearchTOC::~SearchTOC(void)
 	// clear out FileStreamer::File pointers
 	for (uint32 i = 0; i < m_numberOfTreeFiles; i++)
 		delete m_treeFiles[i];
+	
 	delete [] m_treeFiles;
-
 	delete m_TOCFile;
 }
 
@@ -779,13 +800,9 @@ bool TreeFile::SearchTOC::localExists(const char *fileName, int *index) const
 	// return the found index if desired
 	if (found)
 	{
-		if (m_tableOfContents[mid].length == 0)
+		// sanity check - if the file has a length, but the offset is zero, the pointer in the TOC is invalid
+		if (m_tableOfContents[mid].length == 0 || m_tableOfContents[mid].offset == 0)
 		{
-			return false;
-		}
-		else if (m_tableOfContents[mid].offset == 0)
-		{
-			// sanity check - if the file has a length, but the offset is zero, the pointer in the TOC is invalid
 			return false;
 		}
 
@@ -812,6 +829,7 @@ int TreeFile::SearchTOC::getFileSize(const char *fileName, bool &deleted) const
 	NOT_NULL(fileName);
 	deleted = false;
 	int tableOfContentsIndex = 0;
+	
 	if (!localExists(fileName, &tableOfContentsIndex))
 		return -1;
 

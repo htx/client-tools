@@ -19,29 +19,25 @@ public:
 	class Data
 	{
 	public:
-
-		Data();
-		virtual ~Data()=0;
+		Data() = default;
+		virtual ~Data() = 0;
 	};
 
 	class Notification
 	{
 	public:
-		
-		Notification();
-		virtual ~Notification()=0;
+		Notification() = default;
+		virtual ~Notification() = 0;
 
-		virtual void onChanged() const=0;
+		virtual void onChanged() const = 0;
 	};
 
-public:
-
-	explicit MessageQueue(int initialSize=0);
+	explicit MessageQueue(int initialSize = 0);
 	~MessageQueue();
 
 	int  getNumberOfMessages() const;
-	void getMessage(int index, int *message, float *value, uint32 *flags=0) const;
-	void getMessage(int index, int *message, float *value, Data **data, uint32 *flags=0) const;
+	void getMessage(int index, int *message, float *value, uint32 *flags = nullptr) const;
+	void getMessage(int index, int *message, float *value, Data **data, uint32 *flags = nullptr) const;
 
 	void setMessageFlags(int index, uint32 flags);
 
@@ -49,7 +45,7 @@ public:
 	void clearMessageData(int index);
 
 	void appendMessage(int message, float value, uint32 flags=0);
-	void appendMessage(int message, float value, Data *data, uint32 flags=0);
+	void appendMessage(int message, float value, Data *data, uint32 flags = 0);
 
 	void beginFrame();
 
@@ -59,12 +55,9 @@ private:
 
 	struct Message
 	{
-	public:
-
+		Message(int msg, float value, Data *data, uint32 flags) : m_message(msg), m_value(value), m_data(data),	m_flags(flags){}
 		Message();
 		~Message();
-
-	public:
 
 		int     m_message;
 		float   m_value;
@@ -72,18 +65,12 @@ private:
 		uint32  m_flags;
 	};
 
-private:
-
 	typedef stdvector<Message>::fwd MessageList;
-
-private:
 
 	MessageQueue(const MessageQueue &);
 	MessageQueue &operator =(const MessageQueue &);
 
 	void clearDataFromMessageList(MessageList &messageList, bool destructor);
-
-private:
 
 	MessageList  *const m_messageQueue1;
 	MessageList  *const m_messageQueue2;

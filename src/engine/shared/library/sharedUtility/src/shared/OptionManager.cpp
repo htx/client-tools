@@ -15,11 +15,12 @@
 #include "sharedFile/Iff.h"
 #include "sharedFile/TreeFile.h"
 #include "sharedUtility/ConfigSharedUtility.h"
-#include "UnicodeUtils.h"
 
 #include <algorithm>
 #include <vector>
 #include <string>
+
+#include "../../../../../../external/ours/library/unicode/src/shared/UnicodeUtils.h"
 
 //===================================================================
 // OptionManagerNamespace
@@ -97,28 +98,27 @@ void OptionManager::Option::debugDump (char const * operation) const
 
 	switch (m_type)
 	{
-	case T_bool:
-		DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%s\n", operation, m_version, m_section, m_name, *m_bool ? "true" : "false"));
-		break;
+		case T_bool:
+			DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%s\n", operation, m_version, m_section, m_name, *m_bool ? "true" : "false"));
+			break;
 
-	case T_float:
-		DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%1.5f\n", operation, m_version, m_section, m_name, *m_float));
-		break;
+		case T_float:
+			DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%1.5f\n", operation, m_version, m_section, m_name, *m_float));
+			break;
 
-	case T_int:
-		DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%i\n", operation, m_version, m_section, m_name, *m_int));
-		break;
+		case T_int:
+			DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%i\n", operation, m_version, m_section, m_name, *m_int));
+			break;
 
-	case T_stdString:
-		DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%s\n", operation, m_version, m_section, m_name, m_stdString->c_str ()));
-		break;
+		case T_stdString:
+			DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%s\n", operation, m_version, m_section, m_name, m_stdString->c_str ()));
+			break;
 
-	case T_unicodeString:
-		DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%s\n", operation, m_version, m_section, m_name, Unicode::wideToNarrow(*m_unicodeString).c_str ()));
-		break;
+		case T_unicodeString:
+			DEBUG_REPORT_LOG (true, ("OptionManager::Option %s (ver %d) [%s] %s=%s\n", operation, m_version, m_section, m_name, Unicode::wideToNarrow(*m_unicodeString).c_str ()));
+			break;
 
-	default:
-		break;
+		default: break;
 	}
 }
 
@@ -198,9 +198,8 @@ void OptionManager::load (char const * const fileName)
 
 	if (ConfigSharedUtility::getLogOptionManager())
 	{
-		OptionList::iterator iter = m_savedOptionList->begin ();
-		for (; iter != m_savedOptionList->end (); ++iter)
-			iter->debugDump ("load");
+		for(auto& it : *m_savedOptionList)
+			it.debugDump("load");
 	}
 }
 
@@ -213,14 +212,14 @@ void OptionManager::save (char const * const fileName)
 
 	Iff iff (1024);
 	save (iff);
+	
 	if (!iff.write (fileName, true))
 		DEBUG_REPORT_LOG (true, ("OptionManager::save: could not write %s\n", fileName));
 
 	if (ConfigSharedUtility::getLogOptionManager())
 	{
-		OptionList::iterator iter = m_registeredOptionList->begin ();
-		for (; iter != m_registeredOptionList->end (); ++iter)
-			iter->debugDump ("save");
+		for(auto& it : *m_registeredOptionList)
+			it.debugDump("save");
 	}
 }
 
@@ -328,10 +327,8 @@ bool OptionManager::findBool (char const * const section, char const * const nam
 {
 	bool value = defaultValue;
 
-	OptionList::iterator iter = m_savedOptionList->begin ();
-	for (; iter != m_savedOptionList->end (); ++iter)
+	for(auto& option : *m_savedOptionList)
 	{
-		const Option& option = *iter;
 		if (option.getType () == Option::T_bool && strcmp (section, option.m_section) == 0 && strcmp (name, option.m_name) == 0 && option.m_version == version)
 		{
 			value = *option.m_bool;
@@ -351,10 +348,8 @@ float OptionManager::findFloat (char const * const section, char const * const n
 {
 	float value = defaultValue;
 
-	OptionList::iterator iter = m_savedOptionList->begin ();
-	for (; iter != m_savedOptionList->end (); ++iter)
+	for(auto& option : *m_savedOptionList)
 	{
-		const Option& option = *iter;
 		if (option.getType () == Option::T_float && strcmp (section, option.m_section) == 0 && strcmp (name, option.m_name) == 0 && option.m_version == version)
 		{
 			value = *option.m_float;
@@ -374,10 +369,8 @@ int OptionManager::findInt (char const * const section, char const * const name,
 {
 	int value = defaultValue;
 
-	OptionList::iterator iter = m_savedOptionList->begin ();
-	for (; iter != m_savedOptionList->end (); ++iter)
+	for(auto& option : *m_savedOptionList)
 	{
-		const Option& option = *iter;
 		if (option.getType () == Option::T_int && strcmp (section, option.m_section) == 0 && strcmp (name, option.m_name) == 0 && option.m_version == version)
 		{
 			value = *option.m_int;
@@ -397,10 +390,8 @@ std::string OptionManager::findStdString (char const * const section, char const
 {
 	std::string value = defaultValue;
 
-	OptionList::iterator iter = m_savedOptionList->begin ();
-	for (; iter != m_savedOptionList->end (); ++iter)
+	for(auto& option : *m_savedOptionList)
 	{
-		const Option& option = *iter;
 		if (option.getType () == Option::T_stdString && strcmp (section, option.m_section) == 0 && strcmp (name, option.m_name) == 0 && option.m_version == version)
 		{
 			NOT_NULL (option.m_stdString);
@@ -412,6 +403,7 @@ std::string OptionManager::findStdString (char const * const section, char const
 	if (section && name && ConfigFile::isInstalled ())
 	{
 		const char * const str = ConfigFile::getKeyString (section, name, value.c_str (), true);
+		
 		if (str)
 			return std::string (str);
 	}
@@ -425,10 +417,8 @@ Unicode::String OptionManager::findUnicodeString (char const * const section, ch
 {
 	Unicode::String value = defaultValue;
 
-	OptionList::iterator iter = m_savedOptionList->begin ();
-	for (; iter != m_savedOptionList->end (); ++iter)
+	for(auto& option : *m_savedOptionList)
 	{
-		const Option& option = *iter;
 		if (option.getType () == Option::T_unicodeString && strcmp (section, option.m_section) == 0 && strcmp (name, option.m_name) == 0 && option.m_version == version)
 		{
 			NOT_NULL (option.m_unicodeString);
@@ -452,21 +442,21 @@ void OptionManager::load (Iff & iff)
 
 		switch (iff.getCurrentName ())
 		{
-		case TAG_0000:
-		case TAG_0001:
-			WARNING (true, ("OptionManager::load: detected old version (below 0002), skipping load..."));
-			break;
+			case TAG_0000:
+			case TAG_0001:
+				WARNING (true, ("OptionManager::load: detected old version (below 0002), skipping load..."));
+				break;
 
-		// loading of version 0002 still supported in order to convert to version 0003 on save
-		case TAG_0002:
-			version = 2;
-			break;
+			// loading of version 0002 still supported in order to convert to version 0003 on save
+			case TAG_0002:
+				version = 2;
+				break;
 
-		case TAG_0003:
-			version = 3;
-			break;
+			case TAG_0003:
+				version = 3;
+				break;
 
-		default:
+			default:
 			{
 				char tagBuffer [5];
 				ConvertTagToString (iff.getCurrentName (), tagBuffer);
@@ -494,14 +484,11 @@ void OptionManager::save (Iff & iff)
 
 		iff.insertForm (TAG_0003);
 
-			OptionList::iterator iter = m_registeredOptionList->begin ();
-			for (; iter != m_registeredOptionList->end (); ++iter)
+			for(auto& option : *m_registeredOptionList)
 			{
-				const Option& option = *iter;
-
 				switch (option.getType ())
 				{
-				case Option::T_bool:
+					case Option::T_bool:
 					{
 						iff.insertChunk (TAG_BOOL);
 
@@ -514,7 +501,7 @@ void OptionManager::save (Iff & iff)
 					}
 					break;
 
-				case Option::T_float:
+					case Option::T_float:
 					{
 						iff.insertChunk (TAG_FLT);
 
@@ -527,7 +514,7 @@ void OptionManager::save (Iff & iff)
 					}
 					break;
 
-				case Option::T_int:
+					case Option::T_int:
 					{
 						iff.insertChunk (TAG_INT);
 
@@ -540,7 +527,7 @@ void OptionManager::save (Iff & iff)
 					}
 					break;
 
-				case Option::T_stdString:
+					case Option::T_stdString:
 					{
 						iff.insertChunk (TAG_STDS);
 
@@ -553,7 +540,7 @@ void OptionManager::save (Iff & iff)
 					}
 					break;
 
-				case Option::T_unicodeString:
+					case Option::T_unicodeString:
 					{
 						iff.insertChunk (TAG_UNIS);
 
@@ -566,8 +553,7 @@ void OptionManager::save (Iff & iff)
 					}
 					break;
 
-				default:
-					break;
+					default: break;
 				}
 			}
 
@@ -590,7 +576,7 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 		{
 			switch (iff.getCurrentName ())
 			{
-			case TAG_BOOL:
+				case TAG_BOOL:
 				{
 					iff.enterChunk (TAG_BOOL);
 
@@ -614,7 +600,7 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 				}
 				break;
 
-			case TAG_FLT:
+				case TAG_FLT:
 				{
 					iff.enterChunk (TAG_FLT);
 
@@ -638,7 +624,7 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 				}
 				break;
 
-			case TAG_INT:
+				case TAG_INT:
 				{
 					iff.enterChunk (TAG_INT);
 
@@ -662,7 +648,7 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 				}
 				break;
 
-			case TAG_STDS:
+				case TAG_STDS:
 				{
 					iff.enterChunk (TAG_STDS);
 
@@ -686,7 +672,7 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 				}
 				break;
 
-			case TAG_UNIS:
+				case TAG_UNIS:
 				{
 					iff.enterChunk (TAG_UNIS);
 
@@ -710,11 +696,12 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 				}
 				break;
 
-			default:
+				default:
 				{
 					iff.enterChunk ();
 					iff.exitChunk (true);
 				}
+				break;
 			}
 		}
 		
@@ -727,28 +714,24 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 
 //----------------------------------------------------------------------
 
-	/*
-	* Copy the values of options that are shared by both lists.
-	* The size of dst is unchanged.
-	*/
+/*
+* Copy the values of options that are shared by both lists.
+* The size of dst is unchanged.
+*/
 
-	void OptionManager::copyOptionListIntersection (const OptionList & src, OptionList & dst)
+void OptionManager::copyOptionListIntersection (const OptionList & src, OptionList & dst)
+{
+	for(const auto& sopt : src)
 	{
-		for (OptionList::const_iterator it = src.begin (); it != src.end (); ++it)
+		for(auto& dopt : dst)
 		{
-			const Option & sopt = *it;
-
-			for (OptionList::iterator rit = dst.begin (); rit != dst.end (); ++rit)
+			if (dopt.m_name    && sopt.m_name    && !strcmp (dopt.m_name, sopt.m_name) &&
+				dopt.m_section && sopt.m_section && !strcmp (dopt.m_section, sopt.m_section) &&
+				dopt.m_type == sopt.m_type &&
+				dopt.m_version == sopt.m_version) // default value takes precedence when version changes
 			{
-				const Option & dopt = *rit;
-
-				if (dopt.m_name    && sopt.m_name    && !strcmp (dopt.m_name, sopt.m_name) &&
-					dopt.m_section && sopt.m_section && !strcmp (dopt.m_section, sopt.m_section) &&
-					dopt.m_type == sopt.m_type &&
-					dopt.m_version == sopt.m_version) // default value takes precedence when version changes
+				switch (dopt.m_type)
 				{
-					switch (dopt.m_type)
-					{
 					case Option::T_bool:
 						NOT_NULL (dopt.m_bool);
 						NOT_NULL (sopt.m_bool);
@@ -774,9 +757,11 @@ void OptionManager::loadVersion(Iff & iff, const int version)
 						NOT_NULL (sopt.m_unicodeString);
 						*dopt.m_unicodeString = *sopt.m_unicodeString;
 						break;
-					}
+					default: break;
 				}
 			}
 		}
 	}
+}
+
 //===================================================================

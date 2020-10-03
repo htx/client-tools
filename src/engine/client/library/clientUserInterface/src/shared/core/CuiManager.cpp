@@ -777,9 +777,9 @@ void CuiManager::update (float elapsedTime)
 
 		UIManager::gUIManager ().GetCanvases (canvasVector);
 
-		for (CanvasVector::iterator it = canvasVector.begin (); it != canvasVector.end (); ++it)
+		for(auto& it : canvasVector)
 		{
-			CuiLayer::TextureCanvas * const texcanvas = safe_cast<CuiLayer::TextureCanvas *> (*it);
+			auto* const texcanvas = safe_cast<CuiLayer::TextureCanvas *> (it);
 
 			if (texcanvas && texcanvas->isInitialized ())
 			{
@@ -1031,11 +1031,11 @@ void CuiManager::terminateIoWin ()
 
 //----------------------------------------------------------------------
 
-void CuiManager::exitGame                 (bool confirmed)
+void CuiManager::exitGame (bool confirmed)
 {
 	if (confirmed)
 	{
-		CuiMediatorFactory::deactivateAll  ();
+		CuiMediatorFactory::deactivateAll ();
 		terminateIoWin ();
 		return;
 	}
@@ -1272,9 +1272,9 @@ bool CuiManager::test (std::string & result)
 
 	std::vector<std::string> names;
 	CuiMediatorFactory::getMediatorNames (names);
-	for (std::vector<std::string>::const_iterator it = names.begin (); it != names.end (); ++it)
+	for(const auto& name : names)
 	{
-		CuiMediator * const mediator = CuiMediatorFactory::get ((*it).c_str ());
+		CuiMediator * const mediator = CuiMediatorFactory::get (name.c_str ());
 		NOT_NULL (mediator);
 		mediator->activate ();
 		update (100.0f);
@@ -1311,9 +1311,9 @@ void CuiManager::generateStringList ()
 
 	{
 		Unicode::String str;
-		for (StringIdVector::const_iterator it = siv.begin (); it != siv.end (); ++it)
+		
+		for(const auto& id : siv)
 		{
-			const StringId & id = *it;
 			if (id.localize (str))
 				sism.insert (std::make_pair (id, str));
 			else
@@ -1323,10 +1323,10 @@ void CuiManager::generateStringList ()
 
 	Unicode::String result;
 
-	for (StringIdStatusMap::const_iterator it = sism.begin (); it != sism.end (); ++it)
+	for(const auto& it : sism)
 	{
-		const StringId & id         = (*it).first;
-		const Unicode::String str   = (*it).second;
+		const StringId & id         = it.first;
+		const Unicode::String str   = it.second;
 
 		result.clear ();
 

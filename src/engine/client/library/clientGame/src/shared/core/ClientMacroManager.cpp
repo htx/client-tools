@@ -9,9 +9,7 @@
 #include "clientGame/ClientMacroManager.h"
 
 #include "UnicodeUtils.h"
-#include "clientGame/ConfigClientGame.h"
 #include "clientGame/Game.h"
-#include "clientUserInterface/CuiMessageBox.h"
 #include "clientUserInterface/CuiMessageQueueManager.h"
 #include "fileInterface/StdioFile.h"
 #include "sharedFile/Iff.h"
@@ -19,13 +17,10 @@
 #include "sharedFoundation/GameControllerMessage.h"
 #include "sharedFoundation/NetworkId.h"
 #include "sharedFoundation/Os.h"
-#include "sharedInputMap/InputMap.h"
 #include "sharedInputMap/InputMap_Command.h"
 #include "sharedMessageDispatch/Transceiver.h"
 #include <algorithm>
 #include <vector>
-
-//======================================================================
 
 //======================================================================
 
@@ -101,35 +96,34 @@ const ClientMacroManager::MacroDataVector & ClientMacroManager::getMacroDataVect
 
 ClientMacroManager::Data * ClientMacroManager::findMacroDataInternal  (const std::string & name)
 {
-	for (MacroDataVector::iterator it = s_macros.begin (); it != s_macros.end (); ++it)
+	for(auto& data : s_macros)
 	{
-		Data & data = *it;
 		if (data.name == name)
 			return &data;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
 
 ClientMacroManager::Data * ClientMacroManager::findMacroDataByUserDefinedNameInternal  (const Unicode::UTF8String & userDefinedName)
 {
-	for (MacroDataVector::iterator it = s_macros.begin (); it != s_macros.end (); ++it)
+	for(auto& data : s_macros)
 	{
-		Data & data = *it;
 		if (!_stricmp (data.userDefinedName.c_str (), userDefinedName.c_str ()))
 			return &data;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
 
 bool ClientMacroManager::executeMacroByUserDefinedName      (const Unicode::UTF8String & userDefinedName, bool insertPause)
 {
-	const Data * const data =  ClientMacroManager::findMacroDataByUserDefinedNameInternal  (userDefinedName);
+	const Data * const data = findMacroDataByUserDefinedNameInternal (userDefinedName);
+	
 	if (data)
 	{
 		if (insertPause)
@@ -137,8 +131,8 @@ bool ClientMacroManager::executeMacroByUserDefinedName      (const Unicode::UTF8
 			static const std::string prependPauseString = "/pause 0.1;";
 			return CuiMessageQueueManager::executeCommandByString (prependPauseString + data->commandString, true);
 		}
-		else
-			return CuiMessageQueueManager::executeCommandByString (data->commandString, true);
+		
+		return CuiMessageQueueManager::executeCommandByString (data->commandString, true);
 	}
 
 	return false;
@@ -150,7 +144,6 @@ const ClientMacroManager::Data * ClientMacroManager::findMacroData      (const s
 {
 	return findMacroDataInternal (name);
 }
-
 
 //----------------------------------------------------------------------
 
@@ -190,9 +183,10 @@ const ClientMacroManager::Data * ClientMacroManager::createNewMacroData (const U
 
 //----------------------------------------------------------------------
 
-const bool ClientMacroManager::modifyMacroData    (const std::string & name, const Unicode::UTF8String & userDefinedName, const Unicode::UTF8String & commandString, const std::string & icon, bool notify, bool pushToInputMap)
+const bool ClientMacroManager::modifyMacroData (const std::string & name, const Unicode::UTF8String & userDefinedName, const Unicode::UTF8String & commandString, const std::string & icon, bool notify, bool pushToInputMap)
 {
 	Data * const data = findMacroDataInternal (name);
+	
 	if (!data)
 	{
 		WARNING (true, ("Attempt to modify macro data [%s] which does not exist", name.c_str ()));
@@ -201,7 +195,8 @@ const bool ClientMacroManager::modifyMacroData    (const std::string & name, con
 
 	//prepend a forced pause if there isn't already one
 	Unicode::UTF8String command = commandString;
-	std::string::size_type pos = command.find(ms_forcePauseCommand);
+	const std::string::size_type pos = command.find(ms_forcePauseCommand);
+	
 	if(pos != 0)
 	{
 		command = ms_forcePauseCommand + command;
@@ -213,10 +208,11 @@ const bool ClientMacroManager::modifyMacroData    (const std::string & name, con
 	
 	if (pushToInputMap)
 	{
-		InputMap * const inputmap = Game::getGameInputMap ();
-		if (inputmap)
+		InputMap * const inputMap = Game::getGameInputMap ();
+		
+		if (inputMap)
 		{
-			IGNORE_RETURN(inputmap->addCustomCommand (data->name, static_cast<int>(CM_clientCommandParser), data->commandString, true));
+			IGNORE_RETURN(inputMap->addCustomCommand (data->name, static_cast<int>(CM_clientCommandParser), data->commandString, true));
 		}
 	}
 
@@ -229,21 +225,20 @@ const bool ClientMacroManager::modifyMacroData    (const std::string & name, con
 	return true;
 }
 
-
 //----------------------------------------------------------------------
 
-bool ClientMacroManager::eraseMacro         (const std::string & name, bool notify)
+bool ClientMacroManager::eraseMacro (const std::string & name, bool notify)
 {
-	for (MacroDataVector::iterator it = s_macros.begin (); it != s_macros.end (); ++it)
+	for (auto it = s_macros.begin (); it != s_macros.end (); ++it)
 	{
-		Data & data = *it;
-		if (data.name == name)
+		if ((*it).name == name)
 		{
 			IGNORE_RETURN(s_macros.erase (it));
-			InputMap * const inputmap = Game::getGameInputMap ();
-			if (inputmap)
+			InputMap * const inputMap = Game::getGameInputMap ();
+			
+			if (inputMap)
 			{
-				IGNORE_RETURN(inputmap->removeCustomCommand (name));
+				IGNORE_RETURN(inputMap->removeCustomCommand (name));
 			}
 
 			if (notify)
@@ -261,9 +256,10 @@ bool ClientMacroManager::eraseMacro         (const std::string & name, bool noti
 
 //----------------------------------------------------------------------
 
-bool ClientMacroManager::saveText        ()
+bool ClientMacroManager::saveText ()
 {
-	const std::string & filename = getTextPath ();
+	const std::string & filename = getTextPath();
+	
 	if (filename.empty ())
 	{
 		WARNING (true, ("ClientMacroManager Unable to get player path for saving"));
@@ -293,18 +289,18 @@ bool ClientMacroManager::saveText        ()
 	IGNORE_RETURN(fl.write (static_cast<int>(strlen (buf)), buf));
 
 	//save out the macros
-	for (MacroDataVector::const_iterator it = s_macros.begin (); it != s_macros.end (); ++it)
+	for(const auto& data : s_macros)
 	{
-		const Data & data = *it;
-		
 		//pack multi-line macros
 		Unicode::UTF8String command = data.commandString;
+		
 		//cut off macro at max length
 		if(command.size() > s_macroCommandLineLength)
 			command = command.substr(0, s_macroCommandLineLength);
 
-		size_t pos = command.find("\n");
-		while (pos != command.npos) //lint !e737 STL lameness with npos being wrong signed-ness
+		size_t pos = command.find('\n');
+		
+		while (pos != Unicode::UTF8String::npos) 
 		{
 			//if there's a newline w/o a semicolon, replace the newline with a semicolon
 			const char & prev = command.at(pos-1);
@@ -313,7 +309,8 @@ bool ClientMacroManager::saveText        ()
 			//else strip out the unnecessary newlines
 			else
 				command.replace(pos, 1, "");
-			pos = command.find("\n");
+			
+			pos = command.find('\n');
 		}
 
 		snprintf (buf, sizeof (buf), "%d %s %s %s %s\n", 
@@ -334,6 +331,7 @@ bool ClientMacroManager::saveText        ()
 bool ClientMacroManager::loadText        ()
 {
 	const std::string & filename = getTextPath ();
+	
 	if (filename.empty ())
 	{
 		WARNING (true, ("ClientMacroManager Unable to get player path for loading."));
@@ -358,7 +356,7 @@ bool ClientMacroManager::loadText        ()
 
 	const std::string sbuf (cbuf);
 	delete [] cbuf;
-	cbuf = 0;
+	cbuf = nullptr;
 	
 	size_t endpos = 0;
 	std::string lineToken;
@@ -371,9 +369,10 @@ bool ClientMacroManager::loadText        ()
 	++linenum;
 	std::string tokens1 [2];
 	IGNORE_RETURN(Unicode::getFirstToken (sbuf, endpos, endpos, lineToken, "\r\n"));
-	for (int i = 0; i < 2; ++i)
+	
+	for(auto& i : tokens1)
 	{
-		IGNORE_RETURN(Unicode::getFirstToken (lineToken, mid, mid, tokens1 [i]));
+		IGNORE_RETURN(Unicode::getFirstToken (lineToken, mid, mid, i));
 		++mid;
 	}
 
@@ -421,11 +420,11 @@ bool ClientMacroManager::loadText        ()
 				commandString = commandString.substr(0, s_macroCommandLineLength);
 
 			//unpack command into multiple lines, based off semicolons
-			size_t pos = commandString.find(";");
-			while(pos != commandString.npos) //lint !e737 STL lameness with npos being wrong signed-ness
+			size_t pos = commandString.find(';');
+			while(pos != Unicode::UTF8String::npos) 
 			{
 				IGNORE_RETURN(commandString.replace(pos, 1, ";\n"));
-				pos = commandString.find(";", pos+1);
+				pos = commandString.find(';', pos+1);
 			}
 
 			Data * const data     = createNewMacroDataInternal (number);
@@ -501,12 +500,13 @@ bool ClientMacroManager::loadIff_0000(Iff& iff)
 
 	int localLastMacroNumber = 0;
 
-	int macroNumber;
+	int macroNumber = 0;
 	Unicode::UTF8String  macroUserName;
 	std::string macroName;
 	std::string macroIcon;
 	std::string macroColor;
 	Unicode::UTF8String  macroCommandText;
+	
 	while(iff.enterChunk(tagEntry, true))
 	{
 		macroNumber      = iff.read_int32();
@@ -522,15 +522,14 @@ bool ClientMacroManager::loadIff_0000(Iff& iff)
 		macroName = buf;
 
 		//check macros for disallowed commands
-		for(std::vector<std::string>::iterator i = ms_disallowedMacroCommands.begin(); i != ms_disallowedMacroCommands.end(); ++i)
+		for(auto& disallowedCommand : ms_disallowedMacroCommands)
 		{
-			const std::string & disallowedCommand       = *i;
 			const std::string & lowertext               = Unicode::toLower (macroCommandText);
 			const std::string & lowerDisallowedcommand  = Unicode::toLower (disallowedCommand);
 
 			const std::string::size_type pos = lowertext.find (lowerDisallowedcommand);
 
-			if (pos != lowertext.npos)     //lint !e737 loss of sign in promotion from broken npos type
+			if (pos != std::string::npos)  
 			{
 				macroCommandText.erase(pos, pos + disallowedCommand.size());
 			}
@@ -550,6 +549,7 @@ bool ClientMacroManager::loadIff_0000(Iff& iff)
 				data->color = macroColor;
 			}
 		}
+		
 		iff.exitChunk(tagEntry);
 	}
 
@@ -564,6 +564,7 @@ bool ClientMacroManager::loadIff_0000(Iff& iff)
 bool ClientMacroManager::saveIff()
 {
 	const std::string & filename = getIffPath ();
+	
 	if (filename.empty ())
 	{
 		WARNING (true, ("ClientMacroManager Unable to get player path for saving"));
@@ -571,15 +572,15 @@ bool ClientMacroManager::saveIff()
 	}
 
 	Iff iff(1024);
+	
 	iff.insertForm(tagMacro);
 	{
 		iff.insertForm (TAG_0000);
 		{
-			for (MacroDataVector::const_iterator it = s_macros.begin (); it != s_macros.end (); ++it)
+			for(const auto& data : s_macros)
 			{
 				iff.insertChunk(tagEntry, true);
 				{
-					const Data & data = *it;
 					iff.insertChunkData(data.number);
 					iff.insertChunkString(data.userDefinedName.c_str());
 					iff.insertChunkString(data.icon.c_str());
@@ -592,7 +593,9 @@ bool ClientMacroManager::saveIff()
 		iff.exitForm(TAG_0000);
 	}
 	iff.exitForm(tagMacro);
+	
 	IGNORE_RETURN(iff.write(filename.c_str()));
+	
 	return true;
 }
 
@@ -603,12 +606,13 @@ bool ClientMacroManager::load()
 	ms_disallowedMacroCommands.clear();
 
 	s_macros.clear();
-	bool result = false;
-	result = loadText();
+	bool result = loadText();
+	
 	if(!result)
 	{
 		result = loadIff();
 	}
+	
 	return result;
 }
 
@@ -638,28 +642,20 @@ void ClientMacroManager::synchronizeWithInputMap   (class InputMap * inputmap)
 		typedef stdvector<std::string>::fwd StringVector;
 		StringVector sv;
 		
+		for(const auto* cmd : cv)
 		{
-			for (InputMap::CommandVector::const_iterator it = cv.begin (); it != cv.end (); ++it)
-			{
-				const InputMap::Command * const cmd = *it;
-				if (!findMacroData (cmd->name))
-					sv.push_back (cmd->name);
-			}
+			if (!findMacroData (cmd->name))
+				sv.push_back (cmd->name);
 		}
-		
+
+		for(const auto& it : sv)
 		{
-			for (StringVector::const_iterator it = sv.begin (); it != sv.end (); ++it)
-			{
-				IGNORE_RETURN(inputmap->removeCustomCommand (*it));
-			}
+			IGNORE_RETURN(inputmap->removeCustomCommand (it));
 		}
-		
+
+		for(const auto& data : s_macros)
 		{
-			for (MacroDataVector::const_iterator it = s_macros.begin (); it != s_macros.end (); ++it)
-			{
-				const Data & data = *it;
-				IGNORE_RETURN(inputmap->addCustomCommand (data.name, static_cast<int>(CM_clientCommandParser), data.commandString, true));		
-			}
+			IGNORE_RETURN(inputmap->addCustomCommand (data.name, static_cast<int>(CM_clientCommandParser), data.commandString, true));		
 		}
 	}
 }

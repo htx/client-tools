@@ -98,7 +98,7 @@ void SetupSharedUtility::installFileManifestEntries ()
 
 	if (manifestDatatable)
 	{
-		int numRows = manifestDatatable->getNumRows();
+		const int numRows = manifestDatatable->getNumRows();
 
 		for (int i = 0; i < numRows; ++i)
 		{
@@ -114,6 +114,7 @@ void SetupSharedUtility::installFileManifestEntries ()
 	}
 	else
 		DEBUG_WARNING(true, ("SetupSharedUtility::installFileManifestEntries(): can't find %s\n", datatableName.c_str()));
+	
 	DataTableManager::close(datatableName);
 }
 //===================================================================

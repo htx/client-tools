@@ -219,13 +219,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="..\..\doc\dpvsReleaseNotes.txt" />
-    <Text Include="..\docs\dpvsChanges.txt" />
-    <Text Include="..\docs\dpvsNotes.txt" />
-    <Text Include="..\docs\dpvsShaft.txt" />
-    <Text Include="..\docs\dpvsToDo.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\sources\dpvsAABB.cpp" />
     <ClCompile Include="..\sources\dpvsArray.cpp" />
     <ClCompile Include="..\sources\dpvsBitMath.cpp" />
@@ -390,23 +383,6 @@
     <None Include="..\..\distribute-source-remove.bat" />
     <None Include="..\..\distribute-source.bat" />
     <None Include="..\..\distribute.bat" />
-    <None Include="..\..\doc\dpvs_online.pdf" />
-    <None Include="..\..\www\contact.html" />
-    <None Include="..\..\www\download.html" />
-    <None Include="..\..\www\download\dpvs_api.zip" />
-    <None Include="..\..\www\download\dpvs_demos.zip" />
-    <None Include="..\..\www\download\dpvs_logos.zip" />
-    <None Include="..\..\www\download\dpvs_manual.zip" />
-    <None Include="..\..\www\download\dpvs_online.pdf" />
-    <None Include="..\..\www\faq.html" />
-    <None Include="..\..\www\features.html" />
-    <None Include="..\..\www\index.html" />
-    <None Include="..\..\www\left_block.html" />
-    <None Include="..\..\www\licensing.html" />
-    <None Include="..\..\www\links.html" />
-    <None Include="..\..\www\news.html" />
-    <None Include="..\..\www\product.html" />
-    <None Include="..\..\www\umbra.css" />
     <None Include="..\gmake\Makefile" />
     <None Include="..\gmake\Makefile.dpvs" />
     <None Include="..\gmake\Makefile.dpvs_clean" />
@@ -444,38 +420,6 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='IntelCPP|Win32'">\work\swg\s1\src\external\3rd\library\dpvs\implementation\sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">\work\swg\s1\src\external\3rd\library\dpvs\implementation\sources;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\www\pics\bottom_block.jpg" />
-    <Image Include="..\..\www\pics\building1.jpg" />
-    <Image Include="..\..\www\pics\building2.jpg" />
-    <Image Include="..\..\www\pics\city1.jpg" />
-    <Image Include="..\..\www\pics\city2.jpg" />
-    <Image Include="..\..\www\pics\culling.jpg" />
-    <Image Include="..\..\www\pics\dot.gif" />
-    <Image Include="..\..\www\pics\left_block_01.jpg" />
-    <Image Include="..\..\www\pics\left_block_02.jpg" />
-    <Image Include="..\..\www\pics\left_block_03.jpg" />
-    <Image Include="..\..\www\pics\left_block_04.jpg" />
-    <Image Include="..\..\www\pics\left_block_05.jpg" />
-    <Image Include="..\..\www\pics\left_block_06.jpg" />
-    <Image Include="..\..\www\pics\left_block_07.jpg" />
-    <Image Include="..\..\www\pics\left_block_08.jpg" />
-    <Image Include="..\..\www\pics\left_block_09.jpg" />
-    <Image Include="..\..\www\pics\left_block_10.jpg" />
-    <Image Include="..\..\www\pics\left_block_11.jpg" />
-    <Image Include="..\..\www\pics\left_block_12.jpg" />
-    <Image Include="..\..\www\pics\main.gif" />
-    <Image Include="..\..\www\pics\main.jpg" />
-    <Image Include="..\..\www\pics\navivali.gif" />
-    <Image Include="..\..\www\pics\occluderandme.jpg" />
-    <Image Include="..\..\www\pics\right_block.gif" />
-    <Image Include="..\..\www\pics\terrain.jpg" />
-    <Image Include="..\..\www\pics\top_block.jpg" />
-    <Image Include="..\..\www\pics\umbracover.jpg" />
-    <Image Include="..\..\www\pics\umbrademo.jpg" />
-    <Image Include="..\..\www\pics\umbrareflect.jpg" />
-    <Image Include="..\..\www\pics\umbrascout.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

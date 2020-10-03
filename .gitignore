@@ -1,31 +1,85 @@
-src/external/3rd/library/dpvs/implementation/msvc8/release/
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
 *.opensdf
 *.sdf
-*.suo
-*.aps
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Visual Studio code coverage results
+*.coverage
+*.coveragexml
+
+# NuGet Packages
+*.nupkg
+# NuGet Symbol Packages
+*.snupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+# except build/, which is used as an MSBuild target.
+!**/[Pp]ackages/build/
+
 *.idb
-*.pdb
-./src/external/3rd/library/platform/utils/Base/debug/*
-./src/external/3rd/library/platform/utils/Base/release/*
-*/*.obj
-*.log
-*.vcxproj.user
-dpvs.lib
+*.tlog
 *.lib
-src/engine/server/library/serverGame/src/shared/generated/Packager.cpp
-src/external/3rd/library/platform/projects/Session/CommonAPI/debug/
-src/external/3rd/library/platform/projects/Session/LoginAPI/debug/
-src/external/3rd/library/platform/utils/Base/debug/
-src/game/server/application/SwgDatabaseServer/src/shared/generated/Decoder.cpp
-src/game/server/application/SwgDatabaseServer/src/shared/generated/Encoder.cpp
-src/game/server/application/SwgDatabaseServer/src/shared/generated/Schema.h
 *.zip
-*.pdb
 *.lnk
 .tar.*
 .a
 .md5.h.kate-swp
-.pdb
 exe/win32/.exe
 .kdev*
 lib/
@@ -64,6 +118,15 @@ libs/
 *~
 *.swp
 .*.swp
+
+src/external/3rd/library/dpvs/implementation/msvc8
+src/external/3rd/library/platform/utils/Base
+src/engine/server/library/serverGame/src/shared/generated/Packager.cpp
+src/external/3rd/library/platform/projects/Session/CommonAPI
+src/external/3rd/library/platform/projects/Session/LoginAPI
+src/game/server/application/SwgDatabaseServer/src/shared/generated/Decoder.cpp
+src/game/server/application/SwgDatabaseServer/src/shared/generated/Encoder.cpp
+src/game/server/application/SwgDatabaseServer/src/shared/generated/Schema.h
 src/build/win32/UpgradeLog.htm
 src/build/win32/ipch/
 src/build/win32/swg.VC.VC.opendb
@@ -71,10 +134,14 @@ src/build/win32/swg.VC.db
 src/engine/shared/application/Turf/build/win32/FirstTurf.i
 src/engine/shared/application/Turf/src/win32/FirstTurf.cpp.PVS-Studio.cfg
 src/engine/shared/application/Turf/src/win32/FirstTurf.cpp.PVS-Studio.cmd
-src/external/3rd/library/dpvs/implementation/msvc8/debug/
 src/external/3rd/library/udplibrary/CMakeLists.txt
 src/external/3rd/library/udplibrary/UdpLibrary.cpp.PVS-Studio.cfg
 src/external/3rd/library/udplibrary/UdpLibrary.cpp.PVS-Studio.cmd
 src/external/3rd/library/udplibrary/UdpLibrary.cpp~RF869406.TMP
 src/external/3rd/library/wolfssl/
-
+/src/engine/client/application/Direct3d9/build
+/src/external/3rd/library/dpvs/bin
+/src/game/client/application/SwgCsTool/src/win32/bin
+/data
+/dsrc
+/SwgClient

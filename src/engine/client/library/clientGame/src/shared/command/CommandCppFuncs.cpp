@@ -1552,9 +1552,10 @@ void CommandCppFuncsNamespace::commandFuncSetScale (Command const & , NetworkId 
 			DEBUG_WARNING(true, ("no target passed to setScale"));
 			return;
 		}
+		
 		const std::string scaleCommand = "/remote object scalesize ";
-		std::string targetId = target.getValueString();
-		std::string command = scaleCommand + targetId + std::string(" ") + Unicode::wideToNarrow(params);
+		const std::string targetId = target.getValueString();
+		const std::string command = scaleCommand + targetId + std::string(" ") + Unicode::wideToNarrow(params);
 
 		IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 	}
@@ -1571,9 +1572,10 @@ void CommandCppFuncsNamespace::commandFuncSetYaw (Command const & , NetworkId co
 			DEBUG_WARNING(true, ("no target passed to setYaw"));
 			return;
 		}
+		
 		const std::string setyawCommand = "/remote object rotate ";
-		std::string targetId = target.getValueString();
-		std::string command = setyawCommand + targetId + std::string(" ") + Unicode::wideToNarrow(params) + " 0 0";
+		const std::string targetId = target.getValueString();
+		const std::string command = setyawCommand + targetId + std::string(" ") + Unicode::wideToNarrow(params) + " 0 0";
 
 		IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 	}
@@ -1588,6 +1590,7 @@ void CommandCppFuncsNamespace::commandFuncHideMe (Command const &, NetworkId con
 		bool hide = false;
 
 		std::string const &narrowParams = Unicode::wideToNarrow(params);
+		
 		if (narrowParams == "true" || narrowParams == "1")
 		{
 			hide = true;
@@ -1605,6 +1608,7 @@ void CommandCppFuncsNamespace::commandFuncHideMe (Command const &, NetworkId con
 		UNREF(hide);
 
 		Object const *actor = Game::getConstPlayerPilotedShip();
+		
 		if (!actor)
 			actor = Game::getConstPlayer();
 
@@ -1638,9 +1642,10 @@ void CommandCppFuncsNamespace::commandFuncSkills (Command const & , NetworkId co
 			DEBUG_WARNING(true, ("no target passed to commandFuncSkills"));
 			return;
 		}
+		
 		const std::string skillsCommand = "/remote skill getSkillList ";
-		std::string targetId = target.getValueString();
-		std::string command = skillsCommand + targetId;
+		const std::string targetId = target.getValueString();
+		const std::string command = skillsCommand + targetId;
 
 		IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 	}
@@ -1653,10 +1658,8 @@ void CommandCppFuncsNamespace::commandFuncSpawn (Command const & , NetworkId con
 	if(ConfigClientGame::getCSR())
 	{
 		const std::string spawnCommand = "/remote object spawn ";
-
 		const std::string narrowParams = Unicode::wideToNarrow(params);
-
-		std::string command = spawnCommand + narrowParams;
+		const std::string command = spawnCommand + narrowParams;
 
 		IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 	}
@@ -1673,9 +1676,10 @@ void CommandCppFuncsNamespace::commandFuncDestroy (Command const & , NetworkId c
 			DEBUG_WARNING(true, ("no target passed to commandFuncDestroy"));
 			return;
 		}
+		
 		const std::string destroyCommand = "/remote object destroy ";
-		std::string targetId = target.getValueString();
-		std::string command = destroyCommand + targetId;
+		const std::string targetId = target.getValueString();
+		const std::string command = destroyCommand + targetId;
 
 		IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 	}
@@ -1694,9 +1698,11 @@ void CommandCppFuncsNamespace::commandFuncEditBank (Command const & , NetworkId 
 		}
 
 		CreatureObject const * const co = getCreatureOrPilot(target);
+		
 		if (co)
 		{
 			ClientObject const * const bank = co->getBankObject();
+			
 			if (bank)
 			{
 				IGNORE_RETURN(ClientCommandQueue::enqueueCommand("openContainer", bank->getNetworkId(), Unicode::emptyString));
@@ -1718,6 +1724,7 @@ void CommandCppFuncsNamespace::commandFuncEditInventory (Command const & , Netwo
 		}
 
 		CreatureObject const * const co = getCreatureOrPilot(target);
+		
 		if (co)
 		{
 			ClientObject const * const inv = co->getInventoryObject();
@@ -1742,6 +1749,7 @@ void CommandCppFuncsNamespace::commandFuncEditDatapad (Command const & , Network
 		}
 
 		CreatureObject const * const co = getCreatureOrPilot(target);
+		
 		if (co)
 		{
 			ClientObject const * const inv = co->getDatapadObject();
@@ -1754,14 +1762,15 @@ void CommandCppFuncsNamespace::commandFuncEditDatapad (Command const & , Network
 }
 
 //----------------------------------------------------------------------
+
 void CommandCppFuncsNamespace::commandFuncExamineObjVars (Command const & , NetworkId const & , NetworkId const & target, Unicode::String const & params)
 {
 	if(ConfigClientGame::getCSR())
 	{
 		const std::string objvarCommand = "/remote objvar list ";
 
-		std::string targetId = target.getValueString();
-		std::string command = objvarCommand + targetId + std::string(" ") + Unicode::wideToUTF8(params);
+		const std::string targetId = target.getValueString();
+		const std::string command = objvarCommand + targetId + std::string(" ") + Unicode::wideToUTF8(params);
 
 		IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 	}
@@ -1769,7 +1778,7 @@ void CommandCppFuncsNamespace::commandFuncExamineObjVars (Command const & , Netw
 
 //----------------------------------------------------------------------
 
-void CommandCppFuncsNamespace::commandFuncRenamePlayer        (Command const & , NetworkId const & , NetworkId const & target, Unicode::String const & params)
+void CommandCppFuncsNamespace::commandFuncRenamePlayer (Command const & , NetworkId const & , NetworkId const & target, Unicode::String const & params)
 {
 	if(ConfigClientGame::getCSR())
 	{
@@ -1780,11 +1789,12 @@ void CommandCppFuncsNamespace::commandFuncRenamePlayer        (Command const & ,
 		}
 
 		const CreatureObject * const co = dynamic_cast<CreatureObject *>(NetworkIdManager::getObjectById (target));
+		
 		if(co)
 		{
 			const std::string renamePlayerCommand = "/remote object renamePlayer ";
-			std::string targetId = target.getValueString();
-			std::string command = renamePlayerCommand + targetId + std::string(" ") + Unicode::wideToUTF8(params);
+			const std::string targetId = target.getValueString();
+			const std::string command = renamePlayerCommand + targetId + std::string(" ") + Unicode::wideToUTF8(params);
 
 			IGNORE_RETURN(CuiMessageQueueManager::executeCommandByString(command, true));
 		}

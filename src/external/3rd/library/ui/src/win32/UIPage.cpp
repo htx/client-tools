@@ -15,7 +15,6 @@
 
 #include <cassert>
 #include <list>
-#include <map>
 
 //======================================================================================
 
@@ -2071,13 +2070,11 @@ void UIPage::GetVisibleChildren(UISmartObjectVector & wv)
 	wv.clear();
 	wv.reserve(olist.size ());
 		
-	for (UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+	for(auto* obj : olist)
 	{
-		UIBaseObject * const obj = *it;
-		
 		if (obj->IsA(TUIWidget))
 		{
-			UIWidget * const wid = static_cast<UIWidget *>(obj);
+			auto* const wid = dynamic_cast<UIWidget *>(obj);
 			
 			if (wid->WillDraw())
 				wv.push_back(UIBaseObjectPointer(obj));

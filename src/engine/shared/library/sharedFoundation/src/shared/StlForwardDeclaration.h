@@ -102,17 +102,17 @@ template <class _Tp, class _Alloc = std::allocator<_Tp> > struct stdvector
 	typedef std::vector<_Tp, _Alloc> fwd;
 };
 
-template <class _Tp, class _Container = FORWARD_TYPENAME stdvector<_Tp>::fwd, class _Compare = std::less<typename _Container::value_type> > struct stdpriority_queue
+template <class _Tp, class _Container = FORWARD_TYPENAME typename stdvector<_Tp>::fwd, class _Compare = std::less<typename _Container::value_type> > struct stdpriority_queue
 {
 	typedef std::priority_queue<_Tp, _Container, _Compare> fwd;
 };
 
-template <class _Tp, class _Sequence = FORWARD_TYPENAME stddeque<_Tp>::fwd > struct stdqueue
+template <class _Tp, class _Sequence = FORWARD_TYPENAME typename stddeque<_Tp>::fwd > struct stdqueue
 {
 	typedef std::queue<_Tp, _Sequence> fwd;
 };
 
-template <class _Tp, class _Sequence = FORWARD_TYPENAME stddeque<_Tp>::fwd > struct stdstack
+template <class _Tp, class _Sequence = FORWARD_TYPENAME typename stddeque<_Tp>::fwd > struct stdstack
 {
 	typedef std::stack<_Tp, _Sequence> fwd;
 };

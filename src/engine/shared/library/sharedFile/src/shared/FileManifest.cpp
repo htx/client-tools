@@ -188,8 +188,9 @@ void FileManifest::remove()
 
 #if PRODUCTION == 0
 	// dump out the new manifest if requested
-	const char * manifestFile = ConfigFile::getKeyString("SharedFile", "updateFileManifest", 0, NULL);
-	if (manifestFile != NULL)
+	const char * manifestFile = ConfigFile::getKeyString("SharedFile", "updateFileManifest", 0, nullptr);
+	
+	if (manifestFile != nullptr)
 	{
 		StdioFile outputFile(manifestFile,"w");
 		DEBUG_FATAL(!outputFile.isOpen(), ("FileManifest::remove(): Could not open %s for writing.", manifestFile));
@@ -202,29 +203,29 @@ void FileManifest::remove()
 		outputFile.write(strlen(buffer), buffer);
 
 		DEBUG_REPORT_LOG_PRINT(s_accessThreshold >= 0, ("FileManifestAccessReport:\tFile:\tScene:\tSize:\tAccesses:\n"));
-		for (ManifestMap::iterator i = s_manifest.begin(); i != s_manifest.end(); ++i)
+		for(auto& i : s_manifest)
 		{
-			if (!i->second)
+			if (!i.second)
 			{
 				DEBUG_WARNING(true, ("FileManifest::remove(): Found a null pointer in the fileManifest map!\n"));
 				continue;
 			}
 
 			// output the entry in the file
-			sprintf(buffer, "%s\t%s\t%i\n", ((i->second)->name).c_str(), ((i->second)->scene).c_str(), (i->second)->size);
-			manifestEntries.push_back(buffer);
+			sprintf(buffer, "%s\t%s\t%i\n", ((i.second)->name).c_str(), ((i.second)->scene).c_str(), (i.second)->size);
+			manifestEntries.emplace_back(buffer);
 
 			// print and log the entry if it is in the access threshold
-			DEBUG_REPORT_LOG_PRINT((i->second)->accesses <= s_accessThreshold, ("FileManifestAccessReport:\t%s\t%s\t%i\t%i\n", ((i->second)->name).c_str(), ((i->second)->scene).c_str(), (i->second)->size, (i->second)->accesses));
+			DEBUG_REPORT_LOG_PRINT((i.second)->accesses <= s_accessThreshold, ("FileManifestAccessReport:\t%s\t%s\t%i\t%i\n", ((i.second)->name).c_str(), ((i.second)->scene).c_str(), (i.second)->size, (i.second)->accesses));
 
 			// delete the actual entry
-			delete i->second;
-			i->second = 0;
+			delete i.second;
+			i.second = nullptr;
 		}
 
 		std::sort(manifestEntries.begin(), manifestEntries.end());
-		for (std::vector<std::string>::const_iterator j = manifestEntries.begin(); j != manifestEntries.end(); ++j)
-			outputFile.write(j->length(), j->c_str());
+		for(const auto& manifestEntry : manifestEntries)
+			outputFile.write(manifestEntry.length(), manifestEntry.c_str());
 
 		delete [] buffer;
 		outputFile.close();
@@ -233,11 +234,11 @@ void FileManifest::remove()
 	}
 #endif
 
-	for (ManifestMap::iterator i = s_manifest.begin(); i != s_manifest.end(); ++i)
+	for(auto& i : s_manifest)
 	{
 		// delete the actual entry
-		delete i->second;
-		i->second = 0;
+		delete i.second;
+		i.second = nullptr;
 	}
 
 	s_transitionVector.clear();
@@ -271,7 +272,7 @@ void FileManifest::addNewManifestEntry(const char *fileName, int fileSize)
 	entry->size     = fileSize;
 	entry->accesses = 0;
 
-	std::pair<ManifestMap::iterator, bool> insertReturn = s_manifest.insert(std::pair<const uint32, FileManifestEntry*>(crc, entry));
+	const std::pair<ManifestMap::iterator, bool> insertReturn = s_manifest.insert(std::pair<const uint32, FileManifestEntry*>(crc, entry));
 
 	// increment the accesses 
 	++(((insertReturn.first)->second)->accesses);
@@ -286,6 +287,7 @@ void FileManifest::addNewManifestEntry(const char *fileName, int fileSize)
 		// delete the new entry we created
 		delete entry;
 	}
+	
 	delete entry;
 #else
 	return;
@@ -297,13 +299,13 @@ void FileManifest::addNewManifestEntry(const char *fileName, int fileSize)
 void FileManifest::addStoredManifestEntry(const char *fileName, const char * sceneId, int fileSize)
 {
 	const uint32 crc = Crc::calculate(fileName);
-	FileManifestEntry * entry = new FileManifestEntry();
+	auto* entry = new FileManifestEntry();
 	entry->name     = fileName;
 	entry->scene    = sceneId;
 	entry->size     = fileSize;
 	entry->accesses = 0;
 
-	std::pair<ManifestMap::iterator, bool> insertReturn = s_manifest.insert(std::pair<const uint32, FileManifestEntry*>(crc, entry));
+	s_manifest.insert(std::pair<const uint32, FileManifestEntry*>(crc, entry));
 
 	delete entry;
 }
@@ -320,9 +322,9 @@ void FileManifest::addToTransitionVector(const char *fileName, int fileSize)
 
 void FileManifest::addTransitionElementsToManifest()
 {
-	TransitionVector::const_iterator end = s_transitionVector.end();
-	for (TransitionVector::const_iterator i = s_transitionVector.begin(); i != end; ++i)
-		addNewManifestEntry((i->first).c_str(), i->second);
+	for(const auto& i : s_transitionVector)
+		addNewManifestEntry((i.first).c_str(), i.second);
+	
 	clearAllTransitionElements();
 }
 
@@ -343,7 +345,7 @@ void FileManifest::setSceneId(const char *newScene)
 		return;
 
 	// don't do anything if the scene hasn't changed
-	if (s_currentSceneId.compare(newScene) == 0)
+	if (s_currentSceneId == newScene)
 		return;
 
 	if (strlen(newScene) == 0)
@@ -375,16 +377,15 @@ void FileManifest::setSceneId(const char *newScene)
 
 bool FileManifest::isValidScene(const char *scene)
 {
-	std::string sceneString(scene);
-	for (int i = 0; i < s_numValidScenes; ++i)
+	const std::string sceneString(scene);
+	
+	for(const auto& s_validScene : s_validScenes)
 	{
-		// if the scene matches the name, return true
-		if (sceneString.compare(s_validScenes[i]) == 0)
+		// if the scene matches the name, return true, if the scene name is <scene name>_<num>, we return true (multiple zones)
+		if (sceneString == s_validScene || (sceneString.find(s_validScene + "_", 0) == 0 && sceneString.length() == (s_validScene.length() + 2)))
 			return true;	
-		//otherwise, if the scene name is <scene name>_<num>, we return true (multiple zones)
-		else if (sceneString.find(s_validScenes[i] + "_", 0) == 0 && sceneString.length() == (s_validScenes[i].length() + 2))
-			return true;
 	}
+	
 	return false;
 }
 
@@ -392,16 +393,15 @@ bool FileManifest::isValidScene(const char *scene)
 
 bool FileManifest::isTransitionScene(const char *scene)
 {
-	std::string sceneString(scene);
-	for (int i = 0; i < s_numTransitionScenes; ++i)
+	const std::string sceneString(scene);
+	
+	for(const auto& s_transitionScene : s_transitionScenes)
 	{
-		// if the scene matches the name, return true
-		if (sceneString.compare(s_transitionScenes[i]) == 0)
+		// if the scene matches the name, return true, if the scene name is <scene name>_<num>, we return true (multiple zones)
+		if (sceneString == s_transitionScene || (sceneString.find(s_transitionScene + "_", 0) == 0 && sceneString.length() == (s_transitionScene.length() + 2)))
 			return true;	
-		//otherwise, if the scene name is <scene name>_<num>, we return true (multiple zones)
-		else if (sceneString.find(s_transitionScenes[i] + "_", 0) == 0 && sceneString.length() == (s_transitionScenes[i].length() + 2))
-			return true;
 	}
+	
 	return false;
 }
 
@@ -410,6 +410,7 @@ bool FileManifest::isTransitionScene(const char *scene)
 bool FileManifest::contains(const char *fileName)
 {
 	uint32 crc = Crc::calculate(fileName);
+	
 	return contains(crc);
 }
 
@@ -417,7 +418,7 @@ bool FileManifest::contains(const char *fileName)
 
 bool FileManifest::contains(uint32 crc)
 {
-	ManifestMap::iterator i = s_manifest.find(crc);
+	const ManifestMap::iterator i = s_manifest.find(crc);
 
 	if (i == s_manifest.end())
 		return false;

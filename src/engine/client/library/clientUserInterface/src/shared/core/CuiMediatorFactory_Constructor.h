@@ -8,8 +8,10 @@
 #ifndef INCLUDED_CuiMediatorFactory_Constructor_H
 #define INCLUDED_CuiMediatorFactory_Constructor_H
 
+#include "CuiMediator.h"
 #include "clientUserInterface/CuiMediatorFactory_ConstructorBase.h"
 #include "UIPage.h"
+#include "../../../../../../../external/3rd/library/ui/src/win32/UIManager.h"
 
 // ======================================================================
 
