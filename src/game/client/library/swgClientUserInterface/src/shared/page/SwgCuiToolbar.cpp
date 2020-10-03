@@ -1898,8 +1898,13 @@ CuiDragInfo *  SwgCuiToolbar::getToolbarItem (int pane, int slot, bool pet)
 
 	ToolbarItemPane & paneItems = pet ? *m_petToolbarItemPane : (*m_toolbarItemPanes)[paneIndex];
 
+	if(paneItems.empty())
+	{
+		paneItems.resize(DEFAULT_ITEM_COUNT_PER_PANE);
+	}
+	
 	const size_t slotIndex = static_cast<size_t>(slot);
-
+	
 	if (slotIndex >= paneItems.size ())
 	{
 		WARNING (true, ("toolbar action slot requested (%d) > size of items data vector (%d)", slot, static_cast<int>(paneItems.size ())));
@@ -3214,11 +3219,10 @@ void SwgCuiToolbar::saveSettings         () const
 
 //----------------------------------------------------------------------
 
-void SwgCuiToolbar::loadSettings         ()
+void SwgCuiToolbar::loadSettings ()
 {
 	setSettingsAutoSizeLocation(false, false);
 	SwgCuiLockableMediator::loadSettings ();
-
 
 	int numPanes = 0;
 
@@ -3232,6 +3236,7 @@ void SwgCuiToolbar::loadSettings         ()
 	{
 		int locationX = 0;
 		int locationY = 0;
+		
 		if (CuiSettings::loadInteger(getMediatorDebugName(), Settings::toolbarLocationX, locationX) &&
 			CuiSettings::loadInteger(getMediatorDebugName(), Settings::toolbarLocationY, locationY))
 		{
@@ -3258,8 +3263,8 @@ void SwgCuiToolbar::loadSettings         ()
 	setupTabData ();
 
 	int firstNumItems = 0;
-
 	int pane = 0;
+	
 	for (auto it = m_toolbarItemPanes->begin (); it != m_toolbarItemPanes->end (); ++it, ++pane)
 	{
 		ToolbarItemPane & items = *it;
@@ -3286,6 +3291,7 @@ void SwgCuiToolbar::loadSettings         ()
 		items.resize (DEFAULT_ITEM_COUNT_PER_PANE);
 				
 		int itemIndex = 0;
+		
 		for (auto iit = items.begin (); iit != items.end (); ++iit, ++itemIndex)
 		{
 			CuiDragInfo & item = *iit;
@@ -3386,6 +3392,7 @@ void SwgCuiToolbar::setupTabData ()
 		
 		const int numPanes = static_cast<int>(m_toolbarItemPanes->size ());
 		UIString str;
+		
 		for (int i = 0; i < numPanes; ++i)
 		{
 			str.clear ();
@@ -3397,7 +3404,7 @@ void SwgCuiToolbar::setupTabData ()
 
 //----------------------------------------------------------------------
 
-void SwgCuiToolbar::onMacrosChangedReset         (const ClientMacroManager::Messages::Changed::Payload &)
+void SwgCuiToolbar::onMacrosChangedReset (const ClientMacroManager::Messages::Changed::Payload &)
 {
 	repopulateSlots  ();
 }

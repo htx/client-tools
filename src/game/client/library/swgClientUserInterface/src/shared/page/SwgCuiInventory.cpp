@@ -119,9 +119,11 @@ bool SwgCuiInventoryNamespace::ProviderFilter::showObject (const ClientObject & 
 	CreatureObject const * const player = Game::getPlayerCreature();
 	if(!player)
 		return false;
+	
 	for(std::vector<std::string>::const_iterator i = cms_cyberneticWearableSlots.begin(); i != cms_cyberneticWearableSlots.end(); ++i)
 	{
 		ClientObject const * const equippedObject = player->getEquippedObject(i->c_str());
+		
 		if(equippedObject && (equippedObject == &obj))
 			return false;
 	}
@@ -267,12 +269,12 @@ m_onlyStoreBaseMediatorSettings (false)
 	setIsUpdating       (true);
 
 	cms_cyberneticWearableSlots.clear();
-	cms_cyberneticWearableSlots.push_back("bracer_lower_l");
-	cms_cyberneticWearableSlots.push_back("bracer_lower_r");
-	cms_cyberneticWearableSlots.push_back("pants1");
-	cms_cyberneticWearableSlots.push_back("chest2");
-	cms_cyberneticWearableSlots.push_back("cybernetic_hand_l");
-	cms_cyberneticWearableSlots.push_back("cybernetic_hand_r");
+	cms_cyberneticWearableSlots.emplace_back("bracer_lower_l");
+	cms_cyberneticWearableSlots.emplace_back("bracer_lower_r");
+	cms_cyberneticWearableSlots.emplace_back("pants1");
+	cms_cyberneticWearableSlots.emplace_back("chest2");
+	cms_cyberneticWearableSlots.emplace_back("cybernetic_hand_l");
+	cms_cyberneticWearableSlots.emplace_back("cybernetic_hand_r");
 
 
 }
