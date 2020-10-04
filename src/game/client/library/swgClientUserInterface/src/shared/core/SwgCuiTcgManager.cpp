@@ -16,7 +16,6 @@
 #include "sharedFoundation/Os.h"
 #include "swgClientUserInterface/SwgCuiTcgControl.h"
 #include "swgClientUserInterface/SwgCuiTcgWindow.h"
-#include "swgClientUserInterface/SwgCuiWebBrowserManager.h"
 
 #include "UIImage.h"
 #include "UIManager.h"
@@ -127,8 +126,6 @@ void __stdcall SwgCuiTcgManagerNamespace::navigateProc(const char * url)
 	{
 		DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::navigateProc() - %s\n", url));
 
-		SwgCuiWebBrowserManager::createWebBrowserPage(false);
-		SwgCuiWebBrowserManager::setURL(url, true);
 	}
 }
 
@@ -140,12 +137,6 @@ void __stdcall SwgCuiTcgManagerNamespace::navigateWithPostDataProc(const char * 
 	{
 		DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::navigateWithPostDataProc() - %s\n", url));
 
-		SwgCuiWebBrowserManager::createWebBrowserPage(false);
-
-		if (postData)
-			SwgCuiWebBrowserManager::setURL(url, true, postData, strlen(postData));
-		else
-			SwgCuiWebBrowserManager::setURL(url, true);
 	}
 }
 

@@ -55,7 +55,6 @@
 #include "swgClientUserInterface/SwgCuiLootBox.h"
 #include "swgClientUserInterface/SwgCuiMediatorTypes.h"
 #include "swgClientUserInterface/SwgCuiSpaceConversation.h"
-#include "swgClientUserInterface/SwgCuiWebBrowserManager.h"
 
 #include "UIBaseObject.h"
 #include "UIImageStyle.h"
@@ -152,9 +151,7 @@ namespace SwgCuiCommandParserUINamespace
 		const char * const testLootBox         = "testLootBox";
 		const char * const debugStringIds      = "debugStringIds";
 		const char * const debugStringIdColor  = "debugStringIdColor";
-#if LIBMOZILLA == 1
-		const char * const debugBrowserOutput  = "mozillaBrowserOutput";
-#endif
+
 #endif
 	}
 
@@ -210,9 +207,6 @@ namespace SwgCuiCommandParserUINamespace
 		{CommandNames::testLootBox,           1, "[objectId]...", "Test the loot box with existing object ids."},
 		{CommandNames::debugStringIds,        0, "[1|0]", "Debug the source string id table and entry."},
 		{CommandNames::debugStringIdColor,    0, "<ui color string>", "Set the color of the debug StringId string."},
-#if LIBMOZILLA == 1
-		{CommandNames::debugBrowserOutput,    0, "", "Prints out debug information related to the Mozilla browser."		},
-#endif
 #endif
 		{"", 0, "", ""} // this must be last
 	};
@@ -558,27 +552,6 @@ bool SwgCuiCommandParserUI::performParsing (const NetworkId & userId, const Stri
 			result += Unicode::narrowToWide("Please select a radar style number.");
 		}
 		
-		return true;
-	}
-	else if(isCommand(argv[0], CommandNames::browser))
-	{	
-		if(argv.size() > 1)
-		{
-			std::string url = Unicode::wideToNarrow(argv[1]);
-			SwgCuiWebBrowserManager::setURL(url);
-		}
-
-		SwgCuiWebBrowserManager::createWebBrowserPage();
-
-		return true;
-	}
-	else if (isCommand(argv[0], CommandNames::url))
-	{
-		if(argv.size() >= 2)
-		{
-			SwgCuiWebBrowserManager::setURL(Unicode::wideToNarrow(argv[1]));
-		}
-
 		return true;
 	}
 
@@ -1088,14 +1061,6 @@ bool SwgCuiCommandParserUI::performParsing (const NetworkId & userId, const Stri
 		LocalizationManager::debugDisplayStringColor(color);
 		return true;
 	}
-#if LIBMOZILLA == 1
-	else if(isCommand(argv[0], CommandNames::debugBrowserOutput))
-	{
-		SwgCuiWebBrowserManager::debugOutput();
-		return true;
-	}
-#endif
-
 
 #endif
 	return false;

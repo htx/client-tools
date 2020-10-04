@@ -80,10 +80,6 @@
 #include "swgClientUserInterface/SwgCuiManager.h"
 #include "swgSharedNetworkMessages/SetupSwgSharedNetworkMessages.h"
 
-
-//#include "libMozilla/libMozilla.h"
-
-
 #include "resource.h"
 
 #include "sharedGame/PlatformFeatureBits.h"
@@ -308,19 +304,6 @@ int ClientMain(
 		setupGraphicsData.alphaBufferBitDepth = 0;
 		SetupClientGraphics::setupDefaultGameData(setupGraphicsData);
 
-
-
-		// Mozilla
-		// We want to use the Mozilla that's shipped with the game, not whatever's on the system
-		/*char szCWD[_MAX_PATH + 1];
-		GetCurrentDirectory(_MAX_PATH, szCWD);
-		std::string sPath(szCWD);
-		sPath += "\\mozilla";
-		if (!libMozilla::init(Os::getWindow(), sPath.c_str()))
-		{
-			DEBUG_FATAL(true, ("Mozilla init failed.\n"));
-		}*/
-
 		if (SetupClientGraphics::install(setupGraphicsData))
 		{
 			VideoList::install(Audio::getMilesDigitalDriver());
@@ -399,8 +382,6 @@ int ClientMain(
 
 	SetupSharedFoundation::remove();
 	SetupSharedThread::remove();
-
-	//libMozilla::release();
 
 	if (semaphore)
 		CloseHandle(semaphore);

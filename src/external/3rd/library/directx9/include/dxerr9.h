@@ -97,4 +97,3 @@ HRESULT WINAPI DXTraceW( const char* strFile, DWORD dwLine, HRESULT hr, const WC
 #endif //__cplusplus
 
 #endif // _DXERR9_H_
-

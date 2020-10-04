@@ -143,9 +143,6 @@
 #include "sharedUtility/LocalMachineOptionManager.h"
 #include "swgSharedNetworkMessages/MessageQueueCombatAction.h"
 #include "swgSharedUtility/Postures.def"
-#if LIBMOZILLA == 1
-#include "libMozilla/libMozilla.h"
-#endif
 
 #include "LocalizationManager.h"
 #include "LocalizedStringTable.h"

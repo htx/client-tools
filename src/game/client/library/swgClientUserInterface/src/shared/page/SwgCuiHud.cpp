@@ -95,7 +95,6 @@
 #include "swgClientUserInterface/SwgCuiHudWindowManager.h"
 #include "swgClientUserInterface/SwgCuiInventory.h"
 #include "swgClientUserInterface/SwgCuiToolbar.h"
-#include "swgClientUserInterface/SwgCuiWebBrowserManager.h"
 #include "swgSharedUtility/Postures.h"
 #include "swgSharedUtility/States.def"
 
