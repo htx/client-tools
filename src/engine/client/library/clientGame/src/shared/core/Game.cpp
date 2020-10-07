@@ -150,10 +150,6 @@
 
 #include <cstdio>
 
-#if 0
-#include "clientGraphics/SwgVideoCapture.h"
-#endif // PRODUCTION
-
 //-----------------------------------------------------------------
 
 namespace GameNamespace
@@ -169,7 +165,7 @@ namespace GameNamespace
 
 	class Sender : public MessageDispatch::Emitter
 	{
-		~Sender () {}
+		~Sender() = default;
 	};
 
 	// =============================================================================
@@ -222,8 +218,8 @@ namespace GameNamespace
 
 		// - - - - - - - - - - - - - - - - - - - - - - - -
 
-		GroundScene *create() { return new GroundScene(m_terrainFilename, m_playerFilename, m_customizedPlayer); }
-		NetworkId getPlayerNetworkId() { return NetworkId(); }
+		GroundScene *create() override { return new GroundScene(m_terrainFilename, m_playerFilename, m_customizedPlayer); }
+		NetworkId	getPlayerNetworkId() override { return NetworkId(); }
 
 		// - - - - - - - - - - - - - - - - - - - - - - - -
 		char *const           m_playerFilename;
@@ -268,7 +264,7 @@ namespace GameNamespace
 
 		// - - - - - - - - - - - - - - - - - - - - - - - -
 
-		GroundScene *create()
+		GroundScene *create() override
 		{
 			return new GroundScene(
 				m_terrainFilename,
@@ -281,15 +277,15 @@ namespace GameNamespace
 			);
 		}
 
-		NetworkId getPlayerNetworkId() { return m_playerNetworkId; }
+		NetworkId getPlayerNetworkId() override { return m_playerNetworkId; }
 
-		void beginDeferredCreation()
+		void beginDeferredCreation() override
 		{
 			GameNetwork::beginDeferringConnectionServerMessages();
 			m_deferred=true;
 		}
 
-		void endDeferredCreation() 
+		void endDeferredCreation() override
 		{
 			if (m_deferred)
 			{
@@ -3005,59 +3001,5 @@ std::string Game::calculateNonInstanceSceneId(std::string const & scene)
 
 	return scene;
 }
-
-// ---------------------------------------------------------------------
-
-#if 0
-void Game::videoCaptureConfig(int resolution, int seconds, int quality, const char* filename)
-{
-	VideoCapture::install(); // Installs SoeUtilMemoryAdapter on first call
-	VideoCapture::SingleUse::config(resolution, seconds, quality, filename, &AudioCapture::SwgAudioCaptureManager::GetInstance());
-}
-#endif // PRODUCTION
-
-// ---------------------------------------------------------------------
-
-#if 0
-class VideoCaptureCallback : public VideoCapture::SingleUse::ICallback
-{
-public:
-	static VideoCaptureCallback& GetInstance();
-	virtual ~VideoCaptureCallback(){}
-	virtual void OnStart()
-	{
-		CuiSystemMessageManager::sendFakeSystemMessage(Unicode::narrowToWide("VideoCapture started"));
-	}
-	virtual void OnStop()
-	{
-		CuiSystemMessageManager::sendFakeSystemMessage(Unicode::narrowToWide("VideoCapture stopped"));
-	}
-private:
-	VideoCaptureCallback(){}
-	VideoCaptureCallback(const VideoCaptureCallback&);
-	VideoCaptureCallback& operator=(const VideoCaptureCallback&);
-};
-
-VideoCaptureCallback& VideoCaptureCallback::GetInstance()
-{
-	static VideoCaptureCallback s_videoCaptureCallback;
-	return s_videoCaptureCallback;
-}
-
-void Game::videoCaptureStart()
-{
-	VideoCapture::install(); // Installs SoeUtilMemoryAdapter on first call
-	VideoCapture::SingleUse::start(&VideoCaptureCallback::GetInstance(), &AudioCapture::SwgAudioCaptureManager::GetInstance());
-}
-#endif // PRODUCTION
-
-// ---------------------------------------------------------------------
-
-#if 0
-void Game::videoCaptureStop()
-{
-	VideoCapture::SingleUse::stop();
-}
-#endif // PRODUCTION
 
 // ---------------------------------------------------------------------

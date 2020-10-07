@@ -11,6 +11,7 @@
  *
  *	StrPtrDict - a dictionary whose values we don't own
  *	StrBufDict - a dictionary whose values we do own
+ *	BufferDict - a dictionary stuffed into a StrBuf.
  *
  * Public methods:
  *
@@ -31,17 +32,13 @@ class StrPtrDict : public StrDict {
 			StrPtrDict();
 			~StrPtrDict();
 
-	void		Clear()
-			{
-			    tabLength = 0;
-			}
-
 	// virtuals of StrDict
 
 	StrPtr *	VGetVar( const StrPtr &var );
 	void		VSetVar( const StrPtr &var, const StrPtr &val );
 	void		VRemoveVar( const StrPtr &var );
 	int		VGetVarX( int x, StrRef &var, StrRef &val );
+	void		VClear() { tabLength = 0; }
 
     private:
 	
@@ -59,11 +56,6 @@ class StrBufDict : public StrDict {
 			StrBufDict & operator =( StrDict & dict );
 			~StrBufDict();
 
-	void		Clear()
-			{
-			    tabLength = 0;
-			}
-
 	int		GetCount()
 			{
 			    return tabLength;
@@ -75,14 +67,51 @@ class StrBufDict : public StrDict {
 	void		VSetVar( const StrPtr &var, const StrPtr &val );
 	void		VRemoveVar( const StrPtr &var );
 	int		VGetVarX( int x, StrRef &var, StrRef &val );
+	void		VClear() { tabLength = 0; }
+
+	StrPtr *	GetVarN( const StrPtr &var );
+	StrBuf *	KeepOne( const StrPtr &var );
 
     private:
-	
-	void Set( StrDict & dict );
 	
 	VarArray	*elems;
 	int		tabSize;
 	int		tabLength;
 
+} ;
+
+const int BufferDictMax = 20;
+
+class BufferDict : public StrDict {
+
+    public:
+			BufferDict() {}
+			~BufferDict() {}
+			BufferDict & operator =( const BufferDict &s );
+
+	// virtuals of StrDict
+
+	StrPtr *	VGetVar( const StrPtr &var );
+	int 		VGetVarX( int x, StrRef &var, StrRef &val );
+	void		VSetVar( const StrPtr &var, const StrPtr &val );
+	void		VClear() { buf.Clear(); count = 0; }
+	void		VRemoveVar( const StrPtr &var );
+
+    protected:
+	StrPtr *	GetBuffer() { return &buf; }
+
+    private:
+	StrRef		varRef;		// temp for VGetVar
+
+	int 		count;
+
+	struct Var {
+		int	varOff;		// into buf.Text()
+		int	varLen;
+		int 	valOff;		// into buf.Text()
+		int 	valLen;
+	} vars[ BufferDictMax ];
+
+	StrBuf		buf;		// hold var/values
 } ;
 

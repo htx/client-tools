@@ -17,7 +17,7 @@ public:
 
 	virtual             ~FontExporterPSUI ();
 
-	virtual bool         export (const IdSet_t & idSet);
+	virtual bool         export2 (const IdSet_t & idSet);
  
 	                     FontExporterPSUI (const FontImageExporter & imexp, const ExporterInfo & info);
 private:

@@ -20,6 +20,7 @@
  *	Enviro::Config() - load $P4CONFIG file (if set)
  *	Enviro::List() - list variables in the environment 
  *	Enviro::Reload() - flush values cached from NT registry
+ *	Enviro::GetConfig() - get the name of the $P4CONFIG file (if set)
  */
 
 class EnviroTable;
@@ -27,6 +28,8 @@ struct EnviroItem;
 class Error;
 class StrBuf;
 class StrPtr;
+class StrArray;
+class FileSys;
 struct KeyPair;
 
 class Enviro {
@@ -35,23 +38,34 @@ class Enviro {
 			Enviro();
 			~Enviro();
 
+	// Enties at the top (lower numbers) take precedence over those below
 	enum ItemType { 
-		NEW,	// not looked up yet
-		UNSET,	// looked up and is empty
 		UPDATE,	// set via the Update call
-		ENV,	// set in environment
 		CONFIG,	// via P4CONFIG
-		SVC,	// set in service-specific registry
-		USER,	// set in user registry
-		SYS 	// set is machine registry
+		SVC,	// set in service-specific registry (NT only)
+		ENV,	// set in environment
+		ENVIRO,	// P4ENVIRO file (set on UNIX)
+		USER,	// set in user registry (NT only) (set on NT)
+		SYS,	// set is machine registry (NT only)
+		UNSET,	// looked up and is empty
+		NEW	// not looked up yet
 	};
 
-	void		BeServer( const StrPtr *name = 0 );
+	int		BeServer( const StrPtr *name = 0, int checkName = 0 );
+
+	const char      *ServiceName();
+	static const StrPtr *GetCachedServerName();
 	void		OsServer();
 
-	void		List();
+	void		List( int quiet = 0 );
+	int		FormatVariable( int i, StrBuf *sb );
+	int		HasVariable( int i );
+	static int	IsKnown( const char *nm );
+	void		GetVarName( int i, StrBuf &sb );
+	void		GetVarValue( int i, StrBuf &sb );
+	void		Format( const char *var, StrBuf *sb, int quiet = 0 );
 
-	void		Print( const char *var );
+	void		Print( const char *var, int quiet = 0 );
 	char		*Get( const char *var );
 	void		Set( const char *var, const char *value, Error *e );
 	void		Update( const char *var, const char *value );
@@ -60,21 +74,44 @@ class Enviro {
 	int		FromRegistry( const char *var );
 
 	void		Config( const StrPtr &cwd );
+	void		LoadConfig( const StrPtr &cwd, int checkSyntax = 1 );
+	void		LoadEnviro( int checkSyntax = 1 );
 
 	void		Reload();
 
-	void		Save( const char *const *vars, Error *e );
-
 	void		SetCharSet( int );	// for i18n support
+	int		GetCharSet();
+	void		GetLocale( StrBuf& l, Error* e );
+	
+	const StrPtr	&GetConfig();
+	const StrArray	*GetConfigs();
+	void		SetEnviroFile( const char * );
+	const StrPtr	*GetEnviroFile();
+	int		GetHome( StrBuf &result );
 
     private:
 
 	EnviroTable	*symbolTab;
 	EnviroItem	*GetItem( const char *var );
+	void		ReadConfig( FileSys *, Error *, int, ItemType );
+	void		Setup();
+
+	bool		ReadItemPlatform( ItemType type, const char *var, EnviroItem * item );
+	int		SetEnviro( const char *var, const char *value, Error *e );
+	
+	StrBuf		configFile;
+	StrArray	*configFiles;
+	StrBuf		enviroFile;
+	StrBuf		serviceName;
+
+	// used for netsslcredentials to get at service name
+	static const StrPtr *sServiceNameStrP;
 
 # ifdef OS_NT
 	KeyPair		*setKey;
 	KeyPair		*serviceKey;
+	KeyPair		*userKey;
+	KeyPair		*serverKey;
 	StrBuf		serviceKeyName;
 	int		charset;
 # endif /* OS_NT */

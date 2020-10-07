@@ -6,7 +6,28 @@
 
 /*
  * Standard headers
+ *
+ * Note: where both a NEED_XXX and HAVE_XXX are recognized, the form to
+ * use is:
+ *
+ *   # ifdef OS_YYY
+ *   #   define HAVE_XXX
+ *   #   ifdef NEED_XXX
+ *   #     include <xxx.h>
+ *   #   endif
+ *   # endif
+ *
+ *  This causes the HAVE_XXX macro to be defined even if the NEED_XXX macro 
+ *  is not; this protects us from problems caused by #ifdef HAVE_XXX in
+ *  header files.
  */
+
+# ifndef P4STDHDRS_H
+# define P4STDHDRS_H
+
+# ifdef OS_VMS
+# define _POSIX_EXIT  // to get exit status right from stdlib.h
+# endif	
 
 # include <stdio.h>
 # include <string.h>
@@ -23,7 +44,8 @@
  * NEED_ACCESS - access()
  * NEED_BRK - brk()/sbrk()
  * NEED_CHDIR - chdir()
- * NEED_CHMOD - chmod()
+ * NEED_CRITSEC - Critical Sections, just Windows for now
+ * NEED_DBGBREAK - DebugBreak(), just Windows for now
  * NEED_EBCDIC - __etoa, __atoe
  * NEED_ERRNO - errno, strerror
  * NEED_FILE - write(), unlink(), etc
@@ -33,15 +55,24 @@
  * NEED_FSYNC - fsync()
  * NEED_GETPID - getpid()
  * NEED_GETUID - getuid(),setuid() etc.
+ * NEED_IOCTL - ioctl() call and flags for UNIX
  * NEED_MKDIR - mkdir()
  * NEED_MMAP - mmap()
  * NEED_OPENDIR - opendir(), etc
  * NEED_POPEN - popen(), pclose()
+ * NEED_READLINK - readlink()
  * NEED_SIGNAL - signal()
  * NEED_SLEEP - Sleep()
+ * NEED_SMARTHEAP - Smartheap Initialization
  * NEED_STAT - stat()
+ * NEED_STATFS - statfs()
+ * NEED_STATVFS - statvfs()
+ * NEED_SOCKETPAIR - pipe(), socketpair()
+ * NEED_SOCKET_IO - various socket stuff
+ * NEED_SRWLOCK - headers for authwinldapconn.cc
  * NEED_SYSLOG - syslog()
  * NEED_TIME - time(), etc
+ * NEED_TIME_HP - High Precision time, such as gettimeofday, clock_gettime, etc.
  * NEED_TYPES - off_t, etc (always set)
  * NEED_UTIME - utime()
  */
@@ -57,6 +88,8 @@
 	defined( NEED_GETPWUID ) || \
 	defined( NEED_GETUID ) || \
 	defined( NEED_BRK ) || \
+	defined( NEED_READLINK ) || \
+	defined( NEED_SOCKET_IO ) || \
 	defined( NEED_SLEEP )
 
 # ifndef OS_NT
@@ -72,13 +105,20 @@
 # if defined( NEED_BRK )
 # if !defined( OS_NT ) && !defined( MAC_MWPEF ) && \
      !defined( OS_AS400 ) && !defined( OS_MVS ) && \
-     !defined( OS_LINUX ) && !defined( OS_DARWIN )
+     !defined( OS_LINUX ) && !defined( OS_DARWIN ) && \
+     !defined( OS_MACOSX )
 # define HAVE_BRK
 # endif
 # endif
 
+# if defined( NEED_LSOF )
+# if defined( OS_LINUX ) || defined( OS_DARWIN ) || defined( OS_MACOSX )
+# define HAVE_LSOF
+# endif
+# endif
+
 # if defined( NEED_GETUID )
-# ifdef unix 
+# if defined ( OS_MACOSX ) || defined ( OS_DARWIN ) || defined ( __unix__ )
 # define HAVE_GETUID
 # endif
 # endif
@@ -112,38 +152,108 @@ extern int errno;
 # include <fcntl.h>
 # endif
 
+// This must be one of the first occurrences for including windows.h
+// so that _WIN32_WINNT will flavor definitions.
+# ifdef OS_NT
+# define WIN32_LEAN_AND_MEAN
+// current default is WinXP; IPv6 code must set these macros to WinVista
+// before including this file (see net/netportipv6.h for details)
+# if !defined(NTDDI_VERSION) || (NTDDI_VERSION < 0x0501000)
+#   undef NTDDI_VERSION
+#   define NTDDI_VERSION    0x0501000
+# endif // NTDDI_VERSION
+# if !defined(_WIN32_WINNT) || (_WIN32_WINNT < 0x0501)
+#   undef _WIN32_WINNT
+#   define _WIN32_WINNT     0x0501
+# endif // _WIN32_WINNT
+# if !defined(WINVER) || (WINVER < _WIN32_WINNT)
+#   undef WINVER
+#   define WINVER           _WIN32_WINNT
+# endif // WINVER
+# endif // OS_NT
+
+# ifdef OS_NT
+# define HAVE_CRITSEC
+# ifdef NEED_CRITSEC
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+# endif // NEED_CRITSEC
+# endif // OS_NT
+
+// Definitions for AcquireSRWLock and ReleaseSRWLock.
+//
+# ifdef OS_NT
+# define HAVE_SRWLOCK
+# ifdef NEED_SRWLOCK
+# if (_MSC_VER >= 1800)
+# undef _WIN32_WINNT
+# define _WIN32_WINNT 0x0600
+# endif // _MSC_VER
+# include <windows.h>
+# include <winldap.h>
+# include <winber.h>
+# include <wincrypt.h>
+# include <rpc.h>
+# include <rpcdce.h>
+# endif // NEED_SRWLOCK
+# endif // OS_NT
+
+# ifdef OS_NT
+# define HAVE_DBGBREAK
+# ifdef NEED_DBGBREAK
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+# endif // NEED_DBGBREAK
+# endif // OS_NT
+
+# include "malloc_override.h"
+
+# ifdef MEM_DEBUG
+#   ifdef USE_SMARTHEAP
+#     define NEED_SMARTHEAP
+#   endif
+# endif
+
+// Smart Heap instrumentation.
+# ifdef NEED_SMARTHEAP
+#   if defined( USE_SMARTHEAP )
+#     ifdef OS_NT
+#       include <windows.h>
+#     endif // OS_NT
+#     include <smrtheap.h>
+#     define HAVE_SMARTHEAP
+#   endif // USE_SMARTHEAP
+# endif // NEED_SMARTHEAP
+
 # ifdef NEED_FLOCK
 # ifdef OS_NT
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
 # include <io.h>
 # endif
-# ifdef unix
+# ifdef __unix__
 # include <sys/file.h>
 # ifdef LOCK_UN
-// 2.96 linux ia64 declares it with a __THROW
-# ifndef __THROW
 extern "C" int flock( int, int );
 # endif
 # endif
 # endif
-# endif
 
+# if !defined( OS_OS2 ) && !defined( MAC_MWPEF ) && \
+     !defined( OS_NT )  && !defined( OS_AS400 ) && \
+     !defined( OS_VMS )
+# define HAVE_FORK
 # ifdef NEED_FORK
 # ifdef OS_MACHTEN
 # include "/usr/include/sys/wait.h"
 # endif 
-# if !defined( OS_OS2 ) && !defined( MAC_MWPEF ) && !defined( OS_NT )
-# define HAVE_FORK
 # include <sys/wait.h>
-# endif 
+# endif
 # endif
 
-# ifdef NEED_FSYNC
 # if !defined( OS_BEOS ) && !defined( OS_NT ) && \
-     !defined( OS_MAC ) && !defined( OS_OS2 )
+     !defined( OS_OS2 )
 # define HAVE_FSYNC
-# endif
 # endif
 
 # ifdef NEED_GETCWD
@@ -157,6 +267,9 @@ extern "C" char *getcwd( char *buf, size_t size );
 # include <unixlib.h>
 # endif
 # endif 
+
+# if !defined(OS_OS2)
+# define HAVE_GETHOSTNAME
 
 # ifdef NEED_GETHOSTNAME
 
@@ -182,9 +295,7 @@ extern "C" int gethostname( char * name, int namelen );
 extern "C" int __stdcall gethostname( char * name, int namelen );
 # endif
 
-# if !defined(OS_OS2) && !(defined(OS_MAC) || defined(USE_CARBON))
-# define HAVE_GETHOSTNAME
-# endif
+# endif /* NEED_GETHOSTNAME */
 
 # endif
 
@@ -192,58 +303,43 @@ extern "C" int __stdcall gethostname( char * name, int namelen );
 # ifdef OS_NT
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# define getprocid() GetCurrentThreadId()
 # else
-# ifdef OS_MAC
-# define getprocid() 1000 // none on mac
-# else
-# define getprocid() getpid()
 # if defined(OS_OS2)
 # include <process.h>
 # endif /* OS2 */
-# endif /* MAC */
 # endif	/* NT */
 # endif	/* GETPID */
 
-# ifdef NEED_GETPWUID
 # if !defined( OS_VMS ) && !defined( OS_NT ) && !defined( OS_BEOS ) && \
 	!defined( MAC_MWPEF ) && !defined( OS_OS2 )
-# include <pwd.h>
 # define HAVE_GETPWUID
-# endif /* UNIX */
+# ifdef NEED_GETPWUID
+# include <pwd.h>
 # endif 
+# endif /* UNIX */
 
+# ifdef NEED_IOCTL
+# ifndef OS_NT
+# include <sys/ioctl.h>
+# endif /* NT */
+# endif /* IOCTL */
+
+# ifdef ACCESSPERMS
+    #define PERMSMASK ACCESSPERMS
+# else
+    #ifdef  S_IAMB
+        #define PERMSMASK S_IAMB
+    #else
+        #define PERMSMASK 0x1FF
+    #endif
+# endif
 # if defined(NEED_MKDIR) || defined(NEED_STAT) || defined(NEED_CHMOD)
 
 # ifdef OS_OS2
 # include <direct.h>
 # endif
 
-# if !defined( OS_MAC )
 # include <sys/stat.h>
-# endif
-
-# ifdef OS_MAC
-# include <stat.h>
-# include <fcntl.h> /* for chmod() */
-# endif
-
-# ifdef OS_MACOSX
-# include "i18napi.h"	/* for CharSetApi */
-# include "macfile.h"	/* for MacFile */
-# endif
-
-# ifdef NEED_CHMOD
-# if defined( OS_MACOSX ) || ( OS_DARWIN )
-extern int darwin_chmod( const char *, mode_t );
-# define P4CHMOD(p,m) darwin_chmod(p,m)
-# elif defined( OS_NT )
-extern int nt_chmod( const char *, int );
-# define P4CHMOD(p,m) nt_chmod(p,m)
-# else
-# define P4CHMOD(p,m) chmod(p,m)
-# endif
-# endif
 
 # ifndef S_ISLNK /* NCR */
 # define S_ISLNK(m) (((m)&S_IFMT)==S_IFLNK)
@@ -259,6 +355,10 @@ extern int nt_chmod( const char *, int );
 # define PERM_0266 (S_IWRITE)
 # define PERM_0666 (S_IRUSR|S_IWRITE)
 # define PERM_0777 (S_IRUSR|S_IWRITE|S_IEXEC)
+# define PERM_0700 ( S_IRUSR | S_IWUSR | S_IXUSR )
+# define PERM_0600 ( S_IRUSR | S_IWUSR )
+# define PERM_0500 ( S_IRUSR | S_IXUSR )
+# define PERM_0400 ( S_IRUSR )
 # ifndef S_IRUSR
 # define S_IRUSR S_IREAD
 # define S_IWUSR S_IWRITE
@@ -271,20 +371,55 @@ extern int nt_chmod( const char *, int );
 # define PERM_0266 (S_IWUSR | (S_IRGRP|S_IWGRP) | (S_IROTH|S_IWOTH))
 # define PERM_0666 ((S_IRUSR|S_IWUSR) | (S_IRGRP|S_IWGRP) | (S_IROTH|S_IWOTH))
 # define PERM_0777 (S_IRWXU | S_IRWXG | S_IRWXO)
+# define PERM_0700 ( S_IRWXU )
+# define PERM_0600 ( S_IRUSR | S_IWUSR )
+# define PERM_0500 ( S_IRUSR | S_IXUSR )
+# define PERM_0400 ( S_IRUSR )
 # endif
 
 # endif
+
+# if defined(NEED_STATVFS)
+
+# ifdef OS_NT
+# else
+# include <sys/statvfs.h>
+# endif
+
+# ifdef OS_SOLARIS
+# define HAVE_STATVFS_BASETYPE
+# endif
+
+# endif
+
+# if defined(NEED_STATFS)
+
+# ifdef OS_LINUX
+# define HAVE_STATFS
+# include <sys/statfs.h>
+# endif
+
+# if defined(OS_DARWIN) || defined(OS_MACOSX) || defined(OS_FREEBSD)
+# define HAVE_STATFS
+# define HAVE_STATFS_FSTYPENAME
+# include <sys/param.h>
+# include <sys/mount.h>
+# endif
+
+# endif /* NEED_STATFS */
 
 /* Many users don't define NEED_MMAP -- so we always find out */
+/* added AIX 5.3 - mmap region getting corrupted */
 
 # if !defined( OS_AS400 ) && !defined( OS_BEOS ) && \
-	!defined( OS_HPUX68K ) && !defined( OS_MAC ) && \
+	!defined( OS_HPUX68K ) && \
 	!defined( OS_MACHTEN ) && !defined( OS_MVS ) && \
 	!defined( OS_VMS62 ) && !defined( OS_OS2 ) && \
 	!defined( OS_NEXT ) && !defined( OS_NT ) && \
 	!defined( OS_QNX ) && !defined( OS_UNICOS ) && \
 	!defined( OS_MPEIX ) && !defined( OS_QNXNTO ) && \
-	!defined( OS_MACOSX ) && !defined( OS_ZETA )
+	!defined( OS_ZETA ) && \
+	!defined( OS_AIX53 ) && !defined( OS_LINUXIA64 )
 
 # define HAVE_MMAP
 # ifdef NEED_MMAP
@@ -293,6 +428,7 @@ extern "C" caddr_t mmap(const caddr_t, size_t, int, int, int, off_t);
 extern "C" int munmap(const caddr_t, size_t);
 # endif /* HPUX9 */
 # include <sys/mman.h>
+# define HAVE_MMAP_BTREES
 # endif /* NEED_MMAP */
 # endif /* HAVE_MMAP */
 
@@ -326,15 +462,76 @@ extern "C" FILE *popen(const char *, const char *);
 # endif
 # endif
 
-# ifdef NEED_SYSLOG
-# if defined( unix )
-# include <syslog.h>
-# define HAVE_SYSLOG
+/*
+ * This definition differs from the conventional approach because we test
+ * on AF_UNIX and that's not defined until after we include socket.h. So,
+ * we use the old scheme of only defining HAVE_SOCKETPAIR if NEED_SOCKETPAIR
+ * is set and the call exists.
+ */
+# ifdef NEED_SOCKETPAIR
+# if defined( OS_NT )
+# define WINDOWS_LEAN_AND_MEAN
+# include <windows.h>
+# include <process.h>
+# elif defined( OS_BEOS )
+# include <net/socket.h>
+# else
+# include <sys/socket.h>
 # endif
+# if defined( AF_UNIX ) && \
+    !defined( OS_AS400 ) && \
+    !defined( OS_NT ) && \
+    !defined( OS_QNXNTO ) && \
+    !defined( OS_OS2 ) && \
+    !defined( OS_VMS )
+# define HAVE_SOCKETPAIR
+# if defined(OS_MACHTEN) || defined(OS_AIX32) || defined(OS_MVS)
+extern "C" int socketpair(int, int, int, int*);
+# endif
+# endif
+# endif
+
+# ifdef NEED_SYSLOG
+#  if defined( __unix__ )
+#   define HAVE_SYSLOG
+#   include <syslog.h>
+#  elif defined( OS_NT )
+#   define HAVE_EVENT_LOG
+#   include <windows.h>
+#  endif
 # endif
 
 # if defined(NEED_TIME) || defined(NEED_UTIME)
 # include <time.h>
+# endif
+
+# if defined(NEED_TIME_HP)
+#    if defined( OS_LINUX )
+#       define HAVE_CLOCK_GETTIME
+#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+#       if ( __GLIBC_PREREQ( 2, 10 ) && \
+             ( defined(_BSD_SOURCE) || \
+               _XOPEN_SOURCE >= 700  || \
+               _POSIX_C_SOURCE >= 200809L ) ) || \
+           ( !__GLIBC_PREREQ( 2, 10 ) && \
+             __GLIBC_PREREQ( 2, 6 ) && \
+             defined(_ATFILE_SOURCE) )
+#            define HAVE_UTIMENSAT
+#       else
+#           define HAVE_GETTIMEOFDAY
+#           include <sys/time.h>
+#       endif
+#else
+#            define HAVE_UTIMENSAT
+#endif
+#    elif defined( OS_NT )
+#       define WIN32_LEAN_AND_MEAN
+#       include <windows.h>
+#       define HAVE_GETSYSTEMTIME
+#    else
+#       define HAVE_GETTIMEOFDAY
+#       include <sys/time.h>
+#    endif
 # endif
 
 # if defined(NEED_TYPES) || 1
@@ -349,12 +546,22 @@ using namespace std;
 
 # endif
 
-# ifdef NEED_UTIME
 # ifndef OS_VMS
 # define HAVE_UTIME
+# ifdef NEED_UTIME
 # if ( defined( OS_NT ) || defined( OS_OS2 ) ) && !defined(__BORLANDC__)
 # include <sys/utime.h>
 # else
+# include <utime.h>
+# endif
+# endif
+
+# define HAVE_UTIMES
+# ifdef NEED_UTIMES
+# if ( defined( OS_NT ) || defined( OS_OS2 ) ) && !defined(__BORLANDC__)
+# include <sys/utime.h>
+# else
+# include <sys/types.h>
 # include <utime.h>
 # endif
 # endif
@@ -362,8 +569,22 @@ using namespace std;
 
 # ifdef NEED_SLEEP
 # ifdef OS_NT
+# define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-# define sleep(x) Sleep(x * 1000)
+# define sleep(x) Sleep((x) * 1000)
+# define msleep(x) Sleep(x)
+# ifndef OS_MINGW
+typedef unsigned long useconds_t;
+# endif
+# else
+// Assumeing usleep exists everywhere other than Windows
+# define msleep(x) usleep((x) * 1000)
+# endif
+# endif
+
+# ifdef NEED_WINDOWSH
+# ifdef OS_NT
+# include <windows.h>
 # endif
 # endif
 
@@ -374,7 +595,6 @@ using namespace std;
 
 # define HAVE_SYMLINKS
 # if defined( OS_OS2 ) || \
-	defined( OS_NT ) || \
 	defined ( MAC_MWPEF ) || \
 	defined( OS_VMS ) || \
 	defined( OS_INTERIX )
@@ -383,7 +603,6 @@ using namespace std;
 
 # define HAVE_TRUNCATE
 # if defined( OS_OS2 ) || \
-	defined( OS_NT ) || \
 	defined( MAC_MWPEF ) || \
 	defined( OS_BEOS ) || \
 	defined( OS_QNX ) || \
@@ -399,9 +618,8 @@ using namespace std;
 /* These systems have no memccpy() or a broken one */
 
 # if defined( OS_AS400 ) || defined( OS_BEOS ) || defined( OS_FREEBSD ) || \
-	defined( OS_MAC ) || defined( OS_MACHTEN ) || defined( OS_MVS ) || \
-	defined( OS_VMS62 ) || defined( OS_RHAPSODY ) || defined( OS_MACOSX ) || \
-	defined( OS_DARWIN ) || defined( OS_ZETA )
+	defined( OS_MACHTEN ) || defined( OS_MVS ) || \
+	defined( OS_VMS62 ) || defined( OS_RHAPSODY ) || defined( OS_ZETA )
 	
 # define BAD_MEMCCPY
 extern "C" void *memccpy(void *, const void *, int, size_t);
@@ -440,52 +658,34 @@ int truncate(const char *path, off_t length);
  */
 
 # ifdef OS_NT
-# define MT_STATIC static __declspec(thread)
+#   define MT_STATIC static __declspec(thread)
+# elif !defined( OS_BEOS ) && \
+       !defined( OS_AS400 ) && \
+       !defined( OS_VMS )
+#   ifdef NEED_THREADS
+#     define HAVE_PTHREAD
+#     include <pthread.h>
+#   endif
+#   if ( defined( OS_DARWIN ) && OS_VER < 140 ) || \
+       ( defined( OS_MACOSX ) && OS_VER < 1010 )
+#     define MT_STATIC static
+#   else
+#     define MT_STATIC static __thread
+#   endif
 # else
-# define MT_STATIC static
+#   define MT_STATIC static
 # endif
 
 /*
- * CASE_INSENSITIVE - strcmp redefinitions for a case-insensitive server
+ * Illegal characters in a filename, includes %
+ * as escape character.  Used when creating an
+ * archive file in the spec depot
  */
 
-# if defined( OS_NT ) || defined( OS_UNIXWARE ) || defined( OS_MAC ) \
-	|| defined( OS_VMS ) || defined( OS_LYNX ) || defined( OS_INTERIX ) \
-	|| defined( OS_MVS ) || defined( OS_SINIX ) || defined( OS_AS400 ) \
-	|| defined( OS_MPEIX )
-
-extern "C" int strcasecmp(const char *s1, const char *s2);
-extern "C" int strncasecmp(const char *s1, const char *s2, size_t len);
-
-# endif
-
-# if defined( OS_AIX ) || defined( OS_SCO )
-# include <strings.h>
-# endif
-# ifdef OS_OS2
-# define strcasecmp(x,y) strcmpi((x),(y))
-# define strncasecmp(x,y,z) _strnicmp(x,y,z)
-# endif
-# ifdef OS_QNX
-# include <unix.h>
-# endif
-
-# ifdef CASE_INSENSITIVE
-
-# include <ctype.h>
 # ifdef OS_NT
-# define tolower(x) ((x)>='A'&&(x)<='Z'?(x)-'A'+'a':(x))
-# endif
-# define zstrcmp(x,y) strcasecmp(x,y)
-# define zstrncmp(x,y,z) strncasecmp(x,y,z)
-# define zcharcmp(x,y) ((unsigned char)tolower(x)-(unsigned char)tolower(y))
-
+# define BadSpecFileCharList "%/<>:|\\"
 # else
-
-# define zstrcmp(x,y) strcmp(x,y)
-# define zstrncmp(x,y,z) strncmp(x,y,z)
-# define zcharcmp(x,y) ((unsigned char)(x)-(unsigned char)(y))
-
+# define BadSpecFileCharList "%/"
 # endif
 
 /*
@@ -505,21 +705,99 @@ enum LineType { LineTypeRaw, LineTypeCr, LineTypeCrLf, LineTypeLfcrlf };
 # endif
 
 /*
- * const_char - what "x" is
- * LONG_LONG - a 64 bit int
+ * P4INT64 - a 64 bit int
  */
 
-# ifndef const_char
-# define const_char char
-# endif
-
-# ifdef OS_NT
-# define LONG_LONG __int64
-# else
 # if !defined( OS_MVS ) && \
      !defined( OS_OS2 ) && \
-     !defined( OS_QNX ) && \
-     !defined( OS_UNIXWARE )
-# define LONG_LONG long long
+     !defined( OS_QNX )
+# define HAVE_INT64
+# ifdef OS_NT
+# define P4INT64 __int64
+# else
+# define P4INT64 long long
 # endif
 # endif
+
+# ifndef P4INT64
+# define P4INT64 int
+# endif
+
+/*
+ * offL_t - size of files or offsets into files
+ */
+
+typedef P4INT64 offL_t;
+
+/*
+ * We use p4size_t rather than size_t in space-critical places such as
+ * StrPtr and StrBuf. 4GB ought to be enough for anyone, says Mr. Gates...
+ */
+
+typedef unsigned int p4size_t;
+
+# if defined(OS_MACOSX) && OS_VER < 1010
+# define FOUR_CHAR_CONSTANT(_a, _b, _c, _d)       \
+        ((UInt32)                                 \
+        ((UInt32) (_a) << 24) |                   \
+        ((UInt32) (_b) << 16) |                   \
+        ((UInt32) (_c) <<  8) |                   \
+        ((UInt32) (_d)))
+# endif
+
+/* 
+ * B&R's NTIA64 build machine doesn't define vsnprintf, 
+ * but it does define _vsnprintf. Use that one instead.
+ */
+# ifdef OS_NTIA64
+# define vsnprintf _vsnprintf 
+# endif
+
+# if defined(_MSC_VER) && _MSC_VER < 1900 || \
+     !defined(_MSC_VER) && defined(_MSC_FULL_VER)
+# define strtoll _strtoi64
+# endif
+
+// C++11 or higher
+# if __cplusplus >= 201103L
+#   define HAS_CPP11
+# endif
+
+// C++14 or higher
+# if __cplusplus >= 201402L
+#   define HAS_CPP14
+# endif
+
+// C++17 or higher
+# if __cplusplus >= 201703L
+#   define HAS_CPP17
+# endif
+
+# if defined(_MSC_VER) && _MSC_VER < 1900
+#  define HAS_BROKEN_CPP11
+# endif
+
+# ifdef HAS_CPP11
+#   define HAS_PARALLEL_SYNC_THREADS
+# endif
+
+# if defined(HAS_CPP14) && defined(USE_EXTENSIONS) && USE_EXTENSIONS == 1
+#   define HAS_EXTENSIONS
+# endif
+
+# include "sanitizers.h"
+
+# ifdef __GNUC__
+# define GCC_VERSION (__GNUC__ * 10000 \
+                     + __GNUC_MINOR__ * 100 \
+                     + __GNUC_PATCHLEVEL__)
+// E.g.  GCC > 3.2.0
+// #if GCC_VERSION > 30200
+# endif
+
+# if !defined( HAS_CPP11 ) && !defined( LLONG_MIN )
+#  define LLONG_MIN (-9223372036854775807LL - 1)
+#  define LLONG_MAX   9223372036854775807LL
+# endif
+
+# endif // P4STDHDRS_H

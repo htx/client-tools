@@ -528,7 +528,7 @@ void   CUIFontBuilderDlg::setupFontControls ()
 
 	const bool isBold = m_selectedLogFont.lfWeight >= FW_SEMIBOLD;
 
-	_snwprintf (buf, 1023, _T("%s_%s%d"), m_textFontSampleText, isBold ? _T("bold_") : _T(""), m_editTextPixelsValue);
+	_snwprintf (buf, 1023, _T("%s_%s%d"), m_textFontSampleText.GetString(), isBold ? _T("bold_") : _T(""), m_editTextPixelsValue);
 
 	const size_t len = wcslen (buf);
 

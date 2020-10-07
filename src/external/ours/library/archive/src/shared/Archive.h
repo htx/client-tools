@@ -215,6 +215,20 @@ template<typename A> inline void get(ReadIterator & source, A * target, int leng
 
 //---------------------------------------------------------------------
 
+inline void put(ByteStream & target, const unsigned long long & source)
+{
+	target.put(&source, 8);
+}
+
+//---------------------------------------------------------------------
+
+inline void put(ByteStream & target, const signed long long & source)
+{
+	target.put(&source, 8);
+}
+	
+//---------------------------------------------------------------------
+
 inline void put(ByteStream & target, const double & source)
 {
 	target.put(&source, 8);
@@ -299,14 +313,19 @@ inline void put(ByteStream & target, const std::string & source)
 		unsigned short len = static_cast<unsigned short>(source.size());
 		put(target, len);
 	}
-	else
+	else if(source.size() < UINT_MAX)
 	{
 		unsigned short len = static_cast<unsigned short>(65535);
 		put(target, len);
-		unsigned int size = source.size();
+		unsigned int size = static_cast<unsigned int>(source.size());
 		put(target, size);
 	}
-	target.put(source.data(), source.size());
+	else
+	{
+		// overflow
+	}
+	
+	target.put(source.data(), static_cast<unsigned int>(source.size()));
 }
 
 //---------------------------------------------------------------------

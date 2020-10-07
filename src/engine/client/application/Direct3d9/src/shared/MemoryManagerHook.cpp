@@ -14,15 +14,44 @@
 #pragma warning(disable: 4100)
 
 // ======================================================================
+
+#ifdef _WIN64
+
+void *operator new(size_t size, MemoryManagerNotALeak)
+{
+	return(MemoryManager::allocate(size, 0, false, false));
+}
+
+void *operator new(size_t size)
+{
+	return(MemoryManager::allocate(size, 0, false, true));
+}
+
+void *operator new[](size_t size)
+{
+	return(MemoryManager::allocate(size, 0, true, true));
+}
+
+void *operator new(size_t size, const char *file, int line)
+{
+	return(MemoryManager::allocate(size, 0, false, true));
+}
+
+void *operator new[](size_t size, const char *file, int line)
+{
+	return(MemoryManager::allocate(size, 0, true, true));
+}
+
+#else
+
+// ======================================================================
 // this is here because MSVC won't let me call MemoryManager::allocate() directly from inline assembly
 
 static void * __cdecl localAllocate(size_t size, uint32 owner, bool array, bool leakTest)
 {
 	return MemoryManager::allocate(size, owner, array, leakTest);
 }
-
-// ======================================================================
-
+	
 __declspec(naked) void *operator new(size_t size, MemoryManagerNotALeak)
 {
 	_asm
@@ -150,7 +179,7 @@ __declspec(naked) void *operator new[](size_t size, const char *file, int line)
 		ret
 	}
 }
-
+#endif
 // ----------------------------------------------------------------------
 
 void operator delete(void *pointer)
@@ -182,5 +211,5 @@ void operator delete[](void *pointer, const char *file, int line)
 	if (pointer)
 		MemoryManager::free(pointer, true);
 }
-
+	
 // ======================================================================

@@ -96,7 +96,7 @@ public:
 	AutoByteStream();
 	virtual ~AutoByteStream();
 	void                 addVariable(AutoVariableBase & newVariable);
-	virtual const unsigned int getItemCount() const;
+	virtual size_t		 getItemCount() const;
 	virtual void         pack(ByteStream & target) const;
 	virtual void         unpack(ReadIterator & source);
 protected:

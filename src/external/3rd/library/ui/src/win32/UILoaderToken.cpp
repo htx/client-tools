@@ -55,13 +55,12 @@ inline bool EatCharacterAndTrailingWhitespace( const UINarrowString &Data, UINar
 {
 	if( !EatCharacter( Data, i, ParseError ) )
 		return false;
+	
 	if( !EatWhitespace( Data, i, ParseError ) )
 		return false;
 
 	return true;
 }		
-
-
 
 bool UILoaderToken::CreateFromXML( const UINarrowString &Data, UINarrowString::const_iterator &i, UINarrowString &ParseError )
 {
@@ -91,7 +90,7 @@ bool UILoaderToken::CreateFromXML( const UINarrowString &Data, UINarrowString::c
 	{
 		IsData = true;
 
-		for( ; (*i != '<') && (i != Data.end()); ++i )
+		for( ; i != Data.end() && *i != '<'; ++i )
 		{
 			if( *i == '\\' )
 			{
@@ -121,7 +120,7 @@ bool UILoaderToken::CreateFromXML( const UINarrowString &Data, UINarrowString::c
 	{
 		// Eat anything of these forms
 
-		for( ; (*i != '>') && (i != Data.end()); ++i )
+		for( ;i != Data.end() && *i != '>'; ++i )
 			{}
 
 		if( i != Data.end() )
@@ -379,7 +378,7 @@ void UILoaderToken::WriteToString( UINarrowString &Out ) const
 		Out.append(Header.begin (), Header.end ());
 		Out.append(" ");
 		
-		for( UIStringMap::const_iterator i = Attributes.begin(); i != Attributes.end(); ++i )
+		for(auto i = Attributes.begin(); i != Attributes.end(); ++i )
 		{
 			if( i != Attributes.begin() )
 				Out.append(" ");

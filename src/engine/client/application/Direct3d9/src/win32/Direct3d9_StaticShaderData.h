@@ -34,8 +34,8 @@ public:
 	explicit Direct3d9_StaticShaderData(const StaticShader &shader);
 	virtual ~Direct3d9_StaticShaderData();
 
-	virtual void                        update(const StaticShader &shader);
-	virtual int                         getTextureSortKey() const;
+	void								update(const StaticShader &shader) override;
+	intptr_t							getTextureSortKey() const override;
 
 	bool                                isValid() const;
 	bool                                apply(int pass) const;
@@ -77,7 +77,7 @@ private:
 #ifdef VSPS
 		void construct(const StaticShader &shader, const ShaderImplementation::Pass::PixelShader::TextureSampler &textureSampler);
 #endif
-		bool getTextureSortKey(int &value) const;
+		bool getTextureSortKey(intptr_t &value) const;
 		void apply(int stage) const;
 	};
 
@@ -129,7 +129,7 @@ private:
 		static void install();
 
 		void construct(const StaticShader &shader, const ShaderImplementation::Pass &pass);
-		bool getTextureSortKey(int &value) const;
+		bool getTextureSortKey(intptr_t &value) const;
 		bool apply() const;
 
 	private:

@@ -29,8 +29,10 @@
 
 class DiffAnalyze;
 class DiffFlags;
+class Error;
 class FileSys;
 class Sequence;
+class StrPtr;
 typedef signed int LineNo;
 
 class Diff {
@@ -50,12 +52,17 @@ class Diff {
 
 	void		DiffContext( int c = 0 );
 	void		DiffUnified( int c = 0 );
+        void            DiffUnifiedDeleteFile( FileSys *f, Error *e );
 	void		DiffNorm();
 	void		DiffRcs();
 	void		DiffHTML();
 	void		DiffSummary();
 
 	void		DiffFast() { fastMaxD = 1; }
+
+	int		GetChunkCnt() { return (chunkCnt); }
+
+	int		IsIdentical();
 
     private:
 
@@ -66,26 +73,28 @@ class Diff {
 	Sequence	*spy;
 	FILE		*out;
 	DiffAnalyze	*diff;
+        const DiffFlags *flags;
 	int		closeOut;
 	LineType	lineType;
 	const char	*newLines;
 	int		fastMaxD;
+	int		chunkCnt;
 
 } ;
 
 class DiffFlags {
 
     public:
-			DiffFlags() { type = Normal; sequence = Line; }
+			DiffFlags() { Init( "" ); }
 			DiffFlags( const char *flags ) { Init( flags ); }
 			DiffFlags( const StrPtr *flags ) { Init( flags ); }
 
 	void		Init( const char *flags );
 	void		Init( const StrPtr *flags );
 
-	enum { Normal, Context, Unified, Rcs, HTML, Summary } type;
-	enum { Line, Word, DashL, DashB, DashW } sequence;
+	enum Type     { Normal, Context, Unified, Rcs, HTML, Summary } type;
+	enum Sequence { Line, Word, DashL, DashB, DashW, WClass } sequence;
+	enum Grid     { Optimal, Guarded, TwoWay, Diff3, GuardedDiff3 } grid;
 
 	int		contextCount;
 } ;
-

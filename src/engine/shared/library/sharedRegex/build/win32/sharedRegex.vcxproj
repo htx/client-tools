@@ -110,8 +110,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedRandom\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;PCRE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\pcre\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedRandom\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PCRE_STATIC;WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;PCRE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -179,8 +179,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedRandom\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;PCRE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\pcre\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedRandom\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PCRE_STATIC;WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;PCRE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
@@ -249,8 +249,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\pcre\4.1\win32\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedRandom\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;PCRE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\pcre\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedRandom\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PCRE_STATIC;WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;PCRE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>

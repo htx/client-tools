@@ -30,7 +30,8 @@ enum ErrorGeneric {
 	EV_ADMIN	= 0x23,	// server administrative action required
 	EV_CONFIG	= 0x24,	// client configuration inadequate
 	EV_UPGRADE	= 0x25,	// client or server too old to interact
-	EV_COMM		= 0x26	// communications error
+	EV_COMM		= 0x26,	// communications error
+	EV_TOOBIG	= 0x27	// not ever Perforce can handle this much
 
 } ;
 
@@ -48,5 +49,12 @@ enum ErrorSubsystem {
 	ES_INFO		= 9,	// pseudo subsystem for information messages
 	ES_HELP		= 10,	// pseudo subsystem for help messages
 	ES_SPEC		= 11,	// pseudo subsystem for spec/comment messages
-	ES_FTPD		= 12	// P4FTP server
+	ES_FTPD		= 12,	// P4FTP server
+	ES_BROKER	= 13,	// Perforce Broker
+	ES_P4QT		= 14,	// P4V and other Qt based clients
+	ES_X3SERVER	= 15,	// P4X3 server
+	ES_GRAPH	= 16,	// graph depot messages
+	ES_SCRIPT	= 17,	// scripting
+	ES_SERVER2	= 18,	// server overflow
+	ES_DM2          = 19,   // dm overflow
 } ;

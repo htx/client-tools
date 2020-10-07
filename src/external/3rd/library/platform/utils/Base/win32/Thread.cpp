@@ -61,10 +61,10 @@ namespace Base
 
     int32 CThread::StopThread(int32 timeout)
 	{
-        timeout += int(time(0));
+        timeout += static_cast<int>(time(nullptr));
     
         mThreadContinue = false;
-        while (mThreadActive && time(0)<timeout)
+        while (mThreadActive && time(nullptr) < timeout)
             sleep(1);
         if (mThreadActive)
         {

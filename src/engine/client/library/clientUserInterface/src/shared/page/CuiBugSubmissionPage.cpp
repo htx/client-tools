@@ -237,12 +237,12 @@ void CuiBugSubmissionPage::OnButtonPressed (UIWidget *context)
 				short_desc += "...";
 
 			std::string const subject(fs.sprintf("%s Bug: %s", Unicode::wideToNarrow(bugType).c_str(), short_desc.c_str()));
-			std::string const from(fs.sprintf("StationId_%d@swgbetatest.station.sony.com", GameNetwork::getStationId()));
+			std::string const from(fs.sprintf("StationId_%d@ohnonono.no", GameNetwork::getStationId()));
 
 			// NOTE: This mail will not correctly send Unicode data. If the entire mail bug report is non-unicode text, everything will work fine.
 
 			std::vector<std::string> attachments;
-			result = ClientBugReporting::sendMail("swgbetatestbugs@soe.sony.com", from.c_str(), subject, Unicode::wideToNarrow(mail_body), attachments, m_sendMiniDump);
+			result = ClientBugReporting::sendMail("swgbetatestbugs@ohnonono.no", from.c_str(), subject, Unicode::wideToNarrow(mail_body), attachments, m_sendMiniDump);
 		}
 
 		//also create CS ticket

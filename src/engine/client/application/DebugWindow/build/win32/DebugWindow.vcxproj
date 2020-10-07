@@ -109,6 +109,8 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
+    <OutDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
@@ -121,6 +123,8 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_r</TargetName>
+    <OutDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
@@ -133,6 +137,8 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_o</TargetName>
+    <OutDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -217,8 +223,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/debugWindow/Debug/DebugWindow.pdb</ProgramDatabaseFile>
-      <BaseAddress>0x61B00000</BaseAddress>
-      <ImportLibrary>.\../../../../../../compile/win32/debugWindow/Debug/DebugWindow.lib</ImportLibrary>
+      <BaseAddress>
+      </BaseAddress>
+      <ImportLibrary>.\../../../../../../compile/$(Platform)/debugWindow/Debug/DebugWindow.lib</ImportLibrary>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -308,8 +315,9 @@
       <OutputFile>$(OutDir)$(ProjectName)_r.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/debugWindow/Release/DebugWindow.pdb</ProgramDatabaseFile>
-      <BaseAddress>0x61B00000</BaseAddress>
-      <ImportLibrary>.\../../../../../../compile/win32/debugWindow/Release/DebugWindow.lib</ImportLibrary>
+      <BaseAddress>
+      </BaseAddress>
+      <ImportLibrary>.\../../../../../../compile/$(Platform)/debugWindow/Release/DebugWindow.lib</ImportLibrary>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -396,8 +404,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../../../compile/win32/debugWindow/Optimized/DebugWindow.pdb</ProgramDatabaseFile>
-      <BaseAddress>0x61B00000</BaseAddress>
-      <ImportLibrary>.\../../../../../../compile/win32/debugWindow/Optimized/DebugWindow.lib</ImportLibrary>
+      <BaseAddress>
+      </BaseAddress>
+      <ImportLibrary>.\../../../../../../compile/$(Platform)/debugWindow/Optimized/DebugWindow.lib</ImportLibrary>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

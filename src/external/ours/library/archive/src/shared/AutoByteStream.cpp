@@ -68,7 +68,7 @@ void AutoByteStream::addVariable(AutoVariableBase & newVariable)
 }
 //-----------------------------------------------------------------------
 
-const unsigned int AutoByteStream::getItemCount() const
+size_t AutoByteStream::getItemCount() const
 {
 	return members.size();
 }

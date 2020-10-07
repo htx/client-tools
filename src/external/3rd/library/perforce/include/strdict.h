@@ -20,8 +20,10 @@ class Error;
 class StrVarName : public StrRef {
 
     public:
-		StrVarName( const char *buf, int length )
+		StrVarName( const char *buf, p4size_t length )
 		{
+	            if( length >= sizeof( varName ) )
+	                length = sizeof( varName ) - 1;
 		    memcpy( varName, buf, length );
 		    varName[ length ] = 0;
 		    Set( varName, length );
@@ -42,8 +44,14 @@ class StrDict {
 
 	// Handy wrappers
 
+	void	CopyVars( StrDict &other );
+
 	void	SetVar( const char *var );
 	void	SetVar( const char *var, int value );
+# ifdef HAVE_INT64
+	void	SetVar( const char *var, long value );
+	void	SetVar( const char *var, P4INT64 value );
+# endif
 	void	SetVar( const char *var, const char *value );
 	void	SetVar( const char *var, const StrPtr *value );
 	void	SetVar( const char *var, const StrPtr &value );
@@ -65,9 +73,17 @@ class StrDict {
 
 	int	GetVar( int x, StrRef &var, StrRef &val )
 		{ return VGetVarX( x, var, val ); }
+	
+	int	GetVarCCompare( const char *var, StrBuf &val );
+	int	GetVarCCompare( const StrPtr &var, StrBuf &val );
 
 	void	ReplaceVar( const char *var, const char *value );
+	void	ReplaceVar( const StrPtr &var, const StrPtr &value );
 	void	RemoveVar( const char *var );
+	void	RemoveVar( const StrPtr &var ) { VRemoveVar( var ); }
+
+	void	Clear()
+		{ VClear(); }
 	
 	int 	Save( FILE * out );
 	int 	Load( FILE * out );
@@ -81,5 +97,6 @@ class StrDict {
 	virtual void	VRemoveVar( const StrPtr &var );
 	virtual int	VGetVarX( int x, StrRef &var, StrRef &val );
 	virtual void	VSetError( const StrPtr &var, Error *e );
+	virtual void	VClear();
 
 } ;

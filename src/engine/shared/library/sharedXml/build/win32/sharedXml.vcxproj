@@ -110,7 +110,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\libxml\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LIBXML_STATIC;WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=2;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -179,7 +179,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\libxml\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LIBXML_STATIC;WIN32;_DEBUG;_MBCS;DEBUG_LEVEL=1;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -249,7 +249,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\libxml\include;..\..\..\..\..\..\external\ours\library\fileInterface\include\public;..\..\..\sharedDebug\include\public;..\..\..\sharedFile\include\public;..\..\..\sharedFoundation\include\public;..\..\..\sharedFoundationTypes\include\public;..\..\..\sharedMemoryManager\include\public;..\..\..\sharedSynchronization\include\public;..\..\include\private;..\..\include\public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>LIBXML_STATIC;WIN32;NDEBUG;_MBCS;DEBUG_LEVEL=0;_CRT_SECURE_NO_DEPRECATE=1;_USE_32BIT_TIME_T=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -348,6 +348,5 @@
     <ClInclude Include="..\..\src\shared\tree\XmlTreeNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

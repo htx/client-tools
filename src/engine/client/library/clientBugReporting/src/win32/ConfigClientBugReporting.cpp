@@ -30,7 +30,7 @@ namespace ConfigClientBugReportingNamespace
 	char const * ms_toolBugReportSmtpPort;
 	char const * ms_crashReporterExeName;
 
-    char const ms_domainName[] = "@soe.sony.com";
+    char const ms_domainName[] = "@ohnonono.no";
     char ms_defaultFromEmailAddress[UNLEN + sizeof(ms_domainName) + 1];
 
 }
@@ -48,9 +48,9 @@ void ConfigClientBugReporting::install()
 
 
 	KEY_BOOL(disableToolBugReports, false);
-	KEY_STRING(toolBugReportEmailAddress, "swgtoolbugreports@soe.sony.com");
+	KEY_STRING(toolBugReportEmailAddress, "swgtoolbugreports@ohnonono.no");
 	KEY_STRING(toolBugReportFromEmailAddress, ms_defaultFromEmailAddress);
-	KEY_STRING(toolBugReportSmtpServer, "monitor.station.sony.com");
+	KEY_STRING(toolBugReportSmtpServer, "monitor.ohnonono.no");
 	KEY_STRING(toolBugReportSmtpPort, "25");
 	KEY_STRING(crashReporterExeName, "CrashReporter_r.exe");
 }

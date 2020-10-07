@@ -519,11 +519,11 @@ void Direct3d9_StateCache::resetTextureCoordinateIndices()
 
 #ifdef VSPS
 
-void Direct3d9_StateCache::setVertexShaderConstants(int index, const void *data, int numberOfConstants)
+void Direct3d9_StateCache::setVertexShaderConstants(intptr_t index, const void *data, int numberOfConstants)
 {
 	if (Direct3d9::supportsVertexShaders())
 	{
-		HRESULT result = ms_device->SetVertexShaderConstantF(index, reinterpret_cast<const float *>(data), numberOfConstants);
+		HRESULT result = ms_device->SetVertexShaderConstantF(static_cast<UINT>(index), reinterpret_cast<const float *>(data), numberOfConstants);
 		FATAL_DX_HR("SetVertexShaderConstantF failed %s", result);
 
 #ifdef _DEBUG
@@ -539,11 +539,11 @@ void Direct3d9_StateCache::setVertexShaderConstants(int index, const void *data,
 
 #ifdef VSPS
 
-void Direct3d9_StateCache::setVertexShaderConstants(int index, const BOOL *data, int numberOfConstants)
+void Direct3d9_StateCache::setVertexShaderConstants(intptr_t index, const BOOL *data, int numberOfConstants)
 {
 	if (Direct3d9::supportsVertexShaders())
 	{
-		HRESULT result = ms_device->SetVertexShaderConstantB(index, data, numberOfConstants);
+		HRESULT result = ms_device->SetVertexShaderConstantB(static_cast<UINT>(index), data, numberOfConstants);
 		FATAL_DX_HR("SetVertexShaderConstantB failed %s", result);
 	}
 }
@@ -554,11 +554,11 @@ void Direct3d9_StateCache::setVertexShaderConstants(int index, const BOOL *data,
 
 #ifdef VSPS
 
-void Direct3d9_StateCache::setPixelShaderConstants(int index, const void *data, int numberOfConstants)
+void Direct3d9_StateCache::setPixelShaderConstants(intptr_t index, const void *data, int numberOfConstants)
 {
 	if (Direct3d9::supportsPixelShaders())
 	{
-		HRESULT result = ms_device->SetPixelShaderConstantF(index, reinterpret_cast<const float *>(data), numberOfConstants);
+		HRESULT result = ms_device->SetPixelShaderConstantF(static_cast<UINT>(index), reinterpret_cast<const float *>(data), numberOfConstants);
 		FATAL_DX_HR("SetPixelShaderConstant failed %s", result);
 
 #ifdef _DEBUG

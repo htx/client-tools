@@ -3101,7 +3101,7 @@ void CViewerDoc::OnSaveHardpointHierarchy()
 void CViewerDoc::OnLoadAllHardpoints() 
 {
 	// determine the root directory and load all apts that match hardpoint names
-	DEBUG_REPORT_LOG(true, ("filename = [%s]\n", filename));
+	DEBUG_REPORT_LOG(true, ("filename = [%s]\n", filename.GetString()));
 
 	ms_workingDirectory = FileNameUtils::getDirectory((char const *)filename);
 

@@ -1537,7 +1537,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreWeaponExporterTool", ".
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libEverQuestTCG", "..\..\external\3rd\library\libEverQuestTCG\build\win32\libEverQuestTCG.vcxproj", "{03F3C054-F380-4618-BE46-6E25061A3587}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\external\3rd\library\zlib-1.2.3\zlib.vcxproj", "{9496A020-65AD-45A6-9ACF-AE4F3358B027}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "..\..\external\3rd\library\zlib\zlib.vcxproj", "{9496A020-65AD-45A6-9ACF-AE4F3358B027}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "clientLibraries", "clientLibraries", "{0D4D7EE9-04C3-4B82-B9FD-3E9DFEE485C5}"
 EndProject

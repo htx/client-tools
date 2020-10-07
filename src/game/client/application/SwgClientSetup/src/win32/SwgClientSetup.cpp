@@ -50,8 +50,8 @@ namespace SwgClientSetupNamespace
 	TCHAR const * const cms_lastRatingTimeRegistryKey = _T("LastRatingTime");
 	TCHAR const * const cms_machineRequirementsDisplayCountRegistryKey = _T("MachineRequirementsDisplayCount");
 	TCHAR const * const cms_applicationName = _T("SwgClient_r.exe");
-	char const * const cms_fromEmailAddress = "swgbetatestcrashes@soe.sony.com";
-	char const * const cms_toEmailAddress = "swgbetatestcrashes@soe.sony.com";
+	char const * const cms_fromEmailAddress = "swgbetatestcrashes@ohnonono.no";
+	char const * const cms_toEmailAddress = "swgbetatestcrashes@ohnonono.no";
 	TCHAR const * const cms_fileNameMask = _T("SwgClient_?.exe-*.*");
 	TCHAR const * const cms_languageStringJapanese = _T("ja");
 
@@ -649,7 +649,7 @@ void SwgClientSetupNamespace::sendMail(std::string const & to, std::string const
 	argv[argv_value++] = "-subject";
 	argv[argv_value++] = const_cast<char*>(subject.c_str());
 	argv[argv_value++] = "-smtphost";
-	argv[argv_value++] = "mail.station.sony.com";
+	argv[argv_value++] = "ohnonono.no";
 	argv[argv_value++] = "-port";
 	argv[argv_value++] = "2525";
 	argv[argv_value++] = "-f";

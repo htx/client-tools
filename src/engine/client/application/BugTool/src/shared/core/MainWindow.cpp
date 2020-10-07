@@ -25,7 +25,7 @@
 MainWindow *MainWindow::ms_theMainWindow;
 const std::string MainWindow::ms_smtpServer = "mail.station.sony.com";
 const std::string MainWindow::ms_smtpPort   = "2525";
-const std::string MainWindow::ms_to         = "swgbetatestbugs@soe.sony.com";
+const std::string MainWindow::ms_to         = "swgbetatestbugs@ohnonono.no";
 
 // ======================================================================
 

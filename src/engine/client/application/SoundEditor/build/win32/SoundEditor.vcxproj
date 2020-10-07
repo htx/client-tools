@@ -149,14 +149,15 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libxml2-win32-debug.lib;ws2_32.lib;mss32.lib;dpvs.lib;dxguid.lib;dsound.lib;dinput8.lib;qt-mt334.lib;qtmain.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libxml2.lib;ws2_32.lib;mss32.lib;dpvs.lib;dxguid.lib;dsound.lib;dinput8.lib;qt-mt334.lib;qtmain.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_d.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\qt\3.3.4\lib;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\..\src\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\..\src\external\3rd\library\perforce\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\qt\3.3.4\lib;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\..\src\external\3rd\library\libxml\lib\$(PlatformTarget)\$(Configuration);..\..\..\..\..\..\..\src\external\3rd\library\perforce\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;libcd;msvcrt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -243,14 +244,16 @@ xcopy "$(SolutionDir)..\..\external\3rd\library\qt\3.3.4\lib\qt-mt334.dll" "$(So
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libxml2-win32-release.lib;ws2_32.lib;mss32.lib;dpvs.lib;dxguid.lib;dsound.lib;dinput8.lib;qt-mt334.lib;qtmain.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libxml2.lib;ws2_32.lib;mss32.lib;dpvs.lib;dxguid.lib;dsound.lib;dinput8.lib;qt-mt334.lib;qtmain.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_o.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\qt\3.3.4\lib;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\..\src\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\..\src\external\3rd\library\perforce\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\qt\3.3.4\lib;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\..\src\external\3rd\library\libxml\lib\$(PlatformTarget)\Release;..\..\..\..\..\..\..\src\external\3rd\library\perforce\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;libcd;msvcrt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_o.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -339,14 +342,16 @@ xcopy "$(SolutionDir)..\..\external\3rd\library\qt\3.3.4\lib\qt-mt334.dll" "$(So
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libxml2-win32-release.lib;ws2_32.lib;mss32.lib;dpvs.lib;dxguid.lib;dsound.lib;dinput8.lib;qt-mt334.lib;qtmain.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libxml2.lib;ws2_32.lib;mss32.lib;dpvs.lib;dxguid.lib;dsound.lib;dinput8.lib;qt-mt334.lib;qtmain.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_r.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\qt\3.3.4\lib;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Release;..\..\..\..\..\..\..\src\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\..\src\external\3rd\library\perforce\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\qt\3.3.4\lib;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\compile\win32\dpvs\Release;..\..\..\..\..\..\..\src\external\3rd\library\libxml\lib\$(PlatformTarget)\$(Configuration);..\..\..\..\..\..\..\src\external\3rd\library\perforce\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd;libc;libcd;msvcrt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_r.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

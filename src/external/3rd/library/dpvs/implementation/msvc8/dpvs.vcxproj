@@ -99,6 +99,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\..\..\..\..\..\..\compile\win32\dpvs\Release\</OutDir>
@@ -107,6 +109,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='IntelCPP|Win32'">
     <OutDir>.\dpvs___Win32_IntelCPP\</OutDir>
@@ -196,15 +200,15 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\dpvs\Debug\dpvs.dll</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\$(Configuration)\dpvs.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\remotedebugger\lib\;..\hl\lib\win32-x86-msvc\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\..\..\lib\win32-x86/dpvsd.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\..\..\lib\$(Platform)/dpvsd.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
       <MapFileName>.\debug/dpvsd.map</MapFileName>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>.\..\..\..\..\..\..\compile\win32\dpvs\Debug\dpvs.lib</ImportLibrary>
+      <ImportLibrary>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\Debug\dpvs.lib</ImportLibrary>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -279,7 +283,6 @@
       </HeaderFileName>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>%(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\..\interface;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -302,15 +305,15 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\dpvs\Release\dpvs.dll</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\$(Configuration)\dpvs.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\flexlm\release;..\..\..\remotedebugger\library\;..\..\..\hl\lib\win32-x86-msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\dpvs\Release\dpvs.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\Release\dpvs.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>.\..\..\..\..\..\..\compile\win32\dpvs\Release\dpvs.map</MapFileName>
+      <MapFileName>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\Release\dpvs.map</MapFileName>
       <SubSystem>Windows</SubSystem>
-      <ImportLibrary>.\..\..\..\..\..\..\compile\win32\dpvs\Release\dpvs.lib</ImportLibrary>
+      <ImportLibrary>.\..\..\..\..\..\..\compile\$(Platform)\dpvs\Release\dpvs.lib</ImportLibrary>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <Bscmake>

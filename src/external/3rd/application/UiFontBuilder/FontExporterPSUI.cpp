@@ -29,7 +29,7 @@ FontExporterPSUI::~FontExporterPSUI ()
 
 //-----------------------------------------------------------------
 
-bool FontExporterPSUI::export (const IdSet_t & idSet)
+bool FontExporterPSUI::export2 (const IdSet_t & idSet)
 {
 	HDC     ScreenDC;
 	HDC		RenderDC;		

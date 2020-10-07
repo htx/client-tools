@@ -39,7 +39,7 @@ public:
 	virtual void                            *lock(bool readOnly);
 	virtual void                             unlock();
 	virtual const VertexBufferDescriptor    &getDescriptor() const;
-	virtual int                              getSortKey();
+	virtual intptr_t                         getSortKey();
 
 	IDirect3DVertexBuffer9      *getVertexBuffer() const;
 	int                          getVertexSize() const;

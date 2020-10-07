@@ -194,7 +194,7 @@ inline char *DuplicateStringWithToLower(const char *source)
 inline void imemset(void *data, int value, int length)
 {
 	DEBUG_FATAL(!data, ("null data arg"));
-	memset(data, value, static_cast<uint>(length));
+	memset(data, value, static_cast<size_t>(length));
 }
 
 // ----------------------------------------------------------------------
@@ -212,7 +212,7 @@ inline void imemcpy(void *destination, const void *source, int length)
 {
 	DEBUG_FATAL(!destination, ("null destination arg"));
 	DEBUG_FATAL(!source, ("null source arg"));
-	memcpy(destination, source, static_cast<uint>(length));
+	memcpy(destination, source, static_cast<size_t>(length));
 }
 
 // ----------------------------------------------------------------------
@@ -230,7 +230,7 @@ inline void *memmove(void *destination, const void *source, int length)
 {
 	DEBUG_FATAL(!destination, ("null destination arg"));
 	DEBUG_FATAL(!source, ("null source arg"));
-	return memmove(destination, source, static_cast<uint>(length));
+	return memmove(destination, source, static_cast<size_t>(length));
 }
 
 // ----------------------------------------------------------------------

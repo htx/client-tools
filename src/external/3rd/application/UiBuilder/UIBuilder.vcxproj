@@ -121,10 +121,10 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>dxguid.lib;d3dx.lib;shlwapi.lib;comctl32.lib;winmm.lib;ddraw.lib;wsock32.lib;dsound.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxguid.lib;shlwapi.lib;comctl32.lib;winmm.lib;ddraw.lib;wsock32.lib;dsound.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>.\../../../../compile/win32/UIBuilder/Debug/UIBuilder.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../library/directx9/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../compile/win32/UIBuilder/Debug/UIBuilder.pdb</ProgramDatabaseFile>
@@ -219,11 +219,11 @@ xcopy "$(SolutionDir)..\..\..\cfgs\$(ProjectName)\" "$(SolutionDir)..\..\..\$(Pr
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>dxguid.lib;d3dx.lib;shlwapi.lib;comctl32.lib;winmm.lib;ddraw.lib;wsock32.lib;dsound.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>dxguid.lib;shlwapi.lib;comctl32.lib;winmm.lib;ddraw.lib;wsock32.lib;dsound.lib;d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>.\../../../../compile/win32/UIBuilder/Release/UIBuilder.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>../../library/directx9/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\directx9\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\../../../../compile/win32/UIBuilder/Release/UIBuilder.pdb</ProgramDatabaseFile>

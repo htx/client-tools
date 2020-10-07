@@ -1,1 +1,0 @@
-This directory is intended for use by plugins for tools used under win32

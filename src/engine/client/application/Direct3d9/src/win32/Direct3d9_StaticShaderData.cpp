@@ -381,11 +381,11 @@ void Direct3d9_StaticShaderData::Stage::construct(const StaticShader &shader, co
 
 // ----------------------------------------------------------------------
 
-bool Direct3d9_StaticShaderData::Stage::getTextureSortKey(int &value) const
+bool Direct3d9_StaticShaderData::Stage::getTextureSortKey(intptr_t &value) const
 {
 	if (m_texture)
 	{
-		value = reinterpret_cast<int>((*m_texture)->getBaseTexture());
+		value = reinterpret_cast<intptr_t>((*m_texture)->getBaseTexture());
 		return true;
 	}
 
@@ -553,9 +553,10 @@ void Direct3d9_StaticShaderData::Pass::construct(const StaticShader &shader, con
 		Direct3d9_VertexShaderData::TextureCoordinateSetTags const * textureCoordinateSetTags = vertexShaderData->getTextureCoordinateSetTags();
 		if (textureCoordinateSetTags)
 		{
-			const int numberOfTextureCoordinateSetTags = textureCoordinateSetTags->size();
+			const size_t numberOfTextureCoordinateSetTags = textureCoordinateSetTags->size();		
 			DEBUG_FATAL(numberOfTextureCoordinateSetTags > 8, ("too many texture coordinate sets"));
-			for (int i = 0; i < numberOfTextureCoordinateSetTags ; ++i)
+			
+			for (size_t i = 0; i < numberOfTextureCoordinateSetTags ; ++i)
 			{
 				uint8 textureCoordinate = 0;
 				if (!shader.getTextureCoordinateSet((*textureCoordinateSetTags)[i], textureCoordinate))
@@ -805,12 +806,13 @@ void Direct3d9_StaticShaderData::Pass::construct(const StaticShader &shader, con
 
 // ----------------------------------------------------------------------
 
-bool Direct3d9_StaticShaderData::Pass::getTextureSortKey(int &value) const
+bool Direct3d9_StaticShaderData::Pass::getTextureSortKey(intptr_t &value) const
 {
-	Stages::const_iterator end = m_stage.end();
-	for (Stages::const_iterator i = m_stage.begin(); i != end; ++i)
-		if (i->getTextureSortKey(value))
+	for(const auto& i : m_stage)
+	{
+		if (i.getTextureSortKey(value))
 			return true;
+	}
 
 	return false;
 }
@@ -1013,12 +1015,13 @@ void Direct3d9_StaticShaderData::construct(const StaticShader &shader)
 
 // ----------------------------------------------------------------------
 
-int Direct3d9_StaticShaderData::getTextureSortKey() const
+intptr_t Direct3d9_StaticShaderData::getTextureSortKey() const
 {
 	const Passes::const_iterator end = m_pass.end();
 	for (Passes::const_iterator i = m_pass.begin(); i != end; ++i)
 	{
-		int value = 0;
+		intptr_t value = 0;
+		
 		if (i->getTextureSortKey(value))
 			return value;
 	}

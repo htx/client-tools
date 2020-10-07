@@ -29,7 +29,7 @@
 #ifdef FIELD_OFFSET
 #undef FIELD_OFFSET
 #endif
-#define FIELD_OFFSET(type, field)    ((int)&(((type *)0)->field))
+#define FIELD_OFFSET(type, field)    ((intptr_t)&(((type *)0)->field))
 
 // ======================================================================
 
@@ -834,7 +834,7 @@ void Direct3d9_LightManager::applyLights_vertexShader_dot3()
 			// set the vertex shader dot3 light data
 			Direct3d9_StateCache::setVertexShaderConstants(vertexDot3Register, &dot3Data, 4);
 
-			const int VSCR_tangentMinusDiffuseColor = VCSR_extendedLightData + FIELD_OFFSET(ExtendedLightData, parallelSpecular[0].tangentMinusDiffuseColor)/16;
+			const intptr_t VSCR_tangentMinusDiffuseColor = VCSR_extendedLightData + FIELD_OFFSET(ExtendedLightData, parallelSpecular[0].tangentMinusDiffuseColor)/16;
 			Direct3d9_StateCache::setVertexShaderConstants(VSCR_tangentMinusDiffuseColor, &extendedLightData.parallelSpecular[0].tangentMinusDiffuseColor, 1);
 			/////////////////////////////////////////////////////////////////////////////////////////////////
 		}
@@ -883,10 +883,10 @@ void Direct3d9_LightManager::applyLights_vertexShader_dot3()
 
 			/////////////////////////////////////////////////////////////////////////////////////////////////
 			// set the vertex shader dot3 light data
-			const int VSCR_vertexAlphaFadeBloomUpdate = VSCR_lightData + FIELD_OFFSET(LightData, dot3.diffuseColor)/16;
+			const intptr_t VSCR_vertexAlphaFadeBloomUpdate = VSCR_lightData + FIELD_OFFSET(LightData, dot3.diffuseColor)/16;
 			Direct3d9_StateCache::setVertexShaderConstants(VSCR_vertexAlphaFadeBloomUpdate, &dot3Data.diffuseColor, 2);
 
-			const int VSCR_tangentMinusDiffuseColor = VCSR_extendedLightData + FIELD_OFFSET(ExtendedLightData, parallelSpecular[0].tangentMinusDiffuseColor)/16;
+			const intptr_t VSCR_tangentMinusDiffuseColor = VCSR_extendedLightData + FIELD_OFFSET(ExtendedLightData, parallelSpecular[0].tangentMinusDiffuseColor)/16;
 			Direct3d9_StateCache::setVertexShaderConstants(VSCR_tangentMinusDiffuseColor, &extendedLightData.parallelSpecular[0].tangentMinusDiffuseColor, 1);
 			/////////////////////////////////////////////////////////////////////////////////////////////////
 		}

@@ -22,9 +22,9 @@ class  ShaderImplementation;
 class StaticShaderGraphicsData
 {
 public:
-	virtual DLLEXPORT ~StaticShaderGraphicsData();
-	virtual void  update(const StaticShader &shader) = 0;
-	virtual int   getTextureSortKey() const = 0;
+	virtual DLLEXPORT	~StaticShaderGraphicsData();
+	virtual void		update(const StaticShader &shader) = 0;
+	virtual intptr_t	getTextureSortKey() const = 0;
 };
 
 class StaticShader : public Shader
@@ -39,16 +39,14 @@ public:
 	static void install();
 	static void remove();
 
-	static void *operator new(size_t size);
-	static void  operator delete(void *pointer);
+	void *operator new(size_t size);
+	void  operator delete(void *pointer);
 
-public:
+	const StaticShader			&prepareToView() const override;
+	bool						usesVertexShader() const override;
 
-	virtual const StaticShader &prepareToView() const;
-	virtual bool                usesVertexShader() const;
-
-	virtual Shader             *convertToModifiableShader() const;
-	virtual bool                obeysCustomizationData() const;
+	Shader						*convertToModifiableShader() const override;
+	bool						obeysCustomizationData() const override;
 
 	bool                        addedDot3Placeholder() const;
 
@@ -96,6 +94,11 @@ public:
 	virtual StaticShader *getStaticShader();
 
 	bool           hasOptionTag(Tag tag) const;
+
+	/// Disabled.
+	StaticShader() = delete;
+	StaticShader &operator =(const StaticShader &) = delete;
+	
 private:
 
 	enum Modifiable
@@ -108,12 +111,6 @@ private:
 
 	StaticShader(const StaticShader &copyMe);
 	virtual ~StaticShader();
-
-	/// Disabled.
-	StaticShader();
-
-	/// Disabled.
-	StaticShader &operator =(const StaticShader &);
 
 	void createGlData() const;
 
@@ -165,6 +162,7 @@ inline StaticShader *StaticShader::fetchModifiable() const
 {
 	StaticShader *newShader = new StaticShader(*this);
 	newShader->fetch();
+	
 	return newShader;
 }
 

@@ -154,7 +154,7 @@ public:
 
 	void                        addOnDirtyCallback     (OnDirtyCallbackBase * newCallback);
 	virtual void                addVariable            (AutoDeltaVariableBase & var);
-	virtual const unsigned int  getItemCount           () const;
+	virtual size_t				getItemCount           () const;
 	virtual void                packDeltas             (ByteStream & target) const;
 	virtual void                unpackDeltas           (ReadIterator & source);
 	virtual void                clearDeltas            () const;

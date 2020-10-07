@@ -310,7 +310,7 @@ Direct3d9_VertexShaderData::Direct3d9_VertexShaderData(ShaderImplementation::Pas
 	}
 
 	DEBUG_FATAL(!assembly && !m_hlsl, ("Could not determine shader language for %s",  m_vertexShader->getFilename()));
-	m_compileTextLength = strlen(m_compileText);
+	m_compileTextLength = static_cast<int>(strlen(m_compileText));
 }
 
 // ----------------------------------------------------------------------
@@ -361,8 +361,9 @@ IDirect3DVertexShader9 * Direct3d9_VertexShaderData::createVertexShader(uint32 t
 
 			char *scratchBuffer = ms_scratchBuffer;
 			{
-				int const size = m_textureCoordinateSetTags->size();
-				for (int i = 0; i < size; ++i)
+				size_t const size = m_textureCoordinateSetTags->size();
+				
+				for (size_t i = 0; i < size; ++i)
 				{
 					int const textureCoordinateSet = (textureCoordinateSetKey >> (i * 3)) & 7;
 					int const dimension = ((*m_textureCoordinateSetTags)[i] == TAG_DOT3) ? 4 : 2;
@@ -458,8 +459,9 @@ IDirect3DVertexShader9 * Direct3d9_VertexShaderData::createVertexShader(uint32 t
 			int maxTextureCoordinateSet = -1;
 
 			char *scratchBuffer = ms_scratchBuffer;
-			int const size = m_textureCoordinateSetTags->size();
-			for (int i = 0; i < size; ++i)
+			size_t const size = m_textureCoordinateSetTags->size();
+			
+			for (size_t i = 0; i < size; ++i)
 			{
 				int const textureCoordinateSet = (textureCoordinateSetKey >> (i * 3)) & 7;
 

@@ -945,7 +945,7 @@ bool DirectoryDialog::openMeshItem(DialogProgress * const dialog, int & current,
 				if (detectNonCollidableShaderTemplates)
 				{
 					MeshAppearanceTemplate const * const meshAppearanceTemplate = dynamic_cast<MeshAppearanceTemplate const *> (appearanceTemplate);
-					DEBUG_WARNING (meshAppearanceTemplate && meshAppearanceTemplate->hasOnlyNonCollidableShaderTemplates (), ("%s has only noncollidable shader templates", string));
+					DEBUG_WARNING (meshAppearanceTemplate && meshAppearanceTemplate->hasOnlyNonCollidableShaderTemplates (), ("%s has only noncollidable shader templates", string.GetString()));
 				}
 #endif
 
@@ -960,7 +960,7 @@ bool DirectoryDialog::openMeshItem(DialogProgress * const dialog, int & current,
 			MeshGeneratorTemplate const *const mgTemplate = MeshGeneratorTemplateList::fetch(TemporaryCrcString(path, true));
 			if (mgTemplate)
 			{
-				DEBUG_WARNING (detectNonCollidableShaderTemplates && mgTemplate->hasOnlyNonCollidableShaderTemplates (), ("%s has only noncollidable shader templates", string));
+				DEBUG_WARNING (detectNonCollidableShaderTemplates && mgTemplate->hasOnlyNonCollidableShaderTemplates (), ("%s has only noncollidable shader templates", string.GetString()));
 				mgTemplate->release();
 			}
 		}

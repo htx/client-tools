@@ -57,7 +57,6 @@ public:
 					return;
 			}
 		}
-		ClientUser::HandleError(err);
 	}
 
 	bool errorOccurred(void) const

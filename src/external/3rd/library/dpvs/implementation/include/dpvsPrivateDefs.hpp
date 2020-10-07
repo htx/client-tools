@@ -129,6 +129,11 @@ namespace DPVS
 #if defined (DPVS_OS_WIN32)
 #	define DPVS_CPU_X86										// x86 series CPU
 #	define DPVS_LITTLE_ENDIAN								// x86 processors are little-endian
+#ifdef _WIN64
+#   define DPVS_UINT64_DEFINED
+	typedef signed long long   INT64;
+	typedef unsigned long long UINT64;
+#endif
 #elif defined (DPVS_OS_MAC)									// Apple Macintosh
 #	define DPVS_CPU_PPC
 #	define DPVS_CPU_NAME		"PowerPC"
@@ -190,9 +195,12 @@ namespace DPVS
 #	pragma warning(disable:4710)
 #	if defined (_MSC_FULL_VER) 
 #		if (_MSC_FULL_VER > 12008804)
-#			if defined (DPVS_CPU_X86)	
+#			if defined (DPVS_CPU_X86)
+#ifdef _WIN64
+#else
 #				define DPVS_BUILD_MSC_PPACK					// MSVC6 Processor Pack supported
-#				define DPVS_ALIGN_VECTORS					// perform vector alignment	
+#				define DPVS_ALIGN_VECTORS					// perform vector alignment
+#endif
 #			endif
 #		endif
 #	endif // _MSC_FULL_VER
@@ -314,8 +322,11 @@ namespace DPVS
 
 #if defined (DPVS_BUILD_MSC)
 #	if defined (DPVS_CPU_X86)								// running on X86????
+#ifdef _WIN64
+#else
 #		define DPVS_X86_ASSEMBLY							// support x86 inline assembly
 #		define DPVS_EMIT				_emit				// assembly emit instruction
+#endif
 #	endif
 #	if defined (DPVS_BUILD_MSC6)
 #		define DPVS_FORCE_INLINE	__forceinline			// this works only on MSVC6..
@@ -429,8 +440,8 @@ namespace DPVS
 typedef unsigned char			UINT8;					// 8-bit unsigned integer
 typedef short int				INT16;                  // 16-bit signed integer
 typedef unsigned short int		UINT16;                 // 16-bit unsigned integer
-typedef unsigned int			UPTR;					// unsigned integer large enough to hold a void*
-
+typedef uintptr_t				UPTR;
+	
 //------------------------------------------------------------------------
 // Make sure that certain typedefs really do have the intended sizes
 //------------------------------------------------------------------------

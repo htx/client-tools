@@ -25,7 +25,7 @@ ContentSyncClientUser::ContentSyncClientUser(ApplicationWindow &applicationWindo
 
 // ----------------------------------------------------------------------
 
-void ContentSyncClientUser::OutputError(const_char *data)
+void ContentSyncClientUser::OutputError(const char *data)
 {
 	// make these messages look like info, not an error
 	if (strstr(data, "- file(s) up-to-date.") || strstr(data, "- file(s) not in client view.") || strstr(data, "- no permission for operation on file(s)."))
@@ -44,7 +44,7 @@ void ContentSyncClientUser::OutputError(const_char *data)
 
 // ----------------------------------------------------------------------
 
-void ContentSyncClientUser::OutputInfo(char /* level */, const_char *data)
+void ContentSyncClientUser::OutputInfo(char /* level */, const char *data)
 {
 	m_applicationWindow.appendMessage(ApplicationWindow::MT_normal, data);
 	m_error = false;
@@ -52,7 +52,7 @@ void ContentSyncClientUser::OutputInfo(char /* level */, const_char *data)
 
 // ----------------------------------------------------------------------
 
-void ContentSyncClientUser::OutputText(const_char * /* data */, int /* length */)
+void ContentSyncClientUser::OutputText(const char * /* data */, int /* length */)
 {
 }
 

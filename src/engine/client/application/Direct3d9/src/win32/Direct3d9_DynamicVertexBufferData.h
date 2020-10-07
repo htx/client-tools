@@ -43,7 +43,7 @@ public:
 	virtual void                             unlock(int numberOfVertices);
 	virtual const VertexBufferDescriptor    &getDescriptor() const;
 	virtual int                              getNumberOfLockableDynamicVertices(bool withDiscard);
-	virtual int                              getSortKey();
+	intptr_t								getSortKey() override;
 
 	int                          getNumberOfVertices() const;
 	IDirect3DVertexBuffer9      *getVertexBuffer() const;

@@ -323,8 +323,9 @@ void ByteStream::Data::unlockDataFreeList()
 
 ByteStream::Data *ByteStream::Data::getNewData()
 {
-	Data *result = 0;
+	Data *result = nullptr;
 	std::vector<Data *> &dataFreeList = lockDataFreeList();
+	
 	if (dataFreeList.empty())
 	{
 		unlockDataFreeList();
@@ -336,15 +337,16 @@ ByteStream::Data *ByteStream::Data::getNewData()
 		dataFreeList.pop_back();
 		unlockDataFreeList();
 	}
+	
 	result->refCount = 1;
 	return result;
 }
 
 //---------------------------------------------------------------------
 
-void ByteStream::Data::releaseOldData(ByteStream::Data *oldData)
+void ByteStream::Data::releaseOldData(Data *oldData)
 {
-	assert(reinterpret_cast<unsigned int>(oldData) != 0xefefefefu);
+	assert(reinterpret_cast<uintptr_t>(oldData) != 0xefefefefu);
 
 	if (oldData->size > 4096)
 		delete oldData;

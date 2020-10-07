@@ -22,6 +22,10 @@
  *	ErrorLog::UnsetSyslog() - Cancel syslog redirection. Revert to log file.
  */
 
+class FileSys;
+
+typedef void (*StructuredLogHook)( void *context, const Error *e );
+
 /*
  * class ErrorLog - write errors to log/syslog
  */
@@ -29,22 +33,67 @@
 class ErrorLog {
 
     public:
-	static void	Abort( const Error *e );
-	static void	Report( const Error *e );
+			enum log_types
+			{
+			    type_none,
+			    type_stdout,
+			    type_stderr,
+			    type_syslog
+			};
+			ErrorLog(): hook(NULL), context(NULL){ init(); }
+			ErrorLog( ErrorLog *from );
+			~ErrorLog();
+
+	void		Abort( const Error *e );
+	void		SysLog( const Error *e, int tagged, const char *et,
+				const char *buf );
+
+	                enum ReportFlags
+	                {
+	                    REPORT_NO_FLAGS = 0,
+	                    REPORT_TAGGED   = 1,
+	                    REPORT_HOOKED   = 2,
+
+	                    REPORT_ALL      = 0x3
+	                } ;
+
+	void		Report( const Error *e ){ Report( e, REPORT_ALL ); }
+	void		ReportNoTag( const Error *e ){ Report( e, REPORT_HOOKED ); }
+	void		ReportNoHook( const Error *e ){ Report( e, REPORT_TAGGED ); }
+	void		Report( const Error *e, int flags );
+	void		LogWrite( const StrPtr & );
+
+	// Utility methods
+
+	offL_t		Size();
+	int		Exists() { return errorFsys != 0; }
+	const		char *Name();
 
 	// Global settings
 
-	static void	SetLog( const char *file );
-	static void	SetSyslog() { useSyslog = 1; }
-	static void	UnsetSyslog() { useSyslog = 0; }
-	static void	SetTag( const char *tag ) { errorTag = tag; }
+	void		SetLog( const char *file );
+	void		SetSyslog() { logType = type_syslog; }
+	void		UnsetSyslog() { logType = type_stderr; }
+	void		UnsetLogType() { logType = type_none; }
+	void		SetTag( const char *tag ) { errorTag = tag; }
+	void		EnableCritSec();
+
+	void		Rename( const char *file, Error *e );
+
+	void SetStructuredLogHook( void *ctx, StructuredLogHook hk )
+		{ hook = hk; context = ctx; }
 
     private:
+	void		init();
 
-	static const char *errorTag;
-	static void	*errorLog;
-	static int	useSyslog;
+	const 		char *errorTag;
+	int		logType;
+	FileSys		*errorFsys;
 
+	StructuredLogHook hook;
+	void		*context;
+
+	void		*vp_critsec;
 } ;
 
 /*
@@ -52,3 +101,5 @@ class ErrorLog {
  */
 
 extern Error AssertError;
+extern ErrorLog AssertLog;
+

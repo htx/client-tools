@@ -40,10 +40,15 @@
  *	Error::Net() - add a network error message into an Error struct
  *
  * 	Error::GetId() - get an individual Error item
+ *	Error::CheckId() - is first error a particular code?
+ *	Error::CheckIdi() - is i'th error a particular code?
+ *	Error::CheckIds() - is any error a particular code?
  *	Error::Fmt() - format an error message
+ *	Error::GetDict() - get StrDict of error parameters
  *
  *	Error::Marshall() - pack an Error into a StrBuf/StrDict
  *	Error::UnMarshall() - unpack an Error from a StrBuf/StrDict
+ *	Error::Snap() - after UnMarshall, copy all data into Error
  *
  *	Error::Dump() - dump out error struct, for debugging
  */
@@ -94,6 +99,11 @@ struct ErrorId {
 
 } ;
 
+struct ErrorIdMap {
+    ErrorId incomingError;
+    ErrorId outgoingError;
+};
+
 # define ErrorOf( sub, cod, sev, gen, arg ) \
 	((sev<<28)|(arg<<24)|(gen<<16)|(sub<<10)|cod)
 
@@ -101,7 +111,8 @@ enum ErrorFmtOps {
 	EF_PLAIN = 0x00,	// for info messages
 	EF_INDENT = 0x01,	// indent each line with \t
 	EF_NEWLINE = 0x02,	// terminate buffer with \n
-	EF_NOXLATE = 0x04	// don't use P4LANGUAGE formats
+	EF_NOXLATE = 0x04,	// don't use P4LANGUAGE formats
+	EF_CODE = 0x08		// include error code
 } ;
 
 /*
@@ -112,13 +123,15 @@ class Error {
 
     public:
 			Error() { ep = 0; severity = E_EMPTY; }
-			~Error();
+	virtual		~Error();
 
 	void 		operator =( const Error &source );
+	Error &		Merge( const Error &source );
 
-	void		Clear() { severity = E_EMPTY; }
+	virtual void	Clear() { severity = E_EMPTY; }
+	const ErrorId  *MapError( const struct ErrorIdMap map[] );
 
-	int		Test() const { return severity > E_INFO; }
+	virtual int	Test() const { return severity > E_INFO; }
 	int		IsInfo() const { return severity == E_INFO; }
 	int		IsWarning() const { return severity == E_WARN; }
 	int		IsError() const { return severity >= E_FAILED; }
@@ -126,7 +139,7 @@ class Error {
 
 	int		GetSeverity() const { return severity; }
 	const char *	FmtSeverity() const { return severityText[severity]; }
-	int		GetGeneric() const { return generic; }
+	int		GetGeneric() const { return genericCode; }
 
 	// Set errors, the new way
 
@@ -134,11 +147,13 @@ class Error {
 
 	Error &		Set( ErrorSeverity s, const char *fmt )
 			{
-			    ErrorId id;
-			    id.code = ErrorOf( 0, 0, s, 0, 0 );
-			    id.fmt = fmt;
-			    return Set( id );
+			    ErrorId eid;
+			    eid.code = ErrorOf( 0, 0, s, 0, 0 );
+			    eid.fmt = fmt;
+			    return Set( eid );
 			}
+
+	Error &		Set( const ErrorId &id, StrDict *errorDict );
 
 	Error &		operator <<( const StrPtr &arg );
 	Error &		operator <<( const StrPtr *arg );
@@ -149,27 +164,52 @@ class Error {
 
 	void		Sys( const char *op, const char *arg );
 	void		Net( const char *op, const char *arg );
+	void		Net2( const char *op, const char *arg );
+	static bool	IsSysError(); // is there a global system error?
+	static bool	IsNetError(); // is there a global network error?
+	static bool	IsSysNetError(); // is there a global (system or network) error?
+	static int	GetNetError(); // return the last network error code
+	static void	SetNetError(int err); // set the "last" network error code
+	static StrPtr &	StrNetError(StrBuf &buf); // get text of last network error
+	static StrPtr &	StrError(StrBuf &buf); // get text of last system (or network) error
+	static StrPtr &	StrError(StrBuf &buf, int errnum); // get text of specified error
 
 	// Output
 
+	int		GetErrorCount() const;
+	void		LimitErrorCount();
+
 	ErrorId *	GetId( int i ) const;
+
+	int		CheckId( const ErrorId &id ) const
+			{ return CheckIdi( 0, id ); }
+	int		CheckIdi( const int i, const ErrorId &id ) const
+			{ return severity &&
+				GetId(i)->Subsystem() == id.Subsystem() &&
+				GetId(i)->SubCode()   == id.SubCode(); }
+	int		CheckIds( const ErrorId &id ) const;
+
+	StrDict *	GetDict();
 
 	void		Fmt( StrBuf &buf, int opts ) const;
 	void		Fmt( StrBuf *buf, int opts = EF_NEWLINE ) const 
 			{ Fmt( *buf, opts ); }
+	void		Fmt( int i, StrBuf &buf, int opts ) const;
 
 	// Moving across client/server boundary
 	// 0 is pre-2002.1
 	// 1 is 2002.1
 	// 2 is 2002.1 loopback (not used by client)
 
-	void		Marshall0( StrBuf &out );
-	void		Marshall1( StrDict &out );
-	void		Marshall2( StrBuf &out );
+	void		Marshall0( StrBuf &out ) const;
+	void		Marshall1( StrDict &out, int uniquote = 0 ) const;
+	void		Marshall2( StrBuf &out ) const;
 
 	void		UnMarshall0( const StrPtr &in );
 	void		UnMarshall1( StrDict &in );
 	void		UnMarshall2( const StrPtr &in );
+
+	void		Snap();
 
 	// Debugging
 
@@ -180,11 +220,18 @@ class Error {
 	// Remainder is the actual error info
 
 	ErrorSeverity	severity;	// of worst error
-	int		generic;	// of worst error
+	int		genericCode;	// of worst error
 
 	ErrorPrivate	*ep;		// for actual error data
 
 	static const char *severityText[];
 } ;
 
+// Note Macro can only be used in methods with void return values
+# define IF_ERROR_STOP( e ) \
+	if( (e)->Test() ) \
+	    return;
+# define IF_ERROR_GOTO_FAIL( e ) \
+	if( (e)->Test() ) \
+	    goto fail;
 # endif /* __ERROR_H__ */

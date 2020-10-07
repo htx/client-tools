@@ -100,7 +100,7 @@ namespace Base
 		if(handle)
 		{
 			// Update the allocator linked list, insert this entry at the head
-			*(handle - 2) = (unsigned)m_blocks[*(handle - 1)];
+			*(handle - 2) = reinterpret_cast<unsigned>(m_blocks[*(handle - 1)]);
 			// Add this entry to the proper linked list node
 			m_blocks[*(handle - 1)] = (handle - 2);
 		}

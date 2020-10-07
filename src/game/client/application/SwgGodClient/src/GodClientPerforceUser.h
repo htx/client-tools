@@ -30,7 +30,7 @@ public:
 	void                clearLastError     ();
 	void                addFilteredError   (int error);
 	void                clearFilteredErrors();
-	void                OutputInfo         (char level, char* data);
+	void                OutputInfo         (char level, const char* data);
 	const std::string&  getReturnValue     () const;
 
 	bool                runCommand(const char* command,  const char* arg1);
@@ -43,8 +43,8 @@ private:
 	std::vector<int>    m_filteredErrors;
 	std::string         m_return_value;
 
-	virtual void        HandleError        (Error*err);
-	virtual void        Prompt             (const StrPtr& msg, StrBuf& rsp, int noEcho, Error* e);
+	void				HandleError (Error*err) override;
+	void				Prompt (const StrPtr& msg, StrBuf& rsp, int noEcho, Error* e) override;
 
 private:
 	//disabled

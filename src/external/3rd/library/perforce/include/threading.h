@@ -38,11 +38,20 @@
  *	Threading::Launch() - create a thread/process and call Thread::Run().
  *	
  *	Threading::Cancelled() - returns true (in leader) if Cancel()
+ *	Threading::Restarted() - returns true (in leader) if Restart()
  *
  *	Threading::Cancel() - can be called from any thread to tell the 
  *			leader to stop; leader calls Process::Cancel()
+ *	Threading::Restart() - can be called from any thread to tell the 
+ *			leader to restart; leader calls Process::Restart()
+ *	Threading::NoDowngrade() - can be called from any thread to tell the 
+ *			leader that the next restart should not be downgraded
+ *			to a shutdown if threads linger on Windows
  *
  *	Threading::Reap() - called in leader to kill children
+ *
+ *	Threading::GetThreadCount() - returns the current number of threads
+ *                                    Only valid in the parent/main process!
  *
  * The current termination ritual:
  *
@@ -61,12 +70,17 @@
  *	in order to kill and collect all the child processes.  It should
  *	only do that if the database is safely locked from child process
  *	access.
+ *
+ * Restart is just like Cancel but the leader re-starts all processing rather
+ * than exiting.
  */
 
 enum ThreadMode {
 	TmbSingle,	// just single threading
 	TmbMulti,	// multi threading (fork, threads)
-	TmbDaemon	// fork, then forking multi threading (UNIX)
+	TmbDaemon,	// fork, then forking multi threading (UNIX)
+	TmbThreads,	// multi threading (pthreads, threads)
+	TmbDaemonSafe	// fork, then multi threading closing stdio (UNIX)
 } ;
 
 class Thread {
@@ -94,16 +108,30 @@ class Threader {
 
     friend class Threading;
 
-			Threader() { cancelled = 0; }
+			Threader()
+	                { cancelled = 0; restarted = 0; canDowngrade = 1;
+	                  threadCount = 0; process = 0; }
 
 	virtual		~Threader();
 	virtual void	Launch( Thread *t );
 	virtual void	Cancel();
+	virtual void	Restart();
+	virtual void	NoDowngrade();
+	virtual void	Quiesce();
 	virtual void	Reap();
 
+	virtual int	GetThreadCount(); // varies on each system
+
 	int		cancelled;
+	int		restarted;
+	int		canDowngrade;
 	Process		*process;
 
+	int		threadCount; // not used by all implementations...
+
+    public:
+	static int	IsDaemon( ThreadMode tmb )
+	    { return tmb == TmbDaemon || tmb == TmbDaemonSafe; }
 } ;
 
 class Threading {
@@ -114,10 +142,19 @@ class Threading {
 
 	void		Launch( Thread *t ) { threader->Launch( t ); }
 	int		Cancelled() { return threader->cancelled; }
+	int		Restarted() { return threader->restarted; }
+	void		Quiesce() { threader->Quiesce(); }
 	void		Reap() { threader->Reap(); }
 
 	static void	Cancel() { if( current ) current->Cancel(); }
+	static void	Restart() { if( current ) current->Restart(); }
+	static void	NoDowngrade() { if( current ) current->NoDowngrade(); }
 	static int	WasCancelled() { if( current ) return current->cancelled; else return 0; }
+	static int	WasRestarted() { if( current ) return current->restarted; else return 0; }
+
+	static int	GetThreadCount()
+	                { return current ? current->GetThreadCount() : -1; }
+	static void	LaunchCurrentThread( Thread *t ) { if( current ) current->Launch( t ); }
 
     private:
 
@@ -126,3 +163,4 @@ class Threading {
 	static Threader *current;
 
 } ;
+

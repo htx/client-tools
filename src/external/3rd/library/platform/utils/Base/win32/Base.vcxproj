@@ -127,21 +127,36 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Threaded|Win32'">
-    <OutDir>.\../../../lib/debug\</OutDir>
-    <IntDir>.\../debug_mt\</IntDir>
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Threaded|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Threaded|x64'">
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\../../../lib/release\</OutDir>
-    <IntDir>.\../release\</IntDir>
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Threaded|Win32'">
-    <OutDir>.\../../../lib/release\</OutDir>
-    <IntDir>.\../release_mt\</IntDir>
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\../../../lib/debug\</OutDir>
-    <IntDir>.\../debug\</IntDir>
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Threaded|x64'">
+    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug Threaded|Win32'">
     <ClCompile>
@@ -165,7 +180,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>../../../lib/debug\Base_MT.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -194,7 +209,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>../../../lib/debug\Base_MT.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -225,7 +240,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\../../../lib/release\Base.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -256,7 +271,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\../../../lib/release\Base.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -285,7 +300,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>../../../lib/release\Base_MT.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -314,7 +329,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>../../../lib/release\Base_MT.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -345,7 +360,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\../../../lib/debug\Base.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -376,7 +391,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\../../../lib/debug\Base.lib</OutputFile>
+      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>

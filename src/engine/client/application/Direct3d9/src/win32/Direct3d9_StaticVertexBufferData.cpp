@@ -126,9 +126,9 @@ void Direct3d9_StaticVertexBufferData::unlock()
 
 // ----------------------------------------------------------------------
 
-int Direct3d9_StaticVertexBufferData::getSortKey()
+intptr_t Direct3d9_StaticVertexBufferData::getSortKey()
 {
-	return reinterpret_cast<int>(m_d3dVertexBuffer);
+	return reinterpret_cast<intptr_t>(m_d3dVertexBuffer);
 }
 
 // ----------------------------------------------------------------------

@@ -21,9 +21,14 @@
  * Requires cooperation from the TempFile objects to delete files.
  */
 
-# ifdef OS_NT
+# ifdef HAS_CPP11
+# include <memory>
+# include <mutex>
+# else
+# if OS_NT
 typedef void *HANDLE;
-# endif
+# endif // OS_NT
+# endif // HAS_CPP11
 
 struct SignalMan;
 
@@ -33,9 +38,15 @@ class Signaler {
 
     public:
 			Signaler();
+			~Signaler();
+	void		Init();
 
 	void		Block();
 	void		Catch();
+	void		Disable();
+	void		Enable();
+	bool		GetState() const;
+	bool		IsIntr() const;
 
 	void		OnIntr( SignalFunc callback, void *ptr );
 	void		DeleteOnIntr( void *ptr );
@@ -45,10 +56,22 @@ class Signaler {
     private:
 
 	SignalMan	*list;
+	int		disable;
+	bool		isIntr;
 
-# ifdef OS_NT
+	// If we're compiling with the C++11 standard or higher, we use
+	// the built-in thread support on all platforms.  If not, we fall
+	// back to only having synchronization on Windows.
+
+# ifdef HAS_CPP11
+		std::mutex* mutex;
+
+		std::mutex&	GetMutex();
+# else
+# if OS_NT
 	HANDLE		hmutex;
 # endif // OS_NT
+# endif // HAS_CPP11
 
 } ;
 

@@ -68,9 +68,9 @@ public:
 	static void forcePixelShader(IDirect3DPixelShader9 *pixelShader);
 	static void setPixelShader(IDirect3DPixelShader9 *pixelShader);
 
-	static void setVertexShaderConstants(int index, const void *data, int numberOfConstants);
-	static void setVertexShaderConstants(int index, const BOOL *data, int numberOfConstants);
-	static void setPixelShaderConstants(int index, const void *data, int numberOfConstants);
+	static void setVertexShaderConstants(intptr_t index, const void *data, int numberOfConstants);
+	static void setVertexShaderConstants(intptr_t index, const BOOL *data, int numberOfConstants);
+	static void setPixelShaderConstants(intptr_t index, const void *data, int numberOfConstants);
 
 	static void resetTextureCoordinateIndices();
 #endif

@@ -58,9 +58,13 @@
  *	  opt:once	read-only; set automatically before user gets it
  *	  opt:always	read-only; field set automatically after user
  *
+ *	pre:X		automatic settings (value or condition/value,...)
+ *
+ *	  pre:X		default/once/always value
+ *	  pre:Y/X	on user-defined condition Y set to X
+ *
  *	code:X		a unique numeric code identifying the field
  *	len:X		advisory length for displaying field
- *	pre=X		preset value for opt:once, opt:always
  *	ro		old name for opt:always
  *	rq		old name for opt:required
  *	seq:X		advisory sequence for display field
@@ -73,6 +77,7 @@
  *	  fmt:L		left half only
  *	  fmt:R		right half only; if follows L goes on same line
  *	  fmt:I		indented
+ *	  fmt:C		appended comment (not used for p4win)
  *
  * Class Defined:
  *
@@ -136,21 +141,29 @@ enum SpecOpt {
 	SDO_REQUIRED,	// required, user updatable, default provided
 	SDO_ONCE,	// required, not updatable, set once after creation 
 	SDO_ALWAYS,	// required, not updatable, set after every update
-	SDO_KEY		// required, not updatable, set once before creation
+	SDO_KEY,	// required, not updatable, set once before creation
+	SDO_EMPTY,	// Like SDO_REQUIRED but allows empty
 } ;
 
 enum SpecFmt {
 	SDF_NORMAL,	// no hint given
 	SDF_LEFT,  	// left half only
 	SDF_RIGHT,	// right half only; if follows LEFT goes on same line
-	SDF_INDENT	// indented
+	SDF_INDENT,	// indented
+	SDF_COMMENT	// append comment to list
+} ;
+
+enum SpecOpen {
+	SDO_NOTOPEN,	// default, field does not isolate to a client at all
+	SDO_ISOLATE,	// field is isolated when a spec is opened
+	SDO_PROPAGATE	// as ISOLATE, plus field propagates on integrate
 } ;
 
 class Spec {
 
     public:
 			Spec();
-			Spec( const char *encoded, const char *cmt );
+			Spec( const char *encoded, const char *cmt, Error *e );
 			~Spec();
 
 	// Using the Spec -- formatting and parsing forms
@@ -171,18 +184,22 @@ class Spec {
 	// Manipulating the Spec itself -- building and examining it
 
 	SpecElem *	Add( const StrPtr &tag );
+	SpecElem *	Add( const SpecElem *se, int atIndex, Error *e );
 	SpecElem *	Get( int i );
 	SpecElem *	Find( const StrPtr &tag, Error *e = 0 );
-	SpecElem *	Find( int code, Error *e = 0 );
+	SpecElem *	Find( int code, Error *e=0, const StrPtr *fixedTag=0 );
 	int		Count();
 
 	void		Decode( StrPtr *encoded, Error *e );
 	void		Encode( StrBuf *encoded );
+	void		ExtractFieldMapToDict( StrDict *map,  Error *e, int skipAuto=0);
+	void		EncodeFieldMapToString( StrBuf *s, Error *e );
 
 	const StrPtr *	GetComment() { return &comment; }
 	void		SetComment( const StrPtr &c ) { comment = c; }
 
 	SpecElem *	Add( char *t ) { return Add( StrRef( t ) ); }
+	void		Dump( const char *msg );
 
     private:
 
@@ -216,26 +233,51 @@ class SpecElem {
 	// Opt access
 
 	int	IsRequired() { return opt == SDO_REQUIRED
-				|| opt == SDO_KEY; }
+				|| opt == SDO_KEY
+				|| opt == SDO_EMPTY; }
 
 	int	IsReadOnly() { return opt == SDO_ONCE
 				|| opt == SDO_ALWAYS
 				|| opt == SDO_KEY; }
+
+	int	NeedsDefault() { return opt == SDO_DEFAULT 
+				|| opt == SDO_ALWAYS
+				|| opt == SDO_ONCE 
+				|| opt == SDO_KEY
+				|| opt == SDO_EMPTY; }
+
+	int	AllowEmpty() { return opt == SDO_EMPTY; }
+
+	// Preset access
+
+	const StrPtr 	GetPreset( const char *name = 0 );
+	int		HasPreset() { return GetPreset().Length(); }
+
+	void		SetPresets( const char *x ) { presets = x; }
+	StrPtr &	GetPresets() { return presets; }
+	int		HasPresets() { return presets.Length(); }
 
 	// Fmt access
 
 	SpecFmt		GetFmt() { return fmt; }
 	int		GetSeq() { return seq; }
 
+	// Open access
+
+	int		IsOpenable() { return open != SDO_NOTOPEN; }
+	int		IsPropagating() { return open == SDO_PROPAGATE; }
+
 	// Type building -- so jobspec can create a spec
 
 	const char *	FmtOpt();
 	const char *	FmtType();
 	const char *	FmtFmt();
+	const char *	FmtOpen();
 	void		SetSeq( int s ) { seq = s; }
 	void 		SetOpt( const char *optName, Error *e );
 	void 		SetFmt( const char *fmtName, Error *e );
 	void		SetType( const char *s, Error *e );
+	void		SetOpen( const char *openName, Error *e );
 
 	int		Compare( const SpecElem &other );
 
@@ -243,13 +285,16 @@ class SpecElem {
 
 	SpecType	type;		// how it is formatted
 	StrBuf		tag;		// name of the field
-	StrBuf		preset;		// default preset value
+	StrBuf		fixed;		// fixed name for a default field
+	StrBuf		presets;	// (pre)set codes
 	StrBuf		values;		// what values can be had
 	int		code;		// what it's use it
 	StrBuf		subCode;	// user's code
 	char		nWords;		// how many words on the line
 	short		maxLength;	// advisory
 	SpecOpt		opt;		// how field is updated
+	SpecOpen	open;		// how field is opened
+	char		maxWords;	// max words on the line.  Streams
 
     private:
     friend class Spec;
@@ -265,7 +310,14 @@ class SpecElem {
 	// reference back to Get(index)
 
 	int		index;		
+
+	// Tmp for presets
+
+	StrBuf		preset;		// tmp for GetPreset()
 } ;
+
+// Cautionary note to caller that SpecWords (ie. tVal.wv[0]) are not 
+// cleared between tag invocations in a spec form.
 
 class SpecWords : public StrBuf
 {
@@ -291,6 +343,8 @@ class SpecData {
 	virtual StrPtr *GetLine( SpecElem *sd, int x, const char **cmt );
 	virtual void	SetLine( SpecElem *sd, int x, const StrPtr *val,
 				Error *e );
+	virtual void	SetComment( SpecElem *sd, int x, const StrPtr *val,
+				int nl, Error *e );
 
 	// This interface has words-oriented lines split apart.
 	// The const version casts and calls the non-const version,
@@ -300,9 +354,11 @@ class SpecData {
 
 	virtual int 	Get( SpecElem *sd, int x, const char **wv, const char **cmt );
 	virtual void	Set( SpecElem *sd, int x, const char **wv, Error *e );
+	virtual void	Comment( SpecElem *sd, int x, const char **wv, int nl, Error *e );
 
 	virtual int 	Get( SpecElem *sd, int x, char **wv, char **cmt );
 	virtual void	Set( SpecElem *sd, int x, char **wv, Error *e );
+	virtual void	Comment( SpecElem *sd, int x, char **wv, int nl, Error *e );
 
     protected:
 
@@ -313,18 +369,22 @@ class SpecData {
 class SpecDataTable : public SpecData {
 
     public:
-			SpecDataTable();
+			SpecDataTable( StrDict *dict = 0 );
 			virtual ~SpecDataTable();
 
 	virtual StrPtr *GetLine( SpecElem *sd, int x, const char **cmt );
 	virtual void	SetLine( SpecElem *sd, int x, const StrPtr *val,
 				Error *e );
+	virtual void	SetComment( SpecElem *sd, int x, const StrPtr *val,
+				int nl, Error *e );
 
 	StrDict *	Dict() { return table; }
 
     private:
 
+	int		privateTable;
 	StrDict		*table;
+	StrBuf		empty;
 
 } ;
 

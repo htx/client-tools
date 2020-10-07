@@ -81,7 +81,7 @@ namespace Base
 	    protected:
 		    bool            mThreadContinue;
         private:
-		    uint32  		mThreadID;
+		    uintptr_t  		mThreadID;
             bool            mThreadActive;
         };
 

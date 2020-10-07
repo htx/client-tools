@@ -21,6 +21,8 @@
  *
  *		If root is empty, local is used.
  *		If local is empty, results are not defined.
+ *		If canonical path is empty, trailing slash is appended to path.
+ *		(Trailing slash might cause problems with Stat() on windows.)
  *		Local can begin with relative references.
  *
  *	PathSys::GetCanon() - strip root and return rest as canon
@@ -34,6 +36,32 @@
  *	GetOS() - returns a string for the OS name
  */
 
+# ifdef HAS_CPP14
+
+# include <memory>
+
+class PathSys;
+
+// Specialization to the std::default_delete template class so we can store
+// a std::unique_pointer to the PathSys* returned from PathSys::Create without
+// having to know which inherited class it's actually using and without having
+// to use a custom deleter everywhere.
+
+namespace std
+{
+	template<> class default_delete< PathSys* >
+	{
+	    public:
+	        void operator()( PathSys **ptr );
+	};
+}
+
+using PathSysUPtr = std::unique_ptr< PathSys* >;
+
+# endif
+
+
+
 class PathSys : public StrBuf {
 
     public:
@@ -44,12 +72,20 @@ class PathSys : public StrBuf {
 
 	virtual int	GetCanon( const StrPtr &root, StrBuf &t ) = 0;
 	virtual int	ToParent( StrBuf *file = 0 ) = 0;
+	virtual int	IsUnderRoot( const StrPtr &root ) = 0;
+	virtual void	SetCharSet( int = 0 );
 
 	void		Expand();
 
 	static PathSys *Create();
-	static PathSys *Create( int os );
 	static PathSys *Create( const StrPtr &os, Error *e );
+# ifdef HAS_CPP14
+	static PathSysUPtr CreateUPtr();
+	static PathSysUPtr CreateUPtr( const StrPtr &os, Error *e );
+# endif
 	static const char *GetOS();
+
+    private:
+	static PathSys *Create( int os );
 } ;
 

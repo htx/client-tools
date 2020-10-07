@@ -99,17 +99,28 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
-    <OutDir>.\..\..\..\..\..\..\compile\win32\blat\Optimized\</OutDir>
-    <IntDir>.\..\..\..\..\..\..\compile\win32\blat\Optimized\</IntDir>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|x64'">
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\..\..\..\..\..\..\compile\win32\blat\Debug\</OutDir>
-    <IntDir>.\..\..\..\..\..\..\compile\win32\blat\Debug\</IntDir>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\..\..\..\..\..\..\compile\win32\blat\Release\</OutDir>
-    <IntDir>.\..\..\..\..\..\..\compile\win32\blat\Release\</IntDir>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <ClCompile>
@@ -137,7 +148,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\blat\Optimized\blat.lib</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\blat.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -171,7 +182,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\blat\Optimized\blat.lib</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -204,7 +215,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\blat\Debug\blat.lib</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\blat.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -237,7 +248,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\blat\Debug\blat.lib</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -272,7 +283,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\blat\Release\blat.lib</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\blat.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -307,7 +318,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\blat\Release\blat.lib</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\blat\$(Configuration)\blat.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>

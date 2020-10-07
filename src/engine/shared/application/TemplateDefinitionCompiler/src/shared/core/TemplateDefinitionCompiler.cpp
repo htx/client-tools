@@ -55,7 +55,6 @@ public:
 					return;
 			}
 		}
-		ClientUser::HandleError(err);
 	}
 
 	bool errorOccurred(void) const
@@ -283,7 +282,7 @@ int writeTemplateSource(const TemplateDefinitionFile &tdfFile, const Filename &f
 {
 static const int BUFFER_SIZE = 1024;
 File fp;
-int result;
+int result2;
 
 	const TemplateData *currentTemplate = tdfFile.getTemplateData(tdfFile.getHighestVersion());
 	NOT_NULL(currentTemplate);
@@ -305,10 +304,10 @@ int result;
 			return -1;
 		}
 		tdfFile.writeClassSourceBegin(fp, *currentTemplate);
-		result = currentTemplate->writeSourceMethods(fp);
+		result2 = currentTemplate->writeSourceMethods(fp);
 		fp.close();
-		if (result != 0)
-			return result;
+		if (result2 != 0)
+			return result2;
 #ifndef ALWAYS_OVERWRITE
 	}
 	else
@@ -331,10 +330,10 @@ int result;
 
 		for (;;)
 		{
-			int result = fp.readRawLine(buffer, BUFFER_SIZE);
-			if (result < 0)
+			int result1 = fp.readRawLine(buffer, BUFFER_SIZE);
+			if (result1 < 0)
 			{
-				if (result == -1)
+				if (result1 == -1)
 					break;
 				else
 				{
@@ -369,8 +368,8 @@ int result;
 			else if (strncmp(buffer, TDF_BEGIN, strlen(TDF_BEGIN)) == 0)
 			{
 				// write out the new tdf data
-				result = currentTemplate->writeSourceMethods(temp_fp);
-				if (result != 0)
+				result1 = currentTemplate->writeSourceMethods(temp_fp);
+				if (result1 != 0)
 					return -1;
 				// skip the old tdf data
 				if (!skipOldCode(fp, TDF_END, buffer, BUFFER_SIZE))

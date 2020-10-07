@@ -95,7 +95,7 @@ void AutoDeltaByteStream::addVariable(AutoDeltaVariableBase & var)
 
 //---------------------------------------------------------------------
 
-const unsigned int AutoDeltaByteStream::getItemCount() const
+size_t AutoDeltaByteStream::getItemCount() const
 {
 	unsigned short int count = 0;
 

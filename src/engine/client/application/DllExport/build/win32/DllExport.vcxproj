@@ -105,6 +105,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\..\..\..\..\..\..\compile\win32\DllExport\Release\</OutDir>
@@ -113,6 +115,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\..\..\..\..\..\..\compile\win32\DllExport\Debug\</OutDir>
@@ -121,6 +125,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <Midl>
@@ -200,13 +206,13 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.dll</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\DllExport\Optimized/DllExport.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.pdb</ProgramDatabaseFile>
-      <ImportLibrary>.\..\..\..\..\..\..\compile\win32\DllExport\Optimized/DllExport.lib</ImportLibrary>
+      <ImportLibrary>.\..\..\..\..\..\..\compile\$(Platform)\DllExport\Optimized/DllExport.lib</ImportLibrary>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -302,11 +308,11 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.dll</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\DllExport\Release/DllExport.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.pdb</ProgramDatabaseFile>
-      <ImportLibrary>.\..\..\..\..\..\..\compile\win32\DllExport\Release/DllExport.lib</ImportLibrary>
+      <ImportLibrary>.\..\..\..\..\..\..\compile\$(Platform)\DllExport\Release/DllExport.lib</ImportLibrary>
       <ShowProgress>NotSet</ShowProgress>
     </Link>
     <Bscmake>
@@ -402,13 +408,13 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <OutputFile>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.dll</OutputFile>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\DllExport\Debug/DllExport.dll</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc; libcp;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.pdb</ProgramDatabaseFile>
-      <ImportLibrary>.\..\..\..\..\..\..\compile\win32\DllExport\Debug/DllExport.lib</ImportLibrary>
+      <ImportLibrary>.\..\..\..\..\..\..\compile\$(Platform)\DllExport\Debug/DllExport.lib</ImportLibrary>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

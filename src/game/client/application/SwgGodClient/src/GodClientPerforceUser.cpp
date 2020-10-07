@@ -42,7 +42,7 @@ GodClientPerforceUser::GodClientPerforceUser()
 
 void GodClientPerforceUser::HandleError( Error *err )
 {
-	if (err != NULL && err->Test())
+	if (err != nullptr && err->Test())
 	{
 		if (err->GetGeneric() != EV_EMPTY)
 		{
@@ -57,20 +57,18 @@ void GodClientPerforceUser::HandleError( Error *err )
 			WARNING( true, (m_lastErrorText.c_str()) );
 
 			// test for filtered errors
-			for (size_t i = 0; i < m_filteredErrors.size(); ++i)
+			for(int m_filteredError : m_filteredErrors)
 			{
-				if (m_lastError == m_filteredErrors[i])
+				if (m_lastError == m_filteredError)
 					return;
 			}
 		}
 	}
-
-	ClientUser::HandleError(err);
 }
 
 //-----------------------------------------------------------------
 
-void GodClientPerforceUser::OutputInfo(char level, char *data)
+void GodClientPerforceUser::OutputInfo(char level, const char *data)
 {
 	switch(level)
 	{

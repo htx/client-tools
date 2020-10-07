@@ -114,11 +114,11 @@ typedef uint32 Tag;
 inline Tag ConvertStringToTag(const char *value)
 {
 	Tag result = 0;
+	const size_t length = strlen(value);
 	
-	const int length = strlen(value);
-	for (int i = 0; i < 4; ++i)
+	for (size_t i = 0; i < 4; ++i)
 	{
-		const uint32 ch = static_cast<uint32>((i >= length) ? ' ' : value[i]);
+		const uint32_t ch = static_cast<uint32_t>(static_cast<unsigned char>(i >= length ? ' ' : value[i]));
 		result = (result << 8) | ch;
 	}
 

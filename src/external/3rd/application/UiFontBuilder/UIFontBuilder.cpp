@@ -72,7 +72,7 @@ BOOL CUIFontBuilderApp::InitInstance()
 	long len = _MAX_PATH - 1;
 	TCHAR buf[_MAX_PATH];
 
-	static HKEY                    ms_hkey;
+	//static HKEY                    ms_hkey;
 
 	if (RegQueryValue (HKEY_CURRENT_USER, ms_dbFileKey, buf, &len) != ERROR_SUCCESS)
 	{

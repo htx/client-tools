@@ -30,6 +30,8 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
+#pragma warning (disable : 4244 4644)
+
 // ======================================================================
 
 namespace DirectInputNamespace

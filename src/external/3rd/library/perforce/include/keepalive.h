@@ -5,8 +5,11 @@
  */
 
 /*
- * This class has one method IsAlive() which can be called in either the
+ * This class has a method IsAlive() which can be called in either the
  * client or the server.
+ * The other method, PollMs() is an advisory number of milliseconds
+ * between poll calls to IsAlive().
+ *
  * 
  * client:  
  *         KeepAlive is subclassed and an implementation of IsAlive() is 
@@ -24,6 +27,10 @@
 class KeepAlive {
 
     public:
+	virtual ~KeepAlive() {};
+
 	virtual int	IsAlive() = 0;
+	virtual void	Clear(){};
+	virtual int	PollMs() { return 500; }
 
 };

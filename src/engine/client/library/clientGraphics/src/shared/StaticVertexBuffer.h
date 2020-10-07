@@ -24,7 +24,7 @@ public:
 	virtual DLLEXPORT ~StaticVertexBufferGraphicsData();
 
 	virtual const VertexBufferDescriptor  &getDescriptor() const = 0;
-	virtual int                            getSortKey() = 0;
+	virtual intptr_t                       getSortKey() = 0;
 
 	virtual void                          *lock(bool readOnly) = 0;
 	virtual void                           unlock() = 0;

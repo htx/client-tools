@@ -99,7 +99,7 @@ using namespace ViewerNamespace;
 
 void CONSOLE_PRINT (const CString& newMessage)
 {
-	DEBUG_REPORT_LOG(true, ("%s", newMessage));
+	DEBUG_REPORT_LOG(true, ("%s", newMessage.GetString()));
 	CMainFrame* mainFrame = static_cast<CMainFrame*> (AfxGetMainWnd ());
 
 	if (mainFrame)

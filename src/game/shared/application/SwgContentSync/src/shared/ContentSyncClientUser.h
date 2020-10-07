@@ -27,9 +27,9 @@ public:
 
 	ContentSyncClientUser(ApplicationWindow &applicationWindow);
 
-	virtual void 	OutputError( const_char *errBuf );
-	virtual void	OutputInfo( char level, const_char *data );
-	virtual void 	OutputText( const_char *data, int length );
+	void 	OutputError( const char *errBuf ) override;
+	void	OutputInfo( char level, const char *data ) override;
+	void 	OutputText( const char *data, int length ) override;
 
 	ErrorList::const_iterator errorsBegin() const;
 	ErrorList::const_iterator errorsEnd() const;
@@ -39,7 +39,6 @@ private:
 	ContentSyncClientUser(const ContentSyncClientUser &);
 	ContentSyncClientUser &operator =(const ContentSyncClientUser &);
 
-private:
 	ApplicationWindow    &m_applicationWindow;
 	bool                  m_error;
 	std::vector<QString>  m_errors;

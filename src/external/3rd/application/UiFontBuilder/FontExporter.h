@@ -53,7 +53,7 @@ public:
 
 	virtual             ~FontExporter() = 0;
 
-	virtual bool         export (const IdSet_t & idSet) = 0;
+	virtual bool         export2 (const IdSet_t & idSet) = 0;
 
 protected:
 	                     FontExporter (const FontImageExporter & imexp, const ExporterInfo & info);

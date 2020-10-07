@@ -28,7 +28,7 @@ public:
 	virtual void                           unlock(int numberOfVertices) = 0;
 	virtual const VertexBufferDescriptor  &getDescriptor() const = 0;
 	virtual int                            getNumberOfLockableDynamicVertices(bool withDiscard) = 0;
-	virtual int                            getSortKey() = 0;
+	virtual intptr_t                       getSortKey() = 0;
 };
 
 /**

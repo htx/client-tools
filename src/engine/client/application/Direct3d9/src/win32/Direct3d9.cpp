@@ -56,7 +56,7 @@
 
 #include <ddraw.h>
 #include <d3dx9.h>
-#include <stdio.h>
+#include <cstdio>
 
 #pragma warning (disable: 4201)
 #include <mmsystem.h>
@@ -2608,7 +2608,7 @@ bool Direct3d9Namespace::applyGammaCorrectionToXRGBSurface( IDirect3DSurface9 *s
 	for( unsigned nLine = 0; nLine != desc.Height; nLine++ )
 	{
 		// get the start of the line
-		PackedArgb * pBuffer = (PackedArgb *)((unsigned int)lockedRect.pBits + lockedRect.Pitch * nLine);
+		PackedArgb * pBuffer = reinterpret_cast<PackedArgb*>(reinterpret_cast<intptr_t>(lockedRect.pBits) + static_cast<intptr_t>(lockedRect.Pitch) * nLine);
 
 		// color correct the line
 		PackedArgb * pBufferEol = pBuffer + desc.Width;

@@ -96,7 +96,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,7 +106,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <OutDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</OutDir>
     <IntDir>..\..\..\..\..\..\compile\win32\$(ProjectName)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_o</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|x64'">
@@ -149,15 +149,16 @@
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;VideoCapture_debug.lib;ImageCapture_debug.lib;Smart_debug.lib;SoeUtil_debug.lib;ZlibUtil_debug.lib;picn20md.lib;dxguid.lib;dsound.lib;dpvs.lib;libxml2-win32-release.lib;mss32.lib;ws2_32.lib;winmm.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;dxguid.lib;dsound.lib;dpvs.lib;libxml2.lib;mss32.lib;ws2_32.lib;winmm.lib;dinput8.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_d.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\videocapture\VideoCapture\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\ImageCapture\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\Smart\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\ZlibUtil\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\SoeUtil\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\PICTools\Lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\..\src\external\3rd\library\libxml\lib\$(PlatformTarget)\$(Configuration);..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\compile\$(Platform)\zlib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -259,15 +260,16 @@ xcopy "$(SolutionDir)..\..\compile\win32\Direct3d9_vsps\$(Configuration)\gl07_d.
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;VideoCapture_release.lib;ImageCapture_release.lib;Smart_release.lib;SoeUtil_release.lib;ZlibUtil_release.lib;picn20m.lib;dxguid.lib;dsound.lib;dpvs.lib;libxml2-win32-release.lib;mss32.lib;ws2_32.lib;winmm.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;dxguid.lib;dsound.lib;dpvs.lib;libxml2.lib;mss32.lib;ws2_32.lib;winmm.lib;dinput8.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_o.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Debug;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\stlport453\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\VideoCapture\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\ImageCapture\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\Smart\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\ZlibUtil\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\SoeUtil\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\PICTools\Lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\compile\win32\dpvs\Release;..\..\..\..\..\..\..\src\external\3rd\library\libxml\lib\$(PlatformTarget)\Release;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\compile\$(Platform)\zlib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libcmt;libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_o.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -371,15 +373,16 @@ xcopy "$(SolutionDir)..\..\compile\win32\Direct3d9_vsps\$(Configuration)\gl07_o.
       <UseFullPaths>true</UseFullPaths>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;VideoCapture_release.lib;ImageCapture_release.lib;Smart_release.lib;SoeUtil_release.lib;ZlibUtil_release.lib;picn20m.lib;dxguid.lib;dsound.lib;dpvs.lib;libxml2-win32-release.lib;mss32.lib;ws2_32.lib;winmm.lib;dinput8.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>legacy_stdio_definitions.lib;dxguid.lib;dsound.lib;dpvs.lib;libxml2.lib;mss32.lib;ws2_32.lib;winmm.lib;dinput8.lib;zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName)_r.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\compile\win32\dpvs\Release;..\..\..\..\..\..\external\3rd\library\libxml2-2.6.7.win32\lib;..\..\..\..\..\..\external\3rd\library\miles\lib\win;..\..\..\..\..\..\external\3rd\library\videocapture\VideoCapture\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\ImageCapture\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\Smart\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\ZlibUtil\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\SoeUtil\lib\win32;..\..\..\..\..\..\external\3rd\library\videocapture\PICTools\Lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\compile\$(Platform)\zlib\$(Configuration);..\..\..\..\..\..\external\3rd\library\atlmfc\lib\INTEL;..\..\..\..\..\..\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\compile\win32\dpvs\Release;..\..\..\..\..\..\..\src\external\3rd\library\libxml\lib\$(PlatformTarget)\$(Configuration);..\..\..\..\..\..\external\3rd\library\miles\lib\win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName)_r.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <LinkTimeCodeGeneration>UseFastLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1077,9 +1080,6 @@ xcopy "$(SolutionDir)..\..\compile\win32\Direct3d9_vsps\$(Configuration)\gl07_r.
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\blat194\build\win32\blat.vcxproj">
       <Project>{ecbdfcff-f4ae-475a-aa90-729eb96430a0}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\zlib-1.2.3\zlib.vcxproj">
-      <Project>{9496a020-65ad-45a6-9acf-ae4f3358b027}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\external\ours\library\archive\build\win32\archive.vcxproj">
       <Project>{52153865-1abf-4fbb-84c4-0fc439716f1e}</Project>
