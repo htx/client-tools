@@ -4,25 +4,25 @@ This repo is only for building the clients and tools.
 
 ## Branches:
 
-* **master** - currently builds using Visual Studio 2013. Uses the old stlport.
-* **stdlib** - Current "work in progress" for building on Visual Studio 2015, which includes it's own, complete STL implementation.
+* **master** - dev branch
+* **TheLastBranchyBranch** - latest stable, builds using Visual Studio 2019(v142) 10.0.19041.0
 
-## Visual Studio
+## Notable Differences to Source-repo
 
-Visual Studio Community for most, if not all versions, is free for 90 days, after which you may need to do something else, unless you have DreamSpark: https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx
+* cleaned up projects settings, fixed most warnings
+* removed stlport, mozilla, vivox, soeutils, some unused stuff
+* upgraded dxsdk, libxml, libjgp, pcre, perforce, zlib
+* added cfgs and copying build outputs into their own seperate folders in project root
 
-## Building
+## Additional Requirements
 
-To build a client, find and right click "SwgClient" after choosing the configuration you wish to use (Debug, Optimized, Release). Click build.
-
-The same goes for the other projects but they are hit and miss as far as being working or not. If you hit a bug, please fix and pull request! It is suggested you ignore the "server" projects and server only libs as we have no use for those.
-
+* Flex / Bison  https://github.com/lexxmark/winflexbison
+* Perl http://strawberryperl.com/
+* C++ MFC for latest v142(x86 & x64)
+* Clientassets(https://github.com/htx/client-assets) and TOCS/TRES from the client are assumed to be put in <ProjectFolder>/data/SWGClient, dsrc in <ProjectFolder>/dsrc
+  
 ## Known Issues
 
-* For the debug build, and possibly the optimized versions, you will get linker errors about libmozilla, and in release, possibly Vivox - if you alter the project settings you can disable this from killing the output of an exe, as libmozilla is only needed for the ingame browser.
-
-* Other linker errors sometimes throw, you have to work on these case by case. Please pull request any changes you make.
-
-* cmd.exe issues sometimes occur as SOE originally had the build setup copying files to a proper game bin directory. You can just remove these from projects that complain about them, just copy the output files manually.
-
-* Plenty of warnings and sometimes even errors regarding deprecated libs happen. Fixes for these are case by case.
+* Due to Github file size limitation, the perforce libs need to be manually unzipped (required for godclient and a few tools) (/src/external/3rd/library/perforce/lib/win32
+* also Perforce provides no debug version of their libs, so no debug builds for those projects atm
+* Some tools dont work/build, due to missing ui scripts or server side includes, some are simply incomplete/broken
