@@ -124,7 +124,7 @@ void UIDataSource::GetChildren( UIObjectList &Out ) const
 //======================================================================================
 unsigned long UIDataSource::GetChildCount( void ) const
 {
-	return mData->size();
+	return static_cast<unsigned long>(mData->size());
 }
 
 //======================================================================================
@@ -365,9 +365,9 @@ bool UIDataSource::SetProperty( const UILowerString & Name, const UIString &Valu
 	
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;		
-
-		for( UIDataList::iterator o = mData->begin(); o != mData->end(); ++o )
+		const int len = static_cast<int>(pSeparator);
+		
+		for(auto o = mData->begin(); o != mData->end(); ++o )
 		{
 			UIData *theObject = *o;
 

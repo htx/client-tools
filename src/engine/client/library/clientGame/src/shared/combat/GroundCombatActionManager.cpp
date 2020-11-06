@@ -489,17 +489,19 @@ std::string GroundCombatActionManagerNamespace::getRandomElementFromString(char 
 	std::string result = stringToParse;
 
 	std::string::size_type loc = stringToParse.find(delimiter);
+	
 	if (std::string::npos != loc)
 	{
 		// there are options, pick one randomly
 		std::vector<int> locations;
-		locations.push_back(loc);
+		locations.emplace_back(static_cast<int>(loc));
+		
 		while (std::string::npos != (loc = stringToParse.find(delimiter, loc+1)))
 		{
-			locations.push_back(loc);
+			locations.emplace_back(static_cast<int>(loc));
 		}
 
-		const int numElements = locations.size() + 1;
+		const int numElements = static_cast<int>(locations.size()) + 1;
 		const uint32 choice = Random::random(0, numElements-1);
 
 		int beginLoc = 0;
@@ -524,7 +526,7 @@ std::string GroundCombatActionManagerNamespace::getRandomElementFromString(char 
 
 std::string GroundCombatActionManagerNamespace::checkForAnimWildcard(char const wildcard, std::string const & inString)
 {
-	int loc = inString.find(wildcard);
+	size_t loc = inString.find(wildcard);
 
 	if(loc == std::string::npos)
 		return inString;

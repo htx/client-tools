@@ -14,7 +14,6 @@
 namespace Archive {
 	
 //---------------------------------------------------------------------
-	
 
 inline void get(ReadIterator & source, double & target)
 {
@@ -83,18 +82,21 @@ inline void get(ReadIterator & source, signed char & target)
 {
 	source.get(&target, 1);
 }
-
+	
 //---------------------------------------------------------------------
 
 inline void get(ReadIterator & source, std::string & target)
 {
-	unsigned short len;
-	unsigned int size;
+	unsigned short len = 0;
+	unsigned int size = 0;
+	
 	get(source, len);
+	
 	if (len < 65535)
 		size = len;
 	else
 		get(source, size);
+	
 	const char * c = reinterpret_cast<const char * const>(source.getBuffer());
 	target = std::string(c, size);
 	source.advance(size);
@@ -111,7 +113,7 @@ inline void get(ReadIterator & source, bool & target)
 
 inline void get(ReadIterator & source, ByteStream & target)
 {
-	unsigned int s;
+	unsigned int s = 0;
 	get(source, s);
 	target.put(source.getBuffer(), s);
 	source.advance(s);
@@ -130,13 +132,14 @@ template<typename A, typename B> inline void get(ReadIterator & source, std::pai
 template<typename A> inline void get(ReadIterator & source, std::vector<A>& target)
 {
 	target.clear();
-	signed int length = 0;
+	int length = 0;
 	source.get(&length, 4);
 	A temp;
+	
 	for(int i = 0; i < length; ++i)
 	{
 		get(source, temp);
-		target.push_back(temp);
+		target.emplace_back(temp);
 	}
 }
 
@@ -145,9 +148,10 @@ template<typename A> inline void get(ReadIterator & source, std::vector<A>& targ
 template<typename A> inline void get(ReadIterator & source, std::set<A>& target)
 {
 	target.clear();
-	signed int length = 0;
+	int length = 0;
 	source.get(&length, 4);
 	A temp;
+	
 	for(int i = 0; i < length; ++i)
 	{
 		get(source, temp);
@@ -160,13 +164,14 @@ template<typename A> inline void get(ReadIterator & source, std::set<A>& target)
 template<typename A> inline void get(ReadIterator & source, std::deque<A>& target)
 {
 	target.clear();
-	signed int length = 0;
+	int length = 0;
 	source.get(&length, 4);
 	A temp;
+	
 	for(int i = 0; i < length; ++i)
 	{
 		get(source, temp);
-		target.push_back(temp);
+		target.emplace_back(temp);
 	}
 }
 
@@ -175,14 +180,14 @@ template<typename A> inline void get(ReadIterator & source, std::deque<A>& targe
 template<typename A> inline void get_ptr(ReadIterator & source, std::vector<const A *>& target)
 {
 	target.clear();
-	signed int length = 0;
+	int length = 0;
 	source.get(&length, 4);
 //	A temp;
 	for(int i = 0; i < length; ++i)
 	{
 		A * temp = new A;
 		get(source, temp);
-		target.push_back(temp);
+		target.emplace_back(temp);
 	}
 }
 
@@ -190,10 +195,10 @@ template<typename A> inline void get_ptr(ReadIterator & source, std::vector<cons
 
 template<typename Key, typename Value> inline void get(ReadIterator & source, std::map<Key, Value> & target)
 {
-	size_t numKeys;
+	unsigned int numKeys = 0;
 	get(source, numKeys);
-	size_t i;
-	for(i = 0; i < numKeys; ++i)
+	
+	for(unsigned int i = 0; i < numKeys; ++i)
 	{
 		Key k;
 		get(source, k);
@@ -205,7 +210,7 @@ template<typename Key, typename Value> inline void get(ReadIterator & source, st
 
 //---------------------------------------------------------------------
 
-template<typename A> inline void get(ReadIterator & source, A * target, int length)
+template<typename A> void get(ReadIterator & source, A * target, int length)
 {
 	for(int i = 0; i < length; ++i)
 	{
@@ -214,21 +219,7 @@ template<typename A> inline void get(ReadIterator & source, A * target, int leng
 }
 
 //---------------------------------------------------------------------
-
-inline void put(ByteStream & target, const unsigned long long & source)
-{
-	target.put(&source, 8);
-}
-
-//---------------------------------------------------------------------
-
-inline void put(ByteStream & target, const signed long long & source)
-{
-	target.put(&source, 8);
-}
 	
-//---------------------------------------------------------------------
-
 inline void put(ByteStream & target, const double & source)
 {
 	target.put(&source, 8);
@@ -303,26 +294,22 @@ inline void put(ByteStream & target, const char & source)
 {
 	target.put(&source, 1);
 }
-
+	
 //---------------------------------------------------------------------
 
 inline void put(ByteStream & target, const std::string & source)
 {
 	if (source.size() < 65535)
 	{
-		unsigned short len = static_cast<unsigned short>(source.size());
+		auto len = static_cast<unsigned short>(source.size());
 		put(target, len);
-	}
-	else if(source.size() < UINT_MAX)
-	{
-		unsigned short len = static_cast<unsigned short>(65535);
-		put(target, len);
-		unsigned int size = static_cast<unsigned int>(source.size());
-		put(target, size);
 	}
 	else
 	{
-		// overflow
+		auto len = static_cast<unsigned short>(65535);
+		put(target, len);
+		auto size = static_cast<unsigned int>(source.size());
+		put(target, size);
 	}
 	
 	target.put(source.data(), static_cast<unsigned int>(source.size()));
@@ -354,7 +341,7 @@ inline void put(ByteStream & target, const ByteStream & source)
 
 //----------------------------------------------------------------------
 
-template<typename A, typename B> inline void put(ByteStream & target, const std::pair<A,B> & source)
+template<typename A, typename B> void put(ByteStream & target, const std::pair<A,B> & source)
 {
 	put(target, source.first);
 	put(target, source.second);
@@ -362,10 +349,11 @@ template<typename A, typename B> inline void put(ByteStream & target, const std:
 
 //---------------------------------------------------------------------
 
-template<typename A> inline void put(ByteStream & target, const std::vector<A> & source)
+template<typename A> void put(ByteStream & target, const std::vector<A> & source)
 {
-	signed int length = source.size();
+	int length = static_cast<int>(source.size());
 	target.put(&length, 4);
+	
 	for(int i = 0; i < length; ++i)
 	{
 		put(target, source[i]);
@@ -374,20 +362,22 @@ template<typename A> inline void put(ByteStream & target, const std::vector<A> &
 
 //-----------------------------------------------------------------------
 
-template<typename A> inline void put(ByteStream & target, const std::set<A> & source)
+template<typename A> void put(ByteStream & target, const std::set<A> & source)
 {
-	signed int length = source.size();
+	int length = static_cast<int>(source.size());
 	target.put(&length, 4);
+	
 	for (typename std::set<A>::const_iterator i = source.begin(); i != source.end(); ++i)
 		put(target, *i);
 }
 
 //-----------------------------------------------------------------------
 
-template<typename A> inline void put(ByteStream & target, const std::deque<A> & source)
+template<typename A> void put(ByteStream & target, const std::deque<A> & source)
 {
-	signed int length = source.size();
+	int length = static_cast<int>(source.size());
 	target.put(&length, 4);
+	
 	for(int i = 0; i < length; ++i)
 	{
 		put(target, source[i]);
@@ -396,10 +386,12 @@ template<typename A> inline void put(ByteStream & target, const std::deque<A> & 
 
 //-----------------------------------------------------------------------
 
-template<typename Key, typename Value> inline void put(ByteStream & target, const std::map<Key, Value> & source)
+template<typename Key, typename Value> void put(ByteStream & target, const std::map<Key, Value> & source)
 {
-	size_t numKeys = source.size();
+	const auto numKeys = static_cast<unsigned int>(source.size());
+	
 	put(target, numKeys);
+	
 	for (typename std::map<Key, Value>::const_iterator i = source.begin(); i != source.end(); ++i)
 	{
 		put(target, i->first);
@@ -409,7 +401,7 @@ template<typename Key, typename Value> inline void put(ByteStream & target, cons
 
 //---------------------------------------------------------------------
 
-template<typename A> inline void put(ByteStream & target, const A * source, int length)
+template<typename A> void put(ByteStream & target, const A * source, int length)
 {
 	for(int i = 0; i < length; ++i)
 	{

@@ -55,7 +55,7 @@ void Md5::Value::format(char *buffer, int bufferLength) const
 
 Md5::Value Md5::calculate(const char *string)
 {
-	return calculate(string, strlen(string));
+	return calculate(string, static_cast<int>(strlen(string)));
 }
 
 // ----------------------------------------------------------------------

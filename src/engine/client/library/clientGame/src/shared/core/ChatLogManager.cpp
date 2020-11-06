@@ -169,7 +169,7 @@ void ChatLogManager::flush()
 					// Remove any newline characters
 
 					Unicode::UTF8String text(Unicode::wideToUTF8(printableText));
-					int position = 0;
+					size_t position = 0;
 
 					while (position != std::string::npos)
 					{
@@ -190,7 +190,7 @@ void ChatLogManager::flush()
 				}
 
 				fclose(fp);
-				fp = NULL;
+				fp = nullptr;
 
 				s_chatText.clear();
 			}

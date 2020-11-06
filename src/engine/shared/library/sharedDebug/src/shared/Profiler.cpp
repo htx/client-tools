@@ -738,8 +738,8 @@ void ProfilerNamespace::enterWithTime(char const *name, ProfilerTimer::Type time
 	// no previous call to this block, so create a new entry
 	if (!entry)
 	{
-		entryIndex = ms_profilerEntriesCurrent->size();
-		ms_profilerEntriesCurrent->push_back(ProfilerEntry());
+		entryIndex = static_cast<int>(ms_profilerEntriesCurrent->size());
+		ms_profilerEntriesCurrent->emplace_back(ProfilerEntry());
 		entry = &ms_profilerEntriesCurrent->back();
 	
 		entry->name = name;
@@ -750,7 +750,7 @@ void ProfilerNamespace::enterWithTime(char const *name, ProfilerTimer::Type time
 		else
 		{
 			entry->parent = ms_profilerEntryStack.back();
-			(*ms_profilerEntriesCurrent)[entry->parent].children.push_back(entryIndex);
+			(*ms_profilerEntriesCurrent)[entry->parent].children.emplace_back(entryIndex);
 		}
 		entry->totalCalls = 0;
 		entry->totalTime = 0;
@@ -760,7 +760,7 @@ void ProfilerNamespace::enterWithTime(char const *name, ProfilerTimer::Type time
 	// record the profiling time
 	entry->totalCalls  += 1;
 	entry->totalTime -= time;
-	ms_profilerEntryStack.push_back(entryIndex);
+	ms_profilerEntryStack.emplace_back(entryIndex);
 }
 
 // ----------------------------------------------------------------------
@@ -849,12 +849,12 @@ void Profiler::adjustForLostBlocks(char const *expectingName)
 		// if everything is correct, the back entry will be the expected one, so we don't have to do anything
 		if ((*ms_profilerEntriesCurrent)[ms_profilerEntryStack.back()].name == expectingName)
 			return;
-		for (int i = ms_profilerEntryStack.size()-2; i >= 0; --i)
+		for (size_t i = ms_profilerEntryStack.size()-2; i >= 0; --i)
 		{
 			if ((*ms_profilerEntriesCurrent)[ms_profilerEntryStack[i]].name == expectingName)
 			{
 				// we've got unclosed blocks, so close them
-				for (int j = ms_profilerEntryStack.size()-1; j > i; --j)
+				for (size_t j = ms_profilerEntryStack.size()-1; j > i; --j)
 				{
 					DEBUG_WARNING(true, ("Profiler adjusting for unclosed block '%s'.", (*ms_profilerEntriesCurrent)[ms_profilerEntryStack[j]].name));
 					PROFILER_BLOCK_DEFINE(p, (*ms_profilerEntriesCurrent)[ms_profilerEntryStack[j]].name);

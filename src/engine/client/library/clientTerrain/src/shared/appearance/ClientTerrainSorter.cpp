@@ -371,7 +371,7 @@ void ClientTerrainSorter::PrimitiveNode::prepareToDraw () const
 #ifdef _DEBUG
 	m_fvfMetrics->numberOfVertices        += numberOfVertices;
 	m_fvfMetrics->numberOfTriangles       += numberOfIndices / 3;
-	m_fvfMetrics->numberOfInputPrimitives += primitiveList->size ();
+	m_fvfMetrics->numberOfInputPrimitives += static_cast<int>(primitiveList->size ());
 	m_fvfMetrics->vertexSize               = vertexBuffer.getVertexSize ();
 #endif
 }
@@ -678,7 +678,7 @@ void ClientTerrainSorter::draw ()
 		//-- set the size
 		FvfMetrics* const metrics = (*ms_fvfMetricsList) [i];
 		metrics->reset ();
-		metrics->numberOfShaders = shaderMap->size ();
+		metrics->numberOfShaders = static_cast<int>(shaderMap->size ());
 #endif
 	}
 }

@@ -561,10 +561,9 @@ void ClientProceduralTerrainAppearance::ShaderSet::render (const Camera* camera,
 	const Shader *shader = m_shader;
 	const Vector cameraPosition = camera->getPosition_w ();
 	const Primitive *const*const primitiveList = &m_primitiveList[0];
-	const uint numPrimitives = m_primitiveList.size();
-
-	uint i;
-	for (i = 0; i < numPrimitives; ++i)
+	const uint numPrimitives = static_cast<unsigned int>(m_primitiveList.size());
+	
+	for (uint i = 0; i < numPrimitives; ++i)
 	{
 		const Primitive* const primitive = primitiveList[i];
 		if (primitive->m_excluded)
@@ -583,8 +582,7 @@ void ClientProceduralTerrainAppearance::ShaderSet::render (const Camera* camera,
 			{
 				const Plane* const planeArray = primitive->m_planeArray->getPlaneArray ();
 
-				int j;
-				for (j = 0; j < 8; ++j)
+				for (int j = 0; j < 8; ++j)
 				{
 					if (planeArray [j].computeDistanceTo (cameraPosition) > 0.0f)
 					{

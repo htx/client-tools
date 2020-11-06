@@ -59,7 +59,10 @@
 
 //-----------------------------------
 #undef TRY_FOR_SSE
+
+#ifndef _WIN64
 #define TRY_FOR_SSE WIN32
+#endif
 
 #if TRY_FOR_SSE
 #include "sharedMath/SseMath.h"

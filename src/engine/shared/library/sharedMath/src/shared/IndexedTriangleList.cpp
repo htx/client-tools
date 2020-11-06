@@ -141,16 +141,16 @@ void IndexedTriangleList::write(Iff &iff) const
 
 			iff.insertChunk(TAG_VERT);
 			{
-				const uint numberOfVertices = m_vertices->size();
-				for (uint i = 0; i < numberOfVertices; ++i)
+				const size_t numberOfVertices = m_vertices->size();
+				for (size_t i = 0; i < numberOfVertices; ++i)
 					iff.insertChunkFloatVector((*m_vertices)[i]);
 			}
 			iff.exitChunk(TAG_VERT);
 
 			iff.insertChunk(TAG_INDX);
 			{
-				const uint numberOfIndices = m_indices->size();
-				for (uint i = 0; i < numberOfIndices; ++i)
+				const size_t numberOfIndices = m_indices->size();
+				for (size_t i = 0; i < numberOfIndices; ++i)
 					iff.insertChunkData(static_cast<int32>((*m_indices)[i]));
 			}
 			iff.exitChunk(TAG_INDX);
@@ -363,7 +363,7 @@ bool IndexedTriangleList::collide(Vector const & start, Vector const & end, std:
 
 	std::vector<Vector> const & vertices = *m_vertices;
 
-	uint const numberOfIndices = indices.size();
+	uint const numberOfIndices = static_cast<uint>(indices.size());
 	
 	for (int index = 0; static_cast<int>(numberOfIndices - index) >= 3; /*increment in body*/)
 	{

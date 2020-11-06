@@ -265,8 +265,8 @@ bool Vector::inPolygon (const Vector& v0, const Vector& v1, const Vector& v2) co
 bool Vector::inPolygon(const std::vector<Vector> &convexPolygonVertices) const
 {
 	// @todo optimize this
-	const uint numberOfConvexPolygonVertices = convexPolygonVertices.size();
-	for (uint i = 1; i < numberOfConvexPolygonVertices-1; ++i)
+	const size_t numberOfConvexPolygonVertices = convexPolygonVertices.size();
+	for (size_t i = 1; i < numberOfConvexPolygonVertices-1; ++i)
 		if (inPolygon(convexPolygonVertices[0], convexPolygonVertices[i], convexPolygonVertices[i+1]))
 			return true;
 

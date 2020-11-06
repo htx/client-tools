@@ -715,7 +715,7 @@ WorldSnapshotReaderWriter::Node const *WorldSnapshotReaderWriter::addObject (
 		objectTemplateNameIndex = (*i).second;
 	else
 	{
-		objectTemplateNameIndex = m_objectTemplateNameList->size();
+		objectTemplateNameIndex = static_cast<uint>(m_objectTemplateNameList->size());
 		(*m_objectTemplateCrcMap)[objectTemplateName.getCrc()] = objectTemplateNameIndex;
 		m_objectTemplateNameList->push_back(DuplicateString(objectTemplateName.getString()));
 	}
@@ -879,7 +879,7 @@ void WorldSnapshotReaderWriter::load_0001 (Iff& iff)
 				for (i = 0; i < n; ++i)
 				{
 					char * const objectTemplateName = iff.read_string();
-					(*m_objectTemplateCrcMap)[Crc::calculate(objectTemplateName)] = m_objectTemplateNameList->size();
+					(*m_objectTemplateCrcMap)[Crc::calculate(objectTemplateName)] = static_cast<unsigned int>(m_objectTemplateNameList->size());
 					m_objectTemplateNameList->push_back(objectTemplateName);
 				}
 			}

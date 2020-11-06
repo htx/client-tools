@@ -147,12 +147,13 @@ uint32 RemoteDebug::registerStream(const std::string& streamName)
 	DEBUG_FATAL(!ms_installed, ("remoteDebug not installed"));
 
 	uint32 streamNum = 0;
-	Channel *parent = NULL;
+	Channel *parent = nullptr;
 	std::string base;
 	std::string rest = streamName;
 	//look for subchannels with a double backslash
-	uint32 baseIndex = 0;
-	uint32 restIndex = streamName.find('\\');
+	size_t baseIndex = 0;
+	size_t restIndex = streamName.find('\\');
+	
 	while(restIndex != std::string::npos)
 	{
 		//pass the '\'
@@ -178,7 +179,7 @@ uint32 RemoteDebug::registerStream(const std::string& streamName)
 			send(NEW_STREAM, newBase.c_str());
 		}
 		//look for any other subChannel
-		uint32 oldRestIndex = restIndex;
+		size_t oldRestIndex = restIndex;
 		baseIndex = restIndex;
 		restIndex = rest.find('\\');
 		if (restIndex != std::string::npos)
@@ -203,12 +204,13 @@ uint32 RemoteDebug::registerStaticView(const std::string& channelName)
 {
 	DEBUG_FATAL(!ms_installed, ("remoteDebug not installed"));
 	uint32 staticViewNum = 0;
-	Channel *parent = NULL;
+	Channel *parent = nullptr;
 	std::string base;
 	std::string rest = channelName;
 	//look for subchannels with a double backslash
-	uint32 baseIndex = 0;
-	uint32 restIndex = channelName.find('\\');
+	size_t baseIndex = 0;
+	size_t restIndex = channelName.find('\\');
+	
 	while(restIndex != std::string::npos)
 	{
 		//pass the '\'
@@ -234,9 +236,10 @@ uint32 RemoteDebug::registerStaticView(const std::string& channelName)
 			send(NEW_STATIC, newBase.c_str());
 		}
 		//look for any other subChannel
-		uint32 oldRestIndex = restIndex;
+		size_t oldRestIndex = restIndex;
 		baseIndex = restIndex;
 		restIndex = rest.find('\\');
+
 		if (restIndex != std::string::npos)
 			restIndex += oldRestIndex;
 	}
@@ -264,10 +267,12 @@ bool RemoteDebug::registerUpFunction(const char* staticViewName, UpFunction func
 		return false;
 
 	int32 chan = findStaticView(staticViewName);
+	
 	if (chan == -1)
 		return false;
 
 	(*ms_upFunctionMap)[chan] = func;
+	
 	return true;
 }
 
@@ -282,10 +287,12 @@ bool RemoteDebug::registerDownFunction(const char* staticViewName, UpFunction fu
 		return false;
 
 	int32 chan = findStaticView(staticViewName);
+	
 	if (chan == -1)
 		return false;
 
 	(*ms_downFunctionMap)[chan] = func;
+	
 	return true;
 }
 
@@ -300,10 +307,12 @@ bool RemoteDebug::registerLeftFunction(const char* staticViewName, UpFunction fu
 		return false;
 
 	int32 chan = findStaticView(staticViewName);
+	
 	if (chan == -1)
 		return false;
 
 	(*ms_leftFunctionMap)[chan] = func;
+	
 	return true;
 }
 
@@ -318,10 +327,12 @@ bool RemoteDebug::registerRightFunction(const char* staticViewName, UpFunction f
 		return false;
 
 	int32 chan = findStaticView(staticViewName);
+	
 	if (chan == -1)
 		return false;
 
 	(*ms_rightFunctionMap)[chan] = func;
+	
 	return true;
 }
 
@@ -336,10 +347,12 @@ bool RemoteDebug::registerEnterFunction(const char* staticViewName, UpFunction f
 		return false;
 
 	int32 chan = findStaticView(staticViewName);
+	
 	if (chan == -1)
 		return false;
 
 	(*ms_enterFunctionMap)[static_cast<uint32>(chan)] = func;
+	
 	return true;
 }
 
@@ -360,8 +373,9 @@ uint32 RemoteDebug::registerVariable(const char* variableName, void *memLoc, VAR
 	std::string base;
 	std::string rest = variable;
 	//look for subchannels with a double backslash
-	uint32 baseIndex = 0;
-	uint32 restIndex = variable.find('\\');
+	size_t baseIndex = 0;
+	size_t restIndex = variable.find('\\');
+	
 	while(restIndex != std::string::npos)
 	{
 		//pass the '\'
@@ -378,9 +392,10 @@ uint32 RemoteDebug::registerVariable(const char* variableName, void *memLoc, VAR
 			registerVariable(newBase.c_str(), NULL, BOOL, sendToClients);
 		}
 		//look for any other subChannel
-		uint32 oldRestIndex = restIndex;
+		size_t oldRestIndex = restIndex;
 		baseIndex = restIndex;
 		restIndex = rest.find('\\');
+		
 		if (restIndex != std::string::npos)
 			restIndex += oldRestIndex;
 	}
@@ -429,12 +444,14 @@ void RemoteDebug::setVariableValue(const char* variableName, void *newValue, boo
 		return;
 
 	int32 variableNum = findVariable(variableName);
+	
 	Variable *v = (*ms_variableValues)[static_cast<uint32>(variableNum)];
 
 	if(!v)
 	{
 		DEBUG_FATAL(true, ("message on undefined variable"));
 	}
+	
 	v->setValue(newValue);
 
 	if(sendToClients)
@@ -576,7 +593,7 @@ void RemoteDebug::send(MESSAGE_TYPE type, const char* theName)
 
 				case CSTRING:
 					strcpy(ms_varArgs_buffer, val.stringValue);
-					explicitMessageLength = strlen(val.stringValue)+1;
+					explicitMessageLength = static_cast<int32>(strlen(val.stringValue)+1);
 					break;
 
 				case BOOL:
@@ -677,11 +694,11 @@ void RemoteDebug::send(MESSAGE_TYPE type, const char* theName)
 	else if (ms_varArgs_buffer)
 	{
 		//only grab buffer sizes if needed
-		messageLength         = strlen(ms_varArgs_buffer)+1;
+		messageLength         = static_cast<uint32>(strlen(ms_varArgs_buffer)) + 1;
 	}
 	else
 	{
-		messageLength         = strlen(ms_buffer)+1;
+		messageLength         = static_cast<uint32>(strlen(ms_buffer)) + 1;
 	}
 	messageLengthLength   = sizeof(messageLength);
 	//allocate the mem for the packet

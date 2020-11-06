@@ -81,7 +81,7 @@ DynamicVertexBuffer::DynamicVertexBuffer(const VertexBufferFormat &format)
 {
 	m_graphicsData = Graphics::createVertexBufferData(*this);
 	m_descriptor = &m_graphicsData->getDescriptor();
-	m_sortKey = m_graphicsData->getSortKey();
+	m_sortKey = static_cast<int>(m_graphicsData->getSortKey());
 }
 
 // ----------------------------------------------------------------------

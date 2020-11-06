@@ -1041,7 +1041,7 @@ void UITable::updateColumnWidths ()
 
 	mUpdatingColumnWidths = true;
 
-	const long oldColumnCount = mColumnSizes->size ();
+	const long oldColumnCount = static_cast<long>(mColumnSizes->size ());
 
 	long widthToDivide = GetTotalColumnAvailableWidth ();
 
@@ -1922,7 +1922,7 @@ void UITable::ColumnSizeInfo::updateData (UIData & data) const
 void UITable::SetColumnSizeInfo (const ColumnSizeInfoVector & csiv)
 {
 	*mColumnSizes = csiv;
-	mCachedColumnCount = csiv.size ();
+	mCachedColumnCount = static_cast<long>(csiv.size ());
 	updateColumnWidths ();
 }
 

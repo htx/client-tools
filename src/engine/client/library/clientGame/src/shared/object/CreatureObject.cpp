@@ -2923,7 +2923,7 @@ void CreatureObject::skillModsOnErase         (const std::string &, const std::p
 
 //----------------------------------------------------------------------
 
-void CreatureObject::attributesOnSet (const size_t elem, const Attributes::Value & oldValue, const Attributes::Value & newValue)
+void CreatureObject::attributesOnSet (const unsigned int elem, const Attributes::Value & oldValue, const Attributes::Value & newValue)
 {
 	if (newValue > oldValue)
 		return;
@@ -6575,7 +6575,7 @@ void CreatureObject::verifyWornAppearanceItems()
 		return;
 
 #if _DEBUG
-	unsigned int dataTest = m_wearableAppearanceData.size();
+	auto dataTest = static_cast<unsigned int>(m_wearableAppearanceData.size());
 	DEBUG_WARNING(ms_logAppearanceTabMessages, ("Character [%s] has %d streamed appearance wearables.", getNetworkId().getValueString().c_str(), dataTest));
 #endif
 

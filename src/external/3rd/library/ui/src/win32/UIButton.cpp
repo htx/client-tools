@@ -1250,9 +1250,9 @@ void UIButton::SetIconAlignment       (IconAlignment ia)
 
 UIButton::IconAlignment UIButton::GetIconAlignmentFromString (const Unicode::String & str)
 {
-	const int size = str.size ();
+	const size_t size = str.size ();
 	Unicode::String alignStr;
-	for (int i = 0; i < IA_numAlignments; ++i)
+	for (size_t i = 0; i < IA_numAlignments; ++i)
 	{
 		const IconAlignment align = static_cast<IconAlignment>(i);
 		GetStringFromIconAlignment (align, alignStr);

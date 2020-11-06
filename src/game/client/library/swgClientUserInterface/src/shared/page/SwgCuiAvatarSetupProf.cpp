@@ -205,8 +205,9 @@ void SwgCuiAvatarSetupProf::performActivate ()
 		WARNING (sv.empty (), ("No professions available"));
 
 		int numProfessions = 0;
+		
 		if (CuiLoginManager::canCreateRegularCharacter())
-			numProfessions += sv.size() - 1;
+			numProfessions += static_cast<int>(sv.size()) - 1;
 		
 		m_creatures->reserve(numProfessions);
 		

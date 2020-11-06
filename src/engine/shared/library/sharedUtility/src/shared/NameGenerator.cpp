@@ -295,7 +295,7 @@ std::string NameGenerator::generateRandomName(const NameTemplate &nt) const
 			// append a special character
 			if (appendSpecial && !result.empty())
 			{
-				int s = nt.m_specialChars.size();
+				int s = static_cast<int>(nt.m_specialChars.size());
 				char toInsert = nt.m_specialChars[Random::random(s-1)];
 				result = appendSyllable(result, std::string(1, toInsert));
 				++specialCharCount;
@@ -608,8 +608,8 @@ bool NameGenerator::hasString(const std::vector<OddsValue> &array, const std::st
 bool NameGenerator::verifyName(const Unicode::String &name) const
 {
 	size_t minNameCount = 0;
-	std::vector<NameTemplate>::const_iterator i;
-	for (i = m_nameTemplates.begin(); i!=m_nameTemplates.end(); ++i)
+
+	for (auto i = m_nameTemplates.begin(); i != m_nameTemplates.end(); ++i)
 	{
 		if (i->m_odds >= 1.0f)
 		{
@@ -617,34 +617,39 @@ bool NameGenerator::verifyName(const Unicode::String &name) const
 		}
 	}
 
-	int pos=0;
+	size_t pos=0;
 	size_t nameindex = 0;
+	
 	for (;;)
 	{
 		if (nameindex >= m_nameTemplates.size())
 			return false;
 
-		int newpos = name.find(' ', pos);
-		int namelength = newpos - pos;
-		if (newpos == int(Unicode::String::npos))
+		size_t newpos = name.find(' ', pos);
+		size_t namelength = newpos - pos;
+		
+		if (newpos == Unicode::String::npos)
 		{
 			namelength = name.size() - pos;
 		}
+		
 		if (namelength < m_nameTemplates[nameindex].m_charsMin)
 			return false;
+		
 		if (namelength > m_nameTemplates[nameindex].m_charsMax)
 			return false;
+		
 		pos = newpos + 1;
 		++nameindex;
-		if (newpos == int(Unicode::String::npos))
+		
+		if (newpos == Unicode::String::npos)
 		{
 			if (nameindex < minNameCount)
 				return false;
-			else
-				return true;
+			
+			return true;
 		}
 	}
-	return true; // just in case, should always return from the newpos == npos test
 }
 
 //====================================================================

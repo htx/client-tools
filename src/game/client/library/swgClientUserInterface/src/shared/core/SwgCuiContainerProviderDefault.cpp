@@ -458,7 +458,7 @@ void SwgCuiContainerProviderDefault::setObjectSorting (const IntVector & iv)
 	}
 
 	ObjectWatcherVector newObjects;
-	const int size = m_objects->size ();
+	const int size = static_cast<int>(m_objects->size());
 	newObjects.reserve (size);
 
 	int which = 0;

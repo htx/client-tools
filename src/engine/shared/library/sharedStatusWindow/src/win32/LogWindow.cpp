@@ -124,7 +124,7 @@ void LogWindow::printNoArgs(const char *message)
 	char *line = DuplicateString(message);
 
 	// strip trailing '\n'
-	const unsigned int lastCharIndex = strlen(line) - 1;
+	const size_t lastCharIndex = strlen(line) - 1;
 	if (line[lastCharIndex] == '\n')
 		line[lastCharIndex] = 0;
 

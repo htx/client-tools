@@ -94,7 +94,7 @@ inline void MessageQueueDraftSlots::addSlot(const MessageQueueDraftSlots::Slot &
 
 inline int MessageQueueDraftSlots::getSlotCount(void) const
 {
-	return m_slots.size();
+	return static_cast<int>(m_slots.size());
 }
 
 //----------------------------------------------------------------------

@@ -93,7 +93,11 @@ LRESULT CALLBACK StatusWindow::globalWindowProc(
 	LPARAM lParam
 	)
 {
+#ifdef _WIN64
+	StatusWindow *statusWindow = reinterpret_cast<StatusWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+#else
 	StatusWindow *statusWindow = reinterpret_cast<StatusWindow*>(GetWindowLong(hwnd, GWL_USERDATA));
+#endif
 	if (!statusWindow)
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	else
@@ -137,11 +141,16 @@ StatusWindow::StatusWindow(bool closeSendsQuit, const char *title, bool disableC
 		0,
 		ms_ownerInstance,
 		0);
+	
 	FATAL(!m_hwndStatus, ("failed to create status window"));
 
 	// save object (this) in window's user data area
 	SetLastError(0);
+#ifdef _WIN64
+	const LONG_PTR swlResult = SetWindowLongPtr(m_hwndStatus, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+#else
 	const LONG swlResult = SetWindowLong(m_hwndStatus, GWL_USERDATA, reinterpret_cast<LONG>(this));
+#endif
 	FATAL (!swlResult && GetLastError(), ("failed to set user data for StatusWindow"));
 
 

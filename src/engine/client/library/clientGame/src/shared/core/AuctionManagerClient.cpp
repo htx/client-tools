@@ -593,8 +593,9 @@ void AuctionManagerClient::handleReceiveHeaders (int type, const AuctionHeaderVe
 			{
 				s_currentIndices   [i] = queryOffset;
 				s_hasMoreAuctions  [i] = hasMorePages;
+				
 				if (hasMorePages)
-					s_pageSizes [i] = ahv.size ();
+					s_pageSizes [i] = static_cast<int>(ahv.size());
 			}
 
 			for (AuctionHeaderVector::const_iterator it = ahv.begin (); it != ahv.end (); ++it)

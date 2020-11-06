@@ -79,18 +79,19 @@ bool SwgCuiCommandParserLocale::StringsParser::performParsing (const NetworkId &
 		
 		const LocalizationManager::StringTableMap_t & tableMap = LocalizationManager::getManager ().getTableMap ();
 		
-		for (LocalizationManager::StringTableMap_t::const_iterator iter = tableMap.begin (); iter != tableMap.end (); ++iter)
+		for (auto iter = tableMap.begin (); iter != tableMap.end (); ++iter)
 		{
 			const LocalizationManager::TimedStringTable & tst = (*iter).second;
 			const LocalizedStringTable & table                = *tst.second;			
 			const Unicode::NarrowString & narrowName          = table.getName ();
-			
 			const Unicode::String & name = Unicode::narrowToWide (narrowName);
 			
 			result += name;
 			result.append (std::max (size_t (0), 30 - name.length ()), ' ');
+			
 			char buf[32];
-			_snprintf (buf, 31, "%d\n", table.getMap ().size ());
+			_snprintf (buf, 31, "%zd\n", table.getMap ().size ());
+			
 			const Unicode::String numStr (Unicode::narrowToWide (buf));
 			result.append (numStr);
 		}
@@ -106,7 +107,7 @@ bool SwgCuiCommandParserLocale::StringsParser::performParsing (const NetworkId &
 		{
 			const LocalizedStringTable::NameMap_t & nameMap	= table->getNameMap ();
 			
-			for (LocalizedStringTable::NameMap_t::const_iterator iter = nameMap.begin (); iter != nameMap.end (); ++iter)
+			for (auto iter = nameMap.begin (); iter != nameMap.end (); ++iter)
 			{
 				char buf[128];
 				

@@ -17,6 +17,7 @@
 #include <cassert>
 #include <list>
 #include <vector>
+#include <intrin.h>
 
 const char * UITabbedPane::TypeName	= "TabbedPane";
 
@@ -959,7 +960,7 @@ long UITabbedPane::GetTabFromPoint(const UIPoint & point) const
 {
 	if (mTabObject) 
 	{
-		_asm nop;
+		__nop();
 	}
 
 	UIWidget * const widget = GetWidgetFromPoint(point, false);

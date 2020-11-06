@@ -418,7 +418,7 @@ static inline bool templateTestIntersectSided_fast ( TestShape const & shape, Co
 
 	tree->testOverlap(shape,tempResults);
 
-	int resultCount = tempResults.size();
+	int resultCount = static_cast<int>(tempResults.size());
 
 	for(int i = 0; i < resultCount; i++)
 	{
@@ -578,7 +578,7 @@ static inline bool templateIntersectAny_fast ( TestShape const & shape, Collisio
 
 	tree->testOverlap(shape,tempResults);
 
-	int resultCount = tempResults.size();
+	int resultCount = static_cast<int>(tempResults.size());
 
 	for(int i = 0; i < resultCount; i++)
 	{
@@ -749,7 +749,7 @@ static inline int templateIntersectAll_fast ( TestShape const & shape, Collision
 	ResultType result;
 	int counter = 0;
 
-	int resultCount = tempResults.size();
+	int resultCount = static_cast<int>(tempResults.size());
 
 	for(int i = 0; i < resultCount; i++)
 	{
@@ -847,7 +847,7 @@ static inline Range templateIntersectRange_fast( CollisionMesh const & mesh, Tes
 
 	Range range( Range::empty );
 
-	int resultCount = tempResults.size();
+	int resultCount = static_cast<int>(tempResults.size());
 
 	for(int i = 0; i < resultCount; i++)
 	{
@@ -933,7 +933,7 @@ bool    CollisionMesh::findClosestPair  ( Line3d const & line,
 		// ----------
 		// Search the triangles for one that is below the test point
 
-		int resultCount = results.size();
+		int resultCount = static_cast<int>(results.size());
 
 		for(int i = 0; i < resultCount; i++)
 		{

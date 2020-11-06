@@ -1716,7 +1716,7 @@ void ParticleEmitter::updateExistingParticles(float const deltaTime)
 		Particles::iterator particleListIter = m_particles->begin();
 
 #ifdef _DEBUG
-		unsigned int particleCount = m_particles->size();
+		unsigned int particleCount = static_cast<unsigned int>(m_particles->size());
 		UNREF(particleCount);
 #endif // _DEBUG
 
@@ -2654,10 +2654,10 @@ public:
 //-----------------------------------------------------------------------------
 void ParticleEmitter::removeOldAttachments()
 {
-	if ((m_particleAttachments != NULL) && !m_particleAttachments->empty())
+	if ((m_particleAttachments != nullptr) && !m_particleAttachments->empty())
 	{
 #ifdef _DEBUG
-		int const particleAttachmentsSize = m_particleAttachments->size();
+		int const particleAttachmentsSize = static_cast<int>(m_particleAttachments->size());
 		UNREF(particleAttachmentsSize);
 #endif // _DEBUG
 

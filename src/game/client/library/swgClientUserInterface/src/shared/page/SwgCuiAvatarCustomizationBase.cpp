@@ -1752,7 +1752,7 @@ void SwgCuiAvatarCustomizationBase::randomize (bool const all)
 			{
 				if (m_hairVolumePage)
 				{
-					const int index = Random::random (0, m_hairVolumePage->GetChildrenRef ().size ());
+					const int index = Random::random (0, static_cast<int32>(m_hairVolumePage->GetChildrenRef ().size ()));
 					m_hairVolumePage->SetSelectionIndex (index);
 				}
 			}

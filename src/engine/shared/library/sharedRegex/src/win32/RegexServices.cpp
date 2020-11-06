@@ -11,6 +11,15 @@
 
 // ======================================================================
 
+#ifdef _WIN64
+
+static void * regexAllocate(size_t size)
+{
+	return MemoryManager::allocate(size, 0, false, true);
+}
+
+#else
+
 static void * __cdecl localAllocate(size_t size, uint32 owner, bool array, bool leakTest)
 {
 	return MemoryManager::allocate(size, owner, array, leakTest);
@@ -39,7 +48,7 @@ static __declspec(naked) void * regexAllocate(size_t)
 		ret
 	}
 }
-
+#endif
 // ----------------------------------------------------------------------
 
 void *RegexServices::allocateMemory(size_t byteCount)

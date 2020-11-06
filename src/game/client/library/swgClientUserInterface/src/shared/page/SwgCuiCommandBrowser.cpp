@@ -616,11 +616,11 @@ void SwgCuiCommandBrowser::reset  ()
 					while (itNext != sv.end())
 					{
 						std::string const nextCommandName = itNext->first;
-						int const nextCommandNameSize = nextCommandName.size();
+						int const nextCommandNameSize = static_cast<int>(nextCommandName.size());
 
 						char const * const occurance = strstr(nextCommandName.c_str(), commandName.c_str());
 
-						if (occurance == 0)
+						if (occurance == nullptr)
 						{
 							break;
 						}

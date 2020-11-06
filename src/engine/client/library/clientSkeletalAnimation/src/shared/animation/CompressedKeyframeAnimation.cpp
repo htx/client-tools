@@ -536,19 +536,20 @@ namespace CompressedKeyframeAnimationNamespace
 	{
 		NOT_NULL(ms_memoryBlockManagers);
 
-		MBMContainer::iterator it = ms_memoryBlockManagers->find(elementSize);
+		auto it = ms_memoryBlockManagers->find(elementSize);
+		
 		if (it != ms_memoryBlockManagers->end())
 			return it->second;
 
 		//-- need to create it
 		char nameBuffer[256];
-		sprintf(nameBuffer, "CompressedKeyframeAnimation<%u>", elementSize);
+		sprintf(nameBuffer, "CompressedKeyframeAnimation<%zu>", elementSize);
 
 		// -TRF- this is so goofy, if only MBM copied the name (I tried, causes problems with DLL).
 		char *name = DuplicateString(nameBuffer);
 		ms_mbmNames->push_back(name);
 
-		MemoryBlockManager *mbm = new MemoryBlockManager(name, true, static_cast<int>(elementSize), 0, 0, 0);
+		auto* mbm = new MemoryBlockManager(name, true, static_cast<int>(elementSize), 0, 0, 0);
 
 		//-- add it to container
 		std::pair<MBMContainer::iterator, bool> insertResult = ms_memoryBlockManagers->insert(MBMContainer::value_type(elementSize, mbm));
@@ -558,24 +559,6 @@ namespace CompressedKeyframeAnimationNamespace
 		return mbm;
 	}
 }
-
-// ----------------------------------------------------------------------
-
-#if 0
-
-template <class EvaluatorX, class EvaluatorY, class EvaluatorZ>
-static CompressedKeyframeAnimation::QuaternionOperation *CreateRotationOperation(void *skeletalAnimation, void *transformInfo)
-{
-	NOT_NULL(skeletalTemplate);
-	NOT_NULL(transformInfo);
-
-	const CompressedKeyframeAnimation                        &skeletalAnimationRef = *(reinterpret_cast<const CompressedKeyframeAnimation*>(skeletalAnimation));
-	const CompressedKeyframeAnimationTemplate::TransformInfo &transformInfoRef     = *(reinterpret_cast<const CompressedKeyframeAnimationTemplate::TransformInfo*>(transformInfo));
-
-	return new KeyframeRotationOperation<EvaluatorX, EvaluatorY, EvaluatorZ>(skeletalAnimationRef, transformInfoRef);
-}
-
-#endif
 
 // ----------------------------------------------------------------------
 

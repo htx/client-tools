@@ -506,7 +506,7 @@ bool UIBaseObject::GetProperty( const UILowerString & Name, UIString &Value ) co
 			UIObjectList olist;
 			GetChildren (olist);
 
-			const int len = pSeparator;
+			const int len = static_cast<int>(pSeparator);
 
 			for( UIObjectList::const_iterator o = olist.begin(); o != olist.end(); ++o )
 			{

@@ -397,7 +397,8 @@ bool CuiDragManager::findTarget (ClientObject & source, ClientObject & dest, Tar
 		const ClientTangibleObjectTemplate * const gemTemplate = dynamic_cast<const ClientTangibleObjectTemplate *>(gem->getObjectTemplate());
 		if (gemTemplate)
 		{
-			const int destinations = gemTemplate->getSocketDestinationsCount();
+			const int destinations = static_cast<int>(gemTemplate->getSocketDestinationsCount());
+			
 			if (destinations > 0)
 			{
 				// see if the destination got matches any of the gem's gots

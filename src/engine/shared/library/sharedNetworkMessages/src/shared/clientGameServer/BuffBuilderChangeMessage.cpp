@@ -65,9 +65,10 @@ void BuffBuilderChangeMessage::pack(MessageQueue::Data const * const data, Archi
 		Archive::put(target, msg->getOrigin());
 
 		std::map<std::string, std::pair<int,int> > const & components = msg->getBuffComponents();
-		int size = components.size();
+		const auto size = static_cast<unsigned int>(components.size());
 		Archive::put(target, size);
-		for(std::map<std::string, std::pair<int,int> >::const_iterator j = components.begin(); j != components.end(); ++j)
+		
+		for(auto j = components.begin(); j != components.end(); ++j)
 		{
 			Archive::put(target, j->first);
 			Archive::put(target, j->second.first);

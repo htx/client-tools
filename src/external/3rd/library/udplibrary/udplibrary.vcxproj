@@ -99,17 +99,28 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
-    <OutDir>.\..\..\..\..\compile\win32\udplibrary\Optimized\</OutDir>
-    <IntDir>.\..\..\..\..\compile\win32\udplibrary\Optimized\</IntDir>
+    <OutDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|x64'">
+    <OutDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\..\..\..\..\compile\win32\udplibrary\Debug\</OutDir>
-    <IntDir>.\..\..\..\..\compile\win32\udplibrary\Debug\</IntDir>
+    <OutDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\..\..\..\..\compile\win32\udplibrary\Release\</OutDir>
-    <IntDir>.\..\..\..\..\compile\win32\udplibrary\Release\</IntDir>
+    <OutDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Optimized|Win32'">
     <ClCompile>
@@ -132,7 +143,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\compile\win32\udplibrary\Optimized\udplibrary.lib</OutputFile>
+      <OutputFile>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\udplibrary.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -161,7 +172,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\compile\win32\udplibrary\Optimized\udplibrary.lib</OutputFile>
+      <OutputFile>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\udplibrary.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -192,7 +203,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\compile\win32\udplibrary\Debug\udplibrary.lib</OutputFile>
+      <OutputFile>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\udplibrary.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -223,7 +234,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\compile\win32\udplibrary\Debug\udplibrary.lib</OutputFile>
+      <OutputFile>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\udplibrary.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -256,7 +267,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\compile\win32\udplibrary\Release\udplibrary.lib</OutputFile>
+      <OutputFile>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\udplibrary.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -289,7 +300,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\..\..\..\..\compile\win32\udplibrary\Release\udplibrary.lib</OutputFile>
+      <OutputFile>..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\udplibrary.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>

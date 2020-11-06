@@ -104,16 +104,16 @@ UIBaseObject   *   UIDataSourceContainer::GetChild      ( const char * name) con
 	if (!name)
 	{
 		assert (false);
-		return 0;
+		return nullptr;
 	}
 
 	const char *pSeparator = strchr( name, '.' );
-	int					len;
+	int	len;
 
 	if( pSeparator )
 		len = pSeparator - name;
 	else
-		len = strlen( name );
+		len = static_cast<int>(strlen( name ));
 
 	for ( ; ; )
 	{		
@@ -142,32 +142,30 @@ UIBaseObject   *   UIDataSourceContainer::GetChild      ( const char * name) con
 			if( pSeparator )
 				len = pSeparator - name;
 			else
-				len = strlen( name );
+				len = static_cast<int>(strlen( name ));
 		}
 		else
-			return 0;
+			return nullptr;
 	}
-
-	return 0;
 }
 
 //-----------------------------------------------------------------
 
-void               UIDataSourceContainer::GetChildren   ( UIObjectList & objectList) const
+void UIDataSourceContainer::GetChildren   ( UIObjectList & objectList) const
 {
 	objectList.insert (objectList.end (), mDataSourceBaseList->begin (), mDataSourceBaseList->end ());
 }
 
 //-----------------------------------------------------------------
 
-unsigned long      UIDataSourceContainer::GetChildCount ( void ) const
+unsigned long UIDataSourceContainer::GetChildCount ( void ) const
 {
-	return mDataSourceBaseList->size ();
+	return static_cast<unsigned long>(mDataSourceBaseList->size ());
 }
 
 //-----------------------------------------------------------------
 
-bool               UIDataSourceContainer::CanChildMove  ( UIBaseObject * child, ChildMovementDirection dir)
+bool UIDataSourceContainer::CanChildMove  ( UIBaseObject * child, ChildMovementDirection dir)
 {
 	if (!child || mDataSourceBaseList->empty ())
 	{
@@ -341,9 +339,9 @@ bool UIDataSourceContainer::SetProperty( const UILowerString & Name, const UIStr
 	
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;		
+		const int len = static_cast<int>(pSeparator);
 
-		for( DataSourceBaseList::iterator o = mDataSourceBaseList->begin(); o != mDataSourceBaseList->end(); ++o )
+		for(auto o = mDataSourceBaseList->begin(); o != mDataSourceBaseList->end(); ++o )
 		{
 			UIDataSourceBase *theObject = *o;
 

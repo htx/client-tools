@@ -252,19 +252,19 @@ void ShadowBlobManagerNamespace::ShadowBlobShaderPrimitive::prepareToDraw () con
 
 		DynamicVertexBuffer vertexBuffer (format);
 
-		vertexBuffer.lock (m_vertexList->size ());
+		vertexBuffer.lock (static_cast<int>(m_vertexList->size ()));
 
-			VertexBufferWriteIterator v = vertexBuffer.begin ();
-			const uint n = m_vertexList->size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++v)
-			{
-				const Vertex& vertex = (*m_vertexList) [i];
+		VertexBufferWriteIterator v = vertexBuffer.begin ();
+		const size_t n = m_vertexList->size ();
+	
+		for (size_t i = 0; i < n; ++i, ++v)
+		{
+			const Vertex& vertex = (*m_vertexList) [i];
 
-				v.setPosition (vertex.position);
-				v.setColor0 (VectorArgb::solidWhite);
-				v.setTextureCoordinates (0, vertex.u, vertex.v);
-			}
+			v.setPosition (vertex.position);
+			v.setColor0 (VectorArgb::solidWhite);
+			v.setTextureCoordinates (0, vertex.u, vertex.v);
+		}
 
 		vertexBuffer.unlock ();
 

@@ -96,7 +96,7 @@ public:
 	AutoByteStream();
 	virtual ~AutoByteStream();
 	void                 addVariable(AutoVariableBase & newVariable);
-	virtual size_t		 getItemCount() const;
+	virtual unsigned int getItemCount() const;
 	virtual void         pack(ByteStream & target) const;
 	virtual void         unpack(ReadIterator & source);
 protected:
@@ -182,9 +182,9 @@ public:
 	virtual ~AutoVariable();
 
 	const ValueType & get() const;
-	virtual void      pack(ByteStream & target) const;
-	void              set(const ValueType & rhs);
-	virtual void      unpack(ReadIterator & source);
+	void      pack(ByteStream & target) const override;
+	void      set(const ValueType & rhs);
+	void      unpack(ReadIterator & source) override;
 
 private:
 	ValueType        value;
@@ -345,9 +345,9 @@ public:
 	std::vector<ValueType> &       get();
 	const std::vector<ValueType> & get() const;
 	void                           set(const std::vector<ValueType> & source);
-	
-	virtual void pack(ByteStream & target) const;
-	virtual void unpack(ReadIterator & source);
+
+	void pack(ByteStream & target) const override;
+	void unpack(ReadIterator & source) override;
 
 private:
 	std::vector<ValueType>	array;
@@ -362,7 +362,7 @@ private:
 	@author Justin Randall
 */
 template<class ValueType>
-inline AutoArray<ValueType>::AutoArray() 
+AutoArray<ValueType>::AutoArray() 
 {
 }
 
@@ -375,7 +375,7 @@ inline AutoArray<ValueType>::AutoArray()
 	@author Justin Randall
 */
 template<class ValueType>
-inline AutoArray<ValueType>::AutoArray(const AutoArray & source) :
+AutoArray<ValueType>::AutoArray(const AutoArray & source) :
 array(source.array)
 {
 }
@@ -389,7 +389,7 @@ array(source.array)
 	@author Justin Randall
 */
 template<class ValueType>
-inline AutoArray<ValueType>::~AutoArray()
+AutoArray<ValueType>::~AutoArray()
 {
 }
 
@@ -402,7 +402,7 @@ inline AutoArray<ValueType>::~AutoArray()
 	@author Justin Randall
 */
 template<class ValueType>
-inline const std::vector<ValueType> & AutoArray<ValueType>::get() const
+const std::vector<ValueType> & AutoArray<ValueType>::get() const
 {
 	return array;
 }
@@ -416,7 +416,7 @@ inline const std::vector<ValueType> & AutoArray<ValueType>::get() const
 	@author Justin Randall
 */
 template<class ValueType>
-inline std::vector<ValueType> & AutoArray<ValueType>::get()
+std::vector<ValueType> & AutoArray<ValueType>::get()
 {
 	return array;
 }
@@ -432,7 +432,7 @@ inline std::vector<ValueType> & AutoArray<ValueType>::get()
 	@author Justin Randall
 */
 template<class ValueType>
-inline void AutoArray<ValueType>::set(const std::vector<ValueType> & source)
+void AutoArray<ValueType>::set(const std::vector<ValueType> & source)
 {
 	array = source;
 }
@@ -455,13 +455,13 @@ inline void AutoArray<ValueType>::set(const std::vector<ValueType> & source)
 	@author Justin Randall
 */
 template<class ValueType>
-inline void AutoArray<ValueType>::pack(Archive::ByteStream & target) const
+void AutoArray<ValueType>::pack(Archive::ByteStream & target) const
 {
-	unsigned int arraySize = array.size();
+	const auto arraySize = static_cast<unsigned int>(array.size());
+	
 	Archive::put(target, arraySize);
 
-	typename std::vector<ValueType>::const_iterator i;
-	for(i = array.begin(); i != array.end(); ++i)
+	for(typename std::vector<ValueType>::const_iterator i = array.begin(); i != array.end(); ++i)
 	{
 		Archive::put(target, (*i));
 	}
@@ -489,7 +489,7 @@ inline void AutoArray<ValueType>::pack(Archive::ByteStream & target) const
 	@author Justin Randall
 */
 template<class ValueType>
-inline void AutoArray<ValueType>::unpack(Archive::ReadIterator & source) 
+void AutoArray<ValueType>::unpack(Archive::ReadIterator & source) 
 {
 	unsigned int arraySize;
 	Archive::get(source, arraySize);
@@ -519,9 +519,9 @@ public:
 	std::list<ValueType> &       get();
 	const std::list<ValueType> & get() const;
 	void                         set(const std::list<ValueType> & source);
-	
-	virtual void pack(ByteStream & target) const;
-	virtual void unpack(ReadIterator & source);
+
+	void pack(ByteStream & target) const override;
+	void unpack(ReadIterator & source) override;
 
 private:
 	std::list<ValueType>	theList;
@@ -536,7 +536,7 @@ private:
 	@author Justin Randall
 */
 template<class ValueType>
-inline AutoList<ValueType>::AutoList() 
+AutoList<ValueType>::AutoList() 
 {
 }
 
@@ -549,7 +549,7 @@ inline AutoList<ValueType>::AutoList()
 	@author Justin Randall
 */
 template<class ValueType>
-inline AutoList<ValueType>::AutoList(const AutoList & source) :
+AutoList<ValueType>::AutoList(const AutoList & source) :
 theList(source.theList)
 {
 }
@@ -563,7 +563,7 @@ theList(source.theList)
 	@author Justin Randall
 */
 template<class ValueType>
-inline AutoList<ValueType>::~AutoList()
+AutoList<ValueType>::~AutoList()
 {
 }
 
@@ -576,7 +576,7 @@ inline AutoList<ValueType>::~AutoList()
 	@author Justin Randall
 */
 template<class ValueType>
-inline const std::list<ValueType> & AutoList<ValueType>::get() const
+const std::list<ValueType> & AutoList<ValueType>::get() const
 {
 	return theList;
 }
@@ -590,7 +590,7 @@ inline const std::list<ValueType> & AutoList<ValueType>::get() const
 	@author Justin Randall
 */
 template<class ValueType>
-inline std::list<ValueType> & AutoList<ValueType>::get()
+std::list<ValueType> & AutoList<ValueType>::get()
 {
 	return theList;
 }
@@ -606,7 +606,7 @@ inline std::list<ValueType> & AutoList<ValueType>::get()
 	@author Justin Randall
 */
 template<class ValueType>
-inline void AutoList<ValueType>::set(const std::list<ValueType> & source)
+void AutoList<ValueType>::set(const std::list<ValueType> & source)
 {
 	theList = source;
 }
@@ -629,13 +629,13 @@ inline void AutoList<ValueType>::set(const std::list<ValueType> & source)
 	@author Justin Randall
 */
 template<class ValueType>
-inline void AutoList<ValueType>::pack(Archive::ByteStream & target) const
+void AutoList<ValueType>::pack(Archive::ByteStream & target) const
 {
-	unsigned int arraySize = theList.size();
+	auto arraySize = static_cast<unsigned int>(theList.size());
+	
 	Archive::put(target, arraySize);
 
-	typename std::list<ValueType>::const_iterator i;
-	for(i = theList.begin(); i != theList.end(); ++i)
+	for(typename std::list<ValueType>::const_iterator i = theList.begin(); i != theList.end(); ++i)
 	{
 		Archive::put(target, (*i));
 	}
@@ -663,10 +663,12 @@ inline void AutoList<ValueType>::pack(Archive::ByteStream & target) const
 	@author Justin Randall
 */
 template<class ValueType>
-inline void AutoList<ValueType>::unpack(Archive::ReadIterator & source) 
+void AutoList<ValueType>::unpack(Archive::ReadIterator & source) 
 {
 	unsigned int arraySize;
+	
 	Archive::get(source, arraySize);
+	
 	ValueType v;
 
 	for(unsigned int i = 0; i < arraySize; ++i)

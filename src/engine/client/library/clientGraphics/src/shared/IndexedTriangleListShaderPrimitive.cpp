@@ -75,7 +75,6 @@ void IndexedTriangleListShaderPrimitive::prepareToDraw () const
 	NOT_NULL (m_indexedTriangleList);
 
 	Graphics::setObjectToWorldTransformAndScale (m_appearance.getTransform_w (), Vector::xyz111);
-
 	{
 		const std::vector<Vector> vertices = m_indexedTriangleList->getVertices ();
 		
@@ -84,16 +83,16 @@ void IndexedTriangleListShaderPrimitive::prepareToDraw () const
 		format.setColor0 ();
 		DynamicVertexBuffer vertexBuffer (format);
 
-		vertexBuffer.lock (vertices.size ());
+		vertexBuffer.lock (static_cast<int>(vertices.size ()));
 
-			VertexBufferWriteIterator v = vertexBuffer.begin ();
-			const uint n = vertices.size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++v)
-			{
-				v.setPosition (vertices [i]);
-				v.setColor0 (m_color);
-			}
+		VertexBufferWriteIterator v = vertexBuffer.begin ();
+		const uint n = static_cast<unsigned int>(vertices.size ());
+		
+		for (uint i = 0; i < n; ++i, ++v)
+		{
+			v.setPosition (vertices [i]);
+			v.setColor0 (m_color);
+		}
 
 		vertexBuffer.unlock ();
 
@@ -105,13 +104,13 @@ void IndexedTriangleListShaderPrimitive::prepareToDraw () const
 
 		DynamicIndexBuffer indexBuffer;
 
-		indexBuffer.lock (indices.size ());
+		indexBuffer.lock (static_cast<int>(indices.size ()));
 
-			Index *ii = indexBuffer.begin ();
-			const uint n = indices.size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++ii)
-				*ii = static_cast<Index> (indices [i]);
+		Index *ii = indexBuffer.begin ();
+		const uint n = static_cast<unsigned int>(indices.size ());
+		
+		for (uint i = 0; i < n; ++i, ++ii)
+			*ii = static_cast<Index> (indices [i]);
 
 		indexBuffer.unlock ();
 

@@ -10,7 +10,6 @@
 #include "clientGraphics/VideoList.h"
 
 #include "clientGraphics/Video.h"
-#include "clientGraphics/BinkVideo.h"
 #include "sharedFoundation/ExitChain.h"
 #include "sharedFoundation/StringCompare.h"
 #include "sharedSynchronization/RecursiveMutex.h"
@@ -49,18 +48,10 @@ using namespace VideoListNamespace;
 
 // ======================================================================
 
-namespace BinkVideoNamespace
-{
-	extern bool install(void *hMilesDigitalDriver);
-	extern void remove();
-
-}
-
-// ======================================================================
-
 void VideoList::install(void *hMilesDigitalDriver)
 {
-	bool binkInstalled = BinkVideoNamespace::install(hMilesDigitalDriver);
+	bool binkInstalled = false;
+	
 	if (!binkInstalled)
 	{
 		return;
@@ -78,8 +69,6 @@ void VideoListNamespace::remove()
 	DEBUG_FATAL(!s_videoMap->empty(), ("Videos still allocated"));
 	delete s_videoMap;
 	s_videoMap = NULL;
-
-	BinkVideoNamespace::remove();
 }
 	
 // ----------------------------------------------------------------------
@@ -108,6 +97,7 @@ Video *VideoList::fetch(const char *name)
 	{
 		// search for the file already being loaded
 		VideoMap::iterator i = s_videoMap->find(name);
+		
 		if (i != s_videoMap->end())
 		{
 			// file was already loaded, so return it
@@ -115,8 +105,8 @@ Video *VideoList::fetch(const char *name)
 		}
 		else
 		{
-			result = BinkVideo::newBinkVideo(name);
-
+			result = nullptr;
+			
 			if (result)
 			{
 				{

@@ -138,7 +138,7 @@ class SwgCuiCraftAssembly::ProviderFilter : public SwgCuiContainerProviderFilter
 {
 public:
 
-	bool showObject      (const ClientObject & obj) const
+	bool showObject (const ClientObject & obj) const
 	{
 		if (m_assembly->m_checkFilter->IsChecked ())
 		{
@@ -153,6 +153,7 @@ public:
 					{
 						Container::ContainedItem item = *i;
 						ClientObject const * const o = safe_cast<ClientObject const *>(item.getObject());
+						
 						if (o && showObject(*o))
 							return true;
 					}
@@ -162,7 +163,8 @@ public:
 
 			static CuiCraftManager::IntVector validOptions;
 			const CuiCraftManager::SlotVector & sv = CuiCraftManager::getSlots ();
-			const int numSlots = sv.size ();
+			const int numSlots = static_cast<int>(sv.size());
+			
 			for (int i = 0; i < numSlots; ++i)
 			{				
 				validOptions.clear ();
@@ -172,10 +174,11 @@ public:
 				if (hasValidSlotOptions)
 					return true;
 			}
+			
 			return false;
 		}
-		else
-			return true;
+
+		return true;
 	}
 
 	SwgCuiCraftAssembly * m_assembly;

@@ -1058,9 +1058,11 @@ void TangibleObject::filterLocalizedName (Unicode::String & localizedName) const
 void TangibleObject::getRequiredCertifications(std::vector<std::string> & results) const
 {
 	const SharedTangibleObjectTemplate * const sharedObjectTemplate = safe_cast<const SharedTangibleObjectTemplate*>(getObjectTemplate());
+	
 	if (sharedObjectTemplate)
 	{
-		const int numRequired = sharedObjectTemplate->getCertificationsRequiredCount();
+		const int numRequired = static_cast<int>(sharedObjectTemplate->getCertificationsRequiredCount());
+		
 		for(int i=0; i<numRequired; ++i)
 		{
 			results.push_back(sharedObjectTemplate->getCertificationsRequired(i));
@@ -1072,7 +1074,7 @@ void TangibleObject::getRequiredCertifications(std::vector<std::string> & result
 
 InteriorLayoutReaderWriter const * TangibleObject::getInteriorLayout() const
 {
-	return 0;
+	return nullptr;
 }
 
 // ----------------------------------------------------------------------

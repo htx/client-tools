@@ -1139,7 +1139,7 @@ std::set<Unicode::String> & CuiConsoleHelper::getRecurseStackForCommandBeingPars
 
 int CuiConsoleHelper::dumpPausedCommands ()
 {
-	const int size = s_pausedCommands.size ();
+	const int size = static_cast<int>(s_pausedCommands.size());
 	s_pausedCommands.clear ();
 	return size;
 }

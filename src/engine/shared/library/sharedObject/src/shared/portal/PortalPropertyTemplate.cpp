@@ -160,9 +160,12 @@ void PortalPropertyTemplateNamespace::loadEjectionPointData(char const *filename
 void PortalPropertyTemplateNamespace::validateCoplanar(IndexedTriangleList const & indexedTriangleList, char const * const fileName)
 {
 	std::vector<Vector> const & vertexList = indexedTriangleList.getVertices();
-	uint const numberOfVertices = vertexList.size();
-	DEBUG_FATAL(numberOfVertices < 3, ("Portal with fewer than 3 vertices")); 
+	uint const numberOfVertices = static_cast<unsigned int>(vertexList.size());
+	
+	DEBUG_FATAL(numberOfVertices < 3, ("Portal with fewer than 3 vertices"));
+	
 	Plane p(vertexList[0], vertexList[1], vertexList[2]);
+	
 	for (uint i = 3; i < numberOfVertices; ++i)
 	{
 		float const distance = p.computeDistanceTo(vertexList[i]);
@@ -186,8 +189,9 @@ void PortalPropertyTemplateNamespace::scalePortalVertices(IndexedTriangleList & 
 {
 	std::vector<Vector> & vertexList = indexedTriangleList.getVertices();
 
-	const uint numberOfVertices = vertexList.size();
+	const uint numberOfVertices = static_cast<unsigned int>(vertexList.size());
 	const float portalScale = ConfigSharedObject::getPortalScale();
+	
 	if (numberOfVertices > 0 && portalScale > 1.f)
 	{
 		uint j;
@@ -917,7 +921,8 @@ void PortalPropertyTemplateCell::preloadAssets() const
 	if (!m_preloadManager)
 		m_preloadManager = new PreloadManager (this);
 
-	int const numberOfPortals = m_portalList->size();
+	int const numberOfPortals = static_cast<int>(m_portalList->size());
+	
 	for (int i = 0; i < numberOfPortals; ++i)
 		(*m_portalList)[i]->preloadAssets();
 }
@@ -929,10 +934,11 @@ void PortalPropertyTemplateCell::garbageCollect() const
 	if (m_preloadManager)
 	{
 		delete m_preloadManager;
-		m_preloadManager = 0;
+		m_preloadManager = nullptr;
 	}
 
-	int const numberOfPortals = m_portalList->size();
+	int const numberOfPortals = static_cast<int>(m_portalList->size());
+	
 	for (int i = 0; i < numberOfPortals; ++i)
 		(*m_portalList)[i]->garbageCollect();
 }
@@ -1726,16 +1732,16 @@ const PortalPropertyTemplate::VertexList *PortalPropertyTemplate::getRadarPortal
 
 void PortalPropertyTemplate::buildRadarPortalGeometry()
 {
-	uint i;
-	for (i = 0; i < m_portalOwnersList->size(); ++i)
+	for (uint i = 0; i < m_portalOwnersList->size(); ++i)
 	{
 		const PortalPropertyTemplate::PortalOwners& portalOwners = (*m_portalOwnersList)[i];
+		
 		if (portalOwners.owners[0].cell == 0 || portalOwners.owners[1].cell == 0) 
 		{
 			IndexedTriangleList const * const portalGeometry = NON_NULL(getPortalGeometry(static_cast<int>(i)));
 			std::vector<Vector> const & vertices = portalGeometry->getVertices();
 			std::vector<int> const & indices = portalGeometry->getIndices();
-			uint const numberOfFaces = indices.size() / 3;
+			uint const numberOfFaces = static_cast<unsigned int>(indices.size()) / 3;
 
 			if (!m_radarPortalGeometry)
 				m_radarPortalGeometry = new std::vector<Vector>;

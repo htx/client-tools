@@ -93,7 +93,8 @@ int callBlat(int argc, char **argv, char **envp);
 
 bool ClientBugReporting::sendMail(const std::string& to, const std::string& from, const std::string& subject, const std::string& body, const std::vector<std::string>& attachments, bool sendMiniDump)
 {
-	int numAttachments = attachments.size();
+	int numAttachments = static_cast<int>(attachments.size());
+	
 	if(sendMiniDump)
 		++numAttachments;
 

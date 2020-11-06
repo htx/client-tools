@@ -45,7 +45,7 @@ bool CallStack::operator<(const CallStack &o) const
 
 void CallStack::sample()
 {
-	DebugHelp::getCallStack(m_callStack, CALLSTACK_DEPTH);
+	DebugHelp::getCallStack(m_callStack, static_cast<int>(CALLSTACK_DEPTH));
 }
 
 // ----------------------------------------------------------------------

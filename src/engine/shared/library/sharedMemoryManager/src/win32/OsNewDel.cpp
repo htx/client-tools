@@ -9,20 +9,51 @@
 #include "sharedMemoryManager/FirstSharedMemoryManager.h"
 #include "sharedMemoryManager/OsNewDel.h"
 
+#pragma warning (disable : 4100)
+
 // ======================================================================
 
-// this is here because MSVC won't call MemoryManager::allocate() from asm directly
-static void * __cdecl localAllocate(size_t size, uint32 owner, bool array, bool leakTest)
+#ifdef _WIN64
+
+void *operator new(size_t size, MemoryManagerNotALeak)
 {
-	return MemoryManager::allocate(size, owner, array, leakTest);
+	return MemoryManager::allocate(size, 0, false, false);
 }
 
 // ----------------------------------------------------------------------
 
-// We are using the arguments (except for file and line), but MSVC can't tell that.
-#pragma warning(disable: 4100)
+void *operator new(size_t size)
+{
+	return MemoryManager::allocate(size, 0, false, true);
+}
 
 // ----------------------------------------------------------------------
+
+void *operator new[](size_t size)
+{
+	return MemoryManager::allocate(size, 0, true, true);
+}
+
+// ----------------------------------------------------------------------
+
+void *operator new(size_t size, const char *file, int line)
+{
+	return MemoryManager::allocate(size, 0, false, true);
+}
+
+// ----------------------------------------------------------------------
+
+void *operator new[](size_t size, const char *file, int line)
+{
+	return MemoryManager::allocate(size, 0, true, true);
+}
+
+#else
+
+static void * __cdecl localAllocate(size_t size, uint32 owner, bool array, bool leakTest)
+{
+	return MemoryManager::allocate(size, owner, array, leakTest);
+}
 
 __declspec(naked) void *operator new(size_t size, MemoryManagerNotALeak)
 {
@@ -151,7 +182,7 @@ __declspec(naked) void *operator new[](size_t size, const char *file, int line)
 		ret
 	}
 }
-
+#endif
 // ----------------------------------------------------------------------
 
 #pragma warning(default: 4100)

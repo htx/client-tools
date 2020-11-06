@@ -20,7 +20,7 @@ static const float EPSILON = 0.0000000001f;
 
 float Triangulate::Area(const Input& contour)
 {
-  int n = contour.size();
+  int n = static_cast<int>(contour.size());
 
   float A=0.0f;
 
@@ -28,6 +28,7 @@ float Triangulate::Area(const Input& contour)
   {
     A+= contour[p].x*contour[q].y - contour[q].x*contour[p].y;
   }
+	
   return A*0.5f;
 }
 
@@ -88,7 +89,8 @@ bool Triangulate::Process (const Input& contour, Output& result)
 {
   /* allocate and initialize list of Vertices in polygon */
 
-  int n = contour.size();
+  int n = static_cast<int>(contour.size());
+	
   if ( n < 3 ) return false;
 
   int *V = new int[n];

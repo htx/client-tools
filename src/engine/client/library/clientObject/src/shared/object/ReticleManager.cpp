@@ -305,12 +305,12 @@ void ReticleManagerNamespace::ReticleShaderPrimitive::prepareToDraw () const
 			return;
 		}
 
-		vertexBuffer.lock (m_vertexList->size ());
+		vertexBuffer.lock (static_cast<int>(m_vertexList->size ()));
 
 			VertexBufferWriteIterator v = vertexBuffer.begin ();
-			const uint n = m_vertexList->size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++v)
+			const size_t n = m_vertexList->size ();
+			
+			for (size_t i = 0; i < n; ++i, ++v)
 			{
 				const Vertex& vertex = (*m_vertexList) [i];
 

@@ -860,13 +860,14 @@ void SwgCuiRoadmap_Profession::layoutIconsUsing(UIPage *rootPage, UIPage *sample
 												const std::vector<int> &xpVector,
 												const int xpToFirstSkill)
 {
-	unsigned int numSkills = skillVector.size();
+	auto numSkills = static_cast<unsigned int>(skillVector.size());
 
 	erasePreviousLayoutIcons(rootPage);
 
 	//Add in new icons
 	int r;
 	bool useSmallPage = (numSkills > MAX_NUMBER_SKILLS_BEFORE_USING_SMALL_ICON);
+	
 	for(r = 0; r < TOTAL_NUM_PHASES; ++r)
 	{
 		if(m_zoomedInRootPages[r] == rootPage)

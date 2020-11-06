@@ -50,7 +50,7 @@ void DynamicPathGraph::clear ( void )
 
 int DynamicPathGraph::getNodeCount ( void ) const
 {
-	return m_nodeList->size();
+	return static_cast<int>(m_nodeList->size());
 }
 
 int DynamicPathGraph::getLiveNodeCount ( void ) const
@@ -114,9 +114,9 @@ PathEdge const * DynamicPathGraph::getEdge ( int nodeIndex, int edgeIndex ) cons
 
 int DynamicPathGraph::addNode ( DynamicPathNode * newNode )
 {
-	if(newNode == NULL) return -1;
+	if(newNode == nullptr) return -1;
 
-	int listSize = m_nodeList->size();
+	int listSize = static_cast<int>(m_nodeList->size());
 
 	int nodeIndex = -1;
 
@@ -124,7 +124,7 @@ int DynamicPathGraph::addNode ( DynamicPathNode * newNode )
 	{
 		for(int i = 0; i < listSize; i++)
 		{
-			if(m_nodeList->at(i) == NULL)
+			if(m_nodeList->at(i) == nullptr)
 			{
 				nodeIndex = i;
 				break;
@@ -210,7 +210,7 @@ void DynamicPathGraph::clean ( void )
 
 	// All dirty nodes are now clean but unlinked. Relink them.
 
-	int dirtyCount = m_dirtyNodes->size();
+	int dirtyCount = static_cast<int>(m_dirtyNodes->size());
 
 	for(int i = 0; i < dirtyCount; i++)
 	{
@@ -260,7 +260,7 @@ void DynamicPathGraph::relinkNode ( int nodeIndex )
 
 	unlinkNode(nodeIndex);
 
-	int listSize = m_nodeList->size();
+	int listSize = static_cast<int>(m_nodeList->size());
 
 	int i;
 
@@ -268,7 +268,7 @@ void DynamicPathGraph::relinkNode ( int nodeIndex )
 	{
 		DynamicPathNode * nodeB = _getNode(i);
 
-		if(nodeB == NULL) continue;
+		if(nodeB == nullptr) continue;
 		if(nodeA == nodeB) continue;
 
 		Vector const & posA = nodeA->getPosition_p();

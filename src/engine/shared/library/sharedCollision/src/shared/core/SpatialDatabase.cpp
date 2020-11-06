@@ -628,7 +628,7 @@ void SpatialDatabase::popIgnoreObject ( void )
 
 bool SpatialDatabase::checkIgnoreObject ( Object const * object ) const
 {
-	unsigned int ignoreCount = m_ignoreStack->size();
+	auto ignoreCount = static_cast<unsigned int>(m_ignoreStack->size());
 
 	for(unsigned int i = 0; i < ignoreCount; i++)
 	{
@@ -748,7 +748,8 @@ bool SpatialDatabase::queryStatics ( Line3d const & line, ObjectVec * outList ) 
 	m_staticTree->findOnRay(line.getPoint(),normDir,results);
 	m_barrierTree->findOnRay(line.getPoint(),normDir,results);
 
-	uint const resultSize = results.size();
+	uint const resultSize = static_cast<unsigned int>(results.size());
+	
 	for(uint i = 0; i < resultSize; ++i)
 	{
 		CollisionProperty * collision = results[i];

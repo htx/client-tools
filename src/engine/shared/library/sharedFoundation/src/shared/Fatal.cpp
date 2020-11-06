@@ -90,7 +90,7 @@ static void formatMessage(char *buffer, int bufferLength, int stackDepth, const 
 	}
 
 	{
-		const int length = strlen(buffer);
+		const int length = static_cast<int>(strlen(buffer));
 		buffer += length;
 		bufferLength -= length;
 	}
@@ -99,7 +99,7 @@ static void formatMessage(char *buffer, int bufferLength, int stackDepth, const 
 	vsnprintf(buffer, bufferLength, format, va);
 
 	{
-		const int length = strlen(buffer);
+		const int length = static_cast<int>(strlen(buffer));
 		buffer += length;
 		bufferLength -= length;
 	}
@@ -128,7 +128,7 @@ static void formatMessage(char *buffer, int bufferLength, int stackDepth, const 
 				else
 					snprintf(buffer, bufferLength, "  unknown(0x%08X) : caller %d\n", static_cast<int>(callStack[i]), i-callStackOffset);
 
-				const int length = strlen(buffer);
+				const int length = static_cast<int>(strlen(buffer));
 				buffer += length;
 				bufferLength -= length;
 			}
@@ -158,7 +158,7 @@ static void InternalFatal(const char *format, va_list va)
 	// if the per-thread-data isn't installed, then we know we're single-threaded and can use the static buffer
 	ms_criticalSection.enter();
 		const int bufferSize = sizeof(ms_buffer);
-		const int length = strlen(ms_buffer);
+		const int length = static_cast<int>(strlen(ms_buffer));
 		formatMessage(ms_buffer+length, bufferSize-length, ConfigSharedFoundation::getFatalCallStackDepth(), "FATAL", format, va);
 	ms_criticalSection.leave();
 

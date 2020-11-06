@@ -241,7 +241,7 @@ m_characterViewer(NULL)
 		    (cms_wearableSlots.size() != cms_cyberneticsCodeDatas.size()),
 				("Mismatched sizes of cybernetic vectors"));
 
-	int const numberOfCyberneticSlots = cms_cyberneticSlots.size();
+	int const numberOfCyberneticSlots = static_cast<int>(cms_cyberneticSlots.size());
 
 	for(int i = 0; i < numberOfCyberneticSlots; ++i)
 	{

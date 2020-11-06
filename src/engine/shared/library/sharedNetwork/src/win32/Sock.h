@@ -10,13 +10,17 @@
 #define	INCLUDED_Sock_H
 
 // ======================================================================
-
+#ifdef _WIN64
+#include <WinSock2.h>
+#endif
 #include "sharedNetwork/Address.h"
 
 // ======================================================================
 
 const unsigned int SOCK_ERROR = 0xFFFFFFFF;
+#ifndef _WIN64
 typedef unsigned int SOCKET;
+#endif
 
 /**
 	@brief a BSD socket abstraction

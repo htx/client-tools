@@ -279,7 +279,7 @@ bool SwgCuiCommandParserAudio::performParsing(const NetworkId & userId, const St
 
 	else if (isCommand(argv [0], SwgCuiCommandParserAudioNamespace::CommandNames::s_playBufferedAudio))
 	{
-		int const bufferSize = 4*1024*1024;
+		size_t const bufferSize = 4*1024*1024;
 
 		std::string filename = Unicode::wideToNarrow(argv[2]);
 
@@ -303,7 +303,7 @@ bool SwgCuiCommandParserAudio::performParsing(const NetworkId & userId, const St
 		else
 			Audio::stopBufferedMusic();
 
-		int readBytes = fread(buffer, sizeof(char), bufferSize, audioFile);
+		size_t readBytes = fread(buffer, sizeof(char), bufferSize, audioFile);
 
 		fclose(audioFile);
 

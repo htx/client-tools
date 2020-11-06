@@ -79,7 +79,9 @@ public:
 		Matrix4x3			m_matrix;
 		const ImpObject*	m_owner;
 		UINT32				m_timeStamp;
+#ifndef _WIN64
 		UINT32				m_padding[2];			// for alignment
+#endif
 	};
 
 	static DPVS_FORCE_INLINE Entry&		getEntry	(int index)			
@@ -98,11 +100,7 @@ private:
 	~MatrixCache	(void);							// not allowed
 };
 
-#ifdef _WIN64
-	DPVS_CT_ASSERT(sizeof(MatrixCache::Entry) == 72); 
-#else
 DPVS_CT_ASSERT(sizeof(MatrixCache::Entry) == 64); 
-#endif
 
 //------------------------------------------------------------------------
 // Constants

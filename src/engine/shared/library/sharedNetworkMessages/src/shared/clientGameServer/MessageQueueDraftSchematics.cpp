@@ -50,7 +50,7 @@ void MessageQueueDraftSchematics::addSchematic(const std::pair<uint32, uint32> &
 
 int MessageQueueDraftSchematics::getSchematicCount(void) const
 {
-	return m_schematics.size();
+	return static_cast<int>(m_schematics.size());
 }	// MessageQueueDraftSchematics::getSchematicCount
 
 //----------------------------------------------------------------------

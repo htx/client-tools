@@ -1011,13 +1011,13 @@ void SwgCuiAllTargetsSpace::joystickImageConstruct()
 	for(size_t imageCount = 0; imageCount< s_virtualjoystickImageCount; ++imageCount)
 	{
 		char imageName[128];
-		sprintf(imageName, s_virtualjoystickSourceName, imageCount);
+		sprintf(imageName, s_virtualjoystickSourceName, static_cast<int>(imageCount));
 
 		UIImage * image = safe_cast<UIImage *>(m_virtualJoystickImage->DuplicateObject());
 		NOT_NULL(image);
 		IGNORE_RETURN(image->SetSourceResource(UIUnicode::narrowToWide(imageName)));
 		image->SetName("virtualJoystickImage");
-		image->Attach(0);
+		image->Attach(nullptr);
 		image->SetVisible(true);
 		getPage().AddChild(image);
 		image->Center();

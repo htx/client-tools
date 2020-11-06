@@ -253,8 +253,8 @@ void ClientDebugShapeRenderer::drawMesh ( IndexedTriangleList const * mesh )
     IndexedDebugPrimitive * prim = new IndexedDebugPrimitive( getStyle(m_depthTest), 
                                                               getTransform(), 
 															  IndexedDebugPrimitive::PT_TriangleList, 
-                                                              mesh->getVertices().size(), 
-                                                              mesh->getIndices().size() );
+                                                              static_cast<int>(mesh->getVertices().size()), 
+                                                              static_cast<int>(mesh->getIndices().size()));
 
 
 	prim->setColor(getColor());
@@ -309,7 +309,7 @@ void ClientDebugShapeRenderer::drawMeshNormals ( IndexedTriangleList const * mes
 #ifdef _DEBUG
 	if(!mesh) return;
 
-	uint const numIndeces = mesh->getIndices().size();
+	uint const numIndeces = static_cast<unsigned int>(mesh->getIndices().size());
 	uint numPolys =  numIndeces / 3;
 	
 	if(numPolys == 0) return;
@@ -428,7 +428,7 @@ void ClientDebugShapeRenderer::drawLineList ( std::vector<Vector> const & verts 
 
 #ifdef _DEBUG
 
-	uint nVerts = verts.size();
+	uint nVerts = static_cast<unsigned int>(verts.size());
 
 	if(nVerts == 0) return;
 
@@ -491,7 +491,7 @@ void ClientDebugShapeRenderer::drawPolygon ( std::vector<Vector> const & verts )
 
 #ifdef _DEBUG
 
-	uint nVerts = verts.size();
+	uint nVerts = static_cast<unsigned int>(verts.size());
 	uint nIndices = nVerts * 2;
 
     IndexedDebugPrimitive * prim = new IndexedDebugPrimitive( getStyle(m_depthTest), 

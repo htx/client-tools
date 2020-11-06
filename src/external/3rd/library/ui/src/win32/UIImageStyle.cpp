@@ -332,7 +332,7 @@ void UIImageStyle::GetChildren( UIObjectList &ol ) const
 
 unsigned long UIImageStyle::GetChildCount( void ) const
 {	
-	return mFrames ? mFrames->size() : 0;
+	return mFrames ? static_cast<unsigned long>(mFrames->size()) : 0;
 }
  
 //-----------------------------------------------------------------

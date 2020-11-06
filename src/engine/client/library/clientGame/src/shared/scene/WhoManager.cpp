@@ -390,7 +390,7 @@ void WhoManagerNamespace::addPlayerToTable(LfgCharacterSearchResultData const &c
 	if (!characterData.ctsSourceGalaxy.empty())
 	{
 		Unicode::String ctsSourceGalaxy;
-		for (std::set<std::string>::const_iterator iter = characterData.ctsSourceGalaxy.begin(); iter != characterData.ctsSourceGalaxy.end(); ++iter)
+		for (auto iter = characterData.ctsSourceGalaxy.begin(); iter != characterData.ctsSourceGalaxy.end(); ++iter)
 		{
 			if (!ctsSourceGalaxy.empty())
 				ctsSourceGalaxy += Unicode::narrowToWide(", ");
@@ -404,26 +404,40 @@ void WhoManagerNamespace::addPlayerToTable(LfgCharacterSearchResultData const &c
 	if (!playerLocation.empty())
 		tooltip += yellowColor + Unicode::narrowToWide("Location: \t") + whiteColor + playerLocation + newLine;
 
-	GroupMap::const_iterator groupIter = result.m_matchingCharacterGroup.find(characterData.groupId); 
+	auto groupIter = result.m_matchingCharacterGroup.find(characterData.groupId); 
 
 	if (groupIter != result.m_matchingCharacterGroup.end())
 	{
 		tooltip += newLine + redColor + Unicode::narrowToWide("Group Members: ") + newLine + whiteColor;
 
 		GroupVector const & groupMembers = (groupIter->second);
-		GroupVector::const_iterator memberIter = groupMembers.begin();
+		auto memberIter = groupMembers.begin();
 
 		Unicode::String numMembers;
-		UIUtils::FormatLong(numMembers, groupMembers.size());
+		UIUtils::FormatLong(numMembers, static_cast<long>(groupMembers.size()));
 
-		for (; memberIter != groupMembers.end(); memberIter++)
+		for (; memberIter != groupMembers.end(); ++memberIter)
 		{
 			if ((*memberIter).groupMemberId == characterData.characterId)
 			{
 				if (memberIter == groupMembers.begin())
-					playerName = redColor + Unicode::narrowToWide("(L ")  + numMembers + Unicode::narrowToWide(") ") + whiteColor + playerName;
+				{
+					playerName = redColor;
+					playerName += Unicode::narrowToWide("(L ");
+					playerName += numMembers;
+					playerName += Unicode::narrowToWide(") ");
+					playerName += whiteColor;
+					playerName += playerName;
+				}
 				else
-					playerName = greenColor + Unicode::narrowToWide("(G ")  + numMembers + Unicode::narrowToWide(") ") + whiteColor + playerName;
+				{
+					playerName = greenColor;
+					playerName += Unicode::narrowToWide("(G ");
+					playerName += numMembers;
+					playerName += Unicode::narrowToWide(") ");
+					playerName += whiteColor;
+					playerName += playerName;
+				}
 
 				cellData->SetProperty (UITableModelDefault::DataProperties::Value, playerName);
 				cellData->SetPropertyBoolean(UILowerString("IsGrouped"), true);

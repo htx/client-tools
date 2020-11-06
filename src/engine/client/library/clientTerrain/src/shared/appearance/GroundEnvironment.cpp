@@ -2072,7 +2072,7 @@ void GroundEnvironment::setClientProceduralTerrainAppearance(ClientProceduralTer
 		//-- DistantAppearances
 		{
 
-			int const numberOfDistantAppearances = m_data->m_distantAppearances.size();
+			int const numberOfDistantAppearances = static_cast<int>(m_data->m_distantAppearances.size());
 
 			for (int i = 0; i < numberOfDistantAppearances; ++i)
 			{

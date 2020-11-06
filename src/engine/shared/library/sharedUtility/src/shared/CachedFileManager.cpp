@@ -276,7 +276,7 @@ int CachedFileManager::getLoadingPercent ()
 	if (ms_filenamesLength == 0)
 		return 100;
 	
-	return (ms_filenamesCurrentPos * 100) / ms_filenamesLength;
+	return static_cast<int>(ms_filenamesCurrentPos * 100 / ms_filenamesLength);
 }
 
 // ======================================================================

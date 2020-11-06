@@ -23,7 +23,7 @@ namespace Archive {
 */
 ReadIterator::ReadIterator() :
 	readPtr(0),
-	stream(0)
+	stream(nullptr)
 {
 }
 
@@ -59,7 +59,7 @@ ReadIterator::ReadIterator(ByteStream const &source) :
 */
 ReadIterator::~ReadIterator()
 {
-	stream = 0;
+	stream = nullptr;
 }
 
 //---------------------------------------------------------------------
@@ -78,6 +78,7 @@ bool ReadIterator::operator==(ReadIterator const &rhs) const
 	// chance to fail and avoid the almost certainty.
 	if (readPtr != rhs.readPtr)
 		return false;
+	
 	return stream == rhs.stream;
 }
 
@@ -94,7 +95,7 @@ ByteStream::ByteStream() :
 	allocatedSize(0),
 	allocatedSizeLimit(0),
 	beginReadIterator(),
-	data(0),
+	data(nullptr),
 	size(0)
 {
 	beginReadIterator = ReadIterator(*this);
@@ -109,10 +110,11 @@ ByteStream::ByteStream() :
 ByteStream::ByteStream(unsigned char const * const newBuffer, const unsigned int bufferSize) :
 	allocatedSize(bufferSize),
 	allocatedSizeLimit(0),
-	data(0),
+	data(nullptr),
 	size(bufferSize)
 {
 	data = Data::getNewData();
+	
 	if (data->size < size)
 	{
 		delete[] data->buffer;
@@ -120,7 +122,7 @@ ByteStream::ByteStream(unsigned char const * const newBuffer, const unsigned int
 		if(size > 0)
 			data->buffer = new unsigned char[size];
 		else
-			data->buffer = 0;
+			data->buffer = nullptr;
 
 		data->size = size;
 	}
@@ -143,6 +145,7 @@ ByteStream::ByteStream(ByteStream const &source):
 {
 	if (source.data)
 		source.data->ref();
+	
 	beginReadIterator = ReadIterator(*this);
 }
 
@@ -179,7 +182,7 @@ ByteStream::~ByteStream()
 	if (data)
 	{
 		data->deref();
-		data = 0; //lint !e672 (data deref insures the data is deleted if no one references it)
+		data = nullptr; //lint !e672 (data deref insures the data is deleted if no one references it)
 	}
 	allocatedSize = 0;
 	size = 0;
@@ -231,9 +234,10 @@ void ByteStream::get(void *target, ReadIterator &readIterator, const unsigned lo
 	}
 	else
 	{
+		__debugbreak();
 		static const char * const desc = "Archive::ByteStream - read beyond end of buffer";
 		ReadException ex(desc);
-		throw (ex);
+		throw ex;
 	}
 }
 
@@ -260,8 +264,10 @@ void ByteStream::put(void const * const source, const unsigned int sourceSize)
 	if (data->getRef() > 1)
 	{
 		unsigned char const * const tmp = data->buffer;
+		
 		data->deref();
 		data = Data::getNewData();
+		
 		if (data->size < sourceSize)
 		{
 			delete[] data->buffer;
@@ -269,7 +275,7 @@ void ByteStream::put(void const * const source, const unsigned int sourceSize)
 			if (size > 0)
 				data->buffer = new unsigned char[size];
 			else
-				data->buffer = 0;
+				data->buffer = nullptr;
 
 			data->size = size;
 		}
@@ -279,6 +285,7 @@ void ByteStream::put(void const * const source, const unsigned int sourceSize)
 
 		allocatedSize = size;		
 	}
+	
 	growToAtLeast(size + sourceSize);
 	memcpy(&data->buffer[size], source, sourceSize);
 	size += sourceSize;
@@ -289,14 +296,17 @@ void ByteStream::put(void const * const source, const unsigned int sourceSize)
 void ByteStream::reAllocate(const unsigned int newSize)
 {
 	allocatedSize = newSize;
+	
 	if (!data)
 		data = Data::getNewData();
 	
 	if (data->size < allocatedSize)
 	{
-		unsigned char * tmp = new unsigned char[newSize];
+		auto tmp = new unsigned char[newSize];
+		
 		if (data->buffer)
 			memcpy(tmp, data->buffer, size);
+		
 		delete[] data->buffer;
 		data->buffer = tmp;
 		data->size = newSize;
@@ -309,6 +319,7 @@ std::vector<ByteStream::Data *> &ByteStream::Data::lockDataFreeList()
 {
 	static DataFreeList freeList;
 	s_archiveMutex.enter();
+	
 	return freeList.freeList;
 }
 
@@ -346,7 +357,11 @@ ByteStream::Data *ByteStream::Data::getNewData()
 
 void ByteStream::Data::releaseOldData(Data *oldData)
 {
+#ifdef _WIN64
+	assert(reinterpret_cast<uintptr_t>(oldData) != 0xefefefefefefefefu);
+#else
 	assert(reinterpret_cast<uintptr_t>(oldData) != 0xefefefefu);
+#endif
 
 	if (oldData->size > 4096)
 		delete oldData;
@@ -359,7 +374,7 @@ void ByteStream::Data::releaseOldData(Data *oldData)
 		else
 		{
 			oldData->refCount = 0;
-			dataFreeList.push_back(oldData);
+			dataFreeList.emplace_back(oldData);
 		}
 
 		unlockDataFreeList();

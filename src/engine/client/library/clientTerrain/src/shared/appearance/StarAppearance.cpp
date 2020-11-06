@@ -409,13 +409,13 @@ StarAppearance::StarAppearance(char const * const starColorRampFileName, int con
 					extent.setMax(Vector::negativeMaxXYZ);
 
 					PointList const & pointList = sectionPointList[i][j][k];
-					if (pointList.size())
+					if (!pointList.empty())
 					{
 						Section * const section = new Section;
 						m_sections[i][j][k] = section;
 
-						SystemVertexBuffer * const systemVertexBuffer = new SystemVertexBuffer(getVertexBufferFormat(), pointList.size());
-						DEBUG_REPORT_LOG(ms_debugReport, ("%i %i %i number=%i size=%i\n", i, j, k, pointList.size(), pointList.size() * systemVertexBuffer->getVertexSize()));
+						SystemVertexBuffer * const systemVertexBuffer = new SystemVertexBuffer(getVertexBufferFormat(), static_cast<int>(pointList.size()));
+						DEBUG_REPORT_LOG(ms_debugReport, ("%i %i %i number=%i size=%i\n", i, j, k, static_cast<int>(pointList.size()), static_cast<int>(pointList.size()) * systemVertexBuffer->getVertexSize()));
 						section->second = systemVertexBuffer;
 
 						VertexBufferWriteIterator v = systemVertexBuffer->begin();

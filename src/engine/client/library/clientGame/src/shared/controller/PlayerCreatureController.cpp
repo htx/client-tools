@@ -2259,18 +2259,20 @@ void PlayerCreatureController::handleMessage (const int message, const float val
 	case CM_staticLootItemData:
 		{
 			MessageQueueGenericValueType<std::vector<Unicode::String> > const * const msg = dynamic_cast<MessageQueueGenericValueType<std::vector<Unicode::String> > const *>(data);
+
 			if(msg)
 			{
 				//this vector represents a flatted dictionary, with ALL keys, then ALL values stored into it
 				std::vector<Unicode::String> const & flattedDictionary = msg->getValue();
 				DEBUG_FATAL(flattedDictionary.size() % 2 != 0, ("Flatted dictionary does not have an even number of values"));
-				int const realDictionarySize = flattedDictionary.size() / 2;
+				int const realDictionarySize = static_cast<int>(flattedDictionary.size()) / 2;
 				std::vector<Unicode::String> keys;
 				keys.reserve(realDictionarySize);
 				std::vector<Unicode::String> values;
 				values.reserve(realDictionarySize);
 				//split flatted dictionary into parallel arrays
 				int counter = 0;
+				
 				for(std::vector<Unicode::String>::const_iterator i = flattedDictionary.begin(); i != flattedDictionary.end(); ++i, ++counter)
 				{
 					if(counter < realDictionarySize)
@@ -2278,6 +2280,7 @@ void PlayerCreatureController::handleMessage (const int message, const float val
 					else
 						values.push_back(*i);
 				}
+				
 				DEBUG_FATAL(keys.size() != values.size(), ("Did not end up with a matching set of vectors"));
 				CuiStaticLootItemManager::setItemData(keys, values);
 			}

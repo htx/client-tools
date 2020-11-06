@@ -111,7 +111,7 @@ const std::string& SuiCreatePage::getPageName() const
 
 int SuiCreatePage::getNumberOfCommands() const
 {
-	return m_commands.get().size();
+	return static_cast<int>(m_commands.get().size());
 }
 
 //----------------------------------------------------------------------

@@ -219,7 +219,7 @@ bool Portal::testOverlap(const Sphere &sphere) const
 	IndexedTriangleList const & indexedTriangleList = getGeometry();
 	std::vector<Vector> const & vertices = indexedTriangleList.getVertices();
 	std::vector<int> const & indices = indexedTriangleList.getIndices();
-	uint const numberOfFaces = indices.size() / 3;
+	uint const numberOfFaces = static_cast<unsigned int>(indices.size()) / 3;
 
 	VertexList vertexList;
 	for (uint faceIndex = 0, index = 0; faceIndex < numberOfFaces; ++faceIndex)

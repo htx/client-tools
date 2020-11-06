@@ -227,12 +227,12 @@ namespace SwgCuiChatWindowNamespace
 
 		while (s_spatialChatCacheSize > s_spatialChatCacheSizeMax && !s_spatialChatCache.empty())
 		{
-			s_spatialChatCacheSize -= s_spatialChatCache.front().length();
+			s_spatialChatCacheSize -= static_cast<int>(s_spatialChatCache.front().length());
 			s_spatialChatCache.pop_front();
 		}
 
 		s_spatialChatCacheSize = std::max(0, s_spatialChatCacheSize);
-		s_spatialChatCacheSize += chat.length();
+		s_spatialChatCacheSize += static_cast<int>(chat.length());
 		s_spatialChatCache.push_back(chat);
 	}
 
@@ -2218,7 +2218,7 @@ void SwgCuiChatWindow::appendTextToChannel(const ChannelId & id, const Unicode::
 		if (id.type == CT_none || tab->hasChannel(id))
 		{
 #ifdef _DEBUG
-			const unsigned int strSize = str.size();
+			const unsigned int strSize = static_cast<unsigned int>(str.size());
 			UNREF(strSize);
 #endif // _DEBUG
 
@@ -2580,7 +2580,7 @@ void SwgCuiChatWindow::onWhoSearchResultMessageReceived(const PlayerCreatureCont
 			// More than one match
 
 			CuiStringVariablesData data;
-			data.digit_i = unicodeStringList.size();
+			data.digit_i = static_cast<int>(unicodeStringList.size());
 
 			Unicode::String whoCountResultString;
 			CuiStringVariablesManager::process(CuiStringIdsWho::found_many, data, whoCountResultString);

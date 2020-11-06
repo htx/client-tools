@@ -166,7 +166,8 @@ bool Object::NotificationList::equalsAdd(const NotificationList &otherList, cons
 
 bool Object::NotificationList::equalsRemove(const NotificationList &otherList, const ObjectNotification &otherEntry) const
 {
-	const uint otherSize = otherList.m_notificationList.size();
+	const uint otherSize = static_cast<unsigned int>(otherList.m_notificationList.size());
+	
 	if (m_notificationList.size() + 1 != otherSize)
 		return false;
 
@@ -174,6 +175,7 @@ bool Object::NotificationList::equalsRemove(const NotificationList &otherList, c
 	bool once = false;
 	uint i = 0;
 	uint j = 0;
+	
 	for ( ; i < otherSize; ++i)
 	{
 		if (otherList.m_notificationList[i] == &otherEntry)
@@ -336,7 +338,8 @@ void Object::NotificationListManager::install()
 void Object::NotificationListManager::remove()
 {
 	// don't delete the first element, it wasn't allocated from the heap
-	const uint count = ms_list.size();
+	const uint count = static_cast<unsigned int>(ms_list.size());
+	
 	for (uint i = 1; i < count; ++i)
 	{
 		const NotificationList *notificationList = ms_list.back();

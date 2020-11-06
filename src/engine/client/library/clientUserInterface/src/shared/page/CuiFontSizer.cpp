@@ -132,7 +132,7 @@ void CuiFontSizer::releaseTarget ()
 
 void CuiFontSizer::setTargetText                (UIText & text, const SizeVector & sv)
 {
-	text.Attach (0);
+	text.Attach (nullptr);
 
 	releaseTarget ();
 
@@ -144,13 +144,14 @@ void CuiFontSizer::setTargetText                (UIText & text, const SizeVector
 
 	if (!m_sizeVector->empty ())
 	{
-		m_slider->SetUpperLimit (m_sizeVector->size () - 1);
+		m_slider->SetUpperLimit(static_cast<long>(m_sizeVector->size()) - 1);
 		m_slider->SetEnabled (true);
 	}
 	else
 		m_slider->SetEnabled (false);
 	
 	int size = 0;
+	
 	if (constructFontPrefix (text, *m_sizeVector, m_fontPrefix, size))
 	{
 		m_slider->SetValue (size, false);

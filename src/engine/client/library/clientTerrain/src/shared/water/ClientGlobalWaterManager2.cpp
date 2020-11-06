@@ -246,8 +246,8 @@ void ClientGlobalWaterManager2::StaticShaderPrimitive::_buildGraphicsBuffers() c
 		return;
 	}
 
-	m_vertexBuffer = new StaticVertexBuffer(_getVertexFormat(), m_vertexArray.size());
-	m_indexBuffer = new StaticIndexBuffer(m_indexArray.size());
+	m_vertexBuffer = new StaticVertexBuffer(_getVertexFormat(), static_cast<int>(m_vertexArray.size()));
+	m_indexBuffer = new StaticIndexBuffer(static_cast<int>(m_indexArray.size()));
 
 	m_vertexBuffer->lock();
 	VertexBufferWriteIterator vv = m_vertexBuffer->begin();
@@ -342,10 +342,10 @@ void ClientGlobalWaterManager2::StaticShaderPrimitive::draw () const
 	else
 		Graphics::setCullMode (GCM_counterClockwise);
 
-	const int numVerts = m_vertexArray.size();
+	const int numVerts = static_cast<int>(m_vertexArray.size());
 	const int numQuadVerts = numVerts / 4;
 
-	const int numIndeces = m_indexArray.size();
+	const int numIndeces = static_cast<int>(m_indexArray.size());
 	const int numQuadIndeces = numIndeces / 4;
 	const int numQuadPrimitives = numQuadIndeces / 3;
 
@@ -437,10 +437,10 @@ void ClientGlobalWaterManager2::DynamicShaderPrimitive::prepareToDraw () const
 
 	const bool above = camera.getPosition_w ().y > _height();
 
-	m_vertexBuffer.lock(m_vertexArray.size());
+	m_vertexBuffer.lock(static_cast<int>(m_vertexArray.size()));
 	VertexBufferWriteIterator vv = m_vertexBuffer.begin();
 
-	m_indexBuffer.lock(m_indexArray.size());
+	m_indexBuffer.lock(static_cast<int>(m_indexArray.size()));
 	Index *ii = m_indexBuffer.begin();
 
 	if (_usesVertexShader())
@@ -784,14 +784,14 @@ void ClientGlobalWaterManager2::LocalShaderPrimitive::_tesselate(const Vector &r
 			//////////////////////////////////////////////////////////////////
 			if (indexOffset1<0)
 			{
-				indexOffset1=m_vertexArray.size();
+				indexOffset1 = static_cast<int>(m_vertexArray.size());
 				m_vertexArray.insert(m_vertexArray.end(), verts1.begin(), verts1.end());
 			}
-			TessVertList l1(verts1.size(), &verts1[0], indexOffset1);
+			TessVertList l1(static_cast<int>(verts1.size()), &verts1[0], indexOffset1);
 			//////////////////////////////////////////////////////////////////
-			const int indexOffset2=m_vertexArray.size();
+			const int indexOffset2=static_cast<int>(m_vertexArray.size());
 			m_vertexArray.insert(m_vertexArray.end(), verts2.begin(), verts2.end());
-			TessVertList l2(verts2.size(), &verts2[0], indexOffset2);
+			TessVertList l2(static_cast<int>(verts2.size()), &verts2[0], indexOffset2);
 			//////////////////////////////////////////////////////////////////
 
 			_tesselateStrip(m_indexArray, l1, l2);
@@ -822,7 +822,7 @@ void ClientGlobalWaterManager2::LocalShaderPrimitive::_fillGraphicsBuffersFFP(Ve
 	VertexBufferWriteIterator vv = i_vv;
 	Index *ii                    = i_ii;
 
-	const unsigned numVerts = m_vertexArray.size ();
+	const unsigned numVerts = static_cast<unsigned int>(m_vertexArray.size ());
 	const Vector *verts = &m_vertexArray[0];
 	const Rectangle2d clipRegion = m_clipRegion;
 
@@ -866,8 +866,7 @@ void ClientGlobalWaterManager2::LocalShaderPrimitive::_fillGraphicsBuffersFFP(Ve
 		vv.setTextureCoordinates (0, u + du, v + dv);
 	}
 	{
-		uint i;
-		for (i = 0; i < m_indexArray.size (); ++i, ++ii)
+		for (uint i = 0; i < m_indexArray.size (); ++i, ++ii)
 			*ii = static_cast<Index> (m_indexArray [i]);
 	}
 }
@@ -878,10 +877,10 @@ void ClientGlobalWaterManager2::LocalShaderPrimitive::_fillGraphicsBuffersVS(Ver
 {
 	VertexBufferWriteIterator vv = i_vv;
 	Index *ii                    = i_ii;
-	const unsigned numVerts = m_vertexArray.size ();
+	const unsigned int numVerts = static_cast<unsigned int>(m_vertexArray.size ());
 	const Vector *verts = &m_vertexArray[0];
 
-	for (unsigned i = 0; i < numVerts; ++i, ++vv)
+	for (unsigned int i = 0; i < numVerts; ++i, ++vv)
 	{
 		const Vector &position = verts[i];
 		vv.setPosition(position);

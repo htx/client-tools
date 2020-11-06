@@ -284,7 +284,8 @@ float DebugPortalCamera::alter (float elapsedTime)
 
 				DEBUG_REPORT_LOG(true, ("Camera path playback finished\n"));
 
-				static int size = m_frameRateList->size();
+				static int size = static_cast<int>(m_frameRateList->size());
+				
 				for (int j = 0; j < size; ++j)
 				{
 					DEBUG_REPORT_LOG_PRINT(true, ("path %4d %6.5f %5.2f\n", j, (*m_frameTimeList)[j], (*m_frameRateList)[j]));
@@ -342,7 +343,7 @@ void DebugPortalCamera::drawScene (void) const
 			{
 				Graphics::setStaticShader (ShaderTemplateList::get3dVertexColorZStaticShader ());
 
-				const uint n = m_transformList->size ();
+				const uint n = static_cast<unsigned int>(m_transformList->size());
 
 				uint i;
 				for (i = 0; i < n; i++)
@@ -462,16 +463,16 @@ float DebugPortalCamera::getMaximumFrameRate () const
 
 float DebugPortalCamera::getAverageFrameRate () const
 {
-	if (!m_frameRateList->empty ())
+	if(!m_frameRateList->empty())
 	{
 		float sum = 0.f;
 
-		const uint n = m_frameRateList->size ();
-		uint i;
-		for (i = 0; i < n; ++i)
+		const uint n = static_cast<int>(m_frameRateList->size());
+
+		for (uint i = 0; i < n; ++i)
 			sum += (*m_frameRateList) [i];
 
-		return sum / static_cast<float> (m_frameRateList->size ());
+		return sum / static_cast<float> (m_frameRateList->size());
 	}
 
 	return 0.f;

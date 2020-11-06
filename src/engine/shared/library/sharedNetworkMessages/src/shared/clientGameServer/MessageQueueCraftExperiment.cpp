@@ -32,16 +32,16 @@ MessageQueueCraftExperiment::~MessageQueueCraftExperiment()
 void MessageQueueCraftExperiment::pack(const MessageQueue::Data* const data, Archive::ByteStream & target)
 {
 	const MessageQueueCraftExperiment* const msg = safe_cast<const MessageQueueCraftExperiment*> (data);
+	
 	if (msg)
 	{
 		Archive::put (target, msg->getSequenceId());
 		
-		const std::vector<MessageQueueCraftExperiment::ExperimentInfo> & experiments =
-			msg->getExperiments();
-		int count = experiments.size();
+		const std::vector<MessageQueueCraftExperiment::ExperimentInfo> & experiments = msg->getExperiments();
+		int count = static_cast<int>(experiments.size());
 		Archive::put (target, count);
-		std::vector<MessageQueueCraftExperiment::ExperimentInfo>::const_iterator iter;
-		for (iter = experiments.begin(); iter != experiments.end(); ++iter)
+
+		for (auto iter = experiments.begin(); iter != experiments.end(); ++iter)
 		{
 			Archive::put (target, (*iter).attributeIndex);
 			Archive::put (target, (*iter).experimentPoints);

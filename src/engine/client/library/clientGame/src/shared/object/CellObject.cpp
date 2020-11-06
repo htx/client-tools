@@ -244,7 +244,7 @@ void CellObject::endBaselines()
 						IndexedTriangleList const & portalGeometry = portal->getGeometry ();
 						std::vector<Vector> const & vertices = portalGeometry.getVertices();
 						std::vector<int> const & indices = portalGeometry.getIndices();
-						uint const numberOfFaces = indices.size() / 3;
+						uint const numberOfFaces = static_cast<unsigned int>(indices.size()) / 3;
 
 						if (!m_radarPortalEdges)
 							m_radarPortalEdges = new std::vector<Vector>;

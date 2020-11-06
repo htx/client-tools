@@ -154,7 +154,7 @@ public:
 
 	void                        addOnDirtyCallback     (OnDirtyCallbackBase * newCallback);
 	virtual void                addVariable            (AutoDeltaVariableBase & var);
-	virtual size_t				getItemCount           () const;
+	unsigned int				getItemCount           () const override;
 	virtual void                packDeltas             (ByteStream & target) const;
 	virtual void                unpackDeltas           (ReadIterator & source);
 	virtual void                clearDeltas            () const;
@@ -689,7 +689,7 @@ inline void AutoDeltaVariable<ValueType>::set(const ValueType & source)
 	@author Justin Randall
 */
 template<typename ValueType>
-inline void AutoDeltaVariable<ValueType>::unpack(ReadIterator & source)
+void AutoDeltaVariable<ValueType>::unpack(ReadIterator & source)
 {
 	Archive::get(source, currentValue);
 	clearDelta();
@@ -698,7 +698,7 @@ inline void AutoDeltaVariable<ValueType>::unpack(ReadIterator & source)
 //-----------------------------------------------------------------------
 
 template<typename ValueType>
-inline void AutoDeltaVariable<ValueType>::unpackDelta(ReadIterator & source)
+void AutoDeltaVariable<ValueType>::unpackDelta(ReadIterator & source)
 {
 	Archive::get(source, currentValue);
 	touch();
@@ -724,7 +724,7 @@ public:
 	/** pure virtual */
 	virtual ~AutoDeltaContainer() = 0;
 	/** pure virtual */
-	virtual const size_t size() const = 0;
+	virtual const unsigned int size() const = 0;
 };
 
 //-----------------------------------------------------------------------

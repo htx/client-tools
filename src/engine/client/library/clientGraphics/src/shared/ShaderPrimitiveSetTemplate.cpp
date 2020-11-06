@@ -497,7 +497,7 @@ ShaderPrimitiveSetTemplate::LocalShaderPrimitiveTemplate::BucketedCollisionData:
 
 				//-- create bucketed face normals
 				m_bucketedFaceNormals[i] = new Vector[ms_normalLists[i].size()];
-				imemcpy(m_bucketedFaceNormals[i], &ms_normalLists[i][0], sizeof(Vector) * ms_normalLists[i].size());
+				memcpy(m_bucketedFaceNormals[i], &ms_normalLists[i][0], sizeof(Vector) * ms_normalLists[i].size());
 				ms_normalLists[i].clear();
 			}
 		}
@@ -1244,7 +1244,7 @@ void ShaderPrimitiveSetTemplate::LocalShaderPrimitiveTemplate::prepareToDraw(con
 		DEBUG_FATAL(m_sortedIndices->empty(),("ShaderPrimitiveSetTemplate::LocalShaderPrimitiveTemplate::prepareToDraw - Tried to draw using sorted indices, but there aren't any."));
 
 		const Vector cameraPosition = objectToWorldTransform.rotateTranslate_p2l(ShaderPrimitiveSorter::getCurrentCameraPosition());
-		const int nArrays = m_sortedIndices->size();
+		const int nArrays = static_cast<int>(m_sortedIndices->size());
 		int minArray = 0;
 		real minDot = m_sortedIndices->at(0).first.dot(cameraPosition);
 

@@ -255,7 +255,7 @@ void SwgCuiShipView::OnButtonPressed(UIWidget * const context)
 		SwgCuiSpaceGroupLaunch::NetworkIdSet::const_iterator iiEnd = acceptedMembers.end();
 
 		std::string parameterString = containedBy->getContainedByNetworkId().getValueString();
-		parameterString += " " + intToString(acceptedMembers.size());
+		parameterString += " " + intToString(static_cast<int>(acceptedMembers.size()));
 
 		for (; ii != iiEnd; ++ii)
 		{

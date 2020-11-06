@@ -91,7 +91,7 @@ namespace
 	inline  Unicode::String chooseRandomString (const LocalizedString & locstr, size_t start)
 	{
 		if (locstr.getNumLines () > 1)
-			return locstr.getStringLine (static_cast<size_t>(Random::random (start, static_cast<int32>(locstr.getNumLines ()) - 1)));
+			return locstr.getStringLine (static_cast<size_t>(Random::random (static_cast<int32>(start), static_cast<int32>(locstr.getNumLines ()) - 1)));
 
 		return locstr.getString ();
 	}
@@ -284,7 +284,7 @@ Unicode::String MoodManagerClient::getMoodAdverbPhrase (uint32 moodType, bool ra
 		{
 			size_t index = 0;
 			if (random)
-				index = Random::random (0, sv.size () - 1);
+				index = Random::random (0, static_cast<int32>(sv.size ()) - 1);
 
 			return sv [index];
 		}

@@ -35,7 +35,7 @@ public:
 	explicit BitStream(bool inputStream);
 	virtual ~BitStream(void);
 
-	virtual int    getOffset(void) const = 0;
+	virtual intptr_t getOffset(void) const = 0;
 	virtual void   outputBits(uint32 code, uint32 count) = 0;
 	virtual void   outputRack(void) = 0;
 	virtual	uint32 inputBits(uint32 count) = 0;
@@ -67,7 +67,7 @@ public:
 	BitBuffer(void *buffer, int size, bool inputStream);
 	virtual ~BitBuffer(void);
 
-	virtual int    getOffset(void) const;
+	virtual intptr_t getOffset(void) const;
 	virtual void   outputBits(uint32 code, uint32 count);
 	virtual void   outputRack(void);
 	virtual uint32 inputBits(uint32 count);
@@ -96,10 +96,10 @@ public:
 	BitFile(const char *fileName, bool inputStream);
 	virtual ~BitFile(void);
 
-	virtual int    getOffset(void) const;
-	virtual void   outputBits(uint32 code, uint32 count);
-	virtual void   outputRack(void);
-	virtual uint32 inputBits(uint32 count);
+	intptr_t getOffset(void) const override;
+	void   outputBits(uint32 code, uint32 count) override;
+	void   outputRack(void) override;
+	uint32 inputBits(uint32 count) override;
 };
 
 // ======================================================================
@@ -122,7 +122,7 @@ public:
 	explicit ByteStream(bool inputStream);
 	virtual ~ByteStream(void);
 
-	virtual int  getOffset(void) const = 0;
+	virtual intptr_t  getOffset(void) const = 0;
 	virtual void output(byte b) = 0;
 	virtual bool input(byte *b) = 0;
 };
@@ -152,7 +152,7 @@ public:
 	ByteBuffer(void *buffer, int size, bool inputStream);
 	virtual ~ByteBuffer(void);
 
-	virtual int  getOffset(void) const;
+	virtual intptr_t  getOffset(void) const;
 	virtual void output(byte b);
 	virtual bool input(byte *b);
 };
@@ -180,9 +180,9 @@ public:
 	ByteFile(const char *fileName, bool inputStream);
 	virtual ~ByteFile(void);
 
-	virtual int  getOffset(void) const;
-	virtual void output(byte b);
-	virtual bool input(byte *b);
+	intptr_t getOffset(void) const override;
+	void output(byte b) override;
+	bool input(byte *b) override;
 };
 
 // ======================================================================

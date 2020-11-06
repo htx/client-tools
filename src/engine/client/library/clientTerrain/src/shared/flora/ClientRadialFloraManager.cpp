@@ -792,12 +792,12 @@ void ClientRadialFloraManagerNamespace::debugReport ()
 	DEBUG_REPORT_PRINT (true, ("-- ClientRadialFloraManager\n"));
 	DEBUG_REPORT_PRINT (true, (" root entries = %i\n", ms_clearFloraEntryMap.size ()));
 
-	int total = 0;
-	ClearFloraEntryMap::iterator end = ms_clearFloraEntryMap.end ();
-	for (ClearFloraEntryMap::iterator iter = ms_clearFloraEntryMap.begin (); iter != end; ++iter)
-		total += iter->second->m_clearFloraEntryList->size ();
+	size_t total = 0;
 
-	DEBUG_REPORT_PRINT (true, ("total entries = %i\n", total));
+	for (auto it = ms_clearFloraEntryMap.begin(); it != ms_clearFloraEntryMap.end(); ++it)
+		total += it->second->m_clearFloraEntryList->size();
+
+	DEBUG_REPORT_PRINT (true, ("total entries = %zd\n", total));
 }
 
 //===================================================================

@@ -421,7 +421,7 @@ void SwgCuiGroundRadar::BlipPane::renderLineSegments (const UIPoint & objectPos,
 			uvVector.push_back   (uvs);
 		}
 
-		canvas.RenderLines (mask_canvas, lineVector.size (), &lineVector.front (), &uvVector.front ());
+		canvas.RenderLines (mask_canvas, static_cast<int>(lineVector.size()), &lineVector.front (), &uvVector.front ());
 	}
 
 	canvas.PopState ();

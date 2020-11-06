@@ -93,7 +93,7 @@ Floor::~Floor()
 				tempList.push_back(*it);
 			}
 
-			int footCount = tempList.size();
+			int footCount = static_cast<int>(tempList.size());
 
 			for(int i = 0; i < footCount; i++)
 			{
@@ -104,15 +104,15 @@ Floor::~Floor()
 	}
 
     const_cast<FloorMesh*>(m_mesh)->releaseReference();
-    m_mesh = NULL;
+    m_mesh = nullptr;
 
-	m_owner = NULL;
-	m_appearance = NULL;
+	m_owner = nullptr;
+	m_appearance = nullptr;
 
-    m_spatialSubdivisionHandle = NULL;
+    m_spatialSubdivisionHandle = nullptr;
 
 	delete m_extent;
-	m_extent = NULL;
+	m_extent = nullptr;
 }
 
 // ----------------------------------------------------------------------

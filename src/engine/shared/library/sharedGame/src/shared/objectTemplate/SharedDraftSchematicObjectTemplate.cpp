@@ -134,27 +134,26 @@ void SharedDraftSchematicObjectTemplate::getSlots(IngredientSlot &data, int inde
 
 	if (!m_slotsLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter slots in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter slots has not been defined in template %s!", DataResource::getName()));
+		base->getSlots(data, index);
+		return;
+	}
+
+	if (m_slotsAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getSlotsCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter slots has not been defined in template %s!", DataResource::getName()));
 			base->getSlots(data, index);
 			return;
 		}
-	}
-
-	if (m_slotsAppend && base != NULL)
-	{
-		int baseCount = base->getSlotsCount();
-		if (index < baseCount)
-			{
-				base->getSlots(data, index);
-				return;
-			}
 		index -= baseCount;
 	}
 
@@ -177,27 +176,27 @@ void SharedDraftSchematicObjectTemplate::getSlotsMin(IngredientSlot &data, int i
 
 	if (!m_slotsLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter slots in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter slots has not been defined in template %s!", DataResource::getName()));
+		base->getSlotsMin(data, index);
+		return;
+	}
+
+	if (m_slotsAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getSlotsCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter slots has not been defined in template %s!", DataResource::getName()));
 			base->getSlotsMin(data, index);
 			return;
 		}
-	}
-
-	if (m_slotsAppend && base != NULL)
-	{
-		int baseCount = base->getSlotsCount();
-		if (index < baseCount)
-			{
-				base->getSlotsMin(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -220,27 +219,27 @@ void SharedDraftSchematicObjectTemplate::getSlotsMax(IngredientSlot &data, int i
 
 	if (!m_slotsLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter slots in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+		
+		DEBUG_FATAL(base == NULL, ("Template parameter slots has not been defined in template %s!", DataResource::getName()));
+		base->getSlotsMax(data, index);
+		return;
+	}
+
+	if (m_slotsAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getSlotsCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter slots has not been defined in template %s!", DataResource::getName()));
 			base->getSlotsMax(data, index);
 			return;
 		}
-	}
-
-	if (m_slotsAppend && base != NULL)
-	{
-		int baseCount = base->getSlotsCount();
-		if (index < baseCount)
-			{
-				base->getSlotsMax(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -287,27 +286,27 @@ void SharedDraftSchematicObjectTemplate::getAttributes(SchematicAttribute &data,
 
 	if (!m_attributesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter attributes in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter attributes has not been defined in template %s!", DataResource::getName()));
+		base->getAttributes(data, index);
+		return;
+	}
+
+	if (m_attributesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getAttributesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter attributes has not been defined in template %s!", DataResource::getName()));
 			base->getAttributes(data, index);
 			return;
 		}
-	}
-
-	if (m_attributesAppend && base != NULL)
-	{
-		int baseCount = base->getAttributesCount();
-		if (index < baseCount)
-			{
-				base->getAttributes(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -331,27 +330,27 @@ void SharedDraftSchematicObjectTemplate::getAttributesMin(SchematicAttribute &da
 
 	if (!m_attributesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter attributes in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter attributes has not been defined in template %s!", DataResource::getName()));
+		base->getAttributesMin(data, index);
+		return;
+	}
+
+	if (m_attributesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getAttributesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter attributes has not been defined in template %s!", DataResource::getName()));
 			base->getAttributesMin(data, index);
 			return;
 		}
-	}
-
-	if (m_attributesAppend && base != NULL)
-	{
-		int baseCount = base->getAttributesCount();
-		if (index < baseCount)
-			{
-				base->getAttributesMin(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -375,27 +374,27 @@ void SharedDraftSchematicObjectTemplate::getAttributesMax(SchematicAttribute &da
 
 	if (!m_attributesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter attributes in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter attributes has not been defined in template %s!", DataResource::getName()));
+		base->getAttributesMax(data, index);
+		return;
+	}
+
+	if (m_attributesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getAttributesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter attributes has not been defined in template %s!", DataResource::getName()));
 			base->getAttributesMax(data, index);
 			return;
 		}
-	}
-
-	if (m_attributesAppend && base != NULL)
-	{
-		int baseCount = base->getAttributesCount();
-		if (index < baseCount)
-			{
-				base->getAttributesMax(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 

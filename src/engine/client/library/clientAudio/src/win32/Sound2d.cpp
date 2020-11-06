@@ -37,12 +37,12 @@ namespace Sound2dNamespace
 
 	IndexPool* getIndexPool()
 	{
-		if (s_indexPools.size() == 0)
+		if (s_indexPools.empty())
 		{
 			IndexPool* pool = new IndexPool;
 			pool->reserve(10);
 
-			s_indexPools.push_back(pool);
+			s_indexPools.emplace_back(pool);
 		}
 
 		IndexPool* ret = s_indexPools.back();
@@ -52,27 +52,25 @@ namespace Sound2dNamespace
 
 	void releaseIndexPool(IndexPool* buf)
 	{
-		s_indexPools.push_back(buf);
+		s_indexPools.emplace_back(buf);
 	}
 
 	void initIndexPools()
 	{
 		s_indexPools.reserve(10);
 
-		int i;
-		for (i = 0; i < 10; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
 			IndexPool* pool = new IndexPool;
 			pool->reserve(10);
 
-			s_indexPools.push_back(pool);
+			s_indexPools.emplace_back(pool);
 		}
 	}
 
 	void clearIndexPools()
 	{
-		unsigned int i;
-		for (i = 0; i < s_indexPools.size(); ++i)
+		for (unsigned int i = 0; i < s_indexPools.size(); ++i)
 		{
 			delete s_indexPools[i];
 		}
@@ -126,14 +124,11 @@ Sound2d::Sound2d(Sound2dTemplate const *sound2dTemplate, SoundId const &soundId)
 	DEBUG_WARNING((getTemplate()->getSampleCount() < 0), ("Trying to create a sound with no samples specified."));
 
 #ifdef _DEBUG
-
-	Sound2dTemplate::StringList::const_iterator iterSampleImagePathList = getTemplate()->getSampleList().begin();
-
-	for (; iterSampleImagePathList != getTemplate()->getSampleList().end(); ++iterSampleImagePathList)
+	for (auto iterSampleImagePathList = getTemplate()->getSampleList().begin(); iterSampleImagePathList != getTemplate()->getSampleList().end(); ++iterSampleImagePathList)
 	{
 		CrcString const *path = (*iterSampleImagePathList);
 
-		if (path != NULL)
+		if (path != nullptr)
 		{
 			m_totalSampleSize += Audio::getSampleSize(path->getString());
 		}
@@ -146,7 +141,7 @@ Sound2d::Sound2d(Sound2dTemplate const *sound2dTemplate, SoundId const &soundId)
 
 	// index pool (for randomNoRepeats)
 
-	int const count = static_cast<int>(getTemplate()->getSampleCount());
+	int const count = getTemplate()->getSampleCount();
 
 	if (count > 1 && getTemplate()->getPlayOrder() == Sound2dTemplate::PO_randomNoRepeat)
 	{
@@ -155,8 +150,7 @@ Sound2d::Sound2d(Sound2dTemplate const *sound2dTemplate, SoundId const &soundId)
 
 		m_indexPool->resize(count);
 
-		int i;
-		for (i = 0; i < count; ++i)
+		for (int i = 0; i < count; ++i)
 		{
 			(*m_indexPool)[i] = i;
 		}
@@ -166,7 +160,7 @@ Sound2d::Sound2d(Sound2dTemplate const *sound2dTemplate, SoundId const &soundId)
 //-----------------------------------------------------------------------------
 Sound2d::~Sound2d()
 {
-	if (m_indexPool != 0)
+	if (m_indexPool != nullptr)
 	{
 		releaseIndexPool(m_indexPool);
 	}

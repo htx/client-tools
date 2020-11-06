@@ -919,6 +919,7 @@ void DraftSchematicInfo::setResourceWeights               (const AttribWeightVec
 
 	const SharedDraftSchematicObjectTemplate * sdsot = NULL;
 	const ConstCharCrcString & schematicName = ObjectTemplateList::lookUp(getSharedDraftSchematicTemplate());
+	
 	if (!schematicName.isEmpty())
 	{
 		sdsot = dynamic_cast<const SharedDraftSchematicObjectTemplate *>(
@@ -931,8 +932,8 @@ void DraftSchematicInfo::setResourceWeights               (const AttribWeightVec
 		return;
 	}
 	
-	const int attributeCount = sdsot->getAttributesCount ();
-	const int numWeights = static_cast<int>(m_assemblyWeights->size ());
+	const int attributeCount = static_cast<int>(sdsot->getAttributesCount());
+	const int numWeights = static_cast<int>(m_assemblyWeights->size());
 	
 	if (attributeCount < numWeights)
 	{

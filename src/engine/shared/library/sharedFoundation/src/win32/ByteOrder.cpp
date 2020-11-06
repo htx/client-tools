@@ -13,6 +13,8 @@
 // I'm using the arguments, but the compiler can't tell that
 #pragma warning(disable: 4100)
 
+#ifndef _WIN64
+
 __declspec(naked) ulong ntohl(ulong netLong)
 {
 	_asm
@@ -55,4 +57,5 @@ __declspec(naked) ushort htons(ushort hostShort)
 	}
 } //lint !e533 !e715 // function should return a value, argument not referenced
 
+#endif
 // ======================================================================

@@ -127,22 +127,26 @@ void ImageDesignChangeMessage::pack(MessageQueue::Data const * const data, Archi
 		Archive::put(target, msg->getHairSkillMod());
 
 		std::map<std::string, float> const & morphs = msg->getMorphParameterChanges();
-		int size = morphs.size();
+		int size = static_cast<int>(morphs.size());
+		
 		Archive::put(target, size);
-		for(std::map<std::string, float>::const_iterator i = morphs.begin(); i != morphs.end(); ++i)
+		
+		for(auto i = morphs.begin(); i != morphs.end(); ++i)
 		{
 			Archive::put(target, i->first);
 			Archive::put(target, i->second);
 		}
 
 		std::map<std::string, int> const & indexes = msg->getIndexParameterChanges();
-		size = indexes.size();
+		size = static_cast<int>(indexes.size());
 		Archive::put(target, size);
-		for(std::map<std::string, int>::const_iterator j = indexes.begin(); j != indexes.end(); ++j)
+		
+		for(auto j = indexes.begin(); j != indexes.end(); ++j)
 		{
 			Archive::put(target, j->first);
 			Archive::put(target, j->second);
 		}
+		
 		Archive::put(target, msg->getHoloEmote());
 	}
 }

@@ -243,7 +243,7 @@ void FloorMesh::calcBounds ( void ) const
 
 int FloorMesh::getVertexCount ( void ) const
 {
-	return m_vertices->size();
+	return static_cast<int>(m_vertices->size());
 }
 
 Vector const & FloorMesh::getVertex ( int whichVertex ) const
@@ -260,7 +260,7 @@ void FloorMesh::setVertex ( int whichVertex, Vector const & newPoint )
 
 int FloorMesh::getTriCount ( void ) const
 {
-	return m_floorTris->size();
+	return static_cast<int>(m_floorTris->size());
 }
 
 IndexedTri const & FloorMesh::getIndexedTri ( int whichTri ) const
@@ -377,9 +377,9 @@ void FloorMesh::deleteTris ( IntVector const & triIndices )
 
 	// ----------
 
-	int indexCount = triIndices.size();
+	size_t indexCount = triIndices.size();
 
-	for(int iBad = 0; iBad < indexCount; iBad++)
+	for(size_t iBad = 0; iBad < indexCount; iBad++)
 	{
 		getFloorTri( triIndices[iBad] ).setMark(1);
 	}
@@ -394,7 +394,7 @@ void FloorMesh::deleteTris ( IntVector const & triIndices )
 
 		if(F.getMark() != 1)
 		{
-			pGoodTris->push_back(F);
+			pGoodTris->emplace_back(F);
 		}
 	}
 
@@ -500,9 +500,9 @@ void FloorMesh::build ( VectorVector const & verts, IntVector const & indices )
 
 	// ----------
 
-	int nTris = indices.size() / 3;
+	size_t nTris = indices.size() / 3;
 
-	for(int i = 0; i < nTris; i++)
+	for(size_t i = 0; i < nTris; i++)
 	{
 		int A = indices[i * 3 + 0];
 		int B = indices[i * 3 + 1];
@@ -525,9 +525,9 @@ void FloorMesh::addCrossableEdges ( IntVector const & edgePairs )
 
 		// ----------
 		
-		int nPairs = edgePairs.size() / 2;
+		size_t nPairs = edgePairs.size() / 2;
 
-		for(int iPair = 0; iPair < nPairs; iPair++)
+		for(size_t iPair = 0; iPair < nPairs; iPair++)
 		{
 			int A = edgePairs[iPair * 2 + 0];
 			int B = edgePairs[iPair * 2 + 1];
@@ -555,9 +555,9 @@ void FloorMesh::addRampEdges ( IntVector const & edgePairs )
 
 		// ----------
 		
-		int nPairs = edgePairs.size() / 2;
+		size_t nPairs = edgePairs.size() / 2;
 
-		for(int iPair = 0; iPair < nPairs; iPair++)
+		for(size_t iPair = 0; iPair < nPairs; iPair++)
 		{
 			int A = edgePairs[iPair * 2 + 0];
 			int B = edgePairs[iPair * 2 + 1];
@@ -578,9 +578,9 @@ void FloorMesh::addRampEdges ( IntVector const & edgePairs )
 
 void FloorMesh::addFallthroughTris ( IntVector const & triIDs )
 {
-	int idCount = triIDs.size();
+	size_t idCount = triIDs.size();
 
-	for(int iTri = 0; iTri < idCount; iTri++)
+	for(size_t iTri = 0; iTri < idCount; iTri++)
 	{
 		int index = triIDs[iTri];
 
@@ -833,7 +833,7 @@ void FloorMesh::write ( Iff & iff )
 
 	// ----------
 
-	if(m_boxTree != NULL)
+	if(m_boxTree != nullptr)
 	{
 		m_boxTree->write(iff);
 	}
@@ -844,14 +844,14 @@ void FloorMesh::write ( Iff & iff )
 	{
 		iff.insertChunk(TAG_BEDG);
 		{
-			int totalEdgeCount = m_crossableEdges->size() + m_uncrossableEdges->size() + m_wallBaseEdges->size();
+			size_t totalEdgeCount = m_crossableEdges->size() + m_uncrossableEdges->size() + m_wallBaseEdges->size();
 
-			iff.insertChunkData(totalEdgeCount);
+			iff.insertChunkData(static_cast<int>(totalEdgeCount));
 
 			{
-				int edgeCount = m_crossableEdges->size();
+				size_t edgeCount = m_crossableEdges->size();
 
-				for(int i = 0; i < edgeCount; i++)
+				for(size_t i = 0; i < edgeCount; i++)
 				{
 					FloorEdgeId & id = m_crossableEdges->at(i);
 
@@ -864,9 +864,9 @@ void FloorMesh::write ( Iff & iff )
 			}
 
 			{
-				int edgeCount = m_uncrossableEdges->size();
+				size_t edgeCount = m_uncrossableEdges->size();
 
-				for(int i = 0; i < edgeCount; i++)
+				for(size_t i = 0; i < edgeCount; i++)
 				{
 					FloorEdgeId & id = m_uncrossableEdges->at(i);
 
@@ -879,9 +879,9 @@ void FloorMesh::write ( Iff & iff )
 			}
 		
 			{
-				int edgeCount = m_wallBaseEdges->size();
+				size_t edgeCount = m_wallBaseEdges->size();
 
-				for(int i = 0; i < edgeCount; i++)
+				for(size_t i = 0; i < edgeCount; i++)
 				{
 					FloorEdgeId & id = m_wallBaseEdges->at(i);
 
@@ -2390,9 +2390,9 @@ bool FloorMesh::matchSegmentToPoly ( Vector const & a, Vector const & b, VectorV
 	// Test 2 - Match the segment to the poly if the vertices match a portal edge
 	// to within 5 centimeters
 
-	int vertCount = polyVerts.size();
+	size_t vertCount = polyVerts.size();
 
-	for(int i = 0; i < vertCount; i++)
+	for(size_t i = 0; i < vertCount; i++)
 	{
 		Vector pa = polyVerts[i + 0]; 
 		Vector pb = polyVerts[(i + 1) % vertCount];
@@ -2467,9 +2467,9 @@ bool FloorMesh::flagPortalEdges( VectorVector const & portalVerts, int portalId 
 
 	findAdjacentBoundaryEdges(portalVerts,tempIds);
 
-	int idCount = tempIds.size();
+	size_t idCount = tempIds.size();
 
-	for(int i = 0; i < idCount; i++)
+	for(size_t i = 0; i < idCount; i++)
 	{
 		EdgeId const & id = tempIds[i];
 
@@ -3060,9 +3060,9 @@ bool FloorMesh::testAboveCrossables ( FloorLocator const & testLoc ) const
 
 	Circle circle( testLoc.getOffsetPosition_l() + offset, testLoc.getRadius() - gs_clearTolerance );
 
-	int edgeCount = m_crossableEdges->size();
+	size_t edgeCount = m_crossableEdges->size();
 
-	for(int i = 0; i < edgeCount; i++)
+	for(size_t i = 0; i < edgeCount; i++)
 	{
 		FloorEdgeId id = m_crossableEdges->at(i);
 
@@ -3091,9 +3091,9 @@ bool FloorMesh::testAboveCrossables ( FloorLocator const & testLoc, Vector const
 
 	Circle circle( testLoc.getOffsetPosition_l() + offset, testLoc.getRadius() - gs_clearTolerance );
 
-	int edgeCount = m_crossableEdges->size();
+	size_t edgeCount = m_crossableEdges->size();
 
-	for(int i = 0; i < edgeCount; i++)
+	for(size_t i = 0; i < edgeCount; i++)
 	{
 		FloorEdgeId id = m_crossableEdges->at(i);
 
@@ -3570,9 +3570,9 @@ bool FloorMesh::intersectBoundary ( FloorEdgeIdVec * edgeList, FloorLocator cons
 {
 	bool hit = false;
 
-	int edgeCount = edgeList->size();
+	size_t edgeCount = edgeList->size();
 
-	for( int i = 0; i < edgeCount; i++)
+	for( size_t i = 0; i < edgeCount; i++)
 	{
 		FloorEdgeId & id = edgeList->at(i);
 
@@ -3580,13 +3580,11 @@ bool FloorMesh::intersectBoundary ( FloorEdgeIdVec * edgeList, FloorLocator cons
 
 		FloorLocator hitLoc;
 
-		bool hitEdgeId = intersectEdge(startLoc,V,id,useRadius,false,hitLoc);
-
-		if(hitEdgeId)
+		if(intersectEdge(startLoc,V,id,useRadius,false,hitLoc))
 		{
 			hit = true;
 
-			results.push_back(hitLoc);
+			results.emplace_back(hitLoc);
 		}
 	}
 
@@ -3732,9 +3730,9 @@ bool FloorMesh::findEntrance ( FloorLocator const & startLoc, Vector const & del
 
 	int minIndex = -1;
 
-	int resultCount = results.size();
+	size_t resultCount = results.size();
 
-	for (int i = 0; i < resultCount; i++)
+	for (size_t i = 0; i < resultCount; i++)
 	{
 		FloorLocator const & entryLoc = results[i];
 
@@ -3783,7 +3781,7 @@ bool FloorMesh::findEntrance ( FloorLocator const & startLoc, Vector const & del
 		{
 			minDistA = distA;
 			minDistB = distB;
-			minIndex = i;
+			minIndex = static_cast<int>(i);
 		}
 	}
 
@@ -3948,13 +3946,13 @@ bool FloorMesh::getDistanceUncrossable2d ( Vector const & V, float maxDistance, 
 
 	// ----------
 
-	int count = m_uncrossableEdges->size();
+	size_t count = m_uncrossableEdges->size();
 
 	float minDistance = maxDistance;
 
 	FloorEdgeId minId(-1,-1);
 
-	for(int i = 0; i < count; i++)
+	for(size_t i = 0; i < count; i++)
 	{
 		FloorEdgeId const & id = m_uncrossableEdges->at(i);
 
@@ -3976,10 +3974,8 @@ bool FloorMesh::getDistanceUncrossable2d ( Vector const & V, float maxDistance, 
 
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 // ======================================================================

@@ -8,7 +8,7 @@
 
 #include "FirstSwgClient.h"
 #include "ClientMain.h"
-
+ 
 #include "clientAnimation/SetupClientAnimation.h"
 #include "clientAudio/Audio.h"
 #include "clientAudio/SetupClientAudio.h"
@@ -86,7 +86,7 @@
 
 #include <dinput.h>
 #include <ctime>
-
+ 
 extern void externalCommandHandler(const char*);
 
 namespace ClientMainNamespace
@@ -353,7 +353,9 @@ int ClientMain(
 			SetupSwgClientUserInterface::install();
 
 			//-- G15 LCD
+#ifndef _WIN64
 			SwgCuiG15Lcd::initializeLcd();
+#endif
 
 			//-- run game
 			rootInstallTimer.manualExit();

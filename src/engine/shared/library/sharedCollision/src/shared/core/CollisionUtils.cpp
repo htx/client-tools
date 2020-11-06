@@ -404,61 +404,9 @@ inline bool vectorLess ( Vector const & A, Vector const & B )
 	return false;
 }
 
+// ----------------------------------------------------------------------
 
-// This is the original version of the test. It's short, simple, and wrong.
-// It doesn't handle degenerate cases and can return inconsistent results if 
-// the lines are swapped or the line directions are negated.
-
-/*
-bool TestLineLineTwist ( Line3d const & A, Line3d const & B )
-{
-	Vector D = B.getPoint() - A.getPoint();
-
-	return D.cross(A.getNormal()).dot(B.getNormal()) < 0.0f;
-}
-*/
-
-#ifdef _MSC_VER
-
-inline void faster_normalize( Vector & V )
-{
-	float t = (V.x * V.x) + (V.y * V.y) + (V.z * V.z);
-
-	__asm fld t;
-	__asm fsqrt;
-	__asm fstp t;
-
-	t = 1.0f / t;
-
-	V.x *= t;
-	V.y *= t;
-	V.z *= t;
-}
-
-int     TestLineTwist4	( Line3d const & A, Line3d const & B )
-{
-	float epsilon = 0.00005f;
-
-	Vector AN = A.getNormal();
-	Vector BN = B.getNormal();
-
-	faster_normalize(AN);
-	faster_normalize(BN);
-
-	Vector N = AN.cross(BN);
-
-	Vector D = B.getPoint() - A.getPoint();
-
-	real V = D.dot(N);
-
-	if      ( V >  epsilon )  return 1;
-	else if ( V < -epsilon )  return -1;
-	else                      return 0;
-}
-
-#else
-
-int     TestLineTwist4	( Line3d const & A, Line3d const & B )
+int TestLineTwist4(Line3d const & A, Line3d const & B)
 {
 	float epsilon = 0.00005f;
 
@@ -474,13 +422,14 @@ int     TestLineTwist4	( Line3d const & A, Line3d const & B )
 
 	real V = D.dot(N);
 
-	if      ( V >  epsilon )  return 1;
-	else if ( V < -epsilon )  return -1;
-	else                      return 0;
+	if(V > epsilon) return 1;
+	if(V < -epsilon) return -1;
+
+	return 0;
 }
 
-#endif
-
+// ----------------------------------------------------------------------
+	
 int TestLineLineTwist ( Line3d const & inA, Line3d const & inB )
 {
 	Line3d A = inA;
@@ -607,7 +556,7 @@ CollinearResult testCollinear ( Vector const & V, Vector const & A, Vector const
 
 bool tangentPointL ( Vector const & V, VertexList const & poly, int index )
 {
-	int size = poly.size();
+	int size = static_cast<int>(poly.size());
 
 	int iA = (index > 0) ? index - 1 : size - 1;
 	int iB = index;
@@ -634,7 +583,7 @@ bool tangentPointL ( Vector const & V, VertexList const & poly, int index )
 
 bool tangentPointR ( Vector const & V, VertexList const & poly, int index )
 {
-	int size = poly.size();
+	int size = static_cast<int>(poly.size());
 
 	int iA = (index > 0) ? index - 1 : size - 1;
 	int iB = index;
@@ -659,7 +608,7 @@ bool tangentPointR ( Vector const & V, VertexList const & poly, int index )
 
 void rightTangent ( Vector const & point, VertexList const & poly, int & index )
 {
-    int size = poly.size();
+    int size = static_cast<int>(poly.size());
 
     for(int i = 0; i < size; i++)
     {
@@ -675,7 +624,7 @@ void rightTangent ( Vector const & point, VertexList const & poly, int & index )
 
 void leftTangent ( Vector const & point, VertexList const & poly, int & index )
 {
-    int size = poly.size();
+    int size = static_cast<int>(poly.size());
 
     for(int i = 0; i < size; i++)
     {
@@ -698,8 +647,8 @@ void leftTangent ( Vector const & point, VertexList const & poly, int & index )
 
 void rightTangent ( VertexList const & polyA, VertexList const & polyB, int & indexA, int & indexB )
 {
-    int sizeA = polyA.size();
-	int sizeB = polyB.size();
+    int sizeA = static_cast<int>(polyA.size());
+	int sizeB = static_cast<int>(polyB.size());
 
     int i(0);
 
@@ -743,7 +692,7 @@ void rightTangent ( VertexList const & polyA, VertexList const & polyB, int & in
 void appendPoly ( VertexList const & poly, int min, int max, VertexList & outPoly )
 {
 	int cursor = min;
-	int size = poly.size();
+	int size = static_cast<int>(poly.size());
 
 	do
 	{
@@ -839,7 +788,7 @@ void MergePointLine ( Vector const & pointA, VertexList const & lineB, VertexLis
 
 void MergePointPoly ( Vector const & pointA, VertexList const & polyB, VertexList & outPoly )
 {
-	int sizeB = polyB.size();
+	int sizeB = static_cast<int>(polyB.size());
 
 	if(sizeB == 0) { outPoly.push_back(pointA); return; }
 	if(sizeB == 1) { MergePointPoint(pointA,polyB[0],outPoly); return; }
@@ -858,8 +807,8 @@ void MergePointPoly ( Vector const & pointA, VertexList const & polyB, VertexLis
 
 void MergePolyPoly ( VertexList & polyA, VertexList & polyB, VertexList & outPoly )
 {
-	int sizeA = polyA.size();
-	int sizeB = polyB.size();
+	int sizeA = static_cast<int>(polyA.size());
+	int sizeB = static_cast<int>(polyB.size());
 
 	if(sizeA == 0) { outPoly = polyB; return; }
     if(sizeA == 1) { MergePointPoly(polyA[0],polyB,outPoly); return; }
@@ -1147,10 +1096,11 @@ RangeLoop CalcAvoidanceThetas ( Sphere const & S, BaseExtent const * extent )
 
 	// ----------
 
-	if     (type == ET_Simple)    return CalcAvoidanceThetas(S,safe_cast<SimpleExtent const *>(extent));
-	else if(type == ET_Component) return CalcAvoidanceThetas(S,safe_cast<ComponentExtent const *>(extent));
-	else if(type == ET_Detail)    return CalcAvoidanceThetas(S,safe_cast<DetailExtent const *>(extent));
-	else                          return RangeLoop::empty;
+	if(type == ET_Simple)    return CalcAvoidanceThetas(S,safe_cast<SimpleExtent const *>(extent));
+	if(type == ET_Component) return CalcAvoidanceThetas(S,safe_cast<ComponentExtent const *>(extent));
+	if(type == ET_Detail)    return CalcAvoidanceThetas(S,safe_cast<DetailExtent const *>(extent));
+
+	return RangeLoop::empty;
 }
 
 // ----------
@@ -1159,13 +1109,13 @@ RangeLoop CalcAvoidanceThetas ( Sphere const & S, ExtentVec const & extents )
 {
 	RangeLoop range = RangeLoop::empty;
 
-	int count = extents.size();
+	int count = static_cast<int>(extents.size());
 
 	for(int i = 0; i < count; i++)
 	{
 		BaseExtent const * child = extents[i];
 
-		if(child == NULL) continue;
+		if(child == nullptr) continue;
 
 		RangeLoop temp = CalcAvoidanceThetas(S,child);
 
@@ -1388,7 +1338,7 @@ void explodeObstacle ( Sphere const & sphere, Vector const & delta, BaseExtent c
 
 void explodeObstacle ( Sphere const & sphere, Vector const & delta, ExtentVec const & extentVec, ExtentVec & outList )
 {
-	int count = extentVec.size();
+	int count = static_cast<int>(extentVec.size());
 
 	for(int i = 0; i < count; i++)
 	{
@@ -1400,7 +1350,7 @@ void explodeObstacle ( Sphere const & sphere, Vector const & delta, ExtentVec co
 
 bool CalcAvoidancePoint ( Sphere const & sphere, Transform const & sphereTransform_p2w, Vector const & delta, CollisionProperty const * obstacle, Vector & out )
 {
-	if(obstacle == NULL) return false;
+	if(obstacle == nullptr) return false;
 
 	static ExtentVec tempExtents;
 

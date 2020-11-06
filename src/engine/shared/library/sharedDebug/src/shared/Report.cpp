@@ -121,7 +121,7 @@ void Report::puts(const char *buffer)
 		if (hStdOut)
 		{
 			DWORD bytesWritten;
-			WriteFile(hStdOut, buffer, strlen(buffer), &bytesWritten, 0);
+			WriteFile(hStdOut, buffer, static_cast<DWORD>(strlen(buffer)), &bytesWritten, nullptr);
 		}
 #else
 		fputs(buffer, stdout);

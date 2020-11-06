@@ -226,14 +226,17 @@ void FakeUtf8ToEnglish(char *englishDestination, char *fakeSource, int destinati
 Unicode::String UTF8ToUnicode(const char *source)
 {
 	Unicode::String s = narrowToWide("");
-	int length = strlen(source) + 1;
-	UTF16 *buffer = new UTF16[length];	
-	if (buffer != NULL)
+	int length = static_cast<int>(strlen(source)) + 1;
+	
+	UTF16 *buffer = new UTF16[length];
+	
+	if (buffer != nullptr)
 	{
 		UTF8_convertToUTF16(const_cast<char *>(source) , buffer, length);
 		s =buffer;
 		delete [] buffer;
 	}
+	
 	return s;
 }
 

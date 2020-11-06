@@ -76,7 +76,7 @@ void CuiModifierManagerNamespace::addModifierNode(ModifierNode &parentNode, std:
 {
 	// Find the correct position depending on our depth
 
-	int position = std::string::npos;
+	size_t position = std::string::npos;
 	
 	for (int i = 0; i < depth; ++i)
 	{

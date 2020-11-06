@@ -179,11 +179,12 @@ UiMemoryBlockManager::~UiMemoryBlockManager()
 
 void *UiMemoryBlockManager::allocMem(size_t const size, bool)
 {
-	void * mem = NULL;
+	void * mem = nullptr;
 
 	if (size) 
 	{
-		MemoryMap::iterator const itMem = m_memoryMap->find(size);
+		MemoryMap::iterator const itMem = m_memoryMap->find(static_cast<int>(size));
+		
 		if (itMem == m_memoryMap->end()) 
 		{
 			size_t const requestedSize = s_alignment + size + sizeof(size_t);
@@ -200,7 +201,7 @@ void *UiMemoryBlockManager::allocMem(size_t const size, bool)
 
 #ifdef _DEBUG
 			m_allAllocations->insert(mem);
-			m_bytesAllocated += size;
+			m_bytesAllocated += static_cast<int>(size);
 #endif
 		}
 		else

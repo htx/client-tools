@@ -1114,13 +1114,14 @@ uint32 InputMap::getCommandBindings (CommandBindInfoSet *& cmdBindInfoSets, cons
 	//-- first determine the number of commands to process
 	uint32 set_size = 0;
 
-	if (cmd == 0)
-		set_size = m_cmds->size ();
+	if (cmd == nullptr)
+		set_size = static_cast<uint32>(m_cmds->size());
 	else
 	{
-		for (CommandVector::iterator it = m_cmds->begin (); it != m_cmds->end (); ++it)
+		for (auto it = m_cmds->begin (); it != m_cmds->end (); ++it)
 		{
 			const Command * const theCmd = *it;
+			
 			if (cmd == theCmd)
 				++set_size;
 		}
@@ -1128,7 +1129,7 @@ uint32 InputMap::getCommandBindings (CommandBindInfoSet *& cmdBindInfoSets, cons
 
 	if (set_size == 0)
 	{
-		cmdBindInfoSets	= 0;
+		cmdBindInfoSets	= nullptr;
 		return 0;
 	}
 
@@ -1137,7 +1138,8 @@ uint32 InputMap::getCommandBindings (CommandBindInfoSet *& cmdBindInfoSets, cons
 	//-----------------------------------------------------------------
 
 	uint32 array_index = 0;
-	for (CommandVector::iterator it = m_cmds->begin (); it != m_cmds->end (); ++it)
+	
+	for (auto it = m_cmds->begin (); it != m_cmds->end (); ++it)
 	{
 		const Command * const theCmd = *it;
 
@@ -1181,7 +1183,7 @@ uint32 InputMap::getCommandBindings (CommandBindInfoSet *& cmdBindInfoSets, cons
 		}
 		else
 		{
-			cbis.numBinds = biv.size ();
+			cbis.numBinds = static_cast<uint32>(biv.size ());
 			cbis.binds = new BindInfo [cbis.numBinds];
 
 			const std::vector<BindInfo>::const_iterator end = biv.end ();
@@ -1522,7 +1524,7 @@ const InputMap::Command * InputMap::findCommandByName (const char * name, bool o
 
 uint32 InputMap::getNumCommands () const
 {
-	return NON_NULL(m_cmds)->size ();
+	return static_cast<uint32>(NON_NULL(m_cmds)->size ());
 }
 
 //----------------------------------------------------------------------

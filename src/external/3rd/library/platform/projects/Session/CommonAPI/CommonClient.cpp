@@ -8,6 +8,7 @@
 #include "CommonMessages.h"
 #include "Base/Platform.h"
 #include <algorithm>
+#include <random>
 
 
 using namespace std;
@@ -137,7 +138,8 @@ CConnectionManager::CConnectionManager(apiCore & parent, std::vector<std::string
     for (unsigned serverIndex = 0; serverIndex < serverList.size(); serverIndex++)
     {
         std::string address = serverList[serverIndex];
-        unsigned portIndex = address.find(':');
+        size_t portIndex = address.find(':');
+    	
         if (portIndex != string::npos)
         {
             std::string host = address.substr(0, portIndex);
@@ -147,10 +149,12 @@ CConnectionManager::CConnectionManager(apiCore & parent, std::vector<std::string
 				continue;
 
             portIndex = port.find('-');
+        	
             if (portIndex == string::npos)
             {
 				if (atoi(port.c_str()) == 0)
 					continue;
+            	
 				mServerArray.push_back(address);
 				mServerCount++;
             }
@@ -189,9 +193,10 @@ CConnectionManager::CConnectionManager(apiCore & parent, std::vector<std::string
 
     mUdpManager = new UdpManager(&mParams);
 
-	srand((int)Base::getTimer()+time(0));
-	RandFunction myRand;
-    random_shuffle(mServerArray.begin(), mServerArray.end(), myRand);
+	srand(static_cast<unsigned int>(getTimer() + time(nullptr)));
+	
+    shuffle(mServerArray.begin(), mServerArray.end(), std::mt19937(std::random_device()()));
+	
     mConnectionArray.resize(mServerCount,0);
     for (unsigned i=0; i<mServerCount; i++)
     {
@@ -224,7 +229,7 @@ void CConnectionManager::Process()
     //  3. (and) connection delay has expired or there are no active connections
     if (mActiveCount < mMaxConnections && !mDisconnectedQueue.empty())
     {
-        if (!mConnectionCount || mConnectionDelay < (unsigned)time(0))
+        if (!mConnectionCount || mConnectionDelay < time(nullptr))
         {
             Connect();
         }
@@ -331,7 +336,7 @@ bool CConnectionManager::CanSend()
 
 void CConnectionManager::SetConnectionDelay()
 {
-    mConnectionDelay = time(0) + CONNECTION_DELAY;
+    mConnectionDelay = time(nullptr) + CONNECTION_DELAY;
 }
 
 void CConnectionManager::OnConnectionOpened(unsigned index)
@@ -359,7 +364,8 @@ void CConnectionManager::OnConnectionClosed(unsigned index)
 
 bool CConnectionManager::ParseAddress(const std::string & full, std::string & address, int & port)
 {
-    unsigned index = full.find(':');
+    size_t index = full.find(':');
+	
     if (full.length() == 0 || index == string::npos)
         return false;
 
@@ -422,8 +428,8 @@ apiCore::apiCore(apiClient * parent, const char * version, const char * serverLi
     mInCallback(false)
 {
     std::string list = serverList;
-    unsigned offset=0;
-    unsigned index=0;
+    size_t offset = 0;
+    size_t index;
 
     while ((index = list.find(' ',offset)) != std::string::npos)
     {
@@ -613,7 +619,7 @@ void apiCore::Process()
         return;
     mInCallback = true;
 
-    unsigned currentTime = time(0);
+    time_t currentTime = time(nullptr);
 
     ////////////////////////////////////////
     //  Process connection manager
@@ -628,11 +634,11 @@ void apiCore::Process()
     //  Check timeout in Request Map
     if (mExpirationTimeout <= currentTime)
     {
-        map<unsigned,apiTrackedRequest>::iterator mapIterator = mRequestMap.begin();
+	    auto mapIterator = mRequestMap.begin();
         while (mapIterator != mRequestMap.end())
         {
             apiTrackedRequest & request = (*mapIterator).second;
-            mapIterator++;
+            ++mapIterator;
 
             if (request.Expired())
             {
@@ -653,7 +659,7 @@ void apiCore::Process()
         if (mapIterator != mRequestMap.end())
         {
             apiTrackedRequest & request = mapIterator->second;
-            Timeout(request.GetMessageId(), trackingNumber, (void *)request.GetUserData());
+            Timeout(request.GetMessageId(), trackingNumber, const_cast<void*>(request.GetUserData()));
             mRequestMap.erase(mapIterator);
         }
         mTimeoutQueue.pop_front();
@@ -722,7 +728,7 @@ apiTrackedRequest::apiTrackedRequest(apiTrackingNumber trackingNumber, const uns
     if (mDuration == 0)
         mDuration = DEFAULT_TIMEOUT;
 
-    mTimeout = time(0) + mDuration;
+    mTimeout = time(nullptr) + mDuration;
 }
 
 apiTrackedRequest::apiTrackedRequest(const apiTrackedRequest & copy) :
@@ -755,7 +761,7 @@ const void * apiTrackedRequest::GetUserData()
 
 bool apiTrackedRequest::Expired()
 {
-    return mTimeout < (unsigned)time(0);
+    return mTimeout < time(nullptr);
 }
 
 

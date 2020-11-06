@@ -135,8 +135,8 @@
     <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>..\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Threaded|Win32'">
     <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
@@ -147,12 +147,12 @@
     <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>..\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\../../../lib/$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>..\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>..\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Threaded|x64'">
     <OutDir>.\../../../lib/$(Platform)\$(Configuration)\</OutDir>
@@ -271,7 +271,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>
@@ -391,7 +391,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\../../../lib/$(Platform)\$(Configuration)\Base.lib</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <Bscmake>

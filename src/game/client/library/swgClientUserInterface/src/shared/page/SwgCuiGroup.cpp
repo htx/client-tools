@@ -277,7 +277,7 @@ void SwgCuiGroup::update(float deltaTimeSecs)
 		else
 		{
 			s_groupPickupTimerActive = false;
-			resizeGroupWindow(m_mfds->size());
+			resizeGroupWindow(static_cast<int>(m_mfds->size()));
 		}
 	}
 	
@@ -301,7 +301,7 @@ void SwgCuiGroup::updateGroupMembers()
 			GroupObject::GroupMemberVector const & gmv = group->getGroupMembers();
 
 			// your player is not in the group window, so resize it to size() - 1 members.
-			resizeGroupWindow(gmv.size() - 1);
+			resizeGroupWindow(static_cast<int>(gmv.size()) - 1);
 
 			for (GroupObject::GroupMemberVector::const_iterator it = gmv.begin(); it != gmv.end(); ++it)
 			{
@@ -492,7 +492,7 @@ void SwgCuiGroup::OnPopupMenuSelection(UIWidget * context)
 					if (member.first == m_popupMemberId)
 					{
 						char tellMember[64];
-						int const spaceLoc = member.second.find(' ');
+						int const spaceLoc = static_cast<int>(member.second.find(' '));
 
 						// if there is a space, then there is a last name which needs to be formatted out
 						if (spaceLoc > 0)
@@ -737,7 +737,7 @@ void SwgCuiGroup::onGroupPickupPointTimerChanged(GroupObject const & group)
 		s_groupPickupTimerActive = false;
 	}
 
-	resizeGroupWindow(m_mfds->size());
+	resizeGroupWindow(static_cast<int>(m_mfds->size()));
 }
 
 //----------------------------------------------------------------------

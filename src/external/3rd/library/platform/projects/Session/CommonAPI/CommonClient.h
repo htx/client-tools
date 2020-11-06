@@ -85,7 +85,7 @@ class CConnectionManager
         unsigned                            mConnectionCount;
         unsigned                            mActiveCount;
 
-        unsigned                            mConnectionDelay;
+        intptr_t                            mConnectionDelay;
 };
 
 
@@ -109,8 +109,8 @@ class apiTrackedRequest
         apiTrackingNumber       mTrackingNumber;
         unsigned short          mMessageId;
         const void *            mUserData;
-        unsigned                mTimeout;
-        unsigned                mDuration;
+        intptr_t                mTimeout;
+        intptr_t                mDuration;
 };
 
 
@@ -186,7 +186,7 @@ class apiCore
         std::list<apiTrackingNumber>    mTimeoutQueue;
 
         unsigned                        mRequestQueueSize;
-        unsigned                        mExpirationTimeout;
+        intptr_t                        mExpirationTimeout;
         bool                            mInCallback;
 };
 

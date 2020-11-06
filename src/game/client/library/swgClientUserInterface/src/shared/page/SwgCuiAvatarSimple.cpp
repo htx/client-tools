@@ -1489,7 +1489,7 @@ void SwgCuiAvatarSimple::selectClothes(Direction const direction)
 
 	if (!professions.empty())
 	{
-		int const numberOfProfessions = professions.size();
+		int const numberOfProfessions = static_cast<int>(professions.size());
 
 		if (direction == D_Random)
 		{
@@ -1664,7 +1664,7 @@ void SwgCuiAvatarSimple::randomizeAppearance()
 			SlottedContainer * const slotted = ContainerInterface::getSlottedContainer(*playerAvatar);
 			NOT_NULL(slotted);
 
-			if (oldHair != 0)
+			if (oldHair != nullptr)
 			{
 				Container::ContainerErrorCode tmp = Container::CEC_Success;
 				IGNORE_RETURN(slotted->remove(*oldHair, tmp));
@@ -1681,13 +1681,13 @@ void SwgCuiAvatarSimple::randomizeAppearance()
 
 			if (!avatar.m_hairStyleTemplates.empty())
 			{
-				int const index = Random::random(avatar.m_hairStyleTemplates.size() - 1);
+				int const index = Random::random(static_cast<int32>(avatar.m_hairStyleTemplates.size()) - 1);
 
 				std::string const & hairTemplateName = avatar.m_hairStyleTemplates[index];
 
 				TangibleObject * const newHair = createHair(hairTemplateName, m_cdata);
 
-				if (newHair != 0)
+				if (newHair != nullptr)
 				{
 					int arrangementIndex = 0;
 					Container::ContainerErrorCode tmp = Container::CEC_Success;

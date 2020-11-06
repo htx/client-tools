@@ -506,7 +506,7 @@ std::string CuiIconManager::findIconPath (const CuiDragInfo & info)
 			if (cmdCopy [0] == '/')
 				cmdCopy.erase (0, 1);
 
-			int const size = cmdCopy.size();
+			int const size = static_cast<int>(cmdCopy.size());
 
 			if ((size > 2)
 					&& (cmdCopy[size - 2] == '_')

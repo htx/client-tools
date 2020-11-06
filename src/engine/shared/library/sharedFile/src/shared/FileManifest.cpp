@@ -130,7 +130,7 @@ void FileManifest::install()
 					DEBUG_WARNING(true, ("FileManifest::install(): Couldn't find a tab at position %i in file manfiest table, stopped iterating on elements!\n", currentPos - fileBuffer));
 					break;
 				}
-				int numCharacters = delimeter - currentPos;
+				intptr_t numCharacters = delimeter - currentPos;
 				FATAL(numCharacters > fileNameBufferSize, ("Copying too much data!"));
 				strncpy(fileNameBuffer, currentPos, numCharacters);
 				currentPos = delimeter + 1;
@@ -198,9 +198,9 @@ void FileManifest::remove()
 		std::vector<std::string> manifestEntries;
 
 		sprintf(buffer, "fileName\tsceneId\tfileSize\n");
-		outputFile.write(strlen(buffer), buffer);
+		outputFile.write(static_cast<int>(strlen(buffer)), buffer);
 		sprintf(buffer, "s\ts\ti\n");
-		outputFile.write(strlen(buffer), buffer);
+		outputFile.write(static_cast<int>(strlen(buffer)), buffer);
 
 		DEBUG_REPORT_LOG_PRINT(s_accessThreshold >= 0, ("FileManifestAccessReport:\tFile:\tScene:\tSize:\tAccesses:\n"));
 		for(auto& i : s_manifest)
@@ -225,7 +225,7 @@ void FileManifest::remove()
 
 		std::sort(manifestEntries.begin(), manifestEntries.end());
 		for(const auto& manifestEntry : manifestEntries)
-			outputFile.write(manifestEntry.length(), manifestEntry.c_str());
+			outputFile.write(static_cast<int>(manifestEntry.length()), manifestEntry.c_str());
 
 		delete [] buffer;
 		outputFile.close();

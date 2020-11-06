@@ -59,13 +59,13 @@ BitBuffer::BitBuffer(void *buffer, int size, bool inputStream)
 
 BitBuffer::~BitBuffer(void)
 {
-	base = NULL;
-	current = NULL;
+	base = nullptr;
+	current = nullptr;
 }
 
 // ----------------------------------------------------------------------
 
-int BitBuffer::getOffset(void) const
+intptr_t BitBuffer::getOffset(void) const
 {
 	return current - base;
 }
@@ -222,9 +222,9 @@ BitFile::~BitFile(void)
 
 // ----------------------------------------------------------------------
 
-int BitFile::getOffset(void) const
+intptr_t BitFile::getOffset(void) const
 {
-	return static_cast<int>(SetFilePointer(hFile, 0, NULL, FILE_CURRENT));
+	return static_cast<intptr_t>(SetFilePointer(hFile, 0, nullptr, FILE_CURRENT));
 }
 
 // ----------------------------------------------------------------------
@@ -392,7 +392,7 @@ ByteBuffer::~ByteBuffer(void)
  * Return the offset of the current position of the buffer.
  */
 
-int ByteBuffer::getOffset(void) const
+intptr_t ByteBuffer::getOffset(void) const
 {
 	return current - base;
 }
@@ -480,7 +480,7 @@ ByteFile::~ByteFile(void)
 
 // ----------------------------------------------------------------------
 
-int ByteFile::getOffset(void) const
+intptr_t ByteFile::getOffset(void) const
 {
 	return static_cast<int>(SetFilePointer(hFile, 0, NULL, FILE_CURRENT));
 }

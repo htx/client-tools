@@ -26,7 +26,11 @@
 #include "EZ_LCD.h"
 
 //#undef this if the LCD causes problems
+#ifdef _WIN64
+#undef USE_LCD
+#else
 #define USE_LCD
+#endif
 
 // ======================================================================
 

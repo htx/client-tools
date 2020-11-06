@@ -67,7 +67,7 @@ HardwareVertexBuffer * SimplePolyPrimitive::createVertexBuffer( void ) const
 	format.setPosition();
 	format.setColor0();
 
-	int bufferSize = (m_verts.size() - 1) * 2;
+	int bufferSize = (static_cast<int>(m_verts.size()) - 1) * 2;
 
 	StaticVertexBuffer * buffer = new StaticVertexBuffer(format,bufferSize);
 
@@ -75,7 +75,7 @@ HardwareVertexBuffer * SimplePolyPrimitive::createVertexBuffer( void ) const
 
 	VertexBufferReadWriteIterator v = buffer->begin();
 
-	uint i = 0;
+	size_t i = 0;
 
 	for(i = 0; i < m_verts.size(); i++)
 	{

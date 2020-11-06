@@ -131,9 +131,9 @@ void SoundTemplate::addSample(char const *path, bool const forceCacheSample)
 		bool const cacheSample = forceCacheSample || (Audio::getSampleSize(path) <= Audio::getMaxCached2dSampleSize());
 		CrcString const *crcString = Audio::increaseReferenceCount(path, cacheSample);
 
-		if (crcString != NULL)
+		if (crcString != nullptr)
 		{
-			m_samplePathList->push_back(crcString);
+			m_samplePathList->emplace_back(crcString);
 		}
 	}
 }

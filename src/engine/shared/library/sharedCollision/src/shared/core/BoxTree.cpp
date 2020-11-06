@@ -92,7 +92,7 @@ typedef std::pair<int,int> IntPair;
 
 IntPair	findClosestPair( BoxTreeNodePVec const & nodes )
 {
-	int nodeCount = nodes.size();
+	int nodeCount = static_cast<int>(nodes.size());
 
 	float minValue = REAL_MAX;
 	int minA = -1;
@@ -443,9 +443,9 @@ void BoxTree::build ( BoxVec const & boxes )
 
 	// ----------
 
-	BoxTreeNodePVec nodes(boxes.size(),NULL);
+	BoxTreeNodePVec nodes(boxes.size(), nullptr);
 
-	int boxcount = boxes.size();
+	int boxcount = static_cast<int>(boxes.size());
 
 	for(int i = 0; i < boxcount; i++)
 	{
@@ -499,11 +499,11 @@ void BoxTree::drawDebugShapes ( DebugShapeRenderer * renderer ) const
 
 int BoxTree::getNodeCount ( void ) const
 {
-	if(m_flatNodes) return m_flatNodes->size();
+	if(m_flatNodes) return static_cast<int>(m_flatNodes->size());
 
-	else if(m_root) return m_root->getNodeCount();
+	if(m_root) return m_root->getNodeCount();
 
-	else return 0;
+	return 0;
 }
 
 // ----------
@@ -512,8 +512,8 @@ float BoxTree::calcWeight ( void ) const
 {
 	if(m_root) 
 		return m_root->calcWeight();
-	else
-		return 0.0f;
+	
+	return 0.0f;
 }
 
 // ----------
@@ -522,8 +522,8 @@ float BoxTree::calcBalance ( void ) const
 {
 	if(m_root)
 		return m_root->calcBalance();
-	else
-		return 1.0f;
+	
+	return 1.0f;
 }
 
 // ----------------------------------------------------------------------
@@ -546,9 +546,9 @@ static inline void templateTestOverlapRecurse( BoxTreeNode const * node, TestSha
 template< class TestShape >
 static inline bool templateTestOverlap( BoxTree const & tree, TestShape const & testShape, IdVec & outIds )
 {
-	if(tree.getRoot() == NULL) return false;
+	if(tree.getRoot() == nullptr) return false;
 
-	int oldSize = outIds.size();
+	int oldSize = static_cast<int>(outIds.size());
 
 	templateTestOverlapRecurse( tree.getRoot(), testShape, outIds );
 
@@ -617,7 +617,7 @@ void BoxTree::write ( Iff & iff )
 
 	iff.insertChunk(TAG_NODS);
 	{
-		int nodeCount = m_flatNodes->size();
+		int nodeCount = static_cast<int>(m_flatNodes->size());
 
 		iff.insertChunkData(nodeCount);
 

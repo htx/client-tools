@@ -93,7 +93,7 @@ void UINamespace::GetChildren( UIObjectList &Out ) const
 
 unsigned long UINamespace::GetChildCount( void ) const
 {
-	return mChildren.size();
+	return static_cast<unsigned long>(mChildren.size());
 }
 
 //-----------------------------------------------------------------
@@ -121,7 +121,7 @@ UIBaseObject *UINamespace::GetChild( const char *ChildName ) const
 	if( pSeparator )
 		len = pSeparator - ChildName;
 	else
-		len = strlen( ChildName );
+		len = static_cast<int>(strlen( ChildName ));
 
 	for ( ; ; )
 	{
@@ -151,10 +151,10 @@ UIBaseObject *UINamespace::GetChild( const char *ChildName ) const
 			if( pSeparator )
 				len = pSeparator - ChildName;
 			else
-				len = strlen( ChildName );
+				len = static_cast<int>(strlen( ChildName ));
 		}
 		else
-			return 0;
+			return nullptr;
 	}
 }
 
@@ -287,9 +287,9 @@ bool UINamespace::SetProperty( const UILowerString & Name, const UIString &Value
 	
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;		
+		const int len = static_cast<int>(pSeparator);
 
-		for( UIObjectList::iterator o = mChildren.begin(); o != mChildren.end(); ++o )
+		for(auto o = mChildren.begin(); o != mChildren.end(); ++o )
 		{
 			UIBaseObject *theObject = *o;
 

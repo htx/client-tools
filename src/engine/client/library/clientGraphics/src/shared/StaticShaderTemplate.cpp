@@ -194,7 +194,7 @@ const ShaderEffect &StaticShaderTemplate::getShaderEffect() const
 
 // ----------------------------------------------------------------------
 
-int StaticShaderTemplate::getShaderImplementationSortKey() const
+intptr_t StaticShaderTemplate::getShaderImplementationSortKey() const
 {
 	NOT_NULL(m_effect);
 	return m_effect->getShaderImplementationSortKey();

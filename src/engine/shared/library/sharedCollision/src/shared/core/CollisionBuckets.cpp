@@ -168,7 +168,8 @@ void CollisionBuckets::build(Vector const & minimumBounds, Vector const & maximu
 		}
 	}
 
-	unsigned int numberOfFaces = indices.size() / 3;
+	unsigned int numberOfFaces = static_cast<unsigned int>(indices.size()) / 3;
+	
 	for (unsigned int i = 0, index = 0; i < numberOfFaces; ++i)
 	{
 		int const index1 = indices[index++];
@@ -213,15 +214,15 @@ void CollisionBuckets::build(Vector const & minimumBounds, Vector const & maximu
 
 void CollisionBuckets::destroy()
 {
-	if (m_nodeMatrix != 0)
+	if (m_nodeMatrix != nullptr)
 	{
-		unsigned int const bucketsPerDimensionX = (*m_nodeMatrix).size();
+		unsigned int const bucketsPerDimensionX = static_cast<unsigned int>((*m_nodeMatrix).size());
 		for (unsigned int xx = 0; xx < bucketsPerDimensionX; ++xx)
 		{
-			unsigned int const bucketsPerDimensionY = (*m_nodeMatrix)[xx].size();
+			unsigned int const bucketsPerDimensionY = static_cast<unsigned int>((*m_nodeMatrix)[xx].size());
 			for (unsigned int yy = 0; yy < bucketsPerDimensionY; ++yy)
 			{
-				unsigned int const bucketsPerDimensionZ = (*m_nodeMatrix)[xx][yy].size();
+				unsigned int const bucketsPerDimensionZ = static_cast<unsigned int>((*m_nodeMatrix)[xx][yy].size());
 				for (unsigned int zz = 0; zz < bucketsPerDimensionZ; ++zz)
 				{
 					delete (*m_nodeMatrix)[xx][yy][zz];
@@ -295,7 +296,7 @@ bool CollisionBuckets::intersect(Vector const & begin, Vector const & end, Vecto
 							{
 								Node::Indices const & indices = node->m_indices;
 
-								unsigned int const numberOfFaces = indices.size() / 3;
+								unsigned int const numberOfFaces = static_cast<unsigned int>(indices.size()) / 3;
 								for (unsigned int i = 0, index = 0; i < numberOfFaces; ++i)
 								{
 									int const index1 = indices[index++];
@@ -446,7 +447,7 @@ void CollisionBuckets::drawDebugShapes(DebugShapeRenderer * const renderer) cons
 				Vertices const & vertices = m_indexedTriangleList->getVertices();
 
 				Vertices lineList;
-				unsigned int const numberOfFaces = indices.size() / 3;
+				unsigned int const numberOfFaces = static_cast<unsigned int>(indices.size()) / 3;
 				for (unsigned int i = 0, index = 0; i < numberOfFaces; ++i)
 				{
 					int const index1 = indices[index++];

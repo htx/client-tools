@@ -44,7 +44,7 @@ void DynamicColorPolyPrimitive::prepareToDraw() const
 
 	// ----------
 
-	int bufferSize = (m_verts.size() - 1) * 2;
+	int bufferSize = (static_cast<int>(m_verts.size()) - 1) * 2;
 
 	buffer->lock(bufferSize);
 
@@ -61,7 +61,7 @@ void DynamicColorPolyPrimitive::prepareToDraw() const
 		++v;
 	}
 
-	for(i = m_verts.size() - 2; i > 0; i--)
+	for(i = static_cast<unsigned int>(m_verts.size()) - 2; i > 0; i--)
 	{
 		v.setPosition( m_verts[i] );
 		v.setColor0(color);

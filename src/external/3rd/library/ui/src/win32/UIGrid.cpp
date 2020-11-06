@@ -141,7 +141,7 @@ bool UIGrid::SetProperty( const UILowerString & Name, const UIString &Value )
 
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;
+		const int len = static_cast<int>(pSeparator);
 
 		if( Name.equals (PropertyName::SelectedItem.c_str (), len))
 		{
@@ -202,7 +202,7 @@ bool UIGrid::GetProperty( const UILowerString & Name, UIString &Value ) const
 
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;
+		const int len = static_cast<int>(pSeparator);
 
 		if( Name.equals (PropertyName::SelectedItem.c_str (), len))
 		{

@@ -1844,18 +1844,19 @@ bool PlayerObject::questHasCompletedQuestTask(uint32 const questCrc, int const t
 
 bool PlayerObject::questHasReceivedQuestReward(uint32 const questCrc) const
 {
-	PlayerQuestDataMap::const_iterator i = m_quests.find(questCrc);
+	auto i = m_quests.find(questCrc);
+	
 	if (i == m_quests.end())
 		return true;
-	else
-		return (i->second.hasReceivedReward());
+	
+	return (i->second.hasReceivedReward());
 }
 
 //----------------------------------------------------------------------
 
 int PlayerObject::questCount() const
 {
-	return m_quests.size() + m_activeQuests.get().getNumberOfSetBits();
+	return static_cast<int>(m_quests.size()) + m_activeQuests.get().getNumberOfSetBits();
 }
 
 //----------------------------------------------------------------------
@@ -1863,9 +1864,11 @@ int PlayerObject::questCount() const
 void PlayerObject::setCurrentQuest(uint32 questCrc)
 {
 	CreatureObject * const creaturePlayer = Game::getPlayerCreature();
-	if (creaturePlayer != NULL && creaturePlayer->getPlayerObject() == this && creaturePlayer->getController() != NULL)
+	
+	if (creaturePlayer != nullptr && creaturePlayer->getPlayerObject() == this && creaturePlayer->getController() != nullptr)
 	{
-		MessageQueueGenericValueType<uint32> * const msg = new MessageQueueGenericValueType<uint32>(questCrc);
+		const auto msg = new MessageQueueGenericValueType<uint32>(questCrc);
+		
 		creaturePlayer->getController()->appendMessage (
 			CM_setCurrentQuest, 
 			0.0f, 
@@ -1953,7 +1956,7 @@ void PlayerObject::getObjectInfo(std::map<std::string, std::map<std::string, Uni
 		int timeUntil = static_cast<int>(static_cast<time_t>(m_gcwRatingActualCalcTimeServerEpoch.get()) - ::time(NULL));
 		if (timeUntil >= 0)
 		{
-			snprintf(buffer, sizeof(buffer)-1, "%ld (%s) (%s) (%s)", m_gcwRatingActualCalcTimeServerEpoch.get(), CalendarTime::convertSecondsToDHMS(static_cast<unsigned int>(timeUntil)).c_str(), CalendarTime::convertEpochToTimeStringGMT(static_cast<time_t>(m_gcwRatingActualCalcTimeServerEpoch.get())).c_str(), CalendarTime::convertEpochToTimeStringLocal(static_cast<time_t>(m_gcwRatingActualCalcTimeServerEpoch.get())).c_str());
+			snprintf(buffer, sizeof(buffer)-1, "%ld (%s) (%s) (%s)", static_cast<int>(m_gcwRatingActualCalcTimeServerEpoch.get()), CalendarTime::convertSecondsToDHMS(static_cast<unsigned int>(timeUntil)).c_str(), CalendarTime::convertEpochToTimeStringGMT(static_cast<time_t>(m_gcwRatingActualCalcTimeServerEpoch.get())).c_str(), CalendarTime::convertEpochToTimeStringLocal(static_cast<time_t>(m_gcwRatingActualCalcTimeServerEpoch.get())).c_str());
 		}
 		else
 		{
@@ -1970,19 +1973,20 @@ void PlayerObject::getObjectInfo(std::map<std::string, std::map<std::string, Uni
 
 	if (m_gcwRatingActualCalcTimeClientEpoch > 0)
 	{
-		int timeUntil = static_cast<int>(m_gcwRatingActualCalcTimeClientEpoch - ::time(NULL));
+		int timeUntil = static_cast<int>(m_gcwRatingActualCalcTimeClientEpoch - ::time(nullptr));
+		
 		if (timeUntil >= 0)
 		{
-			snprintf(buffer, sizeof(buffer)-1, "%ld (%s) (%s) (%s)", m_gcwRatingActualCalcTimeClientEpoch, CalendarTime::convertSecondsToDHMS(static_cast<unsigned int>(timeUntil)).c_str(), CalendarTime::convertEpochToTimeStringGMT(m_gcwRatingActualCalcTimeClientEpoch).c_str(), CalendarTime::convertEpochToTimeStringLocal(m_gcwRatingActualCalcTimeClientEpoch).c_str());
+			snprintf(buffer, sizeof(buffer)-1, "%ld (%s) (%s) (%s)", static_cast<long>(m_gcwRatingActualCalcTimeClientEpoch), CalendarTime::convertSecondsToDHMS(static_cast<unsigned int>(timeUntil)).c_str(), CalendarTime::convertEpochToTimeStringGMT(m_gcwRatingActualCalcTimeClientEpoch).c_str(), CalendarTime::convertEpochToTimeStringLocal(m_gcwRatingActualCalcTimeClientEpoch).c_str());
 		}
 		else
 		{
-			snprintf(buffer, sizeof(buffer)-1, "%ld (-%s) (%s) (%s)", m_gcwRatingActualCalcTimeClientEpoch, CalendarTime::convertSecondsToDHMS(static_cast<unsigned int>(-timeUntil)).c_str(), CalendarTime::convertEpochToTimeStringGMT(m_gcwRatingActualCalcTimeClientEpoch).c_str(), CalendarTime::convertEpochToTimeStringLocal(m_gcwRatingActualCalcTimeClientEpoch).c_str());
+			snprintf(buffer, sizeof(buffer)-1, "%ld (-%s) (%s) (%s)", static_cast<long>(m_gcwRatingActualCalcTimeClientEpoch), CalendarTime::convertSecondsToDHMS(static_cast<unsigned int>(-timeUntil)).c_str(), CalendarTime::convertEpochToTimeStringGMT(m_gcwRatingActualCalcTimeClientEpoch).c_str(), CalendarTime::convertEpochToTimeStringLocal(m_gcwRatingActualCalcTimeClientEpoch).c_str());
 		}
 	}
 	else
 	{
-		snprintf(buffer, sizeof(buffer)-1, "%ld", m_gcwRatingActualCalcTimeClientEpoch);
+		snprintf(buffer, sizeof(buffer)-1, "%ld", static_cast<long>(m_gcwRatingActualCalcTimeClientEpoch));
 	}
 
 	buffer[sizeof(buffer)-1] = '\0';
@@ -2655,7 +2659,7 @@ bool PlayerObject::isLookingForWork() const
 
 int PlayerObject::getTotalWaypoints() const
 {
-	return m_waypoints ? m_waypoints->size() : 0;
+	return m_waypoints ? static_cast<int>(m_waypoints->size()) : 0;
 }
 
 //----------------------------------------------------------------------

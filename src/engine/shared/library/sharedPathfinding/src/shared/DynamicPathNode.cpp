@@ -46,7 +46,7 @@ DynamicPathNode::~DynamicPathNode()
 
 int DynamicPathNode::getEdgeCount ( void ) const
 {
-	return m_edges.size();
+	return static_cast<int>(m_edges.size());
 }
 
 // ----------
@@ -74,9 +74,9 @@ int DynamicPathNode::getNeighbor ( int whichEdge ) const
 
 bool DynamicPathNode::hasEdge ( int nodeIndex ) const
 {
-	int edgeCount = m_edges.size();
+	size_t edgeCount = m_edges.size();
 
-	for(int i = 0; i < edgeCount; i++)
+	for(size_t i = 0; i < edgeCount; i++)
 	{
 		if(m_edges[i].getIndexB() == nodeIndex)
 		{
@@ -116,13 +116,13 @@ bool DynamicPathNode::_removeEdge ( int nodeIndex )
 {
 	int edgeIndex = -1;
 
-	int edgeCount = m_edges.size();
+	size_t edgeCount = m_edges.size();
 
-	for(int i = 0; i < edgeCount; i++)
+	for(size_t i = 0; i < edgeCount; i++)
 	{
 		if(m_edges[i].getIndexB() == nodeIndex)
 		{
-			edgeIndex = i;
+			edgeIndex = static_cast<int>(i);
 			break;
 		}
 	}
@@ -132,10 +132,8 @@ bool DynamicPathNode::_removeEdge ( int nodeIndex )
 		m_edges.erase( m_edges.begin() + edgeIndex );
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 // ----------

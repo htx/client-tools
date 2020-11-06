@@ -377,27 +377,25 @@ void ClientDynamicRadialFloraManager::FloraRenderBucket::draw () const
 
 	_sortRadialNodes();
 
-	const int numRadials = m_radialNodes.size();
-	int i;
+	const int numRadials = static_cast<int>(m_radialNodes.size());
 
-	for (i=0;i<numRadials;i+=sliceSize)
+	for (int i = 0;i<numRadials;i+=sliceSize)
 	{
-		LocalShaderPrimitive *new_prim;
-		int count;
-
-		count = numRadials - i;
+		LocalShaderPrimitive *new_prim = nullptr;
+		int count = numRadials - i;
+		
 		if (count>sliceSize)
 		{
 			count=sliceSize;
 		}
 
 		new_prim=new LocalShaderPrimitive(*this, &m_radialNodes[i], count);
-		m_localShaderPrimitiveList.push_back(new_prim);
+		m_localShaderPrimitiveList.emplace_back(new_prim);
 	}
 
 	//-- render each local shader primitive
 	{
-		for (LocalShaderPrimitiveList::iterator iter = m_localShaderPrimitiveList.begin (); iter != m_localShaderPrimitiveList.end (); ++iter)
+		for (auto iter = m_localShaderPrimitiveList.begin (); iter != m_localShaderPrimitiveList.end (); ++iter)
 			ShaderPrimitiveSorter::add (*(*iter), m_phase);
 	}
 
@@ -1033,15 +1031,18 @@ void ClientDynamicRadialFloraManager::addToBucket (const Vector& position, const
 	float depth=sqr(i_depth);
 
 	//-- choose the right ring
-	uint ring;
-	uint num_rings=m_floraBucketList.size();
+	uint ring = 0;
+	uint num_rings = static_cast<unsigned int>(m_floraBucketList.size());
+	
 	for (ring = 0; ring < num_rings; ++ring)
 	{
 		if (depth < m_floraBucketList[ring].m_ringDistance)
 			break;
 	}
+	
 	if (ring == num_rings)
 		--ring;
+	
 	FloraBucket *floraBucket = &m_floraBucketList[ring];
 
 	// take render depth from next lower ring.
@@ -1065,10 +1066,8 @@ void ClientDynamicRadialFloraManager::addToBucket (const Vector& position, const
 	//-- we can't use an existing bucket, so create a new one
 	if (i == floraBucketList.size())
 	{
-		FloraRenderBucket *new_node;
-		
-		new_node = new FloraRenderBucket (*this, renderDepth, m_applyColor, belowWater, shaderTemplateName);
-		floraBucketList.push_back(new_node);
+		FloraRenderBucket* new_node = new FloraRenderBucket(*this, renderDepth, m_applyColor, belowWater, shaderTemplateName);
+		floraBucketList.emplace_back(new_node);
 	}
 
 	FloraRenderBucket *const dynamicFloraRenderBucket = floraBucketList[i];

@@ -202,7 +202,7 @@ bool UITableModel::verifyValueRequest (int row, int col, UITableTypes::CellType 
 
 int UITableModel::GetColumnCount () const
 {
-	return mColumnCellTypes->size ();
+	return static_cast<int>(mColumnCellTypes->size ());
 }
 
 //----------------------------------------------------------------------

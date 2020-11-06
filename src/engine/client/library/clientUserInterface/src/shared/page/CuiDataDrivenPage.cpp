@@ -336,7 +336,7 @@ void CuiDataDrivenPage::onEvent(int eventType, UIWidget const * widget)
 		EventSubscriptionData const & eventSubscriptionData  = i->second;
 		SubscribedPropertyVector const & subscribedProperties = eventSubscriptionData.subscribedPropertyVector;
 		
-		SuiEventNotification eventNotification(getClientPageId(), eventSubscriptionData.eventSubscriptionIndex, subscribedProperties.size());
+		SuiEventNotification eventNotification(getClientPageId(), eventSubscriptionData.eventSubscriptionIndex, static_cast<int>(subscribedProperties.size()));
 		SubscribedPropertyVector::const_iterator spi;
 		for (spi = subscribedProperties.begin(); spi != subscribedProperties.end(); ++spi)
 		{

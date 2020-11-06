@@ -333,7 +333,7 @@ void MatchMakingId::unPackIntString(std::string const &value)
 	Unicode::UnicodeStringVector result;
 	IGNORE_RETURN(Unicode::tokenize(unicodeValue, result));
 
-	unsigned int resultSize = result.size();
+	const auto resultSize = static_cast<unsigned int>(result.size());
 
 	if (resultSize > 1)
 	{
@@ -377,7 +377,7 @@ void MatchMakingId::packIntString(std::string &value) const
 
 		// Put the size of the vector
 
-		sprintf(text, "%d ", ints.size());
+		sprintf(text, "%d ", static_cast<int>(ints.size()));
 		result += text;
 
 		// Put each int value from the vector

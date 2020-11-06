@@ -257,9 +257,9 @@ void ClientPlayerQuestObject::createClientWaypointObjects()
 	{
 		std::string const & current = m_waypoints.get()[i];
 
-		if(current.empty() || m_taskStatus[i] == ClientPlayerQuestObject::TS_Completed)
+		if(current.empty() || m_taskStatus[static_cast<int>(i)] == TS_Completed)
 		{
-			m_clientWaypoints.push_back(NULL);
+			m_clientWaypoints.push_back(nullptr);
 			continue;
 		}
 
@@ -267,6 +267,7 @@ void ClientPlayerQuestObject::createClientWaypointObjects()
 		std::string::size_type loc = current.find(' ', start);
 		float xyz[3];
 		int floatIndex = 0;
+		
 		while(loc != std::string::npos)
 		{
 			std::string token = current.substr(start, (loc - start));
@@ -343,9 +344,10 @@ void ClientPlayerQuestObject::waypointOnChanged()
 void ClientPlayerQuestObject::OnStatusChanged()
 {
 	std::vector<int>::size_type i = 0;
+	
 	for(; i < m_taskStatus.size(); ++i)
 	{
-		if(m_taskStatus[i] == ClientPlayerQuestObject::TS_Completed)
+		if(m_taskStatus[static_cast<int>(i)] == TS_Completed)
 		{
 			if(!m_initWaypoints)
 			{
@@ -353,10 +355,10 @@ void ClientPlayerQuestObject::OnStatusChanged()
 				m_initWaypoints = true;
 			}
 
-			if(m_clientWaypoints[i] != NULL)
+			if(m_clientWaypoints[i] != nullptr)
 			{
 				delete m_clientWaypoints[i];
-				m_clientWaypoints[i] = NULL;
+				m_clientWaypoints[i] = nullptr;
 			}
 		}
 	}

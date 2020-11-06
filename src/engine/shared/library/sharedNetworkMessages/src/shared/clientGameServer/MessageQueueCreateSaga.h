@@ -34,7 +34,8 @@ public:
 		TaskInfo(int type, std::vector<std::string> params)
 		{
 			taskType = type;
-			numParameters = params.size();
+			numParameters = static_cast<int>(params.size());
+			
 			for(int i = 0; i < numParameters; ++i)
 				parameters.push_back(params[i]);
 		}

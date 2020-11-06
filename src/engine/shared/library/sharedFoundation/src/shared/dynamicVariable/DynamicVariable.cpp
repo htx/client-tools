@@ -821,12 +821,14 @@ bool DynamicVariable::get(DynamicVariableLocationData & value) const
 			bufptrStart = bufptrEnd + 1;
 		}
 
-		int cellLen = strlen(bufptrStart);
+		int cellLen = static_cast<int>(strlen(bufptrStart));
+		
 		if (cellLen >= BUFSIZE)
 		{
 			WARNING_STRICT_FATAL(true, ("DynamicVariable::get location buffer overflow in cell"));
 			return false;
 		}
+		
 		memcpy(tempCell, bufptrStart, cellLen);
 		tempCell[cellLen] = '\0';
 
@@ -900,7 +902,7 @@ bool DynamicVariable::get(std::vector<DynamicVariableLocationData> & value) cons
 					while (*bufptrStart != '\0' && isspace(*bufptrStart))
 						++bufptrStart;
 					bufptrEnd = const_cast<char *>(strchr(bufptrStart, ' '));
-					if (bufptrEnd == NULL || bufptrEnd - bufptrStart >= BUFSIZE)
+					if (bufptrEnd == nullptr || bufptrEnd - bufptrStart >= BUFSIZE)
 					{
 						WARNING_STRICT_FATAL(true, ("DynamicVariable::get location array buffer overflow in scene"));
 						return false;
@@ -910,12 +912,14 @@ bool DynamicVariable::get(std::vector<DynamicVariableLocationData> & value) cons
 					bufptrStart = bufptrEnd + 1;
 				}
 
-				int cellLen = strlen(bufptrStart);
+				int cellLen = static_cast<int>(strlen(bufptrStart));
+				
 				if (cellLen >= BUFSIZE)
 				{
 					WARNING_STRICT_FATAL(true, ("DynamicVariable::get location array buffer overflow in cell"));
 					return false;
 				}
+				
 				memcpy(tempCell, bufptrStart, cellLen);
 				tempCell[cellLen] = '\0';
 
@@ -1181,7 +1185,8 @@ int DynamicVariable::getUTF8Length() const
 {
 	std::string utf8;
 	Unicode::wideToUTF8(m_value, utf8);
-	return utf8.size();
+	
+	return static_cast<int>(utf8.size());
 }
 
 // ----------------------------------------------------------------------
@@ -1193,7 +1198,7 @@ int DynamicVariable::getUTF8Length(const T &value) \
 	pack(value, packedData); \
 	std::string utf8; \
 	IGNORE_RETURN(Unicode::wideToUTF8(packedData, utf8)); \
-	return utf8.size(); \
+	return static_cast<int>(utf8.size()); \
 }
 
 GET_UTF_LENGTH(int)

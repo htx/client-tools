@@ -149,9 +149,9 @@ void SimpleCollisionMesh::deleteTris( IntVector const & triIndices )
 {
 	std::vector<int> & indices = m_tris->getIndices();
 
-	unsigned int indexCount = triIndices.size();
+	size_t indexCount = triIndices.size();
 
-	for(unsigned int i = 0; i < indexCount; i++)
+	for(size_t i = 0; i < indexCount; i++)
 	{
 		int base = triIndices[i];
 

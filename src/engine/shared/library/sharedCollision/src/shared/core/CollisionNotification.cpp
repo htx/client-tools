@@ -67,7 +67,7 @@ int CollisionNotification::getPriority() const
 
 void CollisionNotification::purgeQueue ( void )
 {
-	int count = g_addRemoveQueue.size();
+	int count = static_cast<int>(g_addRemoveQueue.size());
 
 	for(int i = 0; i < count; i++)
 	{
@@ -75,7 +75,7 @@ void CollisionNotification::purgeQueue ( void )
 
 		Object * object = entry.m_object;
 
-		if(object == NULL) continue;
+		if(object == nullptr) continue;
 
 		if(entry.m_added)
 		{

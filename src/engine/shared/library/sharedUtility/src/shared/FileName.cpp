@@ -34,13 +34,13 @@ FileName::Table FileName::pathTable [P_COUNT] =
 //-------------------------------------------------------------------
 
 FileName::FileName (const char* const newName) :
-	fullName (0)
+	fullName (nullptr)
 {
 	set (newName);
 }
 
 FileName::FileName (FileName::Path path, const char* filename, const char* ext)
-: fullName (0)
+: fullName (nullptr)
 {
 	//-- verify args
 	DEBUG_FATAL (path < P_none || path >= P_COUNT, ("FileName::FileName - bad path!"));
@@ -52,17 +52,19 @@ FileName::FileName (FileName::Path path, const char* filename, const char* ext)
 
 	// see if the filename already begins with the path
 	const char *prePath = pathTable [path].path;
-	if (prePath != NULL && *prePath != '\0')
+	
+	if (prePath != nullptr && *prePath != '\0')
 	{
 		if (strncmp(filename, prePath, strlen(prePath)) == 0)
 			prePath = "";
 	}
 
 	// see if the filename already ends in the extension
-	if (ext != NULL && *ext != '\0')
+	if (ext != nullptr && *ext != '\0')
 	{
-		int extLen = strlen(ext);
-		int filenameLen = strlen(filename);
+		int extLen = static_cast<int>(strlen(ext));
+		int filenameLen = static_cast<int>(strlen(filename));
+		
 		if (filenameLen > extLen + 1)
 		{
 			for (--extLen, --filenameLen; extLen >= 0; --extLen, --filenameLen)
@@ -82,7 +84,7 @@ FileName::FileName (FileName::Path path, const char* filename, const char* ext)
 //-------------------------------------------------------------------
 
 FileName::FileName (const char* path, const char* filename, const char* ext) :
-	fullName (0)
+	fullName (nullptr)
 {
 	NOT_NULL (path);
 	NOT_NULL (filename);

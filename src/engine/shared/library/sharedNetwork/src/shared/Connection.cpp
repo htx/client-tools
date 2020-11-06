@@ -681,7 +681,7 @@ void Connection::receive(const unsigned char * buffer, int length)
 			{
 				// there isn't enough data in the stream
 				// to complete the header
-				m_tcpHeader->put(readIter, end - readIter);
+				m_tcpHeader->put(readIter, static_cast<unsigned int>(end - readIter));
 				return;
 			}
 		}
@@ -718,7 +718,7 @@ void Connection::receive(const unsigned char * buffer, int length)
 			// only a fragment of the packet is available, build
 			// what is there, then bail out waiting for more
 			// input on the socket
-			m_tcpInput->put(readIter, end - readIter);
+			m_tcpInput->put(readIter, static_cast<unsigned int>(end - readIter));
 			readIter += end - readIter; // should bail out of the loop now.
 		}
 	} while (readIter < end);

@@ -53,7 +53,7 @@ namespace Archive
 		Archive::put (target, source.name);
 		Archive::put (target, source.optional);
 
-		int optionCount = source.options.size();
+		int optionCount = static_cast<int>(source.options.size());
 		Archive::put (target, optionCount);
 
 		bool componentSlot = false;

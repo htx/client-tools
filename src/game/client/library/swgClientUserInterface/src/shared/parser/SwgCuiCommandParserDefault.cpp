@@ -727,12 +727,11 @@ bool SwgCuiCommandParserDefault::performParsing (const NetworkId & userId, const
 			const CommandParserHistory::HistoryList_t & historyList = m_history->getHistoryList ();
 
 			size_t index = historyList.size ();
-			for (CommandParserHistory::HistoryList_t::const_reverse_iterator hiter = historyList.rbegin ();
-			hiter != historyList.rend (); //lint !e55 !e81 // bad type, struct/union equality
-			++hiter)
+			
+			for (auto hiter = historyList.rbegin (); hiter != historyList.rend (); ++hiter)
 			{
 				char buf [1024];
-				sprintf (buf, "%3d ]  %s\n", --index, Unicode::wideToNarrow(*hiter).c_str ());
+				sprintf (buf, "%3d ]  %s\n", static_cast<int>(--index), Unicode::wideToNarrow(*hiter).c_str ());
 				result += Unicode::narrowToWide (buf);
 			}
 		}

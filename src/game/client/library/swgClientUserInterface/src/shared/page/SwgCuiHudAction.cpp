@@ -1165,7 +1165,7 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 
 		if (finalUrl.length() > 2048)
 		{
-			unsigned diff = finalUrl.length() - 2048;
+			unsigned diff = static_cast<unsigned int>(finalUrl.length()) - 2048;
 
 			if (httpParams["Charchat"].length() > diff)
 			{

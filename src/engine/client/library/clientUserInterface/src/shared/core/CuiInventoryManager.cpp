@@ -229,13 +229,14 @@ bool CuiInventoryManager::findLeastOccupiedArrangementForEquipping (const Tangib
 		int volume_required = 0;
 		//-- iterate through the slots for this arrangement, computing total volume required to displace
 
-		const SlottedContainmentProperty::SlotArrangement & slotIds = slottedProperty->getSlotArrangement (loopArrangementId);
+		const SlottedContainmentProperty::SlotArrangement & slotIds = slottedProperty->getSlotArrangement (static_cast<int>(loopArrangementId));
 		Container::ContainerErrorCode tmp2 = Container::CEC_Success;
-		for (SlottedContainmentProperty::SlotArrangement::const_iterator ait = slotIds.begin (); ait != slotIds.end (); ++ait)
+		
+		for (auto ait = slotIds.begin (); ait != slotIds.end (); ++ait)
 		{
 			const SlotId & slot = *ait;
 			Container::ContainedItem contained = slotted->getObjectInSlot (slot, tmp2);
-			ClientObject * const containedObject     = dynamic_cast<ClientObject*>(contained.getObject ());
+			ClientObject * const containedObject = dynamic_cast<ClientObject*>(contained.getObject ());
 
 			if (containedObject)
 			{
@@ -401,8 +402,9 @@ bool CuiInventoryManager::equipItem (TangibleObject & obj, TangibleObject & targ
 //		size_t  totalSlotsRequired = 0;
 
 		{
-			const SlottedContainmentProperty::SlotArrangement & slotIds = slottedProperty->getSlotArrangement (arrangementId);
-			for (SlottedContainmentProperty::SlotArrangement::const_iterator it = slotIds.begin (); it != slotIds.end (); ++it)
+			const SlottedContainmentProperty::SlotArrangement & slotIds = slottedProperty->getSlotArrangement (static_cast<int>(arrangementId));
+			
+			for (auto it = slotIds.begin (); it != slotIds.end (); ++it)
 			{
 				const SlotId & slot = *it;
 				Container::ContainedItem contained = slotted->getObjectInSlot (slot, tmp);
@@ -450,7 +452,7 @@ bool CuiInventoryManager::equipItem (TangibleObject & obj, TangibleObject & targ
 
 	//-----------------------------------------------------------------
 	//-- now, FINALLY try to add the object to the equipment slots.
-	if (!ContainerInterface::transferItemToSlottedContainer (target, obj, arrangementId))
+	if (!ContainerInterface::transferItemToSlottedContainer (target, obj, static_cast<int>(arrangementId)))
 		WARNING (true, ("somehow could not add the item in the specified arrangement."));
 	else
 		inventoryChanged = true;

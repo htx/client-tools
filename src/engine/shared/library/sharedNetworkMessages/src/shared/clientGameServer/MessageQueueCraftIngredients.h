@@ -84,7 +84,7 @@ inline void MessageQueueCraftIngredients::addSchematicAttribute(const Unicode::S
 
 inline int MessageQueueCraftIngredients::getIngredientCount(void) const
 {
-	return m_ingredients.size();
+	return static_cast<int>(m_ingredients.size());
 }	// MessageQueueCraftIngredients::getIngredientCount
 
 inline const MessageQueueCraftIngredients::Ingredient & MessageQueueCraftIngredients::getIngredient(int index) const

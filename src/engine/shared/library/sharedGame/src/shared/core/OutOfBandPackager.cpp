@@ -114,7 +114,7 @@ OutOfBandPackager::OutOfBandBaseVector OutOfBandPackager::unpack(const Unicode::
 	std::vector<OutOfBandBase *> result;
 	
 	const unsigned char * const buf = reinterpret_cast<const unsigned char *>(source.data());
-	const uint32 buflen             = source.size () * sizeof (Unicode::unicode_char_t);
+	const uint32 buflen             = static_cast<unsigned int>(source.size()) * sizeof (Unicode::unicode_char_t);
 
 	Archive::ByteStream bs(buf, buflen);
 	Archive::ReadIterator ri(bs);

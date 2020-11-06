@@ -52,25 +52,31 @@ void DroidCommandProgrammingMessage::pack(MessageQueue::Data const * const data,
 	if (msg)
 	{
 		std::vector<std::string> const & commands = msg->getCommands();
-		int size = commands.size(); //lint !e713 signed / unsigned
+		int size = static_cast<int>(commands.size());
+		
 		Archive::put(target, size);
-		for(std::vector<std::string>::const_iterator i = commands.begin(); i != commands.end(); ++i)
+		
+		for(auto i = commands.begin(); i != commands.end(); ++i)
 		{
 			Archive::put(target, *i);
 		}
 
 		std::vector<NetworkId> const & chipsToAdd = msg->getChipsToAdd();
-		size = chipsToAdd.size(); //lint !e713 signed / unsigned
+		size = static_cast<int>(chipsToAdd.size());
+		
 		Archive::put(target, size);
-		for(std::vector<NetworkId>::const_iterator j = chipsToAdd.begin(); j != chipsToAdd.end(); ++j)
+		
+		for(auto j = chipsToAdd.begin(); j != chipsToAdd.end(); ++j)
 		{
 			Archive::put(target, *j);
 		}
 
 		std::vector<NetworkId> const & chipsToRemove = msg->getChipsToRemove();
-		size = chipsToRemove.size(); //lint !e713 signed / unsigned
+		size = static_cast<int>(chipsToRemove.size());
+		
 		Archive::put(target, size);
-		for(std::vector<NetworkId>::const_iterator k = chipsToRemove.begin(); k != chipsToRemove.end(); ++k)
+		
+		for(auto k = chipsToRemove.begin(); k != chipsToRemove.end(); ++k)
 		{
 			Archive::put(target, *k);
 		}

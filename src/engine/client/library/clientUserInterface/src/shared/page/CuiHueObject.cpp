@@ -556,7 +556,7 @@ void CuiHueObject::updateCellSizes ()
 
 			if (m_forceColumns)
 			{
-				const int ny = (count + m_forceColumns - 1) / m_forceColumns;
+				const int ny = (static_cast<int>(count) + m_forceColumns - 1) / m_forceColumns;
 
 				cellSize.x = width / m_forceColumns;
 				if (ny)
@@ -566,7 +566,7 @@ void CuiHueObject::updateCellSizes ()
 			{
 				const int ny = static_cast<int>(ceil (sqrt (static_cast<float>(count * height) / static_cast<float>(width))));
 
-				const int nx = (count + ny - 1) / ny;
+				const int nx = (static_cast<int>(count) + ny - 1) / ny;
 
 				if (nx)
 					cellSize.x = width / nx;

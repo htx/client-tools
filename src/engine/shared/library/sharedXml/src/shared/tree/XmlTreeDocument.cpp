@@ -113,7 +113,7 @@ XmlTreeDocument* XmlTreeDocument::createDocument(const char * rootNodeName)
 XmlTreeDocument * XmlTreeDocument::buildDocumentFromText(const std::string &inputText)
 {
 	xmlDoc *doc;
-	doc = xmlParseMemory(inputText.c_str(), inputText.length());
+	doc = xmlParseMemory(inputText.c_str(), static_cast<int>(inputText.length()));
 	if(!doc)
 	{
 		DEBUG_FATAL(true, ("Attempted to parse XML document from memory buffer, but failed."));

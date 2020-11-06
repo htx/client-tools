@@ -1071,11 +1071,6 @@ void Game::runGameLoopOnce(bool presentToWindow, HWND hwnd, int width, int heigh
 		NP_PROFILER_NAMED_AUTO_BLOCK_DEFINE(profilerMainLoop, "os update");
 		result = Os::update();
 
-		// ----------------------------------------------------------------------------------------------------
-		// service the video manager - this has to be done several times per frame for Bink to work correctly.
-		VideoPlaybackManager::service();
-		// ----------------------------------------------------------------------------------------------------
-
 		sprintf(ms_loopCountBuffer, "MainLoop: %d\n", Os::getNumberOfUpdates());
 
 		{
@@ -1117,11 +1112,6 @@ void Game::runGameLoopOnce(bool presentToWindow, HWND hwnd, int width, int heigh
 			AsynchronousLoader::processCallbacks();
 		}
 
-		// ----------------------------------------------------------------------------------------------------
-		// service the video manager - this has to be done several times per frame for Bink to work correctly.
-		VideoPlaybackManager::service();
-		// ----------------------------------------------------------------------------------------------------
-
 		if (!result)
 		{
 			ms_done = true;
@@ -1151,11 +1141,6 @@ void Game::runGameLoopOnce(bool presentToWindow, HWND hwnd, int width, int heigh
 			GameNetwork::update();
 		}
 
-		// ----------------------------------------------------------------------------------------------------
-		// service the video manager - this has to be done several times per frame for Bink to work correctly.
-		VideoPlaybackManager::service();
-		// ----------------------------------------------------------------------------------------------------
-
 		ClientCommandQueue::update(elapsedTime);
 		ObjectAttributeManager::update(elapsedTime);
 		DraftSchematicManager::update(elapsedTime);
@@ -1181,11 +1166,6 @@ void Game::runGameLoopOnce(bool presentToWindow, HWND hwnd, int width, int heigh
 
 		NP_PROFILER_NAMED_AUTO_BLOCK_TRANSFER(profilerMainLoop, "clienteffect heartbeat");
 		ClientEffectManager::sendHeartbeat(elapsedTime);
-
-		// ----------------------------------------------------------------------------------------------------
-		// service the video manager - this has to be done several times per frame for Bink to work correctly.
-		VideoPlaybackManager::service();
-		// ----------------------------------------------------------------------------------------------------
 
 		NP_PROFILER_NAMED_AUTO_BLOCK_TRANSFER(profilerMainLoop, "audio alter");
 		GroundScene *groundScene = dynamic_cast<GroundScene *>(Game::getScene());
@@ -1235,11 +1215,6 @@ void Game::runGameLoopOnce(bool presentToWindow, HWND hwnd, int width, int heigh
 		AppearanceTemplateList::update(elapsedTime);
 
 		alterNetworkBandwidthCalculation(elapsedTime);
-
-		// ----------------------------------------------------------------------------------------------------
-		// service the video manager - this has to be done several times per frame for Bink to work correctly.
-		VideoPlaybackManager::service();
-		// ----------------------------------------------------------------------------------------------------
 
 		NP_PROFILER_NAMED_AUTO_BLOCK_TRANSFER(profilerMainLoop, "frame limit");
 		Clock::limitFrameRate();

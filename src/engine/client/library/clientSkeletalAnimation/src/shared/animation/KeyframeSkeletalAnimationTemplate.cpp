@@ -475,7 +475,8 @@ void KeyframeSkeletalAnimationTemplate::SignaledMessageReporter::operator()(cons
 	const IntVector::const_iterator upperBoundIt = std::upper_bound(signaledFrameNumbers.begin(), signaledFrameNumbers.end(), m_endFrameNumber - 1);
 
 	// add a signaled entry for this message index once for each time it was signaled between the begin and end scan frames.
-	const int entryCount = std::distance(lowerBoundIt, upperBoundIt);
+	const size_t entryCount = std::distance(lowerBoundIt, upperBoundIt);
+	
 	if (entryCount > 0)
 	{
 		m_signaledMessageIndices.insert(m_signaledMessageIndices.end(), static_cast<IntVector::size_type>(entryCount), m_messageIndex);

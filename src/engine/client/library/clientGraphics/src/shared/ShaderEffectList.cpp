@@ -153,7 +153,7 @@ namespace E3Hacks
 	{
 		NOT_NULL (filename);
 
-		int         length  = strlen (filename);
+		size_t      length  = strlen (filename);
 		const char* current = filename + length;
 
 		//-- start from end of string and search backward for '\' or '/'

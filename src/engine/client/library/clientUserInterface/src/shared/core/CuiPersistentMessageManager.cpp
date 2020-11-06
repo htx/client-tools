@@ -1049,11 +1049,12 @@ void CuiPersistentMessageManager::finishWritingEmailsToDisk ()
 		str += Unicode::wideToNarrow (data.message);
 
 		AbstractFile * const f = sff.createFile (filename.c_str (), "w");
+		
 		if (f)
 		{
 			if (f->isOpen ())
 			{
-				f->write (str.size (), str.data ());
+				f->write (static_cast<int>(str.size()), str.data());
 				++count;
 			}
 			else

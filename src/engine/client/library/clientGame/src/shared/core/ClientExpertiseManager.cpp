@@ -598,7 +598,7 @@ int ClientExpertiseManager::getExpertisePointsRemainingForPlayer()
 */
 int ClientExpertiseManager::getExpertisePointsAllocatedForPlayer()
 {
-	return s_allocatedExpertises.size();
+	return static_cast<int>(s_allocatedExpertises.size());
 }
 
 //----------------------------------------------------------------------
@@ -860,7 +860,7 @@ bool ClientExpertiseManager::deallocateExpertise(std::string const & expertiseNa
 
 int ClientExpertiseManager::getNumAllocatedExpertises()
 {
-	return s_allocatedExpertises.size();
+	return static_cast<int>(s_allocatedExpertises.size());
 }
 
 //----------------------------------------------------------------------
@@ -1035,20 +1035,25 @@ void ClientExpertiseManager::getExpertiseSkillMods(std::string const & baseExper
 	}
 
 	unsigned int modCount = 0;
+	
 	while (rank <= rankMax)
 	{
 		SkillObject const * skill = ExpertiseManager::getExpertiseSkillAt(tree, tier, grid, rank);
+		
 		if(!skill)
 		{
 			DEBUG_WARNING(true, ("ClientExpertiseManager getExpertiseSkillMods asked for %d %d %d %d got null.  This is actually super bad.",
 				tree, tier, grid, rank));
 			continue;
 		}
+		
 		SkillObject::GenericModVector const & mods = skill->getStatisticModifiers();
+		
 		if(rank == 1)
 		{
-			modCount = mods.size();
+			modCount = static_cast<unsigned int>(mods.size());
 		}
+		
 		for(unsigned int i = 0; ((i < MAX_NUM_SKILL_MODS_PER_EXPERTISE) && (i < mods.size())); ++i)
 		{
 			DEBUG_WARNING(mods.size() > MAX_NUM_SKILL_MODS_PER_EXPERTISE, ("expertise %s had more than %d skill mods %d", 
@@ -1064,6 +1069,7 @@ void ClientExpertiseManager::getExpertiseSkillMods(std::string const & baseExper
 				DEBUG_WARNING(expertiseSkillMods.names[i] != mods[i].first, ("expertise %s had differently named skill mods rank 1 = %s rank %d = %s",
 					baseExpertiseName.c_str(), expertiseSkillMods.names[i].c_str(), rank, mods[i].first.c_str()));
 			}
+			
 			expertiseSkillMods.values[i * MAX_NUM_EXPERTISE_RANKS + rank - 1] = mods[i].second; 
 		}
 		++rank;

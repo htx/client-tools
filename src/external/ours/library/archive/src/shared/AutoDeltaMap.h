@@ -65,7 +65,7 @@ public: // methods
 	void            pack(ByteStream & target) const;
 	void            packDelta(ByteStream & target) const;
 	void            set(const KeyType & key, const ValueType & value);
-	const size_t    size() const;
+	const unsigned int size() const;
 	void            unpack(ReadIterator & source);
 	void            unpackDelta(ReadIterator & source);
 	static void     pack(ByteStream & target, const std::vector<Command> & data);
@@ -88,7 +88,7 @@ private:
 	void onSet(const KeyType &, const ValueType &, const ValueType &);
 
 	MapType                      container;
-	size_t                       baselineCommandCount;
+	unsigned int                 baselineCommandCount;
 	mutable std::vector<Command> changes;
 	std::pair<ObjectType *, void (ObjectType::*)(const KeyType &, const ValueType &)> *onEraseCallback;
 	std::pair<ObjectType *, void (ObjectType::*)(const KeyType &, const ValueType &)> *onInsertCallback;
@@ -103,14 +103,14 @@ private:
 	@author Justin Randall
 */
 template<class KeyType, typename ValueType, typename ObjectType>
-inline AutoDeltaMap<KeyType, ValueType, ObjectType>::AutoDeltaMap() :
+AutoDeltaMap<KeyType, ValueType, ObjectType>::AutoDeltaMap() :
 AutoDeltaContainer(),
 container(),
 baselineCommandCount(0),
 changes(),
-onEraseCallback(0),
-onInsertCallback(0),
-onSetCallback(0)
+onEraseCallback(nullptr),
+onInsertCallback(nullptr),
+onSetCallback(nullptr)
 {
 }
 
@@ -126,9 +126,9 @@ AutoDeltaContainer(),
 container(source.container),
 baselineCommandCount(0),
 changes(),
-onEraseCallback(0),
-onInsertCallback(0),
-onSetCallback(0)
+onEraseCallback(nullptr),
+onInsertCallback(nullptr),
+onSetCallback(nullptr)
 {
 }
 
@@ -228,7 +228,7 @@ inline typename AutoDeltaMap<KeyType, ValueType, ObjectType>::const_iterator Aut
 		c.cmd = Command::ERASE;
 		c.key = (*f).first;
 		c.value = (*f).second;
-		changes.push_back(c);
+		changes.emplace_back(c);
 		++baselineCommandCount;
 		container.erase(f++);
 		touch();
@@ -318,7 +318,7 @@ inline std::pair<AutoDeltaMap<KeyType, ValueType, ObjectType>::const_iterator, b
 	insertResult result = container.insert(std::make_pair(key, value));
 	touch();
 	onInsert(key, value);
-	changes.push_back(c);
+	changes.emplace_back(c);
 	++baselineCommandCount;
 	return result;
 }
@@ -348,11 +348,12 @@ inline const bool AutoDeltaMap<KeyType, ValueType, ObjectType>::isDirty() const
 template<class KeyType, typename ValueType, typename ObjectType>
 inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::pack(ByteStream & target) const
 {
-	typename std::map<KeyType, ValueType>::const_iterator i;
-	Archive::put(target, container.size());
+	Archive::put(target, static_cast<unsigned int>(container.size()));
 	Archive::put(target, baselineCommandCount);
+	
 	unsigned char cmd;
-	for(i = container.begin(); i != container.end(); ++i)
+	
+	for(typename std::map<KeyType, ValueType>::const_iterator i = container.begin(); i != container.end(); ++i)
 	{
 		cmd = Command::ADD;
 		Archive::put(target, cmd);
@@ -374,8 +375,9 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::pack(ByteStream & targ
 template<class KeyType, typename ValueType, typename ObjectType>
 inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::pack(ByteStream & target, const std::vector<Command> &data)
 {
-	Archive::put(target, data.size());
-	Archive::put(target, static_cast<size_t>(0)); // baselineCommandCount
+	Archive::put(target, static_cast<unsigned int>(data.size()));
+	Archive::put(target, static_cast<unsigned int>(0)); // baselineCommandCount
+	
 	for(typename std::vector<Command>::const_iterator c(data.begin()); c != data.end(); ++c)
 	{
 		assert(c->cmd == Command::ADD); // only add is valid in packing the whole container
@@ -403,8 +405,9 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::pack(ByteStream & targ
 template<class KeyType, typename ValueType, typename ObjectType>
 inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::packDelta(ByteStream & target) const
 {
-	Archive::put(target, changes.size());
+	Archive::put(target, static_cast<unsigned int>(changes.size()));
 	Archive::put(target, baselineCommandCount);
+	
 	for (typename std::vector<Command>::iterator i = changes.begin(); i != changes.end(); ++i)
 	{
 		const Command & c = (*i);
@@ -435,9 +438,9 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::packDelta(ByteStream &
 	@return the number of elements in the map
 */
 template<class KeyType, typename ValueType, typename ObjectType>
-inline const size_t AutoDeltaMap<KeyType, ValueType, ObjectType>::size() const
+inline const unsigned int AutoDeltaMap<KeyType, ValueType, ObjectType>::size() const
 {
-	return container.size();
+	return static_cast<unsigned int>(container.size());
 }
 
 //-----------------------------------------------------------------------
@@ -461,6 +464,7 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::set(const KeyType & ke
 {
 	Command c;
 	typename std::map<KeyType, ValueType>::iterator i = container.find(key);
+	
 	if (i == container.end())
 	{
 		c.cmd = Command::ADD;
@@ -469,7 +473,7 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::set(const KeyType & ke
 		container[key] = value;
 		touch();
 		onInsert(key, value);
-		changes.push_back(c);
+		changes.emplace_back(c);
 		++baselineCommandCount;
 	}
 	else
@@ -485,7 +489,7 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::set(const KeyType & ke
 			i->second = value;
 			touch();
 			onSet(key, oldValue, value);
-			changes.push_back(c);
+			changes.emplace_back(c);
 			++baselineCommandCount;
 		}
 	}
@@ -514,12 +518,12 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpack(ReadIterator & 
 	clearDelta();
 
 	Command c;
-	size_t commandCount;
+	unsigned int commandCount = 0;
 
 	Archive::get(source, commandCount);
 	Archive::get(source, baselineCommandCount);
 
-	for (size_t i = 0; i < commandCount; ++i)
+	for (unsigned int i = 0; i < commandCount; ++i)
 	{
 		Archive::get(source, c.cmd);
 		assert(c.cmd == Command::ADD); // only add is valid in unpack
@@ -548,13 +552,13 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpack(ReadIterator & 
 	// unpacking baseline data
 
 	Command c;
-	size_t commandCount;
-	size_t baselineCommandCount;
+	unsigned int commandCount = 0;
+	unsigned int baselineCommandCount = 0;
 
 	Archive::get(source, commandCount);
 	Archive::get(source, baselineCommandCount);
 
-	for (size_t i = 0; i < commandCount; ++i)
+	for (unsigned int i = 0; i < commandCount; ++i)
 	{
 		Archive::get(source, c.cmd);
 		assert(c.cmd == Command::ADD); // only add is valid in unpack
@@ -572,7 +576,9 @@ template<class KeyType, typename ValueType, typename ObjectType>
 inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpackDelta(ReadIterator & source)
 {
 	Command c;
-	size_t skipCount, commandCount, targetBaselineCommandCount;
+	unsigned int skipCount = 0;
+	unsigned int commandCount = 0;
+	unsigned int targetBaselineCommandCount = 0;
 
 	Archive::get(source, commandCount);
 	Archive::get(source, targetBaselineCommandCount);
@@ -581,8 +587,8 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpackDelta(ReadIterat
 	// means that we have missed some changes and are behind; when this happens,
 	// catch up by applying all the deltas that came in, and set
 	// baselineCommandCount to targetBaselineCommandCount
-	if ((commandCount+baselineCommandCount) > targetBaselineCommandCount)
-		skipCount = commandCount+baselineCommandCount-targetBaselineCommandCount;
+	if ((commandCount + baselineCommandCount) > targetBaselineCommandCount)
+		skipCount = commandCount + baselineCommandCount - targetBaselineCommandCount;
 	else
 		skipCount = 0;
 
@@ -593,13 +599,15 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpackDelta(ReadIterat
 	if (skipCount > commandCount)
 		skipCount = commandCount;
 
-	size_t i;
+	unsigned int i = 0;
+	
 	for (i = 0; i < skipCount; ++i)
 	{
 		Archive::get(source, c.cmd);
 		Archive::get(source, c.key);
 		Archive::get(source, c.value);
 	}
+	
 	for ( ; i < commandCount; ++i)
 	{
 		Archive::get(source, c.cmd);
@@ -647,12 +655,13 @@ template<class KeyType, typename ValueType, typename ObjectType>
 inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpackDelta(ReadIterator & source, std::vector<Command> & data)
 {
 	Command c;
-	size_t commandCount, targetBaselineCommandCount;
+	unsigned int commandCount = 0;
+	unsigned int targetBaselineCommandCount = 0;
 
 	Archive::get(source, commandCount);
 	Archive::get(source, targetBaselineCommandCount);
 
-	for (size_t i=0 ; i < commandCount; ++i)
+	for (unsigned int i = 0 ; i < commandCount; ++i)
 	{
 		Archive::get(source, c.cmd);
 		switch(c.cmd)
@@ -670,7 +679,7 @@ inline void AutoDeltaMap<KeyType, ValueType, ObjectType>::unpackDelta(ReadIterat
 			break;
 		}
 
-		data.push_back(c);
+		data.emplace_back(c);
 	}
 }
 

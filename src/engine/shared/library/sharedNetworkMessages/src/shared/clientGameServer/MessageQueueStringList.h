@@ -46,7 +46,7 @@ inline void MessageQueueStringList::addString(const Unicode::String & string)
 
 inline int MessageQueueStringList::getStringCount(void) const
 {
-	return m_strings.size();
+	return static_cast<int>(m_strings.size());
 }	// MessageQueueStringList::getStringCount
 
 inline const Unicode::String & MessageQueueStringList::getString(int index) const

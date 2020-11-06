@@ -124,12 +124,13 @@ void CuiSpatialChatManager::install ()
 				{
 					const Unicode::String command = locStr->getStringLine (0);
 					const Unicode::String verb    = locStr->getStringLine (1);
-					const int numSecondaryCommands = locStr->getNumLines() - 2;
+					const int numSecondaryCommands = static_cast<int>(locStr->getNumLines()) - 2;
 
 					s_localizedChatTypes.insert (std::make_pair (command, chatType));
 					s_localizedChatVerbs.insert (std::make_pair (chatType, verb));
+					
 					for (int i = 0; i < numSecondaryCommands; i++)
-						s_localizedChatTypes.insert (std::make_pair (locStr->getStringLine(i+2), chatType));
+						s_localizedChatTypes.insert (std::make_pair (locStr->getStringLine(static_cast<size_t>(i) + 2), chatType));
 				}
 			}
 			else

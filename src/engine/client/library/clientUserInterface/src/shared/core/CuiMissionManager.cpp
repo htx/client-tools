@@ -778,7 +778,7 @@ std::vector<NetworkId> const & CuiMissionManager::getActiveMissions()
 
 int CuiMissionManager::getNumberOfActiveMissions()
 {
-	return ms_activeMissions.size();
+	return static_cast<int>(ms_activeMissions.size());
 }
 
 //-----------------------------------------------------------------------

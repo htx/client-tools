@@ -1174,13 +1174,11 @@ bool SphereTreeNode<ObjectType, ExtentAccessor>::empty() const
 // ----------------------------------------------------------------------
 
 template<class ObjectType, class ExtentAccessor>
-inline int SphereTreeNode<ObjectType, ExtentAccessor>::getObjectCount() const
+int SphereTreeNode<ObjectType, ExtentAccessor>::getObjectCount() const
 {
-	int accum = contents.size();
+	int accum = static_cast<int>(contents.size());
 
-	// recurse into qualfiying children
-	typename std::vector<SphereTreeNode *>::const_iterator s;
-	for(s = children.begin(); s != children.end(); ++s)
+	for(typename std::vector<SphereTreeNode*>::const_iterator s = children.begin(); s != children.end(); ++s)
 	{
 		accum += (*s)->getObjectCount();
 	}
@@ -1191,13 +1189,11 @@ inline int SphereTreeNode<ObjectType, ExtentAccessor>::getObjectCount() const
 // ----------------------------------------------------------------------
 
 template<class ObjectType, class ExtentAccessor>
-inline void SphereTreeNode<ObjectType, ExtentAccessor>::apply( typename SphereTreeNode<ObjectType, ExtentAccessor>::NodeFunctor N)
+void SphereTreeNode<ObjectType, ExtentAccessor>::apply( typename SphereTreeNode<ObjectType, ExtentAccessor>::NodeFunctor N)
 {
 	N(this);
 
-	// recurse into qualfiying children
-	typename std::vector<SphereTreeNode *>::const_iterator s;
-	for(s = children.begin(); s != children.end(); ++s)
+	for(typename std::vector<SphereTreeNode*>::const_iterator s = children.begin(); s != children.end(); ++s)
 	{
 		(*s)->apply(N);
 	}
@@ -1207,7 +1203,7 @@ inline void SphereTreeNode<ObjectType, ExtentAccessor>::apply( typename SphereTr
 /** @todo potential collision/interaction
 */
 template<class ObjectType, class ExtentAccessor>
-inline void SphereTreeNode<ObjectType, ExtentAccessor>::move(NodeHandle * handle)
+void SphereTreeNode<ObjectType, ExtentAccessor>::move(NodeHandle * handle)
 {
 	const Sphere & sphere = getSphere(handle->getObject());
 

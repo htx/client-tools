@@ -64,13 +64,13 @@ AutoByteStream::~AutoByteStream()
 */
 void AutoByteStream::addVariable(AutoVariableBase & newVariable)
 {
-	members.push_back(&newVariable);
+	members.emplace_back(&newVariable);
 }
 //-----------------------------------------------------------------------
 
-size_t AutoByteStream::getItemCount() const
+unsigned int AutoByteStream::getItemCount() const
 {
-	return members.size();
+	return static_cast<unsigned int>(members.size());
 }
 
 //---------------------------------------------------------------------
@@ -95,10 +95,10 @@ size_t AutoByteStream::getItemCount() const
 */
 void AutoByteStream::pack(ByteStream & target) const
 {
-	std::vector<AutoVariableBase *>::const_iterator i;
-	unsigned short packedSize=static_cast<unsigned short>(members.size());
-	Archive::put(target,packedSize);
-	for(i = members.begin(); i != members.end(); ++i)
+	auto packedSize = static_cast<unsigned short>(members.size());
+	Archive::put(target, packedSize);
+	
+	for(auto i = members.begin(); i != members.end(); ++i)
 	{
 		(*i)->pack(target);
 	}
@@ -126,10 +126,10 @@ void AutoByteStream::pack(ByteStream & target) const
 */
 void AutoByteStream::unpack(ReadIterator & source)
 {
-	std::vector<AutoVariableBase *>::iterator i;
 	unsigned short packedSize;
-	Archive::get(source,packedSize);
-	for(i = members.begin(); i != members.end(); ++i)
+	Archive::get(source, packedSize);
+	
+	for(auto i = members.begin(); i != members.end(); ++i)
 	{
 		(*i)->unpack(source);
 	}

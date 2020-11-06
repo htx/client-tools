@@ -1190,17 +1190,16 @@ bool TargaFormat::saveImage(const Image &image, const char *filename)
    header.m_imageDescriptor = 0;   // image attribute flags (lower-left origin)
 	//------------------------------------------
 
-	int numWritten;
+	//-- Write header (fields 1 thru 5 of spec)
+	size_t numWritten = fwrite(&header, sizeof(header), 1, f);
 
-	//------------------------------------------
-	//-- Write header (fields 1 thru 5 of spec).
-	numWritten = fwrite(&header, sizeof(header), 1, f);
-   if (numWritten != 1)
-   {
+	if (numWritten != 1)
+	{
 		DEBUG_WARNING(true, ("Targa header not written successfully.\n"));
 		fclose(f);
-      return false;
-   }
+		
+		return false;
+	}
 	//------------------------------------------
 
 	//------------------------------------------
@@ -1213,6 +1212,7 @@ bool TargaFormat::saveImage(const Image &image, const char *filename)
 	// Image Data (field 8)
 	const int sourceYStride = width * sourceBytesPerPixel;
 	const byte *piter = pixels + (height-1)*width*sourceBytesPerPixel;
+	
 	if (pixelFormat!=diskPixelFormat)
 	{
 		const int destBytesPerPixel = bitDepth / 8;
@@ -1229,13 +1229,14 @@ bool TargaFormat::saveImage(const Image &image, const char *filename)
 				Image::copyPixel(diter, diskPixelFormat, piter, pixelFormat);
 			}
 			numWritten = fwrite(destPixelsLine, destYStride, 1, f);
+			
 			if (numWritten!=1)
 			{
 				DEBUG_WARNING(true, ("Targa image data not written successfully for %s\n", filename));
 				return false;
 			}
 
-			piter-=2*sourceYStride;
+			piter -= 2 * sourceYStride;
 		}
 	}
 	else
@@ -1266,6 +1267,7 @@ bool TargaFormat::saveImage(const Image &image, const char *filename)
 	footer.m_developerDirectoryOffset=0;
 	memcpy(footer.m_signature, ms_TargaSignature, TARGA_SIGNATURE_LENGTH);
 	numWritten = fwrite(&footer, sizeof(footer), 1, f);
+	
    if (numWritten != 1)
    {
 		DEBUG_WARNING(true, ("Targa footer not written successfully for %s\n", filename));
@@ -1274,6 +1276,7 @@ bool TargaFormat::saveImage(const Image &image, const char *filename)
 	//------------------------------------------
 
 	fclose(f);
+	
 	return true;
 }
 

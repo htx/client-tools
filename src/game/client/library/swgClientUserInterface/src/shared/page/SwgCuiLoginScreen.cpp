@@ -248,9 +248,10 @@ void SwgCuiLoginScreen::ok ()
 
 		{
 			char buffer [128];
-			char const * address = 0;
+			char const * address = nullptr;
 
 			int i = 0;
+			
 			do
 			{
 				sprintf (buffer, "loginServerAddress%i", i);
@@ -263,7 +264,7 @@ void SwgCuiLoginScreen::ok ()
 					if (port != 0)
 					{
 						DEBUG_REPORT_LOG (true, ("Found login server: address=%s, port=%i\n", address, port));
-						loginServerList.push_back (std::make_pair (std::string (address), port));
+						loginServerList.emplace_back (std::make_pair (std::string (address), port));
 					}
 
 					++i;
@@ -272,9 +273,9 @@ void SwgCuiLoginScreen::ok ()
 			while (address);
 		}
 
-		if (loginServerList.size ())
+		if (!loginServerList.empty())
 		{
-			const int choice = Random::random (loginServerList.size () - 1);
+			const int choice = Random::random (static_cast<int32>(loginServerList.size()) - 1);
 			DEBUG_REPORT_LOG (true, ("Connecting to login server: address=%s, port=%i\n", loginServerList [choice].first.c_str (), loginServerList [choice].second));
 
 			//-- save the choices for later use

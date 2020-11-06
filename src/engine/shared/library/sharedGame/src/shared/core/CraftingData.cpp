@@ -51,8 +51,9 @@ complexity(_complexity),
 draftSlotOption(_draftSlotOption),
 draftSlotIndex(_draftSlotIndex)
 {
-	int count = slotIngredients.size();
-	for (int i = 0; i < count; ++i)
+	size_t count = slotIngredients.size();
+	
+	for (size_t i = 0; i < count; ++i)
 		ingredients.push_back(SimpleIngredientPtr(new SimpleIngredient(slotIngredients[i], slotIngredientsCount[i], NetworkId::cms_invalid, 0)));
 }
 

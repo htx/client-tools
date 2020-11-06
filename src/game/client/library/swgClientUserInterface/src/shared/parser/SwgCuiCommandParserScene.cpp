@@ -722,7 +722,8 @@ static void PlayAnimation (const SwgCuiCommandParserScene::StringVector_t & argv
 			{
 				//-- Apply regular expression to the animation filename.
 				NOT_NULL(regularExpression);
-				int const resultCode = pcre_exec(regularExpression, NULL, pathAsString.c_str(), pathAsString.length(), 0, 0, &captureData[0], sizeof(captureData));
+				int const resultCode = pcre_exec(regularExpression, NULL, pathAsString.c_str(), static_cast<int>(pathAsString.length()), 0, 0, &captureData[0], sizeof(captureData));
+				
 				if (resultCode < 0)
 				{
 					//-- The animation name did not match.
@@ -4820,7 +4821,7 @@ bool SwgCuiCommandParserScene::performParsing (const NetworkId & , const StringV
 				++discovered;
 		}
 
-		int const undiscovered = allServerFirstCollections.size() - discovered;
+		int const undiscovered = static_cast<int>(allServerFirstCollections.size()) - discovered;
 
 		result += Unicode::narrowToWide(FormattedString<512>().sprintf("%d Discovered:\n", discovered));
 		for (iter = allServerFirstCollections.begin(); iter != allServerFirstCollections.end(); ++iter)

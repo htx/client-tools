@@ -1003,9 +1003,9 @@ void CuiMediator::updateAll (float deltaTimeSecs)
 				if (mediator->isUpdating ())
 				{
 #if _DEBUG
-					if (i < numProfilerBufs)
+					if (i < static_cast<int>(numProfilerBufs))
 					{
-						snprintf (buf [i], buf_size, "%-30s 0x%08x", mediator->getMediatorDebugName ().c_str (), reinterpret_cast<int>(mediator));
+						snprintf (buf [i], buf_size, "%-30s 0x%x", mediator->getMediatorDebugName ().c_str (), reinterpret_cast<intptr_t>(mediator));
 						//PROFILER_START (buf [i]);
 					}
 #endif
@@ -1013,8 +1013,10 @@ void CuiMediator::updateAll (float deltaTimeSecs)
 					mediator->update (deltaTimeSecs);
 
 #if _DEBUG
-					if (i < numProfilerBufs)
+					if (i < static_cast<int>(numProfilerBufs)) 
+					{
 						//PROFILER_STOP  (buf[i]);
+					}
 #endif
 					++i;
 				}
@@ -1027,7 +1029,7 @@ void CuiMediator::updateAll (float deltaTimeSecs)
 	s_mediatorsToAdd.insert (s_mediatorsToAdd.end (), s_mediatorsToAddNext.begin (), s_mediatorsToAddNext.end ());
 	s_mediatorsToAddNext.clear ();
 
-	for (MediatorVector::iterator it = s_mediatorsToAdd.begin (); it != s_mediatorsToAdd.end (); ++it)
+	for (auto it = s_mediatorsToAdd.begin (); it != s_mediatorsToAdd.end (); ++it)
 	{
 		CuiMediator * const mediator = NON_NULL (*it);
 

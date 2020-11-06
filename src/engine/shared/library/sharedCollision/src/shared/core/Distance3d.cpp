@@ -486,7 +486,7 @@ Vector ClosestPointYLine ( Segment3d const & S, Vector const & V )
 
 Vector ClosestPointPoly ( Vector const & V, VertexList const & vertices )
 {
-	if(vertices.size() == 0) return V;
+	if(vertices.empty()) return V;
 
 	if(vertices.size() == 1) return vertices[0];
 
@@ -496,9 +496,9 @@ Vector ClosestPointPoly ( Vector const & V, VertexList const & vertices )
 
 	Vector closest = ClosestPointTri( V, Triangle3d(vertices[0],vertices[1],vertices[2]) );
 
-	int nTris = vertices.size() - 2;
+	size_t nTris = vertices.size() - 2;
 
-	for(int i = 1; i < nTris; i++)
+	for(size_t i = 1; i < nTris; i++)
 	{
 		Triangle3d tri( vertices[0], vertices[i+1], vertices[i+2] );
 

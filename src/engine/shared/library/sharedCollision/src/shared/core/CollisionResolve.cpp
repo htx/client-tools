@@ -171,7 +171,7 @@ void translateExtent ( CellProperty const * cell, BaseExtent * extent, MoveSegme
 
 void translateFloorContacts ( FloorContactList & floorContacts, MoveSegment const & moveSeg, float moveParam, int ignoreTriId, int ignoreEdge )
 {
-	int floorContactCount = ms_floorContactList.size();
+	int floorContactCount = static_cast<int>(ms_floorContactList.size());
 
 	for(int i = 0; i < floorContactCount; i++)
 	{
@@ -211,7 +211,7 @@ void translateFloorContacts ( FloorContactList & floorContacts, MoveSegment cons
 
 void moveObjectAlong ( Object * object, CellPositionList const & positions )
 {
-	int count = positions.size();
+	int count = static_cast<int>(positions.size());
 
 	for(int i = 0; i < count; i++)
 	{
@@ -403,7 +403,7 @@ ResolutionResult CollisionResolve::resolveCollisions ( CellProperty const * cell
 
 		// ----------
 
-		int contactCount = ms_contactList.size() + 1;
+		int contactCount = static_cast<int>(ms_contactList.size()) + 1;
 
 		if(contactCount == 1)
 		{
@@ -619,14 +619,14 @@ void CollisionResolve::explodeCollider(CollisionProperty * colliderA, ColliderLi
 		}
 	}
 
-	ms_obstacleCount += ms_obstacleList.size();
+	ms_obstacleCount += static_cast<int>(ms_obstacleList.size());
 }
 
 // ----------------------------------------------------------------------
 
 bool CollisionResolve::findFirstContact ( CellProperty const * cellA, SimpleExtent const * extentA, MoveSegment const & moveSeg, ObstacleList * obstacleList, int & outMinIndex, Contact & outContact, Footprint * footprint )
 {
-	int extentCount = obstacleList->size();
+	int extentCount = static_cast<int>(obstacleList->size());
 
 	outContact = Contact::noContact;
 	outMinIndex = -1;

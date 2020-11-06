@@ -380,20 +380,20 @@ void DataLint::report()
 		{
 			fprintf(fp, "This file contains a categorized listing of the linted assets in the game. The categories are as follows:\n");
 			fprintf(fp, "\n");
-			fprintf(fp, "1.  Appearances                (%5d)\n", getList(AT_appearance).size());
-			fprintf(fp, "2.  Arrangement Descriptors    (%5d)\n", getList(AT_arrangementDescriptor).size());
-			fprintf(fp, "3.  Localized String Tables    (%5d)\n", getList(AT_localizedStringTable).size());
-			fprintf(fp, "4.  Object Templates           (%5d)\n", getList(AT_objectTemplate).size());
-			fprintf(fp, "5.  Portal Properties          (%5d)\n", getList(AT_portalProperty).size());
-			fprintf(fp, "6.  Shader Templates           (%5d)\n", getList(AT_shaderTemplate).size());
-			fprintf(fp, "7.  SkyBoxes                   (%5d)\n", getList(AT_skyBox).size());
-			fprintf(fp, "8.  Slot Descriptors           (%5d)\n", getList(AT_slotDescriptor).size());
-			fprintf(fp, "9.  Sound Templates            (%5d)\n", getList(AT_soundTemplate).size());
-			fprintf(fp, "10. Terrain                    (%5d)\n", getList(AT_terrain).size());
-			fprintf(fp, "11. Textures                   (%5d)\n", getList(AT_texture).size());
-			fprintf(fp, "12. Texture Renderer Templates (%5d)\n", getList(AT_textureRendererTemplate).size());
+			fprintf(fp, "1.  Appearances                (%5zd)\n", getList(AT_appearance).size());
+			fprintf(fp, "2.  Arrangement Descriptors    (%5zd)\n", getList(AT_arrangementDescriptor).size());
+			fprintf(fp, "3.  Localized String Tables    (%5zd)\n", getList(AT_localizedStringTable).size());
+			fprintf(fp, "4.  Object Templates           (%5zd)\n", getList(AT_objectTemplate).size());
+			fprintf(fp, "5.  Portal Properties          (%5zd)\n", getList(AT_portalProperty).size());
+			fprintf(fp, "6.  Shader Templates           (%5zd)\n", getList(AT_shaderTemplate).size());
+			fprintf(fp, "7.  SkyBoxes                   (%5zd)\n", getList(AT_skyBox).size());
+			fprintf(fp, "8.  Slot Descriptors           (%5zd)\n", getList(AT_slotDescriptor).size());
+			fprintf(fp, "9.  Sound Templates            (%5zd)\n", getList(AT_soundTemplate).size());
+			fprintf(fp, "10. Terrain                    (%5zd)\n", getList(AT_terrain).size());
+			fprintf(fp, "11. Textures                   (%5zd)\n", getList(AT_texture).size());
+			fprintf(fp, "12. Texture Renderer Templates (%5zd)\n", getList(AT_textureRendererTemplate).size());
 			fprintf(fp, "--------------------------------------\n");
-			fprintf(fp, "13. Total Linted Assets        (%5d)\n", m_assetList->size() - getList(AT_unSupported).size());
+			fprintf(fp, "13. Total Linted Assets        (%5zd)\n", m_assetList->size() - getList(AT_unSupported).size());
 			fprintf(fp, "\n");
 
 			writeToCategorizedFile(fp, "Appearances", AT_appearance);
@@ -469,7 +469,7 @@ std::string DataLintNamespace::formatErrorMessage(WarningPair &warningPair, int 
 	{
 		// Remove any trailing carriage returns
 
-		int assetErrorLength = strlen(assetError);
+		size_t assetErrorLength = strlen(assetError);
 
 		if (assetErrorLength > 0)
 		{
@@ -493,7 +493,7 @@ std::string DataLintNamespace::formatErrorMessage(WarningPair &warningPair, int 
 		result += formatedError;
 	}
 
-	StringList::reverse_iterator stringListIter = warningPair.second.second.rbegin();
+	auto stringListIter = warningPair.second.second.rbegin();
 
 	for (; stringListIter != warningPair.second.second.rend(); ++stringListIter)
 	{
@@ -529,9 +529,9 @@ void DataLint::pushAsset(char const *assetPath)
 {
 	if (m_assetStack)
 	{
-		int const size = m_assetStack->size();
+		int const size = static_cast<int>(m_assetStack->size());
 		UNREF(size);
-		m_assetStack->push_back(assetPath);
+		m_assetStack->emplace_back(assetPath);
 	}
 }
 
@@ -540,8 +540,8 @@ void DataLint::popAsset()
 {
 	if (m_assetStack)
 	{
-		int const size = m_assetStack->size();
-		UNREF(size);
+		int const size = static_cast<int>(m_assetStack->size()); //??
+		UNREF(size); //??
 		DEBUG_FATAL(m_assetStack->empty(), ("DataLint::popAsset() - Trying to pop the asset stack when it is empty."));
 		m_assetStack->pop_back();
 	}
@@ -553,7 +553,7 @@ void DataLint::logWarning(std::string const &warning)
 {
 	if (m_enabled)
 	{
-		m_warningList->push_back(std::make_pair(warning, std::make_pair(m_currentAssetType, *m_assetStack)));
+		m_warningList->emplace_back(std::make_pair(warning, std::make_pair(m_currentAssetType, *m_assetStack)));
 	}
 }
 

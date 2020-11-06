@@ -1,5 +1,5 @@
-#if !defined (BLOCKALLOCATOR_H_)
-#define BLOCKALLOCATOR_H_
+#ifndef BLOCK_ALLOCATOR_H_
+#define BLOCK_ALLOCATOR_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,11 +16,11 @@ namespace Base
 	public:
 		BlockAllocator();
 		~BlockAllocator();
-		void *getBlock(unsigned accum);
-		void returnBlock(unsigned *handle);
+		void *getBlock(uintptr_t accum);
+		void returnBlock(uintptr_t *handle);
 
 	private:
-		unsigned  *m_blocks[31];
+		uintptr_t  *m_blocks[31]{};
 	};
 };
 #ifdef EXTERNAL_DISTRO

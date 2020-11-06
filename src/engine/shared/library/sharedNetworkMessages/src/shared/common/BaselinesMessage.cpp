@@ -34,7 +34,7 @@ void BaselinesMessage::remove (void)
 	DEBUG_FATAL(!ms_memoryBlockManager, ("BaselinesMessage is not installed"));
 
 	delete ms_memoryBlockManager;
-	ms_memoryBlockManager = 0;
+	ms_memoryBlockManager = nullptr;
 }
 
 //-------------------------------------------------------------------

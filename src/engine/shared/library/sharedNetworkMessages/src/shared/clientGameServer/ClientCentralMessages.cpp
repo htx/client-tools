@@ -45,15 +45,17 @@ GameNetworkMessage("ClientIdMsg"),
 m_gameBitsToClear(0),
 token(),
 version(),
-tokenData(0)
+tokenData(nullptr)
 {
 	addVariable(m_gameBitsToClear);
 	addVariable(token);
 	addVariable(version);
 	AutoByteStream::unpack(source);
-	unsigned int tokenSize = token.get().size();
+	
+	const auto tokenSize = static_cast<unsigned int>(token.get().size());
 	tokenData = new unsigned char[tokenSize];
 	const std::vector<unsigned char> & a = token.get();
+	
 	for(unsigned int i = 0; i < tokenSize; i ++)
 	{
 		tokenData[i] = a[i];

@@ -874,7 +874,7 @@ void CuiCachedAvatarManager::saveCharacterList  ()
 		}
 		else
 		{
-			af->write (str.size (), str.c_str ());
+			af->write (static_cast<int>(str.size()), str.c_str ());
 		}
 
 		delete af;

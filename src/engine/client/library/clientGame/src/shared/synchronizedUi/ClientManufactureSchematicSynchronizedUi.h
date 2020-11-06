@@ -119,7 +119,7 @@ inline float ClientManufactureSchematicSynchronizedUi::getExperimentMod(void) co
 
 inline int ClientManufactureSchematicSynchronizedUi::getExperimentAttribCount(void) const
 {
-	return m_attributeName.size();
+	return static_cast<int>(m_attributeName.size());
 }
 
 inline const std::vector<std::string> & ClientManufactureSchematicSynchronizedUi::getAppearances () const

@@ -114,11 +114,12 @@ void MessageQueueResourceWeights::pack (const MessageQueue::Data* const data, Ar
 		int assemblyCount = 0;
 		int resourceCount = 0;
 		{
-			int count = msg->m_assemblyWeights.size();
+			int count = static_cast<int>(msg->m_assemblyWeights.size());
+			
 			for (int i = 0; i < count; ++i)
 			{
 				const std::pair<int, WeightVector> & weights = msg->m_assemblyWeights[i];
-				const int weightCount = weights.second.size();
+				const int weightCount = static_cast<int>(weights.second.size());
 				if (weightCount == 0)
 					continue;
 				++assemblyCount;
@@ -143,11 +144,12 @@ void MessageQueueResourceWeights::pack (const MessageQueue::Data* const data, Ar
 
 		// write m_resourceMaxWeights info
 		{
-			int count = msg->m_resourceMaxWeights.size();
+			int count = static_cast<int>(msg->m_resourceMaxWeights.size());
+			
 			for (int i = 0; i < count; ++i)
 			{
 				const std::pair<int, WeightVector> & weights = msg->m_resourceMaxWeights[i];
-				const int weightCount = weights.second.size();
+				const int weightCount = static_cast<int>(weights.second.size());
 				if (weightCount == 0)
 					continue;
 				++resourceCount;
@@ -170,7 +172,8 @@ void MessageQueueResourceWeights::pack (const MessageQueue::Data* const data, Ar
 			}
 		}
 
-		int missingCount = attribCount * 2 - assemblyCount - resourceCount;
+		int missingCount = static_cast<int>(attribCount) * 2 - assemblyCount - resourceCount;
+		
 		if (missingCount > 0)
 		{
 			WARNING(true, ("MessageQueueResourceWeights::pack for schematic "

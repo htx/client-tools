@@ -40,12 +40,16 @@ public:
         }
 
         volatile unsigned int* p_i_lock = &m_iLock;
+#ifdef _WIN64
+    	// todo maybe, so far this seems to be only used in the unused httpposter
+#else
         __asm 
         {
             mov esi,[p_i_lock]
             lock bts dword ptr [esi], 0
             jnc Locked
         }
+#endif
         return( false );
         
         Locked:

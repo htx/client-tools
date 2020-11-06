@@ -257,16 +257,18 @@ namespace ClientWaypointObjectNamespace
 		if (!s_installed)
 			install ();
 
-		const size_t size  = s_colorMapping.size ();
-		if (size > 0 && Random::random (0, size)) // sometimes choose the default
+		const size_t size  = s_colorMapping.size();
+		
+		if (size > 0 && Random::random (0, static_cast<int32>(size))) // sometimes choose the default
 		{
-			const size_t index = Random::random (0, size - 1);			
+			const size_t index = Random::random (0, static_cast<int32>(size) - 1);			
 			ColorMap::const_iterator it = s_colorMapping.begin ();
 			std::advance (it, index);
 			return (*it).first;
 		}
 
 		static const std::string empty;
+		
 		return empty;
 	}
 

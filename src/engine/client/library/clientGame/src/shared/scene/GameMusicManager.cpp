@@ -538,21 +538,21 @@ void GameMusicManager::update(float const elapsedTime)
 			case E_death:
 				{
 					if (!ms_combatDeathList.empty ())
-						playMusicSoundTemplateName = ms_combatDeathList.size () > 1 ? ms_combatDeathList [Random::random (0, ms_combatDeathList.size () - 1)]->getString () : ms_combatDeathList [0]->getString ();
+						playMusicSoundTemplateName = ms_combatDeathList.size () > 1 ? ms_combatDeathList [Random::random (0, static_cast<int32>(ms_combatDeathList.size ()) - 1)]->getString () : ms_combatDeathList [0]->getString ();
 				}
 				break;
 
 			case E_enter:
 				{
 					if (!ms_combatEnterList.empty ())
-						playMusicSoundTemplateName = ms_combatEnterList.size () > 1 ? ms_combatEnterList [Random::random (0, ms_combatEnterList.size () - 1)]->getString () : ms_combatEnterList [0]->getString ();
+						playMusicSoundTemplateName = ms_combatEnterList.size () > 1 ? ms_combatEnterList [Random::random (0, static_cast<int32>(ms_combatEnterList.size ()) - 1)]->getString () : ms_combatEnterList [0]->getString ();
 				}
 				break;
 
 			case E_exit:
 				{
 					if (!ms_combatExitList.empty ())
-						playMusicSoundTemplateName = ms_combatExitList.size () > 1 ? ms_combatExitList [Random::random (0, ms_combatExitList.size () - 1)]->getString () : ms_combatExitList [0]->getString ();
+						playMusicSoundTemplateName = ms_combatExitList.size () > 1 ? ms_combatExitList [Random::random (0, static_cast<int32>(ms_combatExitList.size ()) - 1)]->getString () : ms_combatExitList [0]->getString ();
 				}
 				break;
 
@@ -560,7 +560,7 @@ void GameMusicManager::update(float const elapsedTime)
 				{
 					if (!ms_spaceCombatEnterList.empty())
 					{
-						ms_lastSpaceCombatEnterIndex = Random::random(0, ms_spaceCombatEnterList.size() - 1);
+						ms_lastSpaceCombatEnterIndex = Random::random(0, static_cast<int32>(ms_spaceCombatEnterList.size()) - 1);
 						playMusicSoundTemplateName = ms_lastSpaceCombatEnterIndex < ms_spaceCombatEnterList.size() ? ms_spaceCombatEnterList[ms_lastSpaceCombatEnterIndex]->getString() : ms_spaceCombatEnterList[0]->getString();
 					}
 				}
@@ -576,7 +576,7 @@ void GameMusicManager::update(float const elapsedTime)
 			case E_incapacitation:
 				{
 					if (!ms_combatIncapacitationList.empty ())
-						playMusicSoundTemplateName = ms_combatIncapacitationList.size () > 1 ? ms_combatIncapacitationList [Random::random (0, ms_combatIncapacitationList.size () - 1)]->getString () : ms_combatIncapacitationList [0]->getString ();
+						playMusicSoundTemplateName = ms_combatIncapacitationList.size () > 1 ? ms_combatIncapacitationList [Random::random (0, static_cast<int32>(ms_combatIncapacitationList.size ()) - 1)]->getString () : ms_combatIncapacitationList [0]->getString ();
 				}
 				break;
 

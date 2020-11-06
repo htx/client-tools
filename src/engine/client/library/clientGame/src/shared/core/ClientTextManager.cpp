@@ -589,7 +589,7 @@ Unicode::String ClientTextManager::colorAndFilterText(Unicode::String const &tex
 	{
 		Unicode::String const &coloredText = iterColoredSentences->first;
 
-		int position = 0;
+		size_t position = 0;
 
 		while (position == 0)
 		{
@@ -611,7 +611,7 @@ Unicode::String ClientTextManager::colorAndFilterText(Unicode::String const &tex
 	{
 		Unicode::String const &coloredText = iterColoredWords->first;
 
-		int position = 0;
+		size_t position = 0;
 
 		while (position != Unicode::String::npos)
 		{
@@ -619,8 +619,8 @@ Unicode::String ClientTextManager::colorAndFilterText(Unicode::String const &tex
 
 			if (position != Unicode::String::npos)
 			{
-				textIterator.insertCurrentColorCodeAtPrintablePosition(position + coloredText.size());
-				textIterator.insertTextAtPrintablePosition(position, iterColoredWords->second.getColorCodeUnicodeString());
+				textIterator.insertCurrentColorCodeAtPrintablePosition(static_cast<int>(position + coloredText.size()));
+				textIterator.insertTextAtPrintablePosition(static_cast<int>(position), iterColoredWords->second.getColorCodeUnicodeString());
 				++position;
 			}
 		}

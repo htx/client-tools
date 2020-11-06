@@ -64,6 +64,7 @@ namespace GraphicsNamespace
 
 	const Tag TAG_DX8 = TAG3(D,X,8);
 	const Tag TAG_DX9 = TAG3(D,X,9);
+	const Tag TAG_DX11 = TAG(D,X,1,1);
 
 	HINSTANCE                                 ms_dll;
 	const Gl_api                             *ms_api;
@@ -210,6 +211,13 @@ bool Graphics::install()
 	{
 		GraphicsOptionTags::set(TAG_DX8, false);
 		GraphicsOptionTags::set(TAG_DX9, true);
+		GraphicsOptionTags::set(TAG_DX11, false);
+	}
+	else if (ms_rasterMajor == 8)
+	{
+		GraphicsOptionTags::set(TAG_DX8, false);
+		GraphicsOptionTags::set(TAG_DX9, false);
+		GraphicsOptionTags::set(TAG_DX11, true);
 	}
 	else
 		DEBUG_FATAL(true, ("unknown rasterizer"));
@@ -1892,7 +1900,7 @@ void Graphics::drawCircle(int sx, int sy, int r, const VectorArgb &diffuse)
 	format.setColor0();
 	DynamicVertexBuffer vertexBuffer(format);
 
-	vertexBuffer.lock(pointList.size());
+	vertexBuffer.lock(static_cast<int>(pointList.size()));
 
 		VertexBufferWriteIterator v = vertexBuffer.begin();
 

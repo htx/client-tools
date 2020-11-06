@@ -363,7 +363,7 @@ int UIText::GetLineCount () const
 	if( mLines->linePointers.size() < 3 )
 		return 0;
 
-	return mLines->linePointers.size() - 2;
+	return static_cast<int>(mLines->linePointers.size()) - 2;
 }
 
 //-----------------------------------------------------------------
@@ -1837,7 +1837,7 @@ int UIText::GetLineFromCharacter  (const int c, int & startC) const
 
 		++pos;
 
-		startC = pos;
+		startC = static_cast<int>(pos);
 	}
 
 	return line;
@@ -1887,7 +1887,7 @@ void UIText::ReplaceSelection (const Unicode::String & str)
 	mLocalText.insert (static_cast<size_t>(mCursorPoint), copy, startCopyPoint, copy.size());
 	SetTextFlag (TF_dirty, true);
 
-	const int point = mCursorPoint + copy.size ();
+	const int point = mCursorPoint + static_cast<int>(copy.size ());
 
 	SetCursorMark  (point);
 	SetCursorPoint (point);

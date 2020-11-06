@@ -905,7 +905,7 @@ void CuiCombatManager::install ()
 	{
 		WARNING(true, ("CuiCombatManager::install conIndexData size [%d] doesn't match data table size [%d]", s_conLevelData.size(), s_numConLevels));
 
-		s_numConLevels = s_conLevelData.size() - 1;
+		s_numConLevels = static_cast<int>(s_conLevelData.size()) - 1;
 	}
 
 	// The template will only be used to set the spamOrder values.
@@ -1888,10 +1888,11 @@ void CuiCombatManager::processCombatSpam (const MessageQueueCombatSpam & spamMsg
 
 void CuiCombatManager::fillSpamOrder(short spamOrder[], Unicode::String spamTemplate)
 {
-	unsigned int pos = 0;
+	size_t pos = 0;
 	Unicode::NarrowString token;
 	Unicode::NarrowString narrowTemplate = Unicode::wideToNarrow(spamTemplate);
-	for (int i = 0; pos != narrowTemplate.npos; i++)
+	
+	for (int i = 0; pos != Unicode::NarrowString::npos; i++)
 	{
 		// Each token will be "%nn" where nn is a two digit number starting with 01.  This was
 		// done to make it easier on translators, so doing the -1 for array friendliness.
@@ -2506,10 +2507,11 @@ void CuiCombatManager::buildAttackMessageGeneric(const StringId & stringId, int 
 // off of the stack for speed.
 void CuiCombatManager::buildAttackMessage(Unicode::String & result)
 {
-	int size = SENTENCE_STRUCTURE_NUMBER_STRUCTURES;
+	size_t size = SENTENCE_STRUCTURE_NUMBER_STRUCTURES;
 	Unicode::String preformatted;
 	Unicode::unicode_char_t resultChars[1024];
-	int i;
+	size_t i;
+	
 	for (i = 0; i < size; i++)
 	{
 		if (ms_spamStringsSet[ms_spamOrder[i]] == true)
@@ -2522,20 +2524,23 @@ void CuiCombatManager::buildAttackMessage(Unicode::String & result)
 	// Remove excess spaces and toUpper() the first character
 	preformatted = Unicode::trim(preformatted);
 	preformatted = Unicode::toUpper(preformatted.substr(0,1)) + preformatted.substr(1);
-	int length = preformatted.length();
-	int periodPos = preformatted.find(ms_period);
-	if (periodPos != preformatted.npos &&
-		periodPos < length - 1)
+	
+	size_t length = preformatted.length();
+	size_t periodPos = preformatted.find(ms_period);
+	
+	if (periodPos != Unicode::String::npos && periodPos < length - 1)
 	{
-		int toUpperPos = preformatted.find_first_not_of(' ', periodPos+1);
+		size_t toUpperPos = preformatted.find_first_not_of(' ', periodPos+1);
+		
 		preformatted = preformatted.substr(0, toUpperPos-1) +
 		               Unicode::toUpper(preformatted.substr(toUpperPos, 1)) +
 		               preformatted.substr(toUpperPos+1);
 	}
 
 	// Remove spaces prior to characters that shouldn't have spaces before them
-	int pos = 0;
+	size_t pos = 0;
 	const Unicode::unicode_char_t *chars = preformatted.c_str();
+	
 	for (i = 0; i < length - 1; i++)
 	{
 		if (isSpace(chars[i]) &&
@@ -2564,10 +2569,11 @@ void CuiCombatManager::buildAttackMessage(Unicode::String & result)
 // This must be kept in sync with the above buildAttackMessage() function
 void CuiCombatManager::buildAttackMessageBrief(Unicode::String & result)
 {
-	int size = SENTENCE_STRUCTURE_NUMBER_STRUCTURES_BRIEF;
+	size_t size = SENTENCE_STRUCTURE_NUMBER_STRUCTURES_BRIEF;
 	Unicode::String preformatted;
 	Unicode::unicode_char_t resultChars[1024];
-	int i;
+	size_t i;
+	
 	for (i = 0; i < size; i++)
 	{
 		if (ms_spamStringsSetBrief[ms_spamOrderBrief[i]] == true)
@@ -2580,29 +2586,30 @@ void CuiCombatManager::buildAttackMessageBrief(Unicode::String & result)
 	// Remove excess spaces and toUpper() the first character
 	preformatted = Unicode::trim(preformatted);
 	preformatted = Unicode::toUpper(preformatted.substr(0,1)) + preformatted.substr(1);
-	int length = preformatted.length();
-	int periodPos = preformatted.find(ms_period);
-	if (periodPos != preformatted.npos &&
-		periodPos < length - 1)
+	
+	size_t length = preformatted.length();
+	size_t periodPos = preformatted.find(ms_period);
+	
+	if (periodPos != Unicode::String::npos && periodPos < length - 1)
 	{
-		int toUpperPos = preformatted.find_first_not_of(' ', periodPos+1);
+		size_t toUpperPos = preformatted.find_first_not_of(' ', periodPos+1);
+		
 		preformatted = preformatted.substr(0, toUpperPos-1) +
 		               Unicode::toUpper(preformatted.substr(toUpperPos, 1)) +
 		               preformatted.substr(toUpperPos+1);
 	}
 
 	// Remove spaces prior to characters that shouldn't have spaces before them
-	int pos = 0;
+	size_t pos = 0;
 	const Unicode::unicode_char_t *chars = preformatted.c_str();
+	
 	for (i = 0; i < length - 1; i++)
 	{
-		if (isSpace(chars[i]) &&
-		    !shouldHaveSpacesBefore(chars[i+1]))
+		if (isSpace(chars[i]) && !shouldHaveSpacesBefore(chars[i+1]))
 		{
 			continue;
 		}
-		else if (!shouldHaveSpacesAfter(chars[i]) &&
-		         isSpace(chars[i+1]))
+		else if (!shouldHaveSpacesAfter(chars[i]) && isSpace(chars[i+1]))
 		{
 			resultChars[pos++] = chars[i++];
 		}
@@ -2611,6 +2618,7 @@ void CuiCombatManager::buildAttackMessageBrief(Unicode::String & result)
 			resultChars[pos++] = chars[i];
 		}
 	}
+	
 	resultChars[pos++] = chars[length-1];
 	resultChars[pos] = 0;
 

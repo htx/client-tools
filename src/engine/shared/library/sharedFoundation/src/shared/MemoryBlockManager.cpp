@@ -296,7 +296,7 @@ void MemoryBlockManager::Allocator::allocateNewBlock()
 {
 	// allocate a new block
 	Block *block = new Block;
-	block->data  = new byte[static_cast<size_t>(m_elementSize *	m_elementsPerBlock)];
+	block->data  = new byte[static_cast<size_t>(m_elementSize) * static_cast<size_t>(m_elementsPerBlock)];
 
 	// put the block on the block list
 	block->next  = m_firstBlock;
@@ -361,17 +361,18 @@ void MemoryBlockManagerNamespace::remove()
 {
 	ms_globalCriticalSection.enter();
 
-		Allocators::iterator iEnd = ms_allocators.end();
-		for (Allocators::iterator i = ms_allocators.begin(); i != iEnd; ++i)
-		{
-			DEBUG_WARNING(true, ("Unfreed MBM %d=size %d=ref %d=items", i->second->getElementSize(), i->second->getReferenceCount(), i->second->getNumberOfAllocatedElements()));
-		}
+	auto iEnd = ms_allocators.end();
+	
+	for(auto i = ms_allocators.begin(); i != ms_allocators.end(); ++i)
+	{
+		DEBUG_WARNING(true, ("Unfreed MBM %d=size %d=ref %d=items", i->second->getElementSize(), i->second->getReferenceCount(), i->second->getNumberOfAllocatedElements()));
+	}
 
 #ifdef _DEBUG
-		if (ms_debugDumpOnRemove)
-		{
-			debugDumpAll();
-		}
+	if (ms_debugDumpOnRemove)
+	{
+		debugDumpAll();
+	}
 #endif
 
 	ms_globalCriticalSection.leave();
@@ -399,19 +400,18 @@ void MemoryBlockManagerNamespace::debugReport()
 void MemoryBlockManagerNamespace::debugDumpAll ()
 {
 	{
-		// dump the memory block managers and their private allocators
-		uint i;
-		for (i = 0; i < ms_memoryBlockManagerList.size (); ++i)
-			ms_memoryBlockManagerList [i]->debugDump ();
+		for(auto& i : ms_memoryBlockManagerList)
+			i->debugDump();
 	}
 
 	{
 		// dump the shared allocators
 		ms_globalCriticalSection.enter();
 
-			Allocators::iterator iEnd = ms_allocators.end();
-			for (Allocators::iterator i = ms_allocators.begin(); i != iEnd; ++i)
-				i->second->debugDump();
+		const auto iEnd = ms_allocators.end();
+		
+		for (auto i = ms_allocators.begin(); i != iEnd; ++i)
+			i->second->debugDump();
 
 		ms_globalCriticalSection.leave();
 	}
@@ -452,7 +452,8 @@ MemoryBlockManager::MemoryBlockManager(char const * name, bool shared, int eleme
 
 		ms_globalCriticalSection.enter();
 
-			Allocators::iterator i = ms_allocators.find(elementSize);
+			auto i = ms_allocators.find(elementSize);
+			
 			if (i == ms_allocators.end())
 			{
 				// construct it and put it on the map
@@ -479,7 +480,7 @@ MemoryBlockManager::MemoryBlockManager(char const * name, bool shared, int eleme
 	{
 		ms_globalCriticalSection.enter();
 
-			ms_memoryBlockManagerList.push_back (this);
+			ms_memoryBlockManagerList.emplace_back (this);
 
 		ms_globalCriticalSection.leave();
 	}
@@ -497,7 +498,8 @@ MemoryBlockManager::~MemoryBlockManager()
 
 #ifdef _DEBUG
 		{
-			MemoryBlockManagerList::iterator iter = std::find (ms_memoryBlockManagerList.begin (), ms_memoryBlockManagerList.end (), this);
+			auto iter = std::find (ms_memoryBlockManagerList.begin (), ms_memoryBlockManagerList.end (), this);
+		
 			if (iter != ms_memoryBlockManagerList.end ())
 				ms_memoryBlockManagerList.erase (iter);
 		}
@@ -514,7 +516,7 @@ MemoryBlockManager::~MemoryBlockManager()
 		{
 			if (m_shared)
 			{
-				Allocators::iterator i = ms_allocators.find(getElementSize());
+				auto i = ms_allocators.find(getElementSize());
 				DEBUG_FATAL(i == ms_allocators.end(), ("Allocator not found"));
 				DEBUG_FATAL(i->second != m_allocator, ("wrong allocator"));
 				ms_allocators.erase(i);
@@ -525,8 +527,8 @@ MemoryBlockManager::~MemoryBlockManager()
 
 	ms_globalCriticalSection.leave();
 
-	m_allocator = 0;
-	m_name = 0;
+	m_allocator = nullptr;
+	m_name = nullptr;
 }
 
 // ----------------------------------------------------------------------
@@ -597,7 +599,7 @@ void *MemoryBlockManager::allocate(bool returnNullOnFailure)
 		{
 			ms_globalCriticalSection.leave();
 			DEBUG_FATAL(!returnNullOnFailure, ("MBM %s is full %d", m_name, m_currentNumberOfElements));
-			return NULL;
+			return nullptr;
 		}
 
 		++m_currentNumberOfElements;

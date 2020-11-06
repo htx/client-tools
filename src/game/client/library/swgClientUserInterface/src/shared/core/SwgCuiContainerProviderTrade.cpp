@@ -169,7 +169,7 @@ void SwgCuiContainerProviderTrade::setObjectSorting (const IntVector & iv)
 	}
 
 	ObjectWatcherVector newObjects;
-	const int size = m_objects->size ();
+	const int size = static_cast<int>(m_objects->size());
 	newObjects.reserve (size);
 
 	int which = 0;
@@ -183,6 +183,7 @@ void SwgCuiContainerProviderTrade::setObjectSorting (const IntVector & iv)
 			DEBUG_FATAL (true, ("bad index %d for sort at position %d", index, which));
 			return;
 		}
+		
 		ClientObject * const obj = (*m_objects) [index];
 		DEBUG_WARNING (obj == NULL, ("setObjectSorting(): NULL object found, unexpected"));
 		newObjects.push_back (ObjectWatcher (obj));

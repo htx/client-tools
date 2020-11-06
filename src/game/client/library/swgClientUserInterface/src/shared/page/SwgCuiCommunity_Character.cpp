@@ -243,7 +243,7 @@ void SwgCuiCommunity::Character::performActivate()
 		CreatureObject::SkillList::const_iterator iterSkills = skills.begin();
 
 #ifdef _DEBUG
-		unsigned int const skillCount = skills.size();
+		unsigned int const skillCount = static_cast<unsigned int>(skills.size());
 		UNREF(skillCount);
 #endif // _DEBUG
 

@@ -826,21 +826,21 @@ void RegistryKey::install(const char *productKeyRelativePath)
  	useRegistryPath = DuplicateString(DEFAULT_PRODUCT_REGISTRY_PATH);
 
 	// create the Windows-defined RegistryKeys (these keys don't get closed at object destruction time)
-	usersKey        = new RegistryKey(HKEY_USERS, false);         //lint !e1924 // Note -- C-style cast
+	//usersKey        = new RegistryKey(HKEY_USERS, false);         //lint !e1924 // Note -- C-style cast
 	currentUserKey  = new RegistryKey(HKEY_CURRENT_USER, false);  //lint !e1924 // Note -- C-style cast
-	classRootKey    = new RegistryKey(HKEY_CLASSES_ROOT, false);  //lint !e1924 // Note -- C-style cast
-	localMachineKey = new RegistryKey(HKEY_LOCAL_MACHINE, false); //lint !e1924 // Note -- C-style cast
+	//classRootKey    = new RegistryKey(HKEY_CLASSES_ROOT, false);  //lint !e1924 // Note -- C-style cast
+	//localMachineKey = new RegistryKey(HKEY_LOCAL_MACHINE, false); //lint !e1924 // Note -- C-style cast
 
 	// check for errors --- unnecessary if new cannot return NULL
 	FATAL(
-		!usersKey || !currentUserKey || !classRootKey || !localMachineKey,
+		/*!usersKey ||*/ !currentUserKey /*|| !classRootKey || !localMachineKey*/,
 		("failed to create standard RegistryKey objects"));
 
 	// create/open the product user key
 	productUserKey = currentUserKey->createSubkey(useRegistryPath, AF_READ | AF_WRITE);
 
 	// create/open the product machine key
-	productMachineKey = localMachineKey->createSubkey(useRegistryPath, AF_READ);
+	//productMachineKey = localMachineKey->createSubkey(useRegistryPath, AF_READ);
 
 	delete [] useRegistryPath;
 
@@ -912,7 +912,7 @@ void RegistryKey::setProductKeyPath(const char *productKeyRelativePath)
 	delete productMachineKey;
 
 	productUserKey    = currentUserKey->createSubkey(productKeyRelativePath, AF_READ | AF_WRITE);
-	productMachineKey = localMachineKey->createSubkey(productKeyRelativePath, AF_READ | AF_WRITE);
+	//productMachineKey = localMachineKey->createSubkey(productKeyRelativePath, AF_READ | AF_WRITE);
 }
 
 // ======================================================================

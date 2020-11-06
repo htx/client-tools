@@ -203,7 +203,8 @@ LocalizedString * LocalizedString::load_0000 (AbstractFile & fl)
 	if (buflen)
 	{
 		const size_t readlen = buflen * sizeof (Unicode::unicode_char_t);
-		if (!fl.read (buf, readlen))
+
+		if (!fl.read (buf, static_cast<int>(readlen)))
 		{
 			delete[] buf;;
 			return 0;
@@ -257,7 +258,8 @@ LocalizedString * LocalizedString::load_0001 (AbstractFile & fl)
 	if (buflen)
 	{
 		const size_t readlen = buflen * sizeof (Unicode::unicode_char_t);
-		if (!fl.read (buf, readlen))
+		
+		if (!fl.read (buf, static_cast<int>(readlen)))
 		{
 			delete[] buf;;
 			return 0;

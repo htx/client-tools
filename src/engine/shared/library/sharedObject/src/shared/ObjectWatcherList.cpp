@@ -113,12 +113,13 @@ void ObjectWatcherList::removeObjectByIndex (const Object & object, int index)
 	m_objectVector->pop_back();
 
 	// NULL the object from the alter-safe object list.
-	uint size = m_alterSafeObjectVector->size();
-	for (uint i = 0; i < size; ++i)
+	size_t size = m_alterSafeObjectVector->size();
+	
+	for (size_t i = 0; i < size; ++i)
 	{
 		if ((*m_alterSafeObjectVector)[i] == &object)
 		{
-			(*m_alterSafeObjectVector)[i] = NULL;
+			(*m_alterSafeObjectVector)[i] = nullptr;
 			return;
 		}
 	}
@@ -344,9 +345,9 @@ void ObjectWatcherList::render(const Object *excludedObject) const
 
 bool ObjectWatcherList::find(const Object & objectToCheck, int *index) const
 {
-	ObjectVector::iterator end = m_objectVector->end();
+	auto end = m_objectVector->end();
 
-	for (ObjectVector::iterator i = m_objectVector->begin(); i != end; ++i)
+	for (auto i = m_objectVector->begin(); i != end; ++i)
 	{
 		const Object * const obj = (*i);
 	
@@ -354,6 +355,7 @@ bool ObjectWatcherList::find(const Object & objectToCheck, int *index) const
 		{
 			if (index)
 				*index = std::distance(m_objectVector->begin(), i);
+			
 			return true;
 		}
 	
@@ -367,7 +369,8 @@ bool ObjectWatcherList::find(const Object & objectToCheck, int *index) const
 int ObjectWatcherList::removeNulls ()
 {
 	int count = 0;
-	for (ObjectVector::iterator i = m_objectVector->begin(); i != m_objectVector->end();)
+	
+	for (auto i = m_objectVector->begin(); i != m_objectVector->end();)
 	{
 		const Object * const obj = (*i);
 	

@@ -334,10 +334,9 @@ void Logger::rollDate(time_t t)
 	}
 	m_logPrefix = buf;
 
-	map<unsigned, LogInfo *>::iterator iter;
-	for(iter = m_logTable.begin(); iter != m_logTable.end(); iter++)
+	for(auto iter = m_logTable.begin(); iter != m_logTable.end(); ++iter)
 	{
-		(*iter).second->filename = m_logPrefix + file_sep + (*iter).second->name.c_str() + ".log";
+		(*iter).second->filename = m_logPrefix + file_sep + (*iter).second->name + ".log";
 		fflush((*iter).second->file);	
 		fclose((*iter).second->file);
 		(*iter).second->file = fopen((*iter).second->filename.c_str(), "a+");

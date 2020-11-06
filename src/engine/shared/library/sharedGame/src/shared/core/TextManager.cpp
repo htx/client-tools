@@ -69,12 +69,12 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 	{
 		// An exact word match was found, plug the bad word with symbols
 
-		unsigned int const letterCount = text.size();
+		size_t const letterCount = text.size();
 		Unicode::String filterLetter;
 
 		// Found a bad word, replace the word
 
-		for (unsigned int i = 0; i < letterCount; ++i)
+		for (size_t i = 0; i < letterCount; ++i)
 		{
 			getFilterLetter(filterLetter);
 
@@ -90,11 +90,11 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 		alphabetString.reserve(text.size());
 		int index = 0;
 
-		for (unsigned int i = 0; i < text.size(); ++i)
+		for(unsigned short i : text)
 		{
-			if (isAlpha(text[i]))
+			if (isAlpha(i))
 			{
-				alphabetString.push_back(text[i]);
+				alphabetString.push_back(i);
 				++index;
 			}
 		}
@@ -105,13 +105,13 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 
 			Unicode::String filterLetter;
 
-			for (unsigned int i = 0; i < text.size(); ++i)
+			for(unsigned short& i : text)
 			{
-				if (isAlpha(text[i]))
+				if (isAlpha(i))
 				{
 					getFilterLetter(filterLetter);
 
-					text[i] = filterLetter[0];
+					i = filterLetter[0];
 				}
 			}
 		}
@@ -120,12 +120,12 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 			// Sub-string search time for words that are listed for sub-string searches
 
 			Unicode::String lowerText(Unicode::toLower(text));
-			unsigned int findStartPosition = 0;
+			size_t findStartPosition = 0;
 
 			for (;;)
 			{
 				bool done = true;
-				CussWords::iterator iterCussWords = s_cussWords.begin();
+				auto iterCussWords = s_cussWords.begin();
 
 				for (; iterCussWords != s_cussWords.end(); ++iterCussWords)
 				{
@@ -137,7 +137,7 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 						continue;
 					}
 
-					unsigned int index2 = lowerText.find(cussWord, findStartPosition);
+					const size_t index2 = lowerText.find(cussWord, findStartPosition);
 
 					if (index2 != Unicode::String::npos)
 					{
@@ -145,10 +145,10 @@ void TextManagerNamespace::getAppropriateWord(Unicode::String &text)
 
 						// Found a bad word, replace the word
 
-						unsigned int const letterCount = cussWord.size();
+						size_t const letterCount = cussWord.size();
 						Unicode::String filterLetter;
 
-						for (unsigned int i = 0; i < letterCount; ++i)
+						for (size_t i = 0; i < letterCount; ++i)
 						{
 							getFilterLetter(filterLetter);
 
@@ -297,7 +297,7 @@ Unicode::String TextManager::filterText(Unicode::String const &text)
 {
 	Unicode::String result(text);
 	Unicode::String::const_iterator iterText = text.begin();
-	int startIndex = Unicode::String::npos;
+	size_t startIndex = Unicode::String::npos;
 	int currentIndex = 0;
 
 	{
@@ -309,15 +309,13 @@ Unicode::String TextManager::filterText(Unicode::String const &text)
 		{
 			Unicode::unicode_char_t const character = (*iterText);
 
-			if (   (static_cast<unsigned>(startIndex) == Unicode::String::npos)
-			    && isAlpha(character))
+			if (startIndex == Unicode::String::npos && isAlpha(character))
 			{
 				startIndex = currentIndex;
 			}
-			else if (   (static_cast<unsigned>(startIndex) != Unicode::String::npos)
-				     && !isAlpha(character))
+			else if (startIndex != Unicode::String::npos && !isAlpha(character))
 			{
-				checkText(result, startIndex, currentIndex);
+				checkText(result, static_cast<int>(startIndex), currentIndex);
 
 				startIndex = Unicode::String::npos;
 			}
@@ -327,9 +325,9 @@ Unicode::String TextManager::filterText(Unicode::String const &text)
 
 		// Possibly check the last word
 
-		if (static_cast<unsigned>(startIndex) != Unicode::String::npos)
+		if (startIndex != Unicode::String::npos)
 		{
-			checkText(result, startIndex, currentIndex);
+			checkText(result, static_cast<int>(startIndex), currentIndex);
 		}
 	}
 
@@ -346,15 +344,13 @@ Unicode::String TextManager::filterText(Unicode::String const &text)
 		{
 			Unicode::unicode_char_t const character = (*iterText);
 
-			if (   (static_cast<unsigned>(startIndex) == Unicode::String::npos)
-			    && character != static_cast<Unicode::unicode_char_t>(' '))
+			if (startIndex == Unicode::String::npos && character != static_cast<Unicode::unicode_char_t>(' '))
 			{
 				startIndex = currentIndex;
 			}
-			else if (   (static_cast<unsigned>(startIndex) != Unicode::String::npos)
-			         && character == static_cast<Unicode::unicode_char_t>(' '))
+			else if (startIndex != Unicode::String::npos && character == static_cast<Unicode::unicode_char_t>(' '))
 			{
-				checkText(result, startIndex, currentIndex);
+				checkText(result, static_cast<int>(startIndex), currentIndex);
 
 				startIndex = Unicode::String::npos;
 			}
@@ -364,9 +360,9 @@ Unicode::String TextManager::filterText(Unicode::String const &text)
 
 		// Possibly check the last word
 
-		if (static_cast<unsigned>(startIndex) != Unicode::String::npos)
+		if (startIndex != Unicode::String::npos)
 		{
-			checkText(result, startIndex, currentIndex);
+			checkText(result, static_cast<int>(startIndex), currentIndex);
 		}
 	}
 

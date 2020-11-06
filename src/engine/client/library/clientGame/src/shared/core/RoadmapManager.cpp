@@ -261,7 +261,7 @@ void RoadmapManager::loadRoadmapDatatable()
 		std::vector<std::string> tmp;
 		splitString(phaseCountsString, tmp);
 
-		uint const phaseCountsStringSize = rr.templateNames.size() * (NUM_PHASES - 1);
+		uint const phaseCountsStringSize = static_cast<unsigned int>(rr.templateNames.size()) * (NUM_PHASES - 1);
 		FATAL(tmp.size() != phaseCountsStringSize, ("Invalid number of comma separated values in data table (%s) row (%d) column (%s) expected (%d) got (%d).",
 			clientRoadmapDataTable, r + 3, "branchPhaseCounts", phaseCountsStringSize, tmp.size()));
 
@@ -599,11 +599,14 @@ void RoadmapManager::getCurrentColorForSkill(const std::string &skillName, unsig
 	
 int RoadmapManager::getNumberOfBranchesInRoadmap(const std::string &roadmapName)
 {
-	std::map<uint32, RoadmapRecord>::iterator i = m_roadmapData.find(Crc::normalizeAndCalculate(roadmapName.c_str()));
+	auto i = m_roadmapData.find(Crc::normalizeAndCalculate(roadmapName.c_str()));
+	
 	if(i == m_roadmapData.end())
 		return -1;
+	
 	RoadmapRecord const &rr = i->second;
-	return rr.templateNames.size();
+	
+	return static_cast<int>(rr.templateNames.size());
 }
 
 

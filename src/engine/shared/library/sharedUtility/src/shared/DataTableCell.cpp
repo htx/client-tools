@@ -81,7 +81,7 @@ DataTableCell::DataTableCell(const char *value)
 	}
 	else
 	{
-		int len = strlen(value) + 1;
+		size_t len = strlen(value) + 1;
 		char *s = new char[len];
 		
 		// normalize copies the output into s, so we can get the crc

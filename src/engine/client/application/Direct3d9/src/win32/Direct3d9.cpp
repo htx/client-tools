@@ -1216,7 +1216,7 @@ bool Direct3d9::install(Gl_install *gl_install)
 					REPORT_LOG(verboseHardwareLogging, ("  %d=width %d=height %d=refresh %d=format\n", ms_displayMode.Width, ms_displayMode.Height, ms_displayMode.RefreshRate, static_cast<int>(ms_displayMode.Format)));
 				}
 			}
-		}
+		} 
 	}
 	// ---------------------------------------------------------------------------------
 

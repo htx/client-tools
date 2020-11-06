@@ -598,9 +598,8 @@ xcopy "$(SolutionDir)..\..\..\cfgs\$(ProjectName)\" "$(SolutionDir)..\..\..\$(Pr
       <Project>{ecbdfcff-f4ae-475a-aa90-729eb96430a0}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\zlib-1.2.3\zlib.vcxproj">
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\zlib\zlib.vcxproj">
       <Project>{9496a020-65ad-45a6-9acf-ae4f3358b027}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\external\ours\library\archive\build\win32\archive.vcxproj">
       <Project>{52153865-1abf-4fbb-84c4-0fc439716f1e}</Project>

@@ -34,7 +34,11 @@
 #include <fcntl.h>
 #include <new>
 
+#ifdef _WIN64
+#define DISABLE_MEMORY_MANAGER 1
+#else
 #define DISABLE_MEMORY_MANAGER 0
+#endif
 
 //lint -e826 // Suspicious pointer-to-pointer conversion (area too small)
 
@@ -2109,7 +2113,8 @@ void * MemoryManager::allocate(size_t size, uint32, bool, bool)
 void MemoryManager::free(void * userPointer, bool)
 {
 #ifdef _WIN32
-	_free_dbg(userPointer, _NORMAL_BLOCK);
+	::free(userPointer);
+	//_free_dbg(userPointer, _NORMAL_BLOCK);
 	//LocalFree((HLOCAL)userPointer);
 #else
 	::free(userPointer);

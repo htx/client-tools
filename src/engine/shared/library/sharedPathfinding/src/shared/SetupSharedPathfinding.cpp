@@ -104,7 +104,7 @@ BaseClass * expandBuildingGraph ( PortalPropertyTemplate * portalTemplate, BaseC
 
 		for(int i = 0; i < cellPartCount; i++)
 		{
-			int partNodeIndex = newBuildingNodes->size();
+			int partNodeIndex = static_cast<int>(newBuildingNodes->size());
 
 			newBuildingNodes->resize(newBuildingNodes->size() + 1);
 

@@ -499,6 +499,21 @@ void DebugHelp::getCallStack(uint32 *callStack, int sizeOfCallStack)
 	//if (!GetThreadContext(GetCurrentThread(), &context))
 	//	return;
 
+#ifdef _WIN64
+	
+	RtlCaptureContext(&context);
+
+	STACKFRAME64 stackFrame;
+	Zero(stackFrame);
+	stackFrame.AddrPC.Mode      = AddrModeFlat;
+	stackFrame.AddrPC.Offset    = context.Rip;
+	stackFrame.AddrStack.Offset = context.Rsp;
+	stackFrame.AddrStack.Mode   = AddrModeFlat;
+	stackFrame.AddrFrame.Offset = context.Rbp;
+	stackFrame.AddrFrame.Mode   = AddrModeFlat;
+	
+#else
+	
 	EnterCriticalSection(&criticalSection);
 	__asm
 	{
@@ -519,7 +534,9 @@ void DebugHelp::getCallStack(uint32 *callStack, int sizeOfCallStack)
 	stackFrame.AddrStack.Mode   = AddrModeFlat;
 	stackFrame.AddrFrame.Offset = context.Ebp;
 	stackFrame.AddrFrame.Mode   = AddrModeFlat;
-
+	
+#endif
+	
 	for (int i = 0; i < sizeOfCallStack; ++i, ++callStack)
 	{
 		if (stackWalk64(IMAGE_FILE_MACHINE_I386, process, process, &stackFrame, &context, NULL, functionTableAccess, getModuleBase, NULL))

@@ -180,22 +180,22 @@ PathSearchNode * PathSearchNode::createSearchNode( PathNode const * node )
 {
 	// doing bad voodoo with the node marks
 
-	PathSearchNode * oldNode = NULL;
+	PathSearchNode * oldNode = nullptr;
 
 	int mark = node->getMark(3);
 
 	if(mark != -1)
 	{
-		oldNode = (PathSearchNode*)((void*)mark);
+		oldNode = static_cast<PathSearchNode*>(reinterpret_cast<void*>(mark));
 	}
 
 	delete oldNode;
 
 	PathSearchNode * searchNode = new PathSearchNode(m_search,m_graph,node);
 
-	node->setMark( 3, (int)((void*)searchNode) );
+	node->setMark( 3, reinterpret_cast<int>(static_cast<void*>(searchNode)) );
 
-	m_search->m_visitedNodes->push_back(node);
+	m_search->m_visitedNodes->emplace_back(node);
 
 	return searchNode;
 }
@@ -206,16 +206,16 @@ PathSearchNode * PathSearchNode::getSearchNode( PathNode const * node )
 {
 	// doing bad voodoo with the node marks
 
-	PathSearchNode * searchNode = NULL;
+	PathSearchNode * searchNode = nullptr;
 
 	int mark = node->getMark(3);
 
 	if(mark != -1)
 	{
-		searchNode = (PathSearchNode*)((void*)mark);
+		searchNode = static_cast<PathSearchNode*>(reinterpret_cast<void*>(mark));
 	}
 
-	if(searchNode == NULL)
+	if(searchNode == nullptr)
 	{
 		return createSearchNode(node);
 	}
@@ -426,14 +426,14 @@ bool PathSearch::search ( PathGraph const * graph, int startIndex, IndexList con
 	
 	m_multiGoal = true;
 
-	int goalCount = goalIndices.size();
+	size_t goalCount = goalIndices.size();
 
 	if(goalCount == 0) return false;
-	if(m_start == NULL)	return false;
+	if(m_start == nullptr)	return false;
 
 	m_goals->resize(goalCount);
 
-	for(int i = 0; i < goalCount; i++)
+	for(size_t i = 0; i < goalCount; i++)
 	{
 		m_goals->at(i) = graph->getNode(goalIndices[i]);
 	}
@@ -487,9 +487,9 @@ bool PathSearch::buildPath ( PathSearchNode * endNode )
 
 void PathSearch::cleanup ( void )
 {
-	int visitedCount = m_visitedNodes->size();
+	size_t visitedCount = m_visitedNodes->size();
 
-	for(int i = 0; i < visitedCount; i++)
+	for(size_t i = 0; i < visitedCount; i++)
 	{
 		PathNode const * visitedNode = m_visitedNodes->at(i);
 
@@ -497,7 +497,7 @@ void PathSearch::cleanup ( void )
 
 		if(mark != -1)
 		{
-			PathSearchNode * searchNode = (PathSearchNode*)((void*)mark);
+			PathSearchNode * searchNode = static_cast<PathSearchNode*>(reinterpret_cast<void*>(mark));
 
 			delete searchNode;
 		}
@@ -555,9 +555,9 @@ float PathSearch::calcHeuristic ( PathNode const * A ) const
 		int minGoal = -1;
 		float minHeuristic = REAL_MAX;
 
-		int goalCount = m_goals->size();
+		size_t goalCount = m_goals->size();
 
-		for(int i = 0; i < goalCount; i++)
+		for(size_t i = 0; i < goalCount; i++)
 		{
 			PathNode const * goal = m_goals->at(i);
 
@@ -574,15 +574,11 @@ float PathSearch::calcHeuristic ( PathNode const * A ) const
 		{
 			return minHeuristic;
 		}
-		else
-		{
-			return BIG_HEURISTIC;
-		}
+
+		return BIG_HEURISTIC;
 	}
-	else
-	{
-		return calcHeuristic(A,m_goal);
-	}
+
+	return calcHeuristic(A,m_goal);
 }
 
 // ----------------------------------------------------------------------

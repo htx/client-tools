@@ -155,14 +155,14 @@ void TailFileLogObserver::flush(const char * filename)
 	{
 		if(!(*m_textBuffer)[i].empty())
 		{
-			IGNORE_RETURN(m_file->write((*m_textBuffer)[i].length(), (*m_textBuffer)[i].c_str()) );
+			IGNORE_RETURN(m_file->write(static_cast<int>((*m_textBuffer)[i].length()), (*m_textBuffer)[i].c_str()) );
 		}
 	}	
 	for(i = 0; i < m_nextTextBufferEntry; ++i)
 	{
 		if(!(*m_textBuffer)[i].empty())
 		{
-			IGNORE_RETURN(m_file->write((*m_textBuffer)[i].length(), (*m_textBuffer)[i].c_str()) );
+			IGNORE_RETURN(m_file->write(static_cast<int>((*m_textBuffer)[i].length()), (*m_textBuffer)[i].c_str()) );
 		}
 	}	
 	if (m_file)

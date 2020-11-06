@@ -115,8 +115,11 @@ void FloatingPointUnit::update(void)
 WORD FloatingPointUnit::getControlWord(void)
 {
 	WORD controlWord = 0;
-
+	
+#ifndef _WIN64
 	__asm fnstcw controlWord;
+#endif
+	
 	return controlWord;
 }
 
@@ -125,7 +128,11 @@ WORD FloatingPointUnit::getControlWord(void)
 void FloatingPointUnit::setControlWord(WORD controlWord)
 {
 	UNREF(controlWord);
+
+#ifndef _WIN64
 	__asm fldcw controlWord;
+#endif
+	
 }
 
 // ----------------------------------------------------------------------

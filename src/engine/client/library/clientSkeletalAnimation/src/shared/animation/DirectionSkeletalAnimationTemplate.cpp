@@ -701,7 +701,7 @@ void DirectionSkeletalAnimationTemplate::calculateSupportedLocomotionDirections(
 
 uint32 DirectionSkeletalAnimationTemplate::getNumDirectionTemplates() const
 {
-	return m_directionTemplates->size();
+	return static_cast<uint32>(m_directionTemplates->size());
 }
 
 // ======================================================================

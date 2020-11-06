@@ -110,9 +110,9 @@ NetworkHandler::~NetworkHandler()
 	if (m_udpManager)
 		m_udpManager->ClearHandler();
 
-	m_managerHandler->setOwner(0);
+	m_managerHandler->setOwner(nullptr);
 	m_managerHandler->Release();
-	m_managerHandler = 0;
+	m_managerHandler = nullptr;
 
 	if (m_udpManager)
 	{
@@ -120,11 +120,13 @@ NetworkHandler::~NetworkHandler()
 			services.deferredDestroyUdpManagers.push_back(m_udpManager);
 		else
 		{
-			std::set<UdpManagerMT *>::iterator f = services.udpServices.find(m_udpManager);
+			const auto f = services.udpServices.find(m_udpManager);
+			
 			if (f != services.udpServices.end())
 				services.udpServices.erase(f);
+			
 			m_udpManager->Release();
-			m_udpManager = 0;
+			m_udpManager = nullptr;
 		}
 	}
 }
@@ -147,7 +149,7 @@ void NetworkHandler::dispatch()
 
 		while (!services.inputQueue.empty() && (services.inputQueue.size() > queueSize || (!throttle || (throttle && ((Clock::timeMs() - startTime) < processTimeMilliseconds)))))
 		{
-			std::deque<IncomingData>::iterator i = services.inputQueue.begin();
+			auto i = services.inputQueue.begin();
 
 			Connection * c = (*i).connection;
 			if (c)
@@ -157,6 +159,7 @@ void NetworkHandler::dispatch()
 					reportBytesReceived((*i).byteStream.getSize());
 					int sendSize = (*i).byteStream.getSize();
 					static const int packetSizeWarnThreshold = ConfigSharedNetwork::getPacketSizeWarnThreshold();
+					
 					if(packetSizeWarnThreshold > 0)
 					{
 						WARNING(sendSize > packetSizeWarnThreshold, ("large packet received (%d bytes) exceeds warning threshold %d defined as SharedNetwork/packetSizeWarnThreshold", sendSize, packetSizeWarnThreshold));

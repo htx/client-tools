@@ -26,6 +26,7 @@ class StaticShaderTemplate : public ShaderTemplate
 {
 	friend class Direct3d8_StaticShaderData;
 	friend class Direct3d9_StaticShaderData;
+	friend class Direct3d11_StaticShaderData;
 	friend class StaticShader;
 
 public:
@@ -101,7 +102,7 @@ public:
 	virtual bool          containsPrecalculatedVertexLighting() const;
 	
 	const ShaderEffect   &getShaderEffect() const;
-	int                   getShaderImplementationSortKey() const;
+	intptr_t              getShaderImplementationSortKey() const;
 	bool                  getTextureCoordinateSetTag(Tag tag, uint8 &index) const;
 	uint8                 getTextureCoordinateSetUsageMask() const;
 	bool                  hasTextureData(Tag tag) const;

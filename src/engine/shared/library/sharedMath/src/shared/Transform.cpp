@@ -75,7 +75,11 @@ void Transform::install()
 #if TRY_FOR_SSE
 	if (SseMath::canDoSseMath())
 	{
+#ifdef _WIN64
+		s_mult_func = xf_matrix_3x4;
+#else
 		s_mult_func = sse_xf_matrix_3x4;
+#endif
 	}
 	else
 	{
@@ -272,6 +276,7 @@ static void xf_matrix_3x4(float *out, const float *left, const float *right)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #if TRY_FOR_SSE
+#ifndef _WIN64
 __declspec(naked) void sse_xf_matrix_3x4(float *out, const float *left, const float *right)
 {
 	UNREF(left);
@@ -386,6 +391,7 @@ __declspec(naked) void sse_xf_matrix_3x4(float *out, const float *left, const fl
 		ret
 	}
 }
+#endif
 #endif
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

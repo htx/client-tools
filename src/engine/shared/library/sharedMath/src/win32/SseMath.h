@@ -41,11 +41,15 @@ public:
 inline void SseMath::prefetch(void const * const sourceData, size_t const objectSize)
 {
 #if defined(_MSC_VER)
+#ifdef _WIN64
+	_mm_prefetch((char*)sourceData, _MM_HINT_NTA);
+#else
 	_asm
 	{ 
 		mov esi, sourceData
 		prefetchnta objectSize[esi]
 	}
+#endif
 #else
 	// rls - add linux version here.
 	UNREF(sourceData);

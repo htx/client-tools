@@ -100,11 +100,11 @@ void writeArray_Class ( Iff & iff, T * array, Tag tag )
 {
 	iff.insertChunk(tag);
 	{
-		int count = array->size();
+		size_t count = array->size();
 
 		iff.insertChunkData(count);
 
-		for(int i = 0; i < count; i++)
+		for(size_t i = 0; i < count; i++)
 		{
 			array->at(i).write(iff);
 		}
@@ -117,11 +117,11 @@ void writeArray_Class ( Iff & iff, T * array, Tag tag, Writer W )
 {
 	iff.insertChunk(tag);
 	{
-		int count = array->size();
+		size_t count = array->size();
 
 		iff.insertChunkData(count);
 
-		for(int i = 0; i < count; i++)
+		for(size_t i = 0; i < count; i++)
 		{
 			(array->at(i).*W)(iff);
 		}
@@ -134,11 +134,11 @@ void writeArray_Struct ( Iff & iff, T * array, Tag tag )
 {
 	iff.insertChunk(tag);
 	{
-		int count = array->size();
+		size_t count = array->size();
 
 		iff.insertChunkData(count);
 
-		for(int i = 0; i < count; i++)
+		for(size_t i = 0; i < count; i++)
 		{
 			iff.insertChunkData( array->at(i) );
 		}
@@ -157,7 +157,7 @@ SimplePathGraph::SimplePathGraph ( PathGraphType type )
 {
 #ifdef _DEBUG
 
-	m_debugLines = NULL;
+	m_debugLines = nullptr;
 
 #endif
 }
@@ -169,7 +169,7 @@ SimplePathGraph::SimplePathGraph( SimplePathGraph::NodeList * nodes, SimplePathG
   m_edgeCounts( new IndexList() ),
   m_edgeStarts( new IndexList() )
 {
-	int nodeCount = nodes->size();
+	int nodeCount = static_cast<int>(nodes->size());
 
 	for(int i = 0; i < nodeCount; i++)
 	{
@@ -181,7 +181,7 @@ SimplePathGraph::SimplePathGraph( SimplePathGraph::NodeList * nodes, SimplePathG
 
 #ifdef _DEBUG
 
-	m_debugLines = NULL;
+	m_debugLines = nullptr;
 
 #endif
 }
@@ -189,21 +189,21 @@ SimplePathGraph::SimplePathGraph( SimplePathGraph::NodeList * nodes, SimplePathG
 SimplePathGraph::~SimplePathGraph()
 {
 	delete m_nodes;
-	m_nodes = NULL;
+	m_nodes = nullptr;
 
 	delete m_edges;
-	m_edges = NULL;
+	m_edges = nullptr;
 
 	delete m_edgeCounts;
-	m_edgeCounts = NULL;
+	m_edgeCounts = nullptr;
 
 	delete m_edgeStarts;
-	m_edgeStarts = NULL;
+	m_edgeStarts = nullptr;
 
 #ifdef _DEBUG
 
 	delete m_debugLines;
-	m_debugLines = NULL;
+	m_debugLines = nullptr;
 
 #endif
 }
@@ -236,11 +236,9 @@ void SimplePathGraph::buildIndexTables ( void )
 	m_edgeCounts->resize(m_nodes->size(),0);
 	m_edgeStarts->resize(m_nodes->size(),-1);
 
-	int edgeCount = m_edges->size();
+	int edgeCount = static_cast<int>(m_edges->size());
 
-	int i;
-
-	for(i = 0; i < edgeCount; i++)
+	for(int i = 0; i < edgeCount; i++)
 	{
 		int node = m_edges->at(i).getIndexA();
 
@@ -257,7 +255,7 @@ void SimplePathGraph::buildIndexTables ( void )
 
 int SimplePathGraph::getNodeCount ( void ) const
 {
-	return m_nodes->size();
+	return static_cast<int>(m_nodes->size());
 }
 
 PathNode * SimplePathGraph::getNode ( int nodeIndex )
@@ -351,9 +349,9 @@ void SimplePathGraph::read ( Iff & iff )
 
 	// ----------
 
-	int nodeCount = m_nodes->size();
+	size_t nodeCount = m_nodes->size();
 
-	for(int i = 0; i < nodeCount; i++)
+	for(size_t i = 0; i < nodeCount; i++)
 	{
 		m_nodes->at(i).setGraph(this);
 	}
@@ -556,11 +554,11 @@ void SimplePathGraph::buildDebugData ( void )
 {
 	m_debugLines = new VectorList();
 
-	int edgeCount = m_edges->size();
+	size_t edgeCount = m_edges->size();
 
-	m_debugLines->reserve(edgeCount*2);
+	m_debugLines->reserve(edgeCount * 2);
 
-	for(int i = 0; i < edgeCount; i++)
+	for(size_t i = 0; i < edgeCount; i++)
 	{
 		PathEdge const & edge = m_edges->at(i);
 

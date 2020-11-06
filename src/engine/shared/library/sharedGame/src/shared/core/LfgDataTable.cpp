@@ -105,7 +105,7 @@ namespace LfgDataTableNamespace
 
 	bool matchLevel(LfgCharacterData const & lfgCharacterData, void const * lowLevel, void const * highLevel, void const *, void const *, void const *)
 	{
-		return ((static_cast<unsigned long>(lfgCharacterData.level) >= reinterpret_cast<unsigned long>(lowLevel)) && (static_cast<unsigned long>(lfgCharacterData.level) <= reinterpret_cast<unsigned long>(highLevel)));
+		return ((static_cast<unsigned long>(lfgCharacterData.level) >= reinterpret_cast<uintptr_t>(lowLevel)) && (static_cast<unsigned long>(lfgCharacterData.level) <= reinterpret_cast<uintptr_t>(highLevel)));
 	}
 
 	bool matchFriend(LfgCharacterData const & lfgCharacterData, void const * pFriendList, void const *, void const *, void const *, void const *)

@@ -55,19 +55,19 @@ namespace Base
     void get(ByteStream::ReadIterator & source, std::string & target)
     {
 	    target = reinterpret_cast<const char *>(source.getBuffer());
-	    source.advance(target.length() + 1);
+	    source.advance(static_cast<unsigned int>(target.length()) + 1);
     }
 
  
     void put(ByteStream & target, const std::string & source)
     {
-	    target.put(source.c_str(), source.size()+1);
+	    target.put(source.c_str(), static_cast<unsigned int>(source.size()) + 1);
     }
 #endif
 
     Base::ReadIterator::ReadIterator() :
     readPtr(0),
-    stream(0)
+    stream(nullptr)
     {
     }
 
@@ -91,7 +91,7 @@ namespace Base
     ByteStream::ByteStream() :
     allocatedSize(0),
     beginReadIterator(),
-    data(NULL),
+    data(nullptr),
     size(0)
     {
 	    data = Data::getNewData();
@@ -215,15 +215,16 @@ namespace Base
 
     const unsigned int AutoByteStream::getItemCount() const
     {
-	    return members.size();
+	    return static_cast<unsigned int>(members.size());
     }
 
     void AutoByteStream::pack(ByteStream & target) const
     {
-	    std::vector<AutoVariableBase *>::const_iterator i;
-	    unsigned short packedSize=static_cast<unsigned short>(members.size());
-	    put(target,packedSize);
-	    for(i = members.begin(); i != members.end(); ++i)
+	    const auto packedSize = static_cast<unsigned short>(members.size());
+		
+	    put(target, packedSize);
+		
+	    for(auto i = members.begin(); i != members.end(); ++i)
 	    {
 		    (*i)->pack(target);
 	    }
@@ -231,10 +232,11 @@ namespace Base
 
     void AutoByteStream::unpack(ByteStream::ReadIterator & source)
     {
-	    std::vector<AutoVariableBase *>::iterator i;
-	    unsigned short packedSize;
+	    unsigned short packedSize = 0;
+		
 	    get(source,packedSize);
-	    for(i = members.begin(); i != members.end(); ++i)
+		
+	    for(auto i = members.begin(); i != members.end(); ++i)
 	    {
 		    (*i)->unpack(source);
 	    }

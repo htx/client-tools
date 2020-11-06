@@ -65,7 +65,7 @@ public:
 	// --------------------------------------------------------
 
 	bool empty()                                       const { return liveObjects.empty(); }
-	int  size()                                        const { return liveObjects.size(); }
+	int  size()                                        const { return static_cast<int>(liveObjects.size()); }
 	void getCurrentObjects(LiveObjectList &o_objects)  const;
 
 	// --------------------------------------------------------
@@ -77,7 +77,7 @@ protected:
 	void _printReferenceCountingData(const ReferenceCountingData &) const;
 
 	struct ptr_hash {
-		size_t operator()(void *p) const { return std::hash<unsigned long>()((unsigned long)p); }
+		size_t operator()(void *p) const { return std::hash<unsigned long>()(reinterpret_cast<unsigned long>(p)); }
 	};
 
 	struct ObjectData

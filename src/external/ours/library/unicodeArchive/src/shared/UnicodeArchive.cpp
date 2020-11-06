@@ -33,7 +33,8 @@ namespace Archive
 	
 	void put(ByteStream & target, const Unicode::String & source)
 	{
-		const unsigned int size = source.size ();
+		const unsigned int size = static_cast<unsigned int>(source.size ());
+		
 		Archive::put (target, size);
 		target.put (source.data(), size * sizeof (Unicode::unicode_char_t));
 	}

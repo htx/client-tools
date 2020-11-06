@@ -119,7 +119,7 @@ void ClientManufactureSchematicSynchronizedUi::Callbacks::Customization::modifie
  */
 int ClientManufactureSchematicSynchronizedUi::getIngredientCount() const
 {
-	return m_slotName.size();
+	return static_cast<int>(m_slotName.size());
 }	// ClientManufactureSchematicSynchronizedUi::getIngredientCount
 
 //-----------------------------------------------------------------------
@@ -145,7 +145,7 @@ bool ClientManufactureSchematicSynchronizedUi::getIngredient(int index, Crafting
 	
 	const NetworkIdList & ingredientIds = m_slotIngredient[index];
 	const IntList & ingredientCounts = m_slotIngredientCount[index];
-	int count = ingredientIds.size();
+	int count = static_cast<int>(ingredientIds.size());
 
 	data.ingredients.clear ();
 

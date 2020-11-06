@@ -498,11 +498,11 @@ void SwgCuiTicketPurchase::OnButtonPressed (UIWidget* const context)
 
 			std::string result = m_shipControlDeviceId.getValueString();
 
-			SwgCuiSpaceGroupLaunch::NetworkIdSet const & acceptedMembers = SwgCuiSpaceGroupLaunch::getAcceptedMembers();
-			SwgCuiSpaceGroupLaunch::NetworkIdSet::const_iterator ii = acceptedMembers.begin();
-			SwgCuiSpaceGroupLaunch::NetworkIdSet::const_iterator iiEnd = acceptedMembers.end();
+			auto const & acceptedMembers = SwgCuiSpaceGroupLaunch::getAcceptedMembers();
+			auto ii = acceptedMembers.begin();
+			auto iiEnd = acceptedMembers.end();
 
-			result += " " + intToString(acceptedMembers.size());
+			result += " " + intToString(static_cast<int>(acceptedMembers.size()));
 
 			for (; ii != iiEnd; ++ii)
 			{

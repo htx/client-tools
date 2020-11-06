@@ -224,9 +224,9 @@ bool DataTableWriter::isXmlFile(const char * filename)
 	NOT_NULL(filename);
 
 	const char * xmlExtString = ".XML";
-	const int    extLength    = sizeof(xmlExtString)/sizeof(xmlExtString[0]);
+	const size_t    extLength    = sizeof(xmlExtString)/sizeof(xmlExtString[0]);
 
-	int fileLength = strlen(filename);
+	size_t fileLength = strlen(filename);
 
 	if(fileLength <= extLength)
 		return false;
@@ -321,7 +321,7 @@ void DataTableWriter::_loadWorksheet(NamedDataTable * ndt, XmlTreeNode nodeWorks
 			FATAL(nIndex && nIndex <= count, ("Worksheet %s: Row %d has an out of order index number. Expected %d, got %d",
 				ndt->getName().c_str(), ndt->m_rows.size()+1, count+1, nIndex));
 
-			int colSize = ndt->m_columns.size();
+			int colSize = static_cast<int>(ndt->m_columns.size());
 			FATAL(nIndex > colSize || count >= colSize, ("Worksheet %s: Too many columns in row %d. Expected %d, got %d",
 				ndt->getName().c_str(), ndt->m_rows.size()+1, colSize, nIndex > colSize ? nIndex : count+1));
 
@@ -336,10 +336,11 @@ void DataTableWriter::_loadWorksheet(NamedDataTable * ndt, XmlTreeNode nodeWorks
 		}
 
 		// Fill in the empty columns
-		int oldSize = newRow->size();
-		int colSize = ndt->m_columns.size();
-		for (int i = 0; i < colSize - oldSize; ++i)
-			newRow->push_back(_getNewCell(ndt->getDataTypeForColumn(i+oldSize), ""));
+		size_t oldSize = newRow->size();
+		size_t colSize = ndt->m_columns.size();
+		
+		for (size_t i = 0; i < colSize - oldSize; ++i)
+			newRow->push_back(_getNewCell(ndt->getDataTypeForColumn(static_cast<int>(i + oldSize)), ""));
 
 		ndt->m_rows.push_back(newRow);
 

@@ -443,7 +443,7 @@ bool CuiAuctionManager::isWaitingForRetrieve (const NetworkId & id)
 
 int CuiAuctionManager::getOutstandingRetrieveRequestCount ()
 {
-	return s_waitingRetrieveIds.size ();
+	return static_cast<int>(s_waitingRetrieveIds.size());
 }
 
 //----------------------------------------------------------------------
@@ -457,7 +457,7 @@ bool CuiAuctionManager::isWaitingForWithdraw  (const NetworkId & id)
 
 int CuiAuctionManager::getOutstandingWithdrawRequestCount ()
 {
-	return s_waitingWithdrawIds.size ();
+	return static_cast<int>(s_waitingWithdrawIds.size());
 }
 
 //----------------------------------------------------------------------

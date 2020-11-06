@@ -110,7 +110,7 @@ bool LocalizedStringTableRW::str_write(AbstractFile & fl, LocalizedString & locs
 
 	LocalizedString::id_type id = locstr.m_id;
 	LocalizedString::crc_type crcSource = locstr.m_sourceCrc;
-	LocalizedString::id_type buflen = locstr.m_str.length ();
+	LocalizedString::id_type buflen = static_cast<unsigned long>(locstr.m_str.length ());
 
 	if (!fl.write (sizeof (LocalizedString::id_type), &id))
 		return false;
@@ -146,7 +146,7 @@ bool LocalizedStringTableRW::write(AbstractFile & fl) const
 {
 	// TODO: swab these values on big endian systems
 	LocalizedString::id_type next_unique = m_nextUniqueId;
-	LocalizedString::id_type num_entries = m_map.size ();
+	LocalizedString::id_type num_entries = static_cast<unsigned long>(m_map.size ());
 	
 	if (!fl.write (sizeof (LocalizedString::id_type), &next_unique))
 		return false;
@@ -171,7 +171,7 @@ bool LocalizedStringTableRW::write(AbstractFile & fl) const
 			
 			// TODO: swab all these values on big endian systems
 			LocalizedString::id_type id     = (*iter).second;
-			LocalizedString::id_type buflen = (*iter).first.length ();
+			LocalizedString::id_type buflen = static_cast<unsigned long>((*iter).first.length ());
 
 			if (!fl.write (sizeof (LocalizedString::id_type), &id))
 				return false;
@@ -356,16 +356,17 @@ LocalizedString *  LocalizedStringTableRW::addString (const Unicode::String & st
 
 //-----------------------------------------------------------------
 
-LocalizedString *             LocalizedStringTableRW::addString  (LocalizedString * locstr, const Unicode::NarrowString & name, std::string & resultStr)
+LocalizedString* LocalizedStringTableRW::addString(LocalizedString * locstr, const Unicode::NarrowString & name, std::string & resultStr)
 {
 	char buf [1024];	
-	const size_t id = locstr->getId ();
+	const unsigned long id = locstr->getId();
 	
 	{
-		Map_t::const_iterator it = m_map.find (id);
-		if (it != m_map.end ())
+		Map_t::const_iterator it = m_map.find(id);
+		
+		if (it != m_map.end())
 		{
-			const std::string *     old_name   = getNameById        (id);
+			const std::string *     old_name   = getNameById (id);
 			const LocalizedString * old_locstr = (*it).second;
 			const std::string       old_str    = old_locstr ? Unicode::wideToNarrow (old_locstr->getString ()) : std::string ();
 			
@@ -375,8 +376,10 @@ LocalizedString *             LocalizedStringTableRW::addString  (LocalizedStrin
 				id, 
 				old_name ? old_name->c_str () : "",
 				old_str.c_str ());
+
 			resultStr += buf;
-			return 0;
+
+			return nullptr;
 		}
 	}
 
@@ -497,7 +500,7 @@ bool LocalizedStringTableRW::rename (const Unicode::NarrowString & name, const U
 	if (find_iter_id == m_nameMap.end ())
 		return false; 
 	
-	size_t id = (*find_iter_id).second;
+	unsigned long id = (*find_iter_id).second;
 	
 	m_nameMap.erase (find_iter_id);
 	

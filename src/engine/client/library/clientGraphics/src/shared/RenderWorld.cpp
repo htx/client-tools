@@ -1078,8 +1078,7 @@ void RenderWorld::leakedObject(DPVS::Object *object)
 	DPVS::Vector3 center;
 	float radius;
 	object->getSphere(center, radius);
-	DEBUG_REPORT_LOG_PRINT(true, ("leaked DPVS object %08x [%f %f %f] %f\n", reinterpret_cast<int>(object),
-		center.v[0], center.v[1], center.v[2], radius));
+	DEBUG_REPORT_LOG_PRINT(true, ("leaked DPVS object %08x [%f %f %f] %f\n", reinterpret_cast<intptr_t>(object), center.v[0], center.v[1], center.v[2], radius));
 
 #ifdef _DEBUG
 	Appearance *const appearance = static_cast<Appearance*>(object->getUserPointer());

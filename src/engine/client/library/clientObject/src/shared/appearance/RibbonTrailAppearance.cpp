@@ -186,7 +186,7 @@ float RibbonTrailAppearance::LocalShaderPrimitive::alter (const float elapsedTim
 		if (m_followObject)
 		{
 			//-- walk the list and kill existing particles
-			uint n = m_pointList->size ();
+			uint n = static_cast<unsigned int>(m_pointList->size ());
 			uint i = 0;
 			while (i < n)
 			{
@@ -253,12 +253,11 @@ const StaticShader&RibbonTrailAppearance::LocalShaderPrimitive::prepareToView ()
 void RibbonTrailAppearance::LocalShaderPrimitive::prepareToDraw () const
 {
 	//-- setup vertexarray for drawing individual polygons
-	m_vertexBuffer.lock (m_pointList->size () * 2);
+	m_vertexBuffer.lock (static_cast<unsigned int>(m_pointList->size ()) * 2);
 
 		VertexBufferWriteIterator v = m_vertexBuffer.begin ();
 
-		uint i;
-		for (i = 0; i < m_pointList->size (); ++i)
+		for (size_t i = 0; i < m_pointList->size (); ++i)
 		{
 			const Vector& position_w = (*m_pointList) [i].first;
 			const Vector  toCamera_w = position_w - ShaderPrimitiveSorter::getCurrentCamera ().getPosition_w ();

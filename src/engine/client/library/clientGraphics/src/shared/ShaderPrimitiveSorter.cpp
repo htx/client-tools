@@ -848,7 +848,7 @@ void ShaderPrimitiveSorter::Phase::pushCell()
 		clear();
 	}
 
-	m_stackOffsets.push_back(m_shaderPrimitives.size());
+	m_stackOffsets.emplace_back(static_cast<int>(m_shaderPrimitives.size()));
 }
 
 // ----------------------------------------------------------------------
@@ -1133,7 +1133,8 @@ void ShaderPrimitiveSorter::setLights(const LightBitSet &lightBitSet)
 
 	// check all the lights to see which ones are currently active
 	const uint offset = ms_lightListStackOffset.back();
-	const uint max = ms_lightList.size() - offset;
+	const uint max = static_cast<unsigned int>(ms_lightList.size()) - offset;
+	
 	for (uint i = 0; i < max; ++i)
 		if (lightBitSet[i])
 		{
@@ -1357,20 +1358,21 @@ void ShaderPrimitiveSorter::pushCell(CellProperty const * cellProperty, Texture 
 			ms_phase[i].pushCell();
 	}
 
-	ms_environmentTextures.push_back(environmentTexture ? environmentTexture : ms_defaultEnvironmentTexture);
-	ms_fogStack.push_back(FogData(fogEnabled, fogDensity, fogColor));
+	ms_environmentTextures.emplace_back(environmentTexture ? environmentTexture : ms_defaultEnvironmentTexture);
+	ms_fogStack.emplace_back(FogData(fogEnabled, fogDensity, fogColor));
 
 	Graphics::setGlobalTexture(TAG_ENVM, *ms_environmentTextures.back());
 	Graphics::setFog(fogEnabled, fogDensity, fogColor);
 
 	// preserve all the lights in the current cell
-	ms_lightListStackOffset.push_back(ms_lightList.size());
+	ms_lightListStackOffset.emplace_back(static_cast<int>(ms_lightList.size()));
 
 	// empty out the light bits for the new cell
 	ms_lightsAffectingShadersWithoutPrecalculatedVertexLighting.reset();
 	ms_lightsAffectingShadersWithPrecalculatedVertexLighting.reset();
 
-	ms_cellPropertyStack.push_back(cellProperty);
+	ms_cellPropertyStack.emplace_back(cellProperty);
+	
 	if (cellProperty)
 		cellProperty->callEnterRenderHookFunctions();
 

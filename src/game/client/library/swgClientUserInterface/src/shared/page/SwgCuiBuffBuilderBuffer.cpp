@@ -486,8 +486,8 @@ void SwgCuiBuffBuilderBuffer::initializeBuffTree()
 	SharedBuffBuilderManager::getRecordNames(buffList);
 	std::sort(categoryList.begin(),categoryList.end());
 
-	int numCategories = categoryList.size();
-	int numBuffs = buffList.size();
+	int numCategories = static_cast<int>(categoryList.size());
+	int numBuffs = static_cast<int>(buffList.size());
 
 	UIDataSourceContainer * const mainDsc = NON_NULL(m_buffTree->GetDataSourceContainer());
 	mainDsc->Attach(0);

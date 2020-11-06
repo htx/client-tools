@@ -25,7 +25,7 @@ namespace Base
             {
                 public:
                     Node *   mNext;
-                    unsigned mBuffer[(BLOCK_SIZE-1)/sizeof(unsigned)+1];
+                    uintptr_t mBuffer[(BLOCK_SIZE-1)/sizeof(uintptr_t) + 1];
             };
         
         public:
@@ -33,10 +33,11 @@ namespace Base
                 mMemoryBlockCount(0),
                 mNodesAllocated(0),
                 mNodesUsed(0),
-                mUnusedList(0)
+                mUnusedList(nullptr)
             {
                 for (int block=0; block<MAX_BLOCK_COUNT; block++)
                     mMemoryBlock[block] = 0;
+            	
                 Allocate();
             }
 
@@ -55,7 +56,7 @@ namespace Base
 
             Node * node = mUnusedList;
             mUnusedList = node->mNext;
-            node->mNext = (Node *)1;
+            node->mNext = static_cast<Node*>(1);
 
             data = node->mBuffer;
 
@@ -98,16 +99,16 @@ namespace Base
 #endif
                 if (sizeof(T) > BLOCK_SIZE || (!mUnusedList && !Allocate()))
                 {
-                    char * memoryPtr = reinterpret_cast<char *>(new unsigned[(sizeof(Node *)+sizeof(T)-1)/sizeof(unsigned)+1]);
+                    char * memoryPtr = reinterpret_cast<char *>(new uintptr_t[(sizeof(Node *)+sizeof(T)-1)/sizeof(uintptr_t) + 1]);
                     objectPtr = reinterpret_cast<T *>(memoryPtr+sizeof(Node *));
 
-                    *reinterpret_cast<unsigned *>(memoryPtr) = 0;
+                    *reinterpret_cast<uintptr_t *>(memoryPtr) = 0;
                 }
                 else
                 {
                     Node * node = mUnusedList;
                     mUnusedList = node->mNext;
-                    node->mNext = (Node *)1;
+                    node->mNext = static_cast<Node*>(1);
 
                     objectPtr = reinterpret_cast<T *>(node->mBuffer);
 
@@ -154,16 +155,16 @@ namespace Base
 
                 if (sizeof(T) > BLOCK_SIZE || (!mUnusedList && !Allocate()))
                 {
-                    char * memoryPtr = reinterpret_cast<char *>(new unsigned[(sizeof(Node *)+sizeof(T)-1)/sizeof(unsigned)+1]);
+                    char * memoryPtr = reinterpret_cast<char *>(new uintptr_t[(sizeof(Node *)+sizeof(T)-1)/sizeof(uintptr_t)+1]);
                     objectPtr = reinterpret_cast<T *>(memoryPtr+sizeof(Node *));
 
-                    *reinterpret_cast<unsigned *>(memoryPtr) = 0;
+                    *reinterpret_cast<uintptr_t *>(memoryPtr) = 0;
                 }
                 else
                 {
                     Node * node = mUnusedList;
                     mUnusedList = node->mNext;
-                    node->mNext = (Node *)1;
+                    node->mNext = static_cast<Node*>(1);
 
                     objectPtr = reinterpret_cast<T *>(node->mBuffer);
 

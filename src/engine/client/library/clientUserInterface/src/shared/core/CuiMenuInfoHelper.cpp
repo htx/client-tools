@@ -380,7 +380,7 @@ void CuiMenuInfoHelper::updateRadialMenu (UIRadialMenu & radial, int got)
 				if (child.m_menuItemType != Cui::MenuInfoTypes::CONVERSE_RESPONSE || omrd.m_menuItemType != Cui::MenuInfoTypes::CONVERSE_RESPOND)
 					_itoa (child.m_menuItemType, childNameBuf, 10);
 				else
-					_snprintf (childNameBuf, 64, "%d %d", child.m_menuItemType, childIndex);
+					_snprintf (childNameBuf, 64, "%d %zd", child.m_menuItemType, childIndex);
 
 				//@ add popupdatasourceitem does not add if it already exists...
 

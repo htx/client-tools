@@ -263,7 +263,8 @@ void SharedTangibleObjectTemplate::createCustomizationDataPropertyAsNeeded(Objec
 		
 #ifdef _DEBUG
 		//-- set up mappings for any variables which need dependent mappings
- 		int numVariableMappings = getCustomizationVariableMappingCount();
+ 		int numVariableMappings = static_cast<int>(getCustomizationVariableMappingCount());
+		
 		if(numVariableMappings != 0)
 		{
 			//If the object is a wearable, then the dependent variable, which is probably shared, will not exist at the moment the dependency
@@ -362,7 +363,7 @@ void SharedTangibleObjectTemplate::getPaletteColorCustomizationVariables(Palette
 
 	if (!m_paletteColorCustomizationVariablesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter paletteColorCustomizationVariables in template %s", DataResource::getName()));
 			return ;
@@ -375,14 +376,16 @@ void SharedTangibleObjectTemplate::getPaletteColorCustomizationVariables(Palette
 		}
 	}
 
-	if (m_paletteColorCustomizationVariablesAppend && base != NULL)
+	if (m_paletteColorCustomizationVariablesAppend && base != nullptr)
 	{
-		int baseCount = base->getPaletteColorCustomizationVariablesCount();
+		int baseCount = static_cast<int>(base->getPaletteColorCustomizationVariablesCount());
+		
 		if (index < baseCount)
-			{
-				base->getPaletteColorCustomizationVariables(data, index);
-				return;
-			}
+		{
+			base->getPaletteColorCustomizationVariables(data, index);
+			return;
+		}
+		
 		index -= baseCount;
 	}
 
@@ -421,12 +424,14 @@ void SharedTangibleObjectTemplate::getPaletteColorCustomizationVariablesMin(Pale
 
 	if (m_paletteColorCustomizationVariablesAppend && base != NULL)
 	{
-		int baseCount = base->getPaletteColorCustomizationVariablesCount();
+		int baseCount = static_cast<int>(base->getPaletteColorCustomizationVariablesCount());
+		
 		if (index < baseCount)
-			{
-				base->getPaletteColorCustomizationVariablesMin(data, index);
-				return;
-			}
+		{
+			base->getPaletteColorCustomizationVariablesMin(data, index);
+			return;
+		}
+		
 		index -= baseCount;
 	}
 
@@ -465,12 +470,14 @@ void SharedTangibleObjectTemplate::getPaletteColorCustomizationVariablesMax(Pale
 
 	if (m_paletteColorCustomizationVariablesAppend && base != NULL)
 	{
-		int baseCount = base->getPaletteColorCustomizationVariablesCount();
+		int baseCount = static_cast<int>(base->getPaletteColorCustomizationVariablesCount());
+		
 		if (index < baseCount)
-			{
-				base->getPaletteColorCustomizationVariablesMax(data, index);
-				return;
-			}
+		{
+			base->getPaletteColorCustomizationVariablesMax(data, index);
+			return;
+		}
+		
 		index -= baseCount;
 	}
 
@@ -533,12 +540,14 @@ void SharedTangibleObjectTemplate::getRangedIntCustomizationVariables(RangedIntC
 
 	if (m_rangedIntCustomizationVariablesAppend && base != NULL)
 	{
-		int baseCount = base->getRangedIntCustomizationVariablesCount();
+		int baseCount = static_cast<int>(base->getRangedIntCustomizationVariablesCount());
+		
 		if (index < baseCount)
-			{
-				base->getRangedIntCustomizationVariables(data, index);
-				return;
-			}
+		{
+			base->getRangedIntCustomizationVariables(data, index);
+			return;
+		}
+		
 		index -= baseCount;
 	}
 
@@ -563,27 +572,27 @@ void SharedTangibleObjectTemplate::getRangedIntCustomizationVariablesMin(RangedI
 
 	if (!m_rangedIntCustomizationVariablesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter rangedIntCustomizationVariables in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+		
+		DEBUG_FATAL(base == NULL, ("Template parameter rangedIntCustomizationVariables has not been defined in template %s!", DataResource::getName()));
+		base->getRangedIntCustomizationVariablesMin(data, index);
+		return;
+	}
+
+	if (m_rangedIntCustomizationVariablesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getRangedIntCustomizationVariablesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter rangedIntCustomizationVariables has not been defined in template %s!", DataResource::getName()));
 			base->getRangedIntCustomizationVariablesMin(data, index);
 			return;
 		}
-	}
-
-	if (m_rangedIntCustomizationVariablesAppend && base != NULL)
-	{
-		int baseCount = base->getRangedIntCustomizationVariablesCount();
-		if (index < baseCount)
-			{
-				base->getRangedIntCustomizationVariablesMin(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -608,7 +617,7 @@ void SharedTangibleObjectTemplate::getRangedIntCustomizationVariablesMax(RangedI
 
 	if (!m_rangedIntCustomizationVariablesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter rangedIntCustomizationVariables in template %s", DataResource::getName()));
 			return ;
@@ -621,14 +630,16 @@ void SharedTangibleObjectTemplate::getRangedIntCustomizationVariablesMax(RangedI
 		}
 	}
 
-	if (m_rangedIntCustomizationVariablesAppend && base != NULL)
+	if (m_rangedIntCustomizationVariablesAppend && base != nullptr)
 	{
-		int baseCount = base->getRangedIntCustomizationVariablesCount();
+		int baseCount = static_cast<int>(base->getRangedIntCustomizationVariablesCount());
+		
 		if (index < baseCount)
-			{
-				base->getRangedIntCustomizationVariablesMax(data, index);
-				return;
-			}
+		{
+			base->getRangedIntCustomizationVariablesMax(data, index);
+			return;
+		}
+		
 		index -= baseCount;
 	}
 
@@ -677,27 +688,27 @@ void SharedTangibleObjectTemplate::getConstStringCustomizationVariables(ConstStr
 
 	if (!m_constStringCustomizationVariablesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter constStringCustomizationVariables in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter constStringCustomizationVariables has not been defined in template %s!", DataResource::getName()));
+		base->getConstStringCustomizationVariables(data, index);
+		return;
+	}
+
+	if (m_constStringCustomizationVariablesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getConstStringCustomizationVariablesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter constStringCustomizationVariables has not been defined in template %s!", DataResource::getName()));
 			base->getConstStringCustomizationVariables(data, index);
 			return;
 		}
-	}
-
-	if (m_constStringCustomizationVariablesAppend && base != NULL)
-	{
-		int baseCount = base->getConstStringCustomizationVariablesCount();
-		if (index < baseCount)
-			{
-				base->getConstStringCustomizationVariables(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -720,27 +731,27 @@ void SharedTangibleObjectTemplate::getConstStringCustomizationVariablesMin(Const
 
 	if (!m_constStringCustomizationVariablesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter constStringCustomizationVariables in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter constStringCustomizationVariables has not been defined in template %s!", DataResource::getName()));
+		base->getConstStringCustomizationVariablesMin(data, index);
+		return;
+	}
+
+	if (m_constStringCustomizationVariablesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getConstStringCustomizationVariablesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter constStringCustomizationVariables has not been defined in template %s!", DataResource::getName()));
 			base->getConstStringCustomizationVariablesMin(data, index);
 			return;
 		}
-	}
-
-	if (m_constStringCustomizationVariablesAppend && base != NULL)
-	{
-		int baseCount = base->getConstStringCustomizationVariablesCount();
-		if (index < baseCount)
-			{
-				base->getConstStringCustomizationVariablesMin(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -763,27 +774,27 @@ void SharedTangibleObjectTemplate::getConstStringCustomizationVariablesMax(Const
 
 	if (!m_constStringCustomizationVariablesLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter constStringCustomizationVariables in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter constStringCustomizationVariables has not been defined in template %s!", DataResource::getName()));
+		base->getConstStringCustomizationVariablesMax(data, index);
+		return;
+	}
+
+	if (m_constStringCustomizationVariablesAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getConstStringCustomizationVariablesCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter constStringCustomizationVariables has not been defined in template %s!", DataResource::getName()));
 			base->getConstStringCustomizationVariablesMax(data, index);
 			return;
 		}
-	}
-
-	if (m_constStringCustomizationVariablesAppend && base != NULL)
-	{
-		int baseCount = base->getConstStringCustomizationVariablesCount();
-		if (index < baseCount)
-			{
-				base->getConstStringCustomizationVariablesMax(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -830,23 +841,23 @@ SharedTangibleObjectTemplate::GameObjectType SharedTangibleObjectTemplate::getSo
 
 	if (!m_socketDestinationsLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter socketDestinations in template %s", DataResource::getName()));
 			return static_cast<GameObjectType>(0);
 		}
-		else
-		{
-			DEBUG_FATAL(base == NULL, ("Template parameter socketDestinations has not been defined in template %s!", DataResource::getName()));
-			return base->getSocketDestinations(index);
-		}
+		
+		DEBUG_FATAL(base == NULL, ("Template parameter socketDestinations has not been defined in template %s!", DataResource::getName()));
+		return base->getSocketDestinations(index);
 	}
 
-	if (m_socketDestinationsAppend && base != NULL)
+	if (m_socketDestinationsAppend && base != nullptr)
 	{
-		int baseCount = base->getSocketDestinationsCount();
+		int baseCount = static_cast<int>(base->getSocketDestinationsCount());
+		
 		if (index < baseCount)
 			return base->getSocketDestinations(index);
+		
 		index -= baseCount;
 	}
 
@@ -1014,23 +1025,23 @@ const std::string & SharedTangibleObjectTemplate::getCertificationsRequired(int 
 
 	if (!m_certificationsRequiredLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter certificationsRequired in template %s", DataResource::getName()));
 			return DefaultString;
 		}
-		else
-		{
-			DEBUG_FATAL(base == NULL, ("Template parameter certificationsRequired has not been defined in template %s!", DataResource::getName()));
-			return base->getCertificationsRequired(index);
-		}
+
+		DEBUG_FATAL(base == NULL, ("Template parameter certificationsRequired has not been defined in template %s!", DataResource::getName()));
+		return base->getCertificationsRequired(index);
 	}
 
-	if (m_certificationsRequiredAppend && base != NULL)
+	if (m_certificationsRequiredAppend && base != nullptr)
 	{
-		int baseCount = base->getCertificationsRequiredCount();
+		int baseCount = static_cast<int>(base->getCertificationsRequiredCount());
+		
 		if (index < baseCount)
 			return base->getCertificationsRequired(index);
+		
 		index -= baseCount;
 	}
 
@@ -1073,27 +1084,27 @@ void SharedTangibleObjectTemplate::getCustomizationVariableMapping(Customization
 
 	if (!m_customizationVariableMappingLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter customizationVariableMapping in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter customizationVariableMapping has not been defined in template %s!", DataResource::getName()));
+		base->getCustomizationVariableMapping(data, index);
+		return;
+	}
+
+	if (m_customizationVariableMappingAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getCustomizationVariableMappingCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter customizationVariableMapping has not been defined in template %s!", DataResource::getName()));
 			base->getCustomizationVariableMapping(data, index);
 			return;
 		}
-	}
-
-	if (m_customizationVariableMappingAppend && base != NULL)
-	{
-		int baseCount = base->getCustomizationVariableMappingCount();
-		if (index < baseCount)
-			{
-				base->getCustomizationVariableMapping(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -1116,27 +1127,27 @@ void SharedTangibleObjectTemplate::getCustomizationVariableMappingMin(Customizat
 
 	if (!m_customizationVariableMappingLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter customizationVariableMapping in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter customizationVariableMapping has not been defined in template %s!", DataResource::getName()));
+		base->getCustomizationVariableMappingMin(data, index);
+		return;
+	}
+
+	if (m_customizationVariableMappingAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getCustomizationVariableMappingCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter customizationVariableMapping has not been defined in template %s!", DataResource::getName()));
 			base->getCustomizationVariableMappingMin(data, index);
 			return;
 		}
-	}
-
-	if (m_customizationVariableMappingAppend && base != NULL)
-	{
-		int baseCount = base->getCustomizationVariableMappingCount();
-		if (index < baseCount)
-			{
-				base->getCustomizationVariableMappingMin(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 
@@ -1159,27 +1170,27 @@ void SharedTangibleObjectTemplate::getCustomizationVariableMappingMax(Customizat
 
 	if (!m_customizationVariableMappingLoaded)
 	{
-		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == NULL)
+		if (ms_allowDefaultTemplateParams && /*!m_versionOk &&*/ base == nullptr)
 		{
 			DEBUG_WARNING(true, ("Returning default value for missing parameter customizationVariableMapping in template %s", DataResource::getName()));
 			return ;
 		}
-		else
+
+		DEBUG_FATAL(base == NULL, ("Template parameter customizationVariableMapping has not been defined in template %s!", DataResource::getName()));
+		base->getCustomizationVariableMappingMax(data, index);
+		return;
+	}
+
+	if (m_customizationVariableMappingAppend && base != nullptr)
+	{
+		int baseCount = static_cast<int>(base->getCustomizationVariableMappingCount());
+		
+		if (index < baseCount)
 		{
-			DEBUG_FATAL(base == NULL, ("Template parameter customizationVariableMapping has not been defined in template %s!", DataResource::getName()));
 			base->getCustomizationVariableMappingMax(data, index);
 			return;
 		}
-	}
-
-	if (m_customizationVariableMappingAppend && base != NULL)
-	{
-		int baseCount = base->getCustomizationVariableMappingCount();
-		if (index < baseCount)
-			{
-				base->getCustomizationVariableMappingMax(data, index);
-				return;
-			}
+		
 		index -= baseCount;
 	}
 

@@ -476,9 +476,11 @@ void OverheadMap::render () const
 							done = true;
 							continue;
 						}
-						oldListSize = m_radarCellList->size();
+						
+						oldListSize = static_cast<unsigned int>(m_radarCellList->size());
 						uint j;					
 						CellPropertyList listToAdd;
+						
 						for(i = 1; i < portalProperty->getNumberOfCells(); ++i)
 						{
 							const CellProperty* const cellProperty = portalProperty->getCell (i);
@@ -510,7 +512,8 @@ void OverheadMap::render () const
 					const Vector playerPosition_p = player->getPosition_p();
 					Range p(playerPosition_p.y - PLAYER_Y_POSITION_TOLERANCE, playerPosition_p.y + PLAYER_Y_POSITION_TOLERANCE);
 					uint i;
-					uint cellListSize = m_radarCellList->size();
+					uint cellListSize = static_cast<unsigned int>(m_radarCellList->size());
+					
 					for (i = 0; i < cellListSize;)
 					{
 						const CellProperty* const cellProperty = (*m_radarCellList) [i];
@@ -831,18 +834,18 @@ void OverheadMapNamespace::renderIndexedTriangleList (const Transform& transform
 		format.setColor0 ();
 		DynamicVertexBuffer vertexBuffer (format);
 
-		vertexBuffer.lock (vertices.size ());
+		vertexBuffer.lock (static_cast<int>(vertices.size ()));
 
-			VertexBufferWriteIterator v = vertexBuffer.begin ();
-			const uint n = vertices.size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++v)
-			{
-				Vector vertex = vertices [i];
-				vertex.y = 0.f;
-				v.setPosition (vertex);
-				v.setColor0 (color);
-			}
+		VertexBufferWriteIterator v = vertexBuffer.begin ();
+		const uint n = static_cast<unsigned int>(vertices.size());
+		
+		for (uint i = 0; i < n; ++i, ++v)
+		{
+			Vector vertex = vertices [i];
+			vertex.y = 0.f;
+			v.setPosition (vertex);
+			v.setColor0 (color);
+		}
 
 		vertexBuffer.unlock ();
 
@@ -854,12 +857,12 @@ void OverheadMapNamespace::renderIndexedTriangleList (const Transform& transform
 
 		DynamicIndexBuffer indexBuffer;
 
-		indexBuffer.lock (indices.size ());
+		indexBuffer.lock (static_cast<int>(indices.size ()));
 
-			Index *ii = indexBuffer.begin ();
-			const uint n = indices.size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++ii)
+		Index *ii = indexBuffer.begin ();
+		const uint n = static_cast<unsigned int>(indices.size ());
+		
+		for (uint i = 0; i < n; ++i, ++ii)
 				*ii = static_cast<Index> (indices [i]);
 
 		indexBuffer.unlock ();
@@ -892,18 +895,18 @@ void OverheadMapNamespace::renderLineList (const Transform& transform, const std
 		format.setColor0 ();
 		DynamicVertexBuffer vertexBuffer (format);
 
-		vertexBuffer.lock (vertices.size ());
+		vertexBuffer.lock (static_cast<int>(vertices.size ()));
 
-			VertexBufferWriteIterator v = vertexBuffer.begin ();
-			const uint n = vertices.size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++v)
-			{
-				Vector vertex = vertices [i];
-				vertex.y = 0.f;
-				v.setPosition (vertex);
-				v.setColor0 (color);
-			}
+		VertexBufferWriteIterator v = vertexBuffer.begin ();
+		const uint n = static_cast<unsigned int>(vertices.size());
+
+		for (uint i = 0; i < n; ++i, ++v)
+		{
+			Vector vertex = vertices [i];
+			vertex.y = 0.f;
+			v.setPosition (vertex);
+			v.setColor0 (color);
+		}
 
 		vertexBuffer.unlock ();
 
@@ -935,18 +938,18 @@ void OverheadMapNamespace::renderLineStrip (const Transform& transform, const st
 		format.setColor0 ();
 		DynamicVertexBuffer vertexBuffer (format);
 
-		vertexBuffer.lock (vertices.size ());
+		vertexBuffer.lock (static_cast<int>(vertices.size()));
 
-			VertexBufferWriteIterator v = vertexBuffer.begin ();
-			const uint n = vertices.size ();
-			uint i;
-			for (i = 0; i < n; ++i, ++v)
-			{
-				Vector vertex = vertices [i];
-				vertex.y = 0.f;
-				v.setPosition (vertex);
-				v.setColor0 (color);
-			}
+		VertexBufferWriteIterator v = vertexBuffer.begin ();
+		const uint n = static_cast<unsigned int>(vertices.size());
+
+		for (uint i = 0; i < n; ++i, ++v)
+		{
+			Vector vertex = vertices [i];
+			vertex.y = 0.f;
+			v.setPosition (vertex);
+			v.setColor0 (color);
+		}
 
 		vertexBuffer.unlock ();
 

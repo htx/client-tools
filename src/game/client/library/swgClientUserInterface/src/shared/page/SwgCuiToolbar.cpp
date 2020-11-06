@@ -3654,7 +3654,7 @@ UIPage *SwgCuiToolbar::getPageFromPool(UIPage *original, std::vector<UIPage *> &
 		dupe->SetOpacity(0.8f);
 		dupe->SetBackgroundOpacity(0.8f);		
 		duplicates.push_back(dupe);
-		index = duplicates.size();
+		index = static_cast<int>(duplicates.size());
 		dupe->Link();
 		parent.Pack();		
 		return dupe;
@@ -4445,7 +4445,8 @@ void SwgCuiToolbar::onPetCommandsChanged(const PlayerObject & payload)
 	{
 		std::vector<std::string> const &commands = player->getPetCommands();
 		bool atLeastOneCommand = false;
-		for(size_t i = 0; i < MAX_PET_TOOLBAR_BUTTONS; ++i)
+		
+		for(int i = 0; i < MAX_PET_TOOLBAR_BUTTONS; ++i)
 		{
 			// if we're still at a valid index, add the new command to the current toolbar slot.
 			if(i < commands.size())

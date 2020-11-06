@@ -37,7 +37,7 @@ m_hyperspace(hyperspace)
 	addVariable(m_transform);
 	addVariable(m_templateName);
 	addVariable(m_hyperspace);
-	NetworkHandler::reportMessage("send.SceneCreateObjectByName." + m_templateName.get(), sizeof(SceneCreateObjectByName) + m_templateName.get().length());
+	NetworkHandler::reportMessage("send.SceneCreateObjectByName." + m_templateName.get(), sizeof(SceneCreateObjectByName) + static_cast<int>(m_templateName.get().length()));
 }
 
 //-----------------------------------------------------------------
@@ -55,7 +55,7 @@ m_hyperspace(false)
 	addVariable(m_hyperspace);
 
 	AutoByteStream::unpack(source);
-	NetworkHandler::reportMessage("recv.SceneCreateObjectByName." + m_templateName.get(), sizeof(SceneCreateObjectByName) + m_templateName.get().length());
+	NetworkHandler::reportMessage("recv.SceneCreateObjectByName." + m_templateName.get(), sizeof(SceneCreateObjectByName) + static_cast<int>(m_templateName.get().length()));
 }
 
 //-----------------------------------------------------------------------

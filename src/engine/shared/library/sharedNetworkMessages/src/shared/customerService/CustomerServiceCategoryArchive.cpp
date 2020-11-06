@@ -37,10 +37,10 @@ namespace Archive
 		put (target, source.m_categoryName);
 		put (target, source.m_categoryId);
 
-		int size = source.m_subCategories.size();
+		const auto size = static_cast<unsigned int>(source.m_subCategories.size());
 		put (target, size);
 
-		std::vector<CustomerServiceCategory>::const_iterator i = source.m_subCategories.begin();
+		auto i = source.m_subCategories.begin();
 		while (i != source.m_subCategories.end())
 		{
 			put (target, (*i));

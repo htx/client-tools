@@ -441,8 +441,10 @@ bool SamplerProceduralTerrainAppearanceTemplate::writeOldStaticCollidableFloraHe
 
 	of->write(sizeof(fileHeader), &fileHeader);
 	size_t heightSize = sqr(getMapWidthInFlora());
-	of->write(heightSize*sizeof(*m_staticCollidableFloraHeightSamples), m_staticCollidableFloraHeightSamples);
+	
+	of->write(static_cast<int>(heightSize*sizeof(*m_staticCollidableFloraHeightSamples)), m_staticCollidableFloraHeightSamples);
 	of->close();
+	
 	delete of;
 
 	return true;

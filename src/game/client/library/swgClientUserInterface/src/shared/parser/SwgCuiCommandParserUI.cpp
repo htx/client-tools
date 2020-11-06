@@ -1727,7 +1727,8 @@ bool SwgCuiCommandParserUINamespace::dumpCollectionImagesToFile(std::string cons
 
 	//grab all of the books from the collection data table
 	std::vector<CollectionsDataTable::CollectionInfoBook const *> const allBooks = CollectionsDataTable::getAllBooks();
-	int numBooks = allBooks.size();
+	int numBooks = static_cast<int>(allBooks.size());
+	
 	for(int bookNumber = 0; bookNumber < numBooks; ++bookNumber)
 	{
 		CollectionsDataTable::CollectionInfoBook const * thisBook = allBooks[bookNumber];
@@ -1737,7 +1738,7 @@ bool SwgCuiCommandParserUINamespace::dumpCollectionImagesToFile(std::string cons
 
 		//pages in the book...
 		std::vector<CollectionsDataTable::CollectionInfoPage const *> const pages = CollectionsDataTable::getPagesInBook(bookName);
-		int numPages = pages.size();
+		int numPages = static_cast<int>(pages.size());
 		for(int pageNumber = 0; pageNumber < numPages; ++pageNumber)
 		{
 			CollectionsDataTable::CollectionInfoPage const* thisPage = pages[pageNumber];
@@ -1747,7 +1748,7 @@ bool SwgCuiCommandParserUINamespace::dumpCollectionImagesToFile(std::string cons
 
 			//collections in the page...
 			std::vector<CollectionsDataTable::CollectionInfoCollection const *> const collections = CollectionsDataTable::getCollectionsInPage(pageName);
-			int numCollections = collections.size();
+			int numCollections = static_cast<int>(collections.size());
 			for(int collectionNumber = 0; collectionNumber < numCollections; ++collectionNumber)
 			{
 				CollectionsDataTable::CollectionInfoCollection const* thisCollection = collections[collectionNumber];
@@ -1874,7 +1875,7 @@ std::string SwgCuiCommandParserUINamespace::makeValidFileName(std::string const 
 		if (newStr[0] == '/') 
 			newStr.erase(newStr.begin());
 		
-		int pos = 0;
+		size_t pos = 0;
 		while ((pos = newStr.find_first_of('.')) != std::string::npos) 
 			newStr[pos] = '-';
 	}

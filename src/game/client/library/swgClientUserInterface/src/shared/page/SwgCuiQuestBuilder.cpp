@@ -3493,7 +3493,7 @@ void SwgCuiQuestBuilder::updateQuestInfo()
 	int totalPlayerTasks = getSkillModValue(ms_taskAmountSkill);
 	char taskCountBuffer[32];
 	memset(taskCountBuffer, 0, 32);
-	sprintf(taskCountBuffer, "%d/%d", ms_taskButtonsToTaskPages.size(), totalPlayerTasks);
+	sprintf(taskCountBuffer, "%d/%d", static_cast<int>(ms_taskButtonsToTaskPages.size()), totalPlayerTasks);
 	m_questLevel->SetLocalText(Unicode::intToWide(maxLevel));
 	m_questTaskCount->SetLocalText(Unicode::narrowToWide(taskCountBuffer));
 	m_requiredText->SetLocalText(Unicode::narrowToWide(requiredString));

@@ -242,9 +242,10 @@ void SwgCuiInventoryContainerDetails::applySelection (bool visual)
 	owv.reserve (sel.size ());
 
 	const SwgCuiInventoryContainer::ObjectWatcherVector & objects = m_containerMediator->getObjects ();
-	const int numObjects = objects.size ();
+	
+	const int numObjects = static_cast<int>(objects.size());
 
-	for (UITable::LongVector::const_iterator it = sel.begin (); it != sel.end (); ++it)
+	for (auto it = sel.begin (); it != sel.end (); ++it)
 	{
 		const int index = static_cast<int>(*it);
 

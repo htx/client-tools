@@ -9,7 +9,7 @@
 #include "ClientMain.h"
 
 #include "LocalizedString.h"
-#include "StringId.h"
+#include "StringId.h" 
 
 #include "clientGame/Game.h"
 #include "../../../../../../engine/shared/library/sharedFoundation/include/public/sharedFoundation/Production.h"
@@ -52,7 +52,7 @@ static void SetDefaultMemoryManagerTargetSize()
 	// we use 75% of the available ram, up to 1536mb in the case of 2gb (32 bit without PAE limit)
 	MEMORYSTATUSEX memoryStatus = { sizeof memoryStatus };
 	GlobalMemoryStatusEx(&memoryStatus);
-	int ramMB = (memoryStatus.ullTotalPhys / 1048576);
+	int ramMB = memoryStatus.ullTotalPhys / 1048576;
 
 	// without PAE enabled 2048 is the max we can do, but SWG crashes if we give it all the RAM sometimes
 	if (ramMB >= 2048)
@@ -61,7 +61,7 @@ static void SetDefaultMemoryManagerTargetSize()
 	}
 	else 
 	{
-		ramMB = (ramMB * .75);
+		ramMB = ramMB * .75;
 	}
 
 	MemoryManager::setLimit(ramMB, false, false);
@@ -83,11 +83,11 @@ void externalCommandHandler(const char* command)
 	{
 		Unicode::NarrowString url8 = Unicode::wideToNarrow( url );
 
-		HINSTANCE result = ShellExecute(NULL, "open", url8.c_str(), NULL, NULL, SW_SHOWNORMAL);
+		HINSTANCE result = ShellExecute(nullptr, "open", url8.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 
-		if (reinterpret_cast<int>(result) < 32) //Pulled straight from MSDN -ARH
+		if (reinterpret_cast<intptr_t>(result) < 32) //Pulled straight from MSDN -ARH
 		{
-			WARNING(true, ("could not launch external application (%d)", reinterpret_cast<int>(result)));
+			WARNING(true, ("could not launch external application (%d)", reinterpret_cast<intptr_t>(result)));
 		}
 		else
 		{

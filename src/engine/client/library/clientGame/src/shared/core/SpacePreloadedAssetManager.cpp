@@ -281,12 +281,12 @@ void SpacePreloadedAssetManager::load(char const * const fileName)
 	}
 	else
 	{
-		for (size_t i = 0; i < ms_assetList.size(); ++i)
+		for(auto& i : ms_assetList)
 		{
-			ms_assetList[i]->release();
+			i->release();
 		}
 
-		ms_numberOfAssetsLoaded = ms_assetList.size();
+		ms_numberOfAssetsLoaded = static_cast<int>(ms_assetList.size());
 		ms_loaded = false;
 	}
 }

@@ -282,7 +282,8 @@ void ParticleManager::debugPrint()
 
 	for (; iterSortedList != sortedList.rend(); ++iterSortedList)
 	{
-		unsigned int const listSize = iterSortedList->second->second.size();
+		auto const listSize = static_cast<unsigned int>(iterSortedList->second->second.size());
+		
 		ParticleEffectAppearance const & particleEffectAppearance = *(*iterSortedList->second->second.begin());
 		CrcLowerString const & crcName = particleEffectAppearance.getAppearanceTemplate()->getCrcName();
 

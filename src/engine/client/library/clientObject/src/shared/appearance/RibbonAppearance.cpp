@@ -156,7 +156,7 @@ const StaticShader&RibbonAppearance::LocalShaderPrimitive::prepareToView () cons
 void RibbonAppearance::LocalShaderPrimitive::prepareToDraw () const
 {
 	//-- setup vertexarray for drawing individual polygons
-	m_vertexBuffer.lock ((m_pointList.size () + (m_closed ? 1 : 0)) * 2);
+	m_vertexBuffer.lock ((static_cast<int>(m_pointList.size ()) + (m_closed ? 1 : 0)) * 2);
 
 		VertexBufferWriteIterator v = m_vertexBuffer.begin ();
 
@@ -164,9 +164,9 @@ void RibbonAppearance::LocalShaderPrimitive::prepareToDraw () const
 
 		const Transform& transform_a2w = m_owner.getTransform_w ();
 
-		const uint n = m_pointList.size ();
-		uint i;
-		for (i = 0; i < n; ++i)
+		const uint n = static_cast<unsigned int>(m_pointList.size ());
+
+		for (uint i = 0; i < n; ++i)
 		{
 			const Vector& position_w  = transform_a2w.rotateTranslate_l2p (m_pointList [i]);
 

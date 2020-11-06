@@ -146,12 +146,15 @@ void SharedCreatureObjectTemplate::createCustomizationDataPropertyAsNeeded(Objec
 		AssetCustomizationManager::addCustomizationVariablesForAsset(TemporaryCrcString(getAppearanceFilename().c_str(), true), *customizationData, skipSharedOwnerVariables);
 
 		//-- set up mappings for any variables which need dependent mappings
- 		int numVariableMappings = getCustomizationVariableMappingCount();
+ 		int numVariableMappings = static_cast<int>(getCustomizationVariableMappingCount());
+		
 		for (int i = 0; i < numVariableMappings; ++i)
 		{
 			CustomizationVariableMapping localVariableMapping;
  			getCustomizationVariableMapping(localVariableMapping, i);
-			GlobalRangedIntCustomizationVariableType *source = safe_cast<GlobalRangedIntCustomizationVariableType *>(customizationData->findVariable(localVariableMapping.sourceVariable));
+
+			auto source = safe_cast<GlobalRangedIntCustomizationVariableType *>(customizationData->findVariable(localVariableMapping.sourceVariable));
+			
  			if(source)
  			{
  				source->setDependentVariable(localVariableMapping.dependentVariable);

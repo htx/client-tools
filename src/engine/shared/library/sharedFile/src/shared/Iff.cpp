@@ -906,7 +906,7 @@ void Iff::insertChunkString(const char *string)
 void Iff::insertChunkString(const Unicode::String & str)
 {
 	insertChunkData (static_cast<int32>(str.size ()));
-	insertChunkArray(str.data (), str.size ());
+	insertChunkArray(str.data (), static_cast<int>(str.size ()));
 }
 
 // ----------------------------------------------------------------------

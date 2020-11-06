@@ -9,6 +9,7 @@
 #include "sharedMath/FirstSharedMath.h"
 #include "sharedMath/SseMath.h"
 
+#include "InstructionSet.h"
 #include "sharedMath/Transform.h"
 #include "sharedMath/Vector.h"
 
@@ -30,27 +31,22 @@ namespace
  *
  * @return  true if SSE math processing is available; false otherwise.
  */
+//const InstructionSet::InstructionSet_Internal InstructionSet::CPU_Rep;
 
 bool SseMath::canDoSseMath()
 {
-#if 0
-	return false;
+#ifdef _WIN64
+
+    return (false/*InstructionSet::SSE() && InstructionSet::SSE2()*/);
+
 #else
+	
 	//-- First check the CPUID instruction.  If it raises an exception,
 	//   the CPUID instruction doesn't exist and SSE math support is not available.
 	bool    cpuHasSse              = false;
 	bool    cpuHasSaveRestore      = false;
 
 	uint32  featureBits;
-
-#if 0
-	bool    osSupportsSaveRestore  = false;
-	bool    osSimdExceptionSupport = false;
-	bool    x87EmulationDisabled   = false;
-
-	uint32  controlRegister4;
-	uint32  controlRegister0;
-#endif
 
 	try
 	{
@@ -60,40 +56,23 @@ bool SseMath::canDoSseMath()
 			cpuid
 
 			mov    featureBits, edx
-
-#if 0
-			//-- Get control registers.
-			mov    ecx, CR4
-			mov    controlRegister4, ecx
-
-			mov    ecx, CR0
-			mov    controlRegister0, ecx
-#endif
 		}
 
 		cpuHasSse              = ((featureBits      & 0x02000000) != 0);    //lint !e530 // featureBits not initialized - yes it is, in the asm
 		cpuHasSaveRestore      = ((featureBits      & 0x01000000) != 0);
-
-#if 0
-		osSupportsSaveRestore  = ((controlRegister4 & 0x00000200) != 0);
-		osSimdExceptionSupport = ((controlRegister4 & 0x00000400) != 0);
-		x87EmulationDisabled   = ((controlRegister0 & 0x00000004) == 0);
-#endif
 	}
 	catch (...)
     { //lint !e1775 // catch block does not catch any declared exceptions
 	}
 	
-#if 1
 	return cpuHasSse && cpuHasSaveRestore;
-#else
-	return cpuHasSse && cpuHasSaveRestore && osSupportsSaveRestore && osSimdExceptionSupport && x87EmulationDisabled;
-#endif
+
 #endif
 }
 
 // ----------------------------------------------------------------------
-
+#ifdef _WIN64
+#else
 Vector SseMath::rotateTranslateScale_l2p(const Transform &transform, const Vector &vector, float scale)
 {
 	// NOTE: technically, my xmm register data contents comments are listing items in reverse order from how INTEL docs list them, left most val is really least significant value.
@@ -426,5 +405,5 @@ void SseMath::skinPositionNormalAdd_l2p(const Transform &transform, const Vector
 	destNormal.y += sseVariable[3][0] + sseVariable[3][1] + sseVariable[3][2];
 	destNormal.z += sseVariable[4][0] + sseVariable[4][1] + sseVariable[4][2];
 } //lint !e715 // scale/transform not referenced - it's in the asm
-
+#endif
 // ======================================================================

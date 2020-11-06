@@ -197,11 +197,11 @@ UIBaseObject *UITabSet::GetChild( const char *ChildName ) const
 	if( pSeparator )
 		len = pSeparator - ChildName;
 	else
-		len = strlen( ChildName );
+		len = static_cast<int>(strlen( ChildName ));
 
 	for ( ; ; )
 	{
-		for( UIPageList::const_iterator i = mPages.begin(); i != mPages.end(); ++i )
+		for(auto i = mPages.begin(); i != mPages.end(); ++i )
 		{
 			UIPage *o = *i;
 
@@ -226,16 +226,16 @@ UIBaseObject *UITabSet::GetChild( const char *ChildName ) const
 			if( pSeparator )
 				len = pSeparator - ChildName;
 			else
-				len = strlen( ChildName );
+				len = static_cast<int>(strlen( ChildName ));
 		}
 		else
-			return 0;
+			return nullptr;
 	}
 }
 
 bool UITabSet::RemoveChild( UIBaseObject *ChildToRemove )
 {
-	for( UIPageList::iterator i = mPages.begin(); i != mPages.end(); ++i )
+	for(auto i = mPages.begin(); i != mPages.end(); ++i )
 	{
 		if( *i == ChildToRemove )
 		{
@@ -270,7 +270,7 @@ void UITabSet::GetChildren( UIObjectList &Out ) const
 
 unsigned long	UITabSet::GetChildCount( void ) const
 {
-	return mPages.size();
+	return static_cast<unsigned long>(mPages.size());
 }
 
 bool UITabSet::CanChildMove( UIBaseObject *ObjectToMove, ChildMovementDirection theDirection )

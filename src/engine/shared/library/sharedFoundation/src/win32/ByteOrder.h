@@ -11,11 +11,17 @@
 
 // ======================================================================
 
+#ifdef _WIN64
+#include <WinSock2.h>
+#else
+
 ulong  __cdecl ntohl(ulong  netLong);
 ushort __cdecl ntohs(ushort netShort);
 
 ulong  __cdecl htonl(ulong  hostLong);
 ushort __cdecl htons(ushort hostShort);
+
+#endif
 
 // ======================================================================
 

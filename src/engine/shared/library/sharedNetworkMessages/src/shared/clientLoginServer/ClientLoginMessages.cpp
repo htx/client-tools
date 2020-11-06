@@ -78,7 +78,7 @@ m_username (username)
 LoginClientToken::LoginClientToken(Archive::ReadIterator & source) :
 GameNetworkMessage("LoginClientToken"),
 token      (),
-tokenData  (0),
+tokenData  (nullptr),
 stationId  (0),
 m_username ()
 {
@@ -87,8 +87,9 @@ m_username ()
 	addVariable(m_username);
 	AutoByteStream::unpack(source);
 
-	unsigned int tokenSize = token.get().size();
+	const auto tokenSize = static_cast<unsigned int>(token.get().size());
 	tokenData = new unsigned char[tokenSize];
+	
 	for(unsigned int i = 0; i < tokenSize; i ++)
 	{
 		tokenData[i] = token.get()[i];

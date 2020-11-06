@@ -331,7 +331,7 @@ bool UISliderbarStyle::FindPropertyInfo (const char * const str, PropertyType & 
 
 	if (!_strnicmp (str, prefix_button, prefix_button_len))
 	{
-		int pos = prefix_button_len;
+		size_t pos = prefix_button_len;
 
 		for (int i = 0; i < PT_numPropertyTypes; ++i)
 		{

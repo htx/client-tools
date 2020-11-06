@@ -40,9 +40,11 @@ void MessageQueueCraftCustomization::pack(const MessageQueue::Data* const data, 
 		int8 temp8 = static_cast<int8>(msg->getAppearance());
 		Archive::put(target, temp8);
 		Archive::put(target, msg->getItemCount());
-		int count = msg->getCustomization().size();
+		int count = static_cast<int>(msg->getCustomization().size());
 		temp8 = static_cast<int8>(count);
+		
 		Archive::put(target, temp8);
+		
 		for (int i = 0; i < count; ++i)
 		{
 			const Crafting::CustomValue & custom = msg->getCustomization()[i];

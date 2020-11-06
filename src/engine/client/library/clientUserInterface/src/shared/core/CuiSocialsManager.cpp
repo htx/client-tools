@@ -390,7 +390,8 @@ void CuiSocialsManager::listSocials (const Unicode::String & abbrev, Unicode::St
 			if (socialType == CuiSocialsManager::getWhisperSocialId ())
 				continue;
 			
-			const LocalizedString * const locStr = ms_socialsTable->getLocalizedString (stringTableId);
+			const LocalizedString * const locStr = ms_socialsTable->getLocalizedString (static_cast<LocalizedString::id_type>(stringTableId));
+			
 			if (!locStr)
 				return;
 

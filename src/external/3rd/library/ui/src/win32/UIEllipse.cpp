@@ -399,12 +399,13 @@ void UIEllipse::Render(UICanvas &DestinationCanvas) const
 		mPointsDirty = false;
 	}
 
-	unsigned PointCount = mPoints.size();
+	unsigned PointCount = static_cast<unsigned>(mPoints.size());
+	
 	if (PointCount >= 4)
 	{
 		float const InverseOpacity = GetOpacity() > c_opacityMin ? 1.0f / GetOpacity() : 0.0f;
-		unsigned char const OuterAlpha = unsigned char(DestinationCanvas.GetOpacity() * 255.5f);
-		unsigned char const InnerAlpha = unsigned char(DestinationCanvas.GetOpacity() * InverseOpacity * mInnerRadiusOpacity * 255.5f);
+		auto const OuterAlpha = static_cast<unsigned char>(DestinationCanvas.GetOpacity() * 255.5f);
+		auto const InnerAlpha = static_cast<unsigned char>(DestinationCanvas.GetOpacity() * InverseOpacity * mInnerRadiusOpacity * 255.5f);
 
 		if (mLineSegments)
 		{

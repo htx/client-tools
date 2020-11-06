@@ -63,22 +63,22 @@ char *strsep(char **string, const char *delim)
 	char *result = *string;
 
 	// handle no string specified, or the end of the string
-	if (result == 0)
-		return 0;
+	if (result == nullptr)
+		return nullptr;
 
 	// skip leading delimiters
 	result = result + strspn(result, delim);
 
 	// handle trailing delimiters
 	if (*result == '\0')
-		return 0;
+		return nullptr;
 
 	// look for the first delimiter
-	const int len = strcspn(result, delim);
+	const size_t len = strcspn(result, delim);
 	if (result[len] == '\0')
 	{
 		// hit the end of the string
-		*string = 0;
+		*string = nullptr;
 	}
 	else
 	{

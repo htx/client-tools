@@ -830,18 +830,18 @@ void UIRadialMenu::SpawnPopupMenu (int index)
 
 	if (!mPopupMenu)
 	{
-		UIPopupMenu * const pop = new UIPopupMenu(this);
+		const auto pop = new UIPopupMenu(this);
 		assert (pop);
 		SetPopupMenu (pop);
 	}
 
-	const long nodeCount = GetChildrenRef ().size ();
+	const size_t nodeCount = GetChildrenRef ().size ();
 
 	if (nodeCount && mPopupMenu)
 	{
 		const UIRadialMenuStyle::ButtonStyleType bst = s_buttonStyleTypes [index];
 
-		UIPopupMenuStyle * popupStyle = 0;
+		UIPopupMenuStyle * popupStyle = nullptr;
 
 		if (mStyle)
 		{

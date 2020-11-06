@@ -272,7 +272,7 @@ bool StaticShader::obeysCustomizationData() const
 void StaticShader::createGlData() const
 {
 	m_graphicsData = Graphics::createStaticShaderGraphicsData(*this);
-	m_textureSortKey = m_graphicsData->getTextureSortKey();
+	m_textureSortKey = static_cast<int>(m_graphicsData->getTextureSortKey());
 }
 
 // ----------------------------------------------------------------------
@@ -284,9 +284,9 @@ int StaticShader::getTextureSortKey() const
 
 // ----------------------------------------------------------------------
 
-int StaticShader::getShaderTemplateSortKey() const
+intptr_t StaticShader::getShaderTemplateSortKey() const
 {
-	return reinterpret_cast<int>(&getStaticShaderTemplate());
+	return reinterpret_cast<intptr_t>(&getStaticShaderTemplate());
 }
 
 // ----------------------------------------------------------------------
@@ -392,7 +392,7 @@ void StaticShader::setTexture(Tag tag, const Texture &texture)
 		i->second.texture->fetch();
 
 		m_graphicsData->update(*this);
-		m_textureSortKey = m_graphicsData->getTextureSortKey();
+		m_textureSortKey = static_cast<int>(m_graphicsData->getTextureSortKey());
 	}
 }
 

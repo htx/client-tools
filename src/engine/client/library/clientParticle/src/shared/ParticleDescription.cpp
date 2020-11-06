@@ -34,7 +34,7 @@ ParticleDescription::ParticleDescription()
  , m_particleRelativeRotationX()
  , m_particleRelativeRotationY()
  , m_particleRelativeRotationZ()
- , m_particleAttachmentDescriptions(NULL)
+ , m_particleAttachmentDescriptions(nullptr)
  , m_particleUsesRelativeRotation(false)
 {
 	m_particleAttachmentDescriptions = new ParticleAttachmentDescriptions;
@@ -51,7 +51,7 @@ ParticleDescription::ParticleDescription(ParticleDescription const &particleDesc
  , m_particleRelativeRotationX(particleDescription.m_particleRelativeRotationX)
  , m_particleRelativeRotationY(particleDescription.m_particleRelativeRotationY)
  , m_particleRelativeRotationZ(particleDescription.m_particleRelativeRotationZ)
- , m_particleAttachmentDescriptions(NULL)
+ , m_particleAttachmentDescriptions(nullptr)
  , m_particleUsesRelativeRotation(particleDescription.m_particleUsesRelativeRotation)
 {
 	m_particleAttachmentDescriptions = new ParticleAttachmentDescriptions;
@@ -60,7 +60,7 @@ ParticleDescription::ParticleDescription(ParticleDescription const &particleDesc
 	*m_particleAttachmentDescriptions = *particleDescription.m_particleAttachmentDescriptions;
 
 #ifdef _DEBUG
-	int const size = m_particleAttachmentDescriptions->size();
+	int const size = static_cast<int>(m_particleAttachmentDescriptions->size());
 	UNREF(size);
 #endif // _DEBUG
 }
@@ -69,13 +69,13 @@ ParticleDescription::ParticleDescription(ParticleDescription const &particleDesc
 ParticleDescription::~ParticleDescription()
 {
 	delete m_particleAttachmentDescriptions;
-	m_particleAttachmentDescriptions = NULL;
+	m_particleAttachmentDescriptions = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 ParticleDescription *ParticleDescription::createDescription(ParticleType const particleType)
 {
-	ParticleDescription *particleDescription = NULL;
+	ParticleDescription *particleDescription = nullptr;
 
 	switch (particleType)
 	{

@@ -66,7 +66,7 @@ TreeFile::SearchPath::SearchPath(int priority, const char *path)
 	// this function will remove leading slashes but we actually want them, so make sure we preserve it
 	int const offset = (absolutePath[0] == '/') ? 1 : 0;
 	TreeFile::fixUpFileName(absolutePath+offset, absolutePath+offset);
-	m_pathNameLength = strlen(absolutePath);
+	m_pathNameLength = static_cast<int>(strlen(absolutePath));
 	if (m_pathNameLength && absolutePath[m_pathNameLength-1] == '/')
 		absolutePath[--m_pathNameLength] = '\0';
 
@@ -646,7 +646,7 @@ TreeFile::SearchTOC::SearchTOC(int priority, const char *fileName)
 
 					FATAL(!m_treeFiles[treeFileNameIndex], ("failed to open tree file index %d, offset %d, name %s", treeFileNameIndex, treeFileNameReadPosition, m_treeFileNames + treeFileNameReadPosition));
 
-					treeFileNameReadPosition += strlen(m_treeFileNames + treeFileNameReadPosition) + 1;
+					treeFileNameReadPosition += static_cast<int>(strlen(m_treeFileNames + treeFileNameReadPosition)) + 1;
 				}
 
 				delete [] treePathBuffer;

@@ -21,12 +21,12 @@ namespace Archive
 class ReadException : public std::exception
 {
 public:
-	explicit ReadException(const char * const what);
+	explicit ReadException(const char * what);
 	ReadException(const ReadException & source);
 	ReadException &  operator = (const ReadException & rhs);
 	~ReadException() throw();
 	
-	const char * what() const throw();
+	const char * what() const throw() override;
 	
 private:
 	const char * m_what;
@@ -83,7 +83,7 @@ public:
 	void                        advance         (const unsigned int distance);
 	void                        get             (void * target, const unsigned long int readSize);
 	const unsigned int          getSize         () const;
-	const unsigned char * const getBuffer       () const;
+	const unsigned char *		getBuffer       () const;
 	const unsigned int          getReadPosition () const;
 private:
 	
@@ -104,13 +104,13 @@ class ByteStream
 {
 public: // ctor/dtors
 	ByteStream();
-	ByteStream(const unsigned char * const buffer, const unsigned int bufferSize);
+	ByteStream(const unsigned char * buffer, unsigned int bufferSize);
 	ByteStream(const ByteStream & source);
 	virtual ~ByteStream();
 
 	typedef Archive::ReadIterator ReadIterator;
 
-public: // inner classes
+	// inner classes
 	/** \class ReadIterator ByteStream.h "Archive/ByteStream.h"
 		@brief an iterator object used to retrieve data from a ByteStream
 
@@ -122,27 +122,27 @@ public: // inner classes
 		@author Justin Randall
 	*/
 
-public:
 	ByteStream(ReadIterator & source);
 	ByteStream &                operator = (const ByteStream & source);
 	ByteStream &                operator = (ReadIterator & source);
 	const ReadIterator &        begin() const;
 	const ReadIterator          end() const;
 	void                        clear();
-	const unsigned char * const getBuffer() const;
+	const unsigned char *		getBuffer() const;
 	const unsigned int          getSize() const;
-	void                        put(const void * const source, const unsigned int sourceSize);
+	void                        put(const void * source, unsigned int sourceSize);
 	void                        setAllocatedSizeLimit(unsigned int limit);
 
 private:
-	void                        get(void * target, ReadIterator & readIterator, const unsigned long int readSize) const;
-	void                        growToAtLeast(const unsigned int targetSize);
-	void                        reAllocate(const unsigned int newSize);
+	
+	void                        get(void * target, ReadIterator & readIterator, unsigned long int readSize) const;
+	void                        growToAtLeast(unsigned int targetSize);
+	void                        reAllocate(unsigned int newSize);
 
-private: // inner classes
 	class Data
 	{
 	public:
+		
 		~Data();
 		
 		static Data * getNewData();
@@ -150,32 +150,35 @@ private: // inner classes
 		const int getRef () const;
 		void      deref  ();
 		void      ref    ();
+		
 	protected:
+		
 		friend class ByteStream;
 		friend class Archive::ReadIterator;
 		unsigned char * buffer;
 		unsigned long   size;
+		
 	private:
+		
 		struct DataFreeList
 		{
 			~DataFreeList()
 			{
-				std::vector<ByteStream::Data *>::iterator i;
-				for(i = freeList.begin(); i != freeList.end(); ++i)
+				for(auto i = freeList.begin(); i != freeList.end(); ++i)
 				{
 					delete (*i);
 				}
 			};
 			std::vector<Data *> freeList;
 		};
+		
 		Data();
-//		explicit Data(unsigned char * buffer);
+
 		static std::vector<Data *> & lockDataFreeList();
 		static void unlockDataFreeList();
 		static void releaseOldData(Data * oldData);
 
-	private:
-		int             refCount;
+		int refCount;
 	};
 
 private:
@@ -190,7 +193,7 @@ private:
 //---------------------------------------------------------------------
 
 inline ByteStream::Data::Data() :
-buffer(0),
+buffer(nullptr),
 size(0),
 refCount(1)
 {
@@ -272,6 +275,7 @@ inline const unsigned int ReadIterator::getSize() const
 {
 	if(stream)
 		return stream->getSize() - readPtr;
+	
 	return 0;
 }
 
@@ -307,12 +311,12 @@ inline const unsigned int ReadIterator::getReadPosition() const
 
 //---------------------------------------------------------------------
 
-inline const unsigned char * const ReadIterator::getBuffer() const
+inline const unsigned char * ReadIterator::getBuffer() const
 {
 	if(stream && stream->data)
 		return &stream->data->buffer[readPtr];
 
-	return 0;
+	return nullptr;
 }
 
 //---------------------------------------------------------------------
@@ -334,7 +338,7 @@ inline void ByteStream::clear()
 		if (data)
 		{
 			data->deref();
-			data = 0;
+			data = nullptr;
 		}
 		allocatedSize = 0;
 
@@ -346,11 +350,12 @@ inline void ByteStream::clear()
 /**
 	@brief get the whole ByteStream buffer (very const)
 */
-inline const unsigned char * const ByteStream::getBuffer() const
+inline const unsigned char * ByteStream::getBuffer() const
 {
 	if (data)
 		return data->buffer;
-	return 0;
+	
+	return nullptr;
 }
 
 //---------------------------------------------------------------------

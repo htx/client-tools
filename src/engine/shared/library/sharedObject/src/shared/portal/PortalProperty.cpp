@@ -210,40 +210,20 @@ bool PortalProperty::serverEndBaselines(int serverObjectCrc, std::vector<Object*
 		retval = true;
 
 		// create any missing cells
-		uint const numberOfCells = m_cellList->size();
+		uint const numberOfCells = static_cast<unsigned int>(m_cellList->size());
+		
 		for (uint i = 1; i < numberOfCells; ++i)
 		{
-			if ((*m_cellList)[i] == NULL)
+			if ((*m_cellList)[i] == nullptr)
 			{
 				Object *object = ms_beginCreateObjectFunction(static_cast<int>(i));
 				IGNORE_RETURN(addToContents(*object, tmp));
 				cellLoaded(static_cast<int>(i), *object, false);
+				
 				if (ms_endCreateObjectFunction)
 					ms_endCreateObjectFunction(object);
 			} //lint !e429 // Custodial pointer not freed or returned
 		}
-
-		//-- jww: this fixup code is broken
-		//-- fixupObject() causes the fixedup object to get added to the world before its parent has been
-		//-- for now, we won't queue anything for fixup
-
-#if 0
-		// go through the cells and remove objects 
-		for (size_t cell=1 ; cell< numberOfCells; ++cell)
-		{
-			for (ContainerIterator cellContents=(*m_cellList)[cell]->begin(); cellContents != (*m_cellList)[cell]->end(); ++cellContents)
-			{
-				Object *obj = (*cellContents).getObject();
-				if (obj)
-				{
-					queueObjectForFixup(*obj);
-					IGNORE_RETURN((*m_cellList)[cell]->remove(cellContents, tmp)); // does not invalidate the iterator
-				}
-			}
-		}
-
-#endif
-
 	}
 #ifdef _DEBUG
 	else
@@ -251,7 +231,8 @@ bool PortalProperty::serverEndBaselines(int serverObjectCrc, std::vector<Object*
 		if (ConfigSharedObject::getValidateCellContentsAttached())
 		{
 			// make sure the contents of every cell is attached to the cell
-			uint const numberOfCells = m_cellList->size();
+			uint const numberOfCells = static_cast<unsigned int>(m_cellList->size());
+			
 			for (size_t cellIndex = 1 ; cellIndex < numberOfCells; ++cellIndex)
 			{
 				CellProperty *cell = (*m_cellList)[cellIndex];

@@ -1777,7 +1777,7 @@ void UdpConnection::ProcessRawPacket(const UdpManager::PacketHistoryEntry *e)
 				}
 
 				finalStart = tempDecryptBuffer[j % 2];
-				finalLen = decryptPtr - finalStart;
+				finalLen = static_cast<int>(decryptPtr - finalStart);
 			}
 		}
 
@@ -1836,7 +1836,7 @@ void UdpConnection::ProcessCookedPacket(const uchar *data, int dataLen)
 
 				if (connectCode == mConnectCode)
 				{
-					mConnectionConfig.maxRawPacketSize = udpMin((int)UdpMisc::GetValue32(data + 10), mConnectionConfig.maxRawPacketSize);
+					mConnectionConfig.maxRawPacketSize = udpMin(static_cast<int>(UdpMisc::GetValue32(data + 10)), mConnectionConfig.maxRawPacketSize);
 
 						// send confirm packet (if our connect code matches up)
 						// prepare UdpPacketConnect packet
@@ -1845,9 +1845,11 @@ void UdpConnection::ProcessCookedPacket(const uchar *data, int dataLen)
 					*bufPtr++ = cUdpPacketConfirm;
 					bufPtr += UdpMisc::PutValue32(bufPtr, mConnectCode);
 					bufPtr += UdpMisc::PutValue32(bufPtr, mConnectionConfig.encryptCode);
-					*bufPtr++ = (uchar)mConnectionConfig.crcBytes;
-					for (int j = 0; j < UdpManager::cEncryptPasses; j++)
-						*bufPtr++ = (uchar)mConnectionConfig.encryptMethod[j];
+					*bufPtr++ = static_cast<uchar>(mConnectionConfig.crcBytes);
+					
+					for(auto& j : mConnectionConfig.encryptMethod)
+						*bufPtr++ = static_cast<uchar>(j);
+					
 					bufPtr += UdpMisc::PutValue32(bufPtr, mConnectionConfig.maxRawPacketSize);
 					RawSend(buf, bufPtr - buf);
 				}

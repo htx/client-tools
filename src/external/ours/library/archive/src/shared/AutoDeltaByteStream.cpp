@@ -95,15 +95,16 @@ void AutoDeltaByteStream::addVariable(AutoDeltaVariableBase & var)
 
 //---------------------------------------------------------------------
 
-size_t AutoDeltaByteStream::getItemCount() const
+unsigned int AutoDeltaByteStream::getItemCount() const
 {
 	unsigned short int count = 0;
 
 	if (!dirtyList.empty())
 	{
-		for (std::set<void *>::const_iterator i = dirtyList.begin(); i != dirtyList.end(); ++i)
+		for (auto i = dirtyList.begin(); i != dirtyList.end(); ++i)
 		{
-			AutoDeltaVariableBase * const v = reinterpret_cast<AutoDeltaVariableBase *>(*i);
+			auto* const v = reinterpret_cast<AutoDeltaVariableBase *>(*i);
+			
 			if (v->isDirty())
 				++count;
 		}
@@ -121,16 +122,17 @@ size_t AutoDeltaByteStream::getItemCount() const
 */
 void AutoDeltaByteStream::packDeltas(ByteStream & target) const
 {
-	unsigned short int const count = static_cast<unsigned short int>(getItemCount());
+	auto const count = static_cast<unsigned short int>(getItemCount());
 
 	// place count in archive
 	Archive::put(target, count);
 	
 	if (count > 0)
 	{
-		for (std::set<void *>::const_iterator i = dirtyList.begin(); i != dirtyList.end(); ++i)
+		for (auto i = dirtyList.begin(); i != dirtyList.end(); ++i)
 		{
-			AutoDeltaVariableBase * const v = reinterpret_cast<AutoDeltaVariableBase *>(*i);
+			auto* const v = reinterpret_cast<AutoDeltaVariableBase *>(*i);
+			
 			if (v->isDirty())
 			{
 				put(target, v->getIndex());
@@ -148,9 +150,9 @@ void AutoDeltaByteStream::clearDeltas() const
 {
 	if (!dirtyList.empty())
 	{
-		for (std::set<void *>::const_iterator i = dirtyList.begin(); i != dirtyList.end(); ++i)
+		for (auto i = dirtyList.begin(); i != dirtyList.end(); ++i)
 		{
-			AutoDeltaVariableBase * const v = reinterpret_cast<AutoDeltaVariableBase *>(*i);
+			auto* const v = reinterpret_cast<AutoDeltaVariableBase *>(*i);
 			v->clearDelta();
 		}
 		dirtyList.clear();
@@ -161,7 +163,7 @@ void AutoDeltaByteStream::clearDeltas() const
 
 void AutoDeltaByteStream::removeOnDirtyCallback()
 {
-	onDirtyCallback = 0;
+	onDirtyCallback = nullptr;
 }
 
 //---------------------------------------------------------------------
@@ -175,14 +177,15 @@ void AutoDeltaByteStream::removeOnDirtyCallback()
 */
 void AutoDeltaByteStream::unpackDeltas(ReadIterator & source)
 {
-	unsigned short int index;
-	unsigned short int count;
+	unsigned short int index = 0;
+	unsigned short int count = 0;
+	
 	Archive::get(source, count);
 
 	while (source.getSize())
 	{
 		get(source, index);
-		AutoDeltaVariableBase * const v = reinterpret_cast<AutoDeltaVariableBase *>(members[index]);
+		auto* const v = reinterpret_cast<AutoDeltaVariableBase *>(members[index]);
 		v->unpackDelta(source);
 	}
 }
@@ -196,7 +199,7 @@ void AutoDeltaByteStream::unpackDeltas(ReadIterator & source)
 AutoDeltaVariableBase::AutoDeltaVariableBase() :
 	AutoVariableBase(),
 	index(0),
-	mOwner(0)
+	mOwner(nullptr)
 {
 }
 
@@ -209,7 +212,7 @@ AutoDeltaVariableBase::AutoDeltaVariableBase() :
 */
 AutoDeltaVariableBase::~AutoDeltaVariableBase()
 {
-	mOwner = 0;
+	mOwner = nullptr;
 }
 
 //-----------------------------------------------------------------------

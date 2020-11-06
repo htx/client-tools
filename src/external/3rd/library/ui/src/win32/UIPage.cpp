@@ -985,7 +985,7 @@ void UIPage::GetChildren( UIObjectList &Out ) const
 //======================================================================================
 unsigned long UIPage::GetChildCount () const
 {
-	return mObjects->size();
+	return static_cast<unsigned long>(mObjects->size());
 }
 
 //======================================================================================

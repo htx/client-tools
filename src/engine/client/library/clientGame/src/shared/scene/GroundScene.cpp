@@ -2882,7 +2882,7 @@ void GroundScene::receiveMessage(const MessageDispatch::Emitter &, const Message
 			target->applyBaselines(bm);
 	}
 
-	//----------------------------------------------------------------------
+	//-------------------------------------&---------------------------------
 
 	else if(message.isType("DeltasMessage"))
 	{
@@ -3398,7 +3398,7 @@ void GroundScene::receiveMessage(const MessageDispatch::Emitter &, const Message
 				StdioFile outFile(filename.c_str(), "wb");
 				if (outFile.isOpen())
 				{
-					outFile.write(filetext.size(), filetext.data());
+					outFile.write(static_cast<int>(filetext.size()), filetext.data());
 					// tell the client about it
 					std::string messageText("Saved file on client: ");
 					messageText += filename;

@@ -171,16 +171,16 @@ void UITextbox::SetLocalText( const UIString &NewString )
 	Unicode::truncateToUTF8Size(mLocalText, static_cast<unsigned int>(GetMaximumCharacters()));
 
 	if( mCaratIndex > static_cast<long>(mLocalText.length()) )
-		mCaratIndex = mLocalText.length();
+		mCaratIndex = static_cast<long>(mLocalText.length());
 
 	if( mSelectionStart > static_cast<long>(mLocalText.length()) )
-		mSelectionStart = mLocalText.length();
+		mSelectionStart = static_cast<long>(mLocalText.length());
 
 	if( mSelectionEnd > static_cast<long>(mLocalText.length()) )
-		mSelectionEnd = mLocalText.length();
+		mSelectionEnd = static_cast<long>(mLocalText.length());
 
 	if( mSelectionFixedEnd > static_cast<long>(mLocalText.length()) )
-		mSelectionFixedEnd = mLocalText.length();
+		mSelectionFixedEnd = static_cast<long>(mLocalText.length());
 
 	mTextDirty = true;
 };
@@ -800,7 +800,7 @@ void UITextbox::MoveCaratLeftOneWord ()
 
 void UITextbox::MoveCaratRight ()
 {
-	long DataSize = mLocalText.size();
+	long DataSize = static_cast<long>(mLocalText.size());
 
 	if( mCaratIndex < DataSize )
 	{
@@ -917,7 +917,7 @@ const UIPoint UITextbox::GetCaratPos() const
 void UITextbox::SelectCurrentWord ()
 {
 	size_t wordStart = 0;
-	size_t wordEnd   = static_cast<size_t>(mLocalText.npos); // broken msvc compiler
+	size_t wordEnd   = UIString::npos; 
 
 	if (mCaratIndex < 0)
 		return;
@@ -925,9 +925,10 @@ void UITextbox::SelectCurrentWord ()
 	wordStart = mLocalText.find_last_of  (Unicode::whitespace, mCaratIndex);
 	wordEnd   = mLocalText.find_first_of (Unicode::whitespace, mCaratIndex);
 
-	if (wordStart == mLocalText.npos)
+	if (wordStart == UIString::npos)
 		wordStart = 0;
-	if (wordEnd == mLocalText.npos)
+	
+	if (wordEnd == UIString::npos)
 		wordEnd = mLocalText.size ();
 
 	//-- try to highlight contiguous breaking characters
@@ -937,29 +938,30 @@ void UITextbox::SelectCurrentWord ()
 		wordEnd   = mLocalText.find_first_not_of (Unicode::whitespace, mCaratIndex);
 	}
 
-	if (wordStart == mLocalText.npos)
+	if (wordStart == UIString::npos)
 		wordStart = 0;
+	
 	else if (mLocalText [wordStart] == ' ')
 		++wordStart;
 
-	if (wordEnd == mLocalText.npos)
+	if (wordEnd == UIString::npos)
 	{
-		mCaratIndex = mLocalText.size ();
+		mCaratIndex = static_cast<long>(mLocalText.size ());
 		wordEnd = mCaratIndex;
 	}
 	else
-		mCaratIndex = wordEnd;
+		mCaratIndex = static_cast<long>(wordEnd);
 
 	if (wordStart != wordEnd)
 	{
-		mSelectionStart    = wordStart;
-		mSelectionEnd      = wordEnd;
-		mSelectionFixedEnd = wordEnd;
-
-		mCaratIndex = wordStart;
+		mSelectionStart    = static_cast<long>(wordStart);
+		mSelectionEnd      = static_cast<long>(wordEnd);
+		mSelectionFixedEnd = static_cast<long>(wordEnd);
+		
+		mCaratIndex = static_cast<long>(wordStart);
 		CalculateCaratRect();
 		ScrollCaratOnScreen();
-		mCaratIndex = wordEnd;
+		mCaratIndex = static_cast<long>(wordEnd);
 	}
 	else
 	{
@@ -1000,12 +1002,12 @@ long UITextbox::GetCaratOffsetFromPoint( const UIPoint & widgetPt )
 
 	if( CaratRow < 0 )
 		CaratRow = 0;
-	else if( CaratRow >= static_cast<long> (mRenderLinePointers.size() - 1))
+	else if(CaratRow >= static_cast<long>(mRenderLinePointers.size() - 1))
 	{
 		if (mRenderLinePointers.size () > 1)
-			CaratRow = mRenderLinePointers.size() - 2;
+			CaratRow = static_cast<long>(mRenderLinePointers.size()) - 2;
 		else
-			CaratRow = mRenderLinePointers.size() - 1;
+			CaratRow = static_cast<long>(mRenderLinePointers.size()) - 1;
 	}
 
 	long  PixelOffset              = textPadding.left;
@@ -1112,7 +1114,7 @@ void UITextbox::MoveCaratToStartOfDocument ()
 
 void UITextbox::MoveCaratToEndOfDocument ()
 {
-	mCaratIndex = mLocalText.size();
+	mCaratIndex = static_cast<long>(mLocalText.size());
 
 	ScrollCaratOnScreen();
 	CalculateCaratRect();
@@ -1455,8 +1457,8 @@ void UITextbox::CalculateCaratRect ()
 		return;
 
 	// Fix many unchecked settings of mCaratIndex to illegal values
-	if ((unsigned long)mCaratIndex > mLocalText.length())
-		mCaratIndex = mLocalText.length();
+	if (static_cast<size_t>(mCaratIndex) > mLocalText.length())
+		mCaratIndex = static_cast<long>(mLocalText.length());
 
 	if( mTextDirty )
 		CacheTextMeasurements();
@@ -1865,7 +1867,7 @@ void UITextbox::PasteFromClipboard ()
 
 	Unicode::truncateToUTF8Size(TextOnClipboard, space);
 
-	if (TextOnClipboard.size() == 0)
+	if (TextOnClipboard.empty())
 	{
 		Ding();
 		return;
@@ -1874,7 +1876,7 @@ void UITextbox::PasteFromClipboard ()
 	mLocalText.insert( mCaratIndex, TextOnClipboard );
 	mTextDirty = true;
 
-	mCaratIndex += TextOnClipboard.size();
+	mCaratIndex += static_cast<long>(TextOnClipboard.size());
 
 	//-- truncate integers to 9 digits
 	if (IsNumericInteger () && mLocalText.size () > static_cast<size_t>(mMaxIntegerLength))
@@ -2063,7 +2065,7 @@ void UITextbox::handleTextChanged (size_t OldCaratIndex, bool TextChanged, bool 
 		if (!TextChanged )
 		{
 			if( mSelectionStart == -1 )
-				ModifySelection( OldCaratIndex );
+				ModifySelection( static_cast<long>(OldCaratIndex) );
 
 			ModifySelection( mCaratIndex );
 		}

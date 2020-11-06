@@ -537,7 +537,8 @@ void BitArray::setFromDbTextString(const char * text)
 {
 	clear();
 
-	int const nibbleCount = (text ? strlen(text) : 0);
+	int const nibbleCount = (text ? static_cast<int>(strlen(text)) : 0);
+	
 	if (nibbleCount > 0)
 	{
 		bool anyBitSet = false;

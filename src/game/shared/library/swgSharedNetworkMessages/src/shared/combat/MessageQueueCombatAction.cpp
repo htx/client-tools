@@ -361,9 +361,9 @@ uint32 MessageQueueCombatAction::getComparisonChecksum( void ) const
 {
 	uint32 retval = 0;
 	retval += m_actionId;
-	retval += NetworkId::Hash()(m_attacker.id);
-	retval += NetworkId::Hash()(m_attacker.weapon);
-	retval += int(m_attacker.endPosture);
+	retval += static_cast<uint32>(NetworkId::Hash()(m_attacker.id));
+	retval += static_cast<uint32>(NetworkId::Hash()(m_attacker.weapon));
+	retval += static_cast<int>(m_attacker.endPosture);
 	retval += m_attacker.trailBits;
 	retval += m_attacker.clientEffectId;
 	retval += m_attacker.actionNameCrc;

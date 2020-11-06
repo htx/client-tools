@@ -44,13 +44,15 @@ void CuiSetName::handleResult (bool affirmative, Unicode::String const & s)
 	{
 		NetworkId const & id = getObject ();
 		Object const * const obj = NetworkIdManager::getObjectById (id);
-		ClientObject const * const clientObject = obj ? obj->asClientObject () : 0;
+		ClientObject const * const clientObject = obj ? obj->asClientObject () : nullptr;
+		
 		if (clientObject)
 		{
 			//remove leading @'s to prevent the name from being interpreted
 			//as a code string
 			int i = 0;
-			int nameLength = s.length ();
+			int nameLength = static_cast<int>(s.length ());
+			
 			while(i < nameLength && s[i] == '@')
 			{
 				++i;

@@ -741,7 +741,7 @@ void ClientEffectManager::sendHeartbeat(const float elapsedTime)
 
 	if (!m_lights.empty())
 	{
-		uint n = m_lights.size ();
+		uint n = static_cast<unsigned int>(m_lights.size());
 		uint i = 0;
 		while (i < n)
 		{
@@ -768,7 +768,7 @@ void ClientEffectManager::sendHeartbeat(const float elapsedTime)
 
 	if (!m_particleSystems.empty())
 	{
-		uint n = m_particleSystems.size ();
+		uint n = static_cast<unsigned int>(m_particleSystems.size ());
 		uint i = 0;
 		while (i < n)
 		{

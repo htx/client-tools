@@ -79,7 +79,7 @@ namespace AudioNamespace
 
 	typedef std::map<CrcString const *, SampleCacheEntry, LessPointerComparator> SampleCache;
 	typedef std::map<CrcString const *, int, LessPointerComparator>              MusicOffsetMap;
-	typedef std::map<unsigned int, AbstractFile *>                               FileMap;
+	typedef std::map<uintptr_t, AbstractFile *>									 FileMap;
 	typedef std::map<SampleId, Sample2d>                                         SampleIdToSample2dMap;
 	typedef std::map<SampleId, Sample3d>                                         SampleIdToSample3dMap;
 	typedef std::map<SampleId, SampleStream>                                     SampleIdToSampleStreamMap;
@@ -114,7 +114,7 @@ namespace AudioNamespace
 	int                          s_instantRejectionCount = 0;
 	int                          s_nextSoundId = 1;
 	int                          s_nextSampleId = 1;
-	unsigned int                 s_nextFileHandle = 0;
+	uintptr_t					 s_nextFileHandle = 0;
 	float                        s_soundCategoryVolumes[Audio::SC_count];
 	float                        s_streamVolume = 1.0f;
 	bool                         s_audioEnabled = true;
@@ -198,13 +198,13 @@ namespace AudioNamespace
 #endif // _DEBUG
 
 #ifdef _DEBUG
-	typedef std::map<uint32, std::string> HandleNameMap;
+	typedef std::map<uintptr_t, std::string> HandleNameMap;
 	HandleNameMap ms_handleNameMap;
 
-	typedef std::set<uint32> HandleSet;
+	typedef std::set<uintptr_t> HandleSet;
 	HandleSet ms_fileCloseHandleSet;
 
-	void determineCallbackError(char const * const callbackName, uint32 const handle)
+	void determineCallbackError(char const * const callbackName, uintptr_t const handle)
 	{
 		HandleNameMap::iterator iter = ms_handleNameMap.find(handle);
 		bool const fileOpen = iter != ms_handleNameMap.end();
@@ -225,10 +225,10 @@ using namespace AudioNamespace;
 
 // Callbacks for Miles to the TreeFile system
 
-static U32 __stdcall fileOpenCallBack(char const *fileName, U32 *fileHandle);
-static void __stdcall fileCloseCallBack(U32 fileHandle);
-static S32 __stdcall fileSeekCallBack(U32 fileHandle, S32 offset, U32 type);
-static U32 __stdcall fileReadCallBack(U32 fileHandle, void *buffer, U32 bytes);
+static U32 __stdcall fileOpenCallBack(char const *fileName, uintptr_t *fileHandle);
+static void __stdcall fileCloseCallBack(uintptr_t fileHandle);
+static S32 __stdcall fileSeekCallBack(uintptr_t fileHandle, S32 offset, U32 type);
+static U32 __stdcall fileReadCallBack(uintptr_t fileHandle, void *buffer, U32 bytes);
 
 static SoundId attachSound(SoundTemplate const *soundTemplate, Object const *object, char const *hardPointName=0);
 static bool cacheSound(SoundTemplate const *soundTemplate);
@@ -303,9 +303,7 @@ char const *AudioNamespace::getAttenuationMethodString(Audio::AttenuationMethod 
 //-----------------------------------------------------------------------------
 void AudioNamespace::clearMusicOffsets()
 {
-	MusicOffsetMap::iterator iterMusicOffsetMap = s_musicOffsetMap.begin();
-
-	for (; iterMusicOffsetMap != s_musicOffsetMap.end(); ++iterMusicOffsetMap)
+	for(auto iterMusicOffsetMap = s_musicOffsetMap.begin(); iterMusicOffsetMap != s_musicOffsetMap.end(); ++iterMusicOffsetMap)
 	{
 		delete iterMusicOffsetMap->first;
 	}
@@ -1288,7 +1286,7 @@ bool Audio::install()
 
 	// Initialize the audio driver
 
-	s_maxDigitalMixerChannels = AIL_get_preference(DIG_MIXER_CHANNELS);
+	s_maxDigitalMixerChannels = static_cast<int>(AIL_get_preference(DIG_MIXER_CHANNELS));
 
 	s_digitalDevice2d = AIL_open_digital_driver(getFrequency(), getBits(), getProviderSpec(getCurrent3dProvider()), 0);
 
@@ -1386,21 +1384,21 @@ void Audio::remove()
 	Audio::stopAllSounds();
 
 #ifdef _DEBUG
-	unsigned int const sample2dMapSize = s_sampleIdToSample2dMap.size();
+	unsigned int const sample2dMapSize = static_cast<unsigned int>(s_sampleIdToSample2dMap.size());
 	UNREF(sample2dMapSize);
 	DEBUG_WARNING(!s_sampleIdToSample2dMap.empty(), ("Sample 2d map not empty"));
 #endif // _DEBUG
 	s_sampleIdToSample2dMap.clear();
 
 #ifdef _DEBUG
-	unsigned int const sample3dMapSize = s_sampleIdToSample3dMap.size();
+	unsigned int const sample3dMapSize = static_cast<unsigned int>(s_sampleIdToSample3dMap.size());
 	UNREF(sample3dMapSize);
 	DEBUG_WARNING(!s_sampleIdToSample3dMap.empty(), ("Sample 3d map not empty"));
 #endif // _DEBUG
 	s_sampleIdToSample3dMap.clear();
 
 #ifdef _DEBUG
-	unsigned int const streamMapSize = s_sampleIdToSampleStreamMap.size();
+	unsigned int const streamMapSize = static_cast<unsigned int>(s_sampleIdToSampleStreamMap.size());
 	UNREF(streamMapSize);
 	DEBUG_WARNING(!s_sampleIdToSampleStreamMap.empty(), ("Sample stream map not empty"));
 #endif // _DEBUG
@@ -1430,7 +1428,7 @@ void Audio::remove()
 	}
 
 #ifdef _DEBUG
-	int const fileMapCount = s_fileMap.size();
+	int const fileMapCount = static_cast<int>(s_fileMap.size());
 	DEBUG_WARNING((fileMapCount > 0), ("File handles (%d) are still allocated.", fileMapCount));
 #endif // _DEBUG
 
@@ -3928,7 +3926,7 @@ float Audio::getSampleEffectsLevel(SampleId const &sampleId)
 static int once = true;
 
 //-----------------------------------------------------------------------------
-U32 __stdcall fileOpenCallBack(char const *fileName, U32 *fileHandle)
+U32 __stdcall fileOpenCallBack(char const *fileName, uintptr_t *fileHandle)
 {
 	if (once && !Os::isMainThread())
 	{
@@ -3938,7 +3936,7 @@ U32 __stdcall fileOpenCallBack(char const *fileName, U32 *fileHandle)
 
 	AbstractFile *abstractFile = TreeFile::open(fileName, AbstractFile::PriorityAudioVideo, true);
 
-	if (abstractFile != NULL)
+	if (abstractFile != nullptr)
 	{
 		*fileHandle = s_nextFileHandle;
 		s_fileMap.insert(std::make_pair(s_nextFileHandle, abstractFile));
@@ -3953,11 +3951,11 @@ U32 __stdcall fileOpenCallBack(char const *fileName, U32 *fileHandle)
 		*fileHandle = NULL;
 	}
 
-	return (abstractFile != NULL);
+	return (abstractFile != nullptr);
 }
 
 //-----------------------------------------------------------------------------
-void __stdcall fileCloseCallBack(U32 const fileHandle)
+void __stdcall fileCloseCallBack(uintptr_t const fileHandle)
 {
 	if (once && !Os::isMainThread())
 	{
@@ -3965,7 +3963,7 @@ void __stdcall fileCloseCallBack(U32 const fileHandle)
 		PerThreadData::threadInstall(false);
 	}
 
-	FileMap::iterator fileMapIter = s_fileMap.find(fileHandle);
+	auto fileMapIter = s_fileMap.find(fileHandle);
 
 	if (fileMapIter != s_fileMap.end())
 	{
@@ -3996,7 +3994,7 @@ void __stdcall fileCloseCallBack(U32 const fileHandle)
 }
 
 //-----------------------------------------------------------------------------
-S32 __stdcall fileSeekCallBack(U32 const fileHandle, S32 const offset, U32 const type)
+S32 __stdcall fileSeekCallBack(uintptr_t const fileHandle, S32 const offset, U32 const type)
 {
 	if (once && !Os::isMainThread())
 	{
@@ -4015,17 +4013,17 @@ S32 __stdcall fileSeekCallBack(U32 const fileHandle, S32 const offset, U32 const
 		{
 			case AIL_FILE_SEEK_BEGIN:   // Seek relative to the beginning of the file
 				{
-					abstractFile->seek(AbstractFile::SeekBegin, static_cast<long>(offset));
+					abstractFile->seek(AbstractFile::SeekBegin, offset);
 				}
 				break;
 			case AIL_FILE_SEEK_CURRENT: // Seek relative to the current position of the file
 				{
-					abstractFile->seek(AbstractFile::SeekCurrent, static_cast<long>(offset));
+					abstractFile->seek(AbstractFile::SeekCurrent, offset);
 				}
 				break;
 			case AIL_FILE_SEEK_END:     // Seek relative to the end of the file
 				{
-					abstractFile->seek(AbstractFile::SeekEnd, static_cast<long>(offset));
+					abstractFile->seek(AbstractFile::SeekEnd, offset);
 				}
 				break;
 			default:
@@ -4052,7 +4050,7 @@ S32 __stdcall fileSeekCallBack(U32 const fileHandle, S32 const offset, U32 const
 }
 
 //-----------------------------------------------------------------------------
-U32 __stdcall fileReadCallBack(U32 const fileHandle, void *buffer, U32 const bytes)
+U32 __stdcall fileReadCallBack(uintptr_t const fileHandle, void *buffer, U32 const bytes)
 {
 // miles crasher hack
 #if 0
@@ -4072,7 +4070,7 @@ U32 __stdcall fileReadCallBack(U32 const fileHandle, void *buffer, U32 const byt
 
 	int bytesRead = 0;
 
-	FileMap::iterator fileMapIter = s_fileMap.find(fileHandle);
+	auto fileMapIter = s_fileMap.find(fileHandle);
 
 	if (fileMapIter != s_fileMap.end())
 	{
@@ -4105,7 +4103,7 @@ void Audio::getCurrentSampleTime(SoundId const &soundId, float &timeTotal, float
 	timeTotal = 0.0f;
 	timeCurrent = 0.0f;
 
-	SoundIdToSoundMap::iterator iterSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundMap != s_soundIdToSoundMap.end())
 	{

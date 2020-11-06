@@ -490,15 +490,15 @@ void UIListbox::Render( UICanvas &DestinationCanvas ) const
 		if( mStyle->GetLayout() == UIStyle::L_vertical )
 		{
 			Dimensions.x = 1;
-			Dimensions.y = CurrentData.size();
+			Dimensions.y = static_cast<long>(CurrentData.size());
 		}
 		else
 		{
-			Dimensions.x = CurrentData.size();
+			Dimensions.x = static_cast<long>(CurrentData.size());
 			Dimensions.y = 1;
 		}
 
-		long  DataSize      = CurrentData.size();
+		long  DataSize      = static_cast<long>(CurrentData.size());
 		//bool *SelectedItems = new bool[DataSize];
 		if(DataSize > mSelectedItemsAllocatedSize)
 		{
@@ -736,7 +736,7 @@ bool UIListbox::SetProperty( const UILowerString & Name, const UIString &Value )
 
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;
+		const int len = static_cast<int>(pSeparator);
 
 		if( Name.equals (PropertyName::SelectedItem.c_str (), len))
 		{
@@ -801,7 +801,7 @@ bool UIListbox::GetProperty( const UILowerString & Name, UIString &Value ) const
 
 	if( pSeparator != std::string::npos)
 	{
-		const int len = pSeparator;
+		const int len = static_cast<int>(pSeparator);
 
 		if( Name.equals (PropertyName::SelectedItem.c_str (), len))
 		{
@@ -852,16 +852,16 @@ void UIListbox::UpdateSelectionDataItemFromIndex( void )
 	{
 		UIDataList & CurrentData = mDataSource->GetData();
 
-		if( mSelection >= (long)CurrentData.size() )
-			mSelection = CurrentData.size() - 1;
+		if(mSelection >= static_cast<long>(CurrentData.size()))
+			mSelection = static_cast<long>(CurrentData.size()) - 1;
 
 		long DataItemIndex = 0;
 
-		for( UIDataList::iterator i = CurrentData.begin(); i != CurrentData.end(); ++i )
+		for(auto& i : CurrentData)
 		{
 			if( DataItemIndex == mSelection )
 			{
-				mSelectedDataObject = *i;
+				mSelectedDataObject = i;
 				return;
 			}
 

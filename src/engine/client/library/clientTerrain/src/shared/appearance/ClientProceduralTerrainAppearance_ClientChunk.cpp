@@ -235,9 +235,9 @@ bool ClientProceduralTerrainAppearance::ClientChunk::collide (const Vector& star
 	if (getExtent ()->testSphereOnly (start, end))
 	{
 		//-- now test the fan sets
-		const uint n = m_shaderSetList.size();
-		uint i;
-		for (i = 0; i < n; ++i)
+		const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+
+		for (uint i = 0; i < n; ++i)
 			if (m_shaderSetList[i]->collide (start, end, info))
 				found = true;
 	}
@@ -261,9 +261,9 @@ bool ClientProceduralTerrainAppearance::ClientChunk::getHeightAt (const Vector& 
 	if (m_boxExtent.testSphereOnly (start, end))
 	{
 		//-- now test the fan sets, since we're testing height, exit on the first one we find
-		const uint n = m_shaderSetList.size();
-		uint i;
-		for (i = 0; i < n; ++i)
+		const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+		
+		for (uint i = 0; i < n; ++i)
 			if (m_shaderSetList[i]->getHeightAt (start, end, info))
 			{
 				if (height)
@@ -292,9 +292,9 @@ bool ClientProceduralTerrainAppearance::ClientChunk::getHeightAt (const Vector& 
 	if (m_boxExtent.testSphereOnly (start, end))
 	{
 		//-- now test the fan sets, since we're testing height, exit on the first one we find
-		const uint n = m_shaderSetList.size();
-		uint i;
-		for (i = 0; i < n; ++i)
+		const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+		
+		for (uint i = 0; i < n; ++i)
 			if (m_shaderSetList[i]->getHeightAt (start, end, info))
 			{
 				if (height)
@@ -580,9 +580,9 @@ void ClientProceduralTerrainAppearance::ClientChunk::resetIndices(unsigned newHa
 
 	int const numberOfTilesPerChunk = m_proceduralTerrainAppearance.getNumberOfTilesPerChunk();
 
-	const uint n = m_shaderSetList.size();
-	uint i;
-	for (i = 0; i < n; ++i)
+	const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+	
+	for (uint i = 0; i < n; ++i)
 		m_shaderSetList[i]->chooseIndexBuffer(newHasLargerNeighborFlags, numberOfTilesPerChunk);
 }
 
@@ -682,11 +682,13 @@ void ClientProceduralTerrainAppearance::ClientChunk::create (const ClientCreateC
 				createTileShader (shaderData, indexX, indexZ, ConfigClientTerrain::getShaderGroupUseFirstChildOnly() ? true : createChunkData.chunkWidthInMeters >= 64);
 
 				//-- fetch the shader set
-				ShaderSet* shaderSet = 0;
+				ShaderSet* shaderSet = nullptr;
 
 				{
-					const uint n = m_shaderSetList.size();
-					uint i;
+					const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+					
+					uint i = 0;
+					
 					for (i = 0; i < n; ++i)
 						if (m_shaderSetList[i]->getShader () == shaderData.outputShader)
 						{
@@ -885,8 +887,10 @@ void ClientProceduralTerrainAppearance::ClientChunk::render () const
 	const ShaderSet *const*const shaderSetList = &m_shaderSetList[0];
 
 	//-- render shader fan sets
-	const uint n = m_shaderSetList.size();
-	uint i;
+	const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+
+	uint i = 0;
+	
 	for (i = 0; i < n; ++i)
 	{
 		shaderSetList[i]->render (camera, m_lotShader, ms_cloudShader);
@@ -1075,9 +1079,9 @@ void ClientProceduralTerrainAppearance::ClientChunk::setLotShader (const Shader*
 
 void ClientProceduralTerrainAppearance::ClientChunk::getPolygonSoup (const Rectangle2d& extent2d, IndexedTriangleList& indexedTriangleList) const
 {
-	const uint n = m_shaderSetList.size();
-	uint i;
-	for (i = 0; i < n; ++i)
+	const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+	
+	for (uint i = 0; i < n; ++i)
 		m_shaderSetList[i]->getPolygonSoup (extent2d, indexedTriangleList);
 }
 
@@ -1085,9 +1089,9 @@ void ClientProceduralTerrainAppearance::ClientChunk::getPolygonSoup (const Recta
 
 void ClientProceduralTerrainAppearance::ClientChunk::renderShadowBlob (const Vector& position_o, const float radius) const
 {
-	const uint n = m_shaderSetList.size();
-	uint i;
-	for (i = 0; i < n; ++i)
+	const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+	
+	for (uint i = 0; i < n; ++i)
 		m_shaderSetList[i]->renderShadowBlob (position_o, radius);
 }
 
@@ -1095,9 +1099,9 @@ void ClientProceduralTerrainAppearance::ClientChunk::renderShadowBlob (const Vec
 
 void ClientProceduralTerrainAppearance::ClientChunk::renderReticle (const Vector& position_o, const float radius) const
 {
-	const uint n = m_shaderSetList.size();
-	uint i;
-	for (i = 0; i < n; ++i)
+	const uint n = static_cast<unsigned int>(m_shaderSetList.size());
+	
+	for (uint i = 0; i < n; ++i)
 		m_shaderSetList[i]->renderReticle (position_o, radius);
 }
 //===================================================================

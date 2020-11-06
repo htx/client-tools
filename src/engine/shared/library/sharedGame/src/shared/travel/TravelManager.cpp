@@ -194,8 +194,8 @@ void TravelManagerNamespace::load (const char* fileName)
 			std::string const & planetName = dataTable.getColumnName (column);
 			FATAL ((ms_planetNameToPlanetIndexList.count(planetName) > 0), ("TravelManagerNamespace::load: duplicate planet %s in column %i", planetName.c_str (), column));
 
-			ms_planetNameToPlanetIndexList[planetName] = ms_planetNameList.size();
-			ms_planetNameList.push_back (planetName);
+			ms_planetNameToPlanetIndexList[planetName] = static_cast<int>(ms_planetNameList.size());
+			ms_planetNameList.emplace_back (planetName);
 		}
 
 		//-- setup "single hop" routes
@@ -236,8 +236,9 @@ void TravelManagerNamespace::load (const char* fileName)
 
 		// setup "least cost" routes, some of which may involve multiple hops
 		int routeCost;
-		int const numberOfPlanets = ms_planetNameToPlanetIndexList.size();
+		int const numberOfPlanets = static_cast<int>(ms_planetNameToPlanetIndexList.size());
 		int indexPlanet1, indexPlanet2;
+		
 		for (indexPlanet1 = 0; indexPlanet1 < numberOfPlanets; ++indexPlanet1)
 		{
 			for (indexPlanet2 = indexPlanet1; indexPlanet2 < numberOfPlanets; ++indexPlanet2)
@@ -250,7 +251,7 @@ void TravelManagerNamespace::load (const char* fileName)
 					if (getPlanetSingleHopCost(i, indexPlanet1, routeCost))
 					{
 						std::vector<std::pair<int, int> > route;
-						route.push_back(std::make_pair(indexPlanet1, i));
+						route.emplace_back(std::make_pair(indexPlanet1, i));
 
 						aStarSearchTree.insert(std::make_pair(routeCost, route));
 					}
@@ -268,7 +269,7 @@ void TravelManagerNamespace::load (const char* fileName)
 						break;
 
 					// get the current best route
-					std::multimap<int, std::vector<std::pair<int, int> > >::iterator begin = aStarSearchTree.begin();
+					auto begin = aStarSearchTree.begin();
 
 					// we are done if the current best route ends at the destination
 					if (begin->second[begin->second.size() - 1].second == indexPlanet2)
@@ -277,7 +278,7 @@ void TravelManagerNamespace::load (const char* fileName)
 						for (std::vector<std::pair<int, int> >::const_iterator iter = begin->second.begin(); iter != begin->second.end(); ++iter)
 						{
 							if (iter != begin->second.begin())
-								routeList.push_back(iter->first);
+								routeList.emplace_back(iter->first);
 						}
 
 						ms_anyHopLeastCostRouteList[std::make_pair(indexPlanet1, indexPlanet2)] = std::make_pair(begin->first, routeList);
@@ -314,7 +315,7 @@ void TravelManagerNamespace::load (const char* fileName)
 						if ((i != currentBestRoute[currentBestRoute.size() - 1].second) && (getPlanetSingleHopCost(i, currentBestRoute[currentBestRoute.size() - 1].second, routeCost)))
 						{
 							std::vector<std::pair<int, int> > route = currentBestRoute;
-							route.push_back(std::make_pair(currentBestRoute[currentBestRoute.size() - 1].second, i));
+							route.emplace_back(std::make_pair(currentBestRoute[currentBestRoute.size() - 1].second, i));
 
 							aStarSearchTree.insert(std::make_pair((currentBestRouteCost + routeCost), route));
 						}

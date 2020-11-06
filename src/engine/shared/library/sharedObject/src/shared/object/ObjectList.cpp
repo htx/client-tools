@@ -114,12 +114,12 @@ void ObjectList::removeObjectByIndex(const Object* object, int index)
 	m_objectVector->pop_back();
 
 	// NULL the object from the alter-safe object list.
-	uint size = m_alterSafeObjectVector->size();
-	for (uint i = 0; i < size; ++i)
+	size_t size = m_alterSafeObjectVector->size();
+	for (size_t i = 0; i < size; ++i)
 	{
 		if ((*m_alterSafeObjectVector)[i] == object)
 		{
-			(*m_alterSafeObjectVector)[i] = NULL;
+			(*m_alterSafeObjectVector)[i] = nullptr;
 			return;
 		}
 	}

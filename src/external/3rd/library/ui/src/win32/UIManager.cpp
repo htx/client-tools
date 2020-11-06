@@ -1236,13 +1236,15 @@ void UIManager::SetRootPage( UIPage *NewRootPage )
 
 int  UIManager::GetCanvasCount () const
 {
-	int count = 0;
+	size_t count = 0;
+	
 	for (CanvasShaderMap::Container::const_iterator it = mCanvasShaders->c.begin (); it != mCanvasShaders->c.end (); ++it)
 	{
 		const CanvasShaderMap::CanvasMap & canvases = (*it).second;
 		count += canvases.size ();
 	}
-	return count;
+	
+	return static_cast<int>(count);
 }
 
 //-----------------------------------------------------------------
@@ -1257,7 +1259,7 @@ void UIManager::GetCanvases (std::vector<UICanvas *> & canvasVector) const
 
 		canvasVector.reserve (canvasVector.size () + canvases.size ());
 
-		for( CanvasShaderMap::CanvasMap::const_iterator sit = canvases.begin(); sit != canvases.end(); ++sit )
+		for(auto sit = canvases.begin(); sit != canvases.end(); ++sit )
 		{
 			canvasVector.push_back ((*sit).second);
 		}

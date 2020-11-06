@@ -807,7 +807,8 @@ void SwgCuiSpaceAssignPlayerFormation::populateGroupMembersAndShips()
 
 	{
 		// associate the players with a ship
-		unsigned int const numberOfPlayerData = m_playerData.size();
+		unsigned int const numberOfPlayerData = static_cast<unsigned int>(m_playerData.size());
+		
 		for (unsigned int i = 0; i < numberOfPlayerData; ++i)
 		{
 			UIPage * const player = m_playerData[i];	

@@ -107,8 +107,9 @@ void ZlibCompressor::install(int numberOfParallelThreads)
 	int const size = cms_poolElementThreshold * ms_poolElementCount;
 	ms_memoryBottom = operator new(size);
 	ms_memoryTop = reinterpret_cast<byte*>(ms_memoryBottom) + size;
+	
 	for (int i = 0; i < ms_poolElementCount; ++i)
-		ms_memoryPool.push_back(reinterpret_cast<byte*>(ms_memoryBottom) + (i * cms_poolElementThreshold));
+		ms_memoryPool.emplace_back(reinterpret_cast<byte*>(ms_memoryBottom) + i * static_cast<intptr_t>(cms_poolElementThreshold));
 
 	ExitChain::add(ZlibCompressorNamespace::remove, "ZlibCompressorNamespace::remove");
 }

@@ -255,7 +255,8 @@ void SwgCuiCraftCustomize::OnButtonPressed( UIWidget *context )
 		//prevent players from putting '@' as the first character of the name
 		//so it is not interpreted as a code string
 		int i = 0;
-		int nameLength = str.length ();
+		auto nameLength = static_cast<int>(str.length());
+		
 		while(i < nameLength && str[i] == '@')
 		{
 			++i;

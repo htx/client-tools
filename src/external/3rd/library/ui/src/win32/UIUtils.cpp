@@ -334,12 +334,13 @@ int	UIUtils::ParseLongVector ( const UIString &s, std::vector<long> &Out )
 	Unicode::tokenize(s, result);
 
 	Out.reserve(result.size());
-	int i;
-	for(i = 0; i < static_cast<int>(result.size()); i++)
+	
+	for(int i = 0; i < static_cast<int>(result.size()); i++)
 	{
 		Out.push_back(atoi(Unicode::wideToNarrow(result[i]).c_str()));
 	}
-	return Out.size();
+	
+	return static_cast<int>(Out.size());
 }
 
 //======================================================================================
@@ -501,23 +502,23 @@ bool UIUtils::MovePointLeftOneWord (const Unicode::String & str, int startpos, i
 	const size_t last_white_pos = str.find_last_of (Unicode::whitespace, startpos - 1);
 	const size_t last_break_pos = str.find_last_of (breakingChars,       startpos - 1);
 
-	size_t pos = static_cast<size_t>(std::string::npos);
+	size_t pos = std::string::npos;
 
 	if (last_white_pos != std::string::npos && (last_white_pos > last_break_pos || last_break_pos == std::string::npos))
 		pos = last_white_pos;
 	else
 		pos = last_break_pos;
 
-	if (pos == static_cast<size_t>(startpos - 1))
+	if (pos == static_cast<size_t>(startpos) - 1)
 	{
 		if (last_break_pos == pos)
-			pos = str.find_last_not_of (breakingChars,       startpos - 1);
+			pos = str.find_last_not_of (breakingChars,       static_cast<size_t>(startpos) - 1);
 		else
-			pos = str.find_last_not_of (Unicode::whitespace, startpos - 1);
+			pos = str.find_last_not_of (Unicode::whitespace, static_cast<size_t>(startpos) - 1);
 	}
 
-	if (pos != str.npos)
-		newpos = pos + 1;
+	if (pos != Unicode::String::npos)
+		newpos = static_cast<int>(pos) + 1;
 	else
 		newpos = 0;
 
@@ -545,10 +546,10 @@ bool UIUtils::MovePointRightOneWord (const Unicode::String & str, int startpos, 
 			pos = str.find_first_not_of (Unicode::whitespace, startpos);
 	}
 
-	if (pos != str.npos)
-		newpos = pos;
+	if (pos != Unicode::String::npos)
+		newpos = static_cast<int>(pos);
 	else
-		newpos = str.size ();
+		newpos = static_cast<int>(str.size());
 
 	return true;
 }
@@ -670,10 +671,10 @@ Unicode::String UIUtils::FormatDelimitedInteger ( Unicode::String const & in)
 	Unicode::String::iterator iter = newString.end();
 
 	// Total length of the original string.
-	unsigned int total = (in.length()-1)/3;
+	size_t total = (in.length() - 1) / 3;
 	char token = UIUtils::m_digitGroupingSymbol;
 
-	for(unsigned int i = 0; i < total; ++i)
+	for(size_t i = 0; i < total; ++i)
 	{
 		iter -= 3;
 		

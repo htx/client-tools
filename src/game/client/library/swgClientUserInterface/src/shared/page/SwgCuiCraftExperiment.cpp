@@ -215,7 +215,7 @@ void SwgCuiCraftExperiment::performActivate   ()
 		if(sdsot)
 		{
 			// Grab the number of attributes we have in the array.
-			int attributeCount = sdsot->getAttributesCount();
+			int attributeCount = static_cast<int>(sdsot->getAttributesCount());
 
 			// Find out if we're using one of those new fancy weapon core schematics.
 			StringId const corelevel("crafting", "coreLevel");

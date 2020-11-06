@@ -1141,7 +1141,7 @@ void DetailAppearance::debugDump (std::string &result, const int indentLevel) co
 		const IndexedTriangleList *radarShape = getDetailAppearanceTemplate()->getRadarShape();
 		if (radarShape)
 		{
-			sprintf (buffer, "radar shape: %i vertices, %i triangles\r\n", radarShape->getVertices ().size (), radarShape->getIndices ().size () / 3);
+			sprintf (buffer, "radar shape: %i vertices, %i triangles\r\n", static_cast<int>(radarShape->getVertices ().size ()), static_cast<int>(radarShape->getIndices ().size ()) / 3);
 			indent (result, indentLevel + 2);
 			result += buffer;
 		}
@@ -1155,7 +1155,7 @@ void DetailAppearance::debugDump (std::string &result, const int indentLevel) co
 		const IndexedTriangleList *testShape = getDetailAppearanceTemplate()->getTestShape();
 		if (testShape)
 		{
-			sprintf (buffer, "test shape: %i vertices, %i triangles\r\n", testShape->getVertices ().size (), testShape->getIndices ().size () / 3);
+			sprintf (buffer, "test shape: %i vertices, %i triangles\r\n", static_cast<int>(testShape->getVertices ().size ()), static_cast<int>(testShape->getIndices ().size ()) / 3);
 			indent (result, indentLevel + 2);
 			result += buffer;
 		}
@@ -1169,7 +1169,7 @@ void DetailAppearance::debugDump (std::string &result, const int indentLevel) co
 		const IndexedTriangleList *writeShape = getDetailAppearanceTemplate()->getWriteShape();
 		if (writeShape)
 		{
-			sprintf (buffer, "write shape: %i vertices, %i triangles\r\n", writeShape->getVertices ().size (), writeShape->getIndices ().size () / 3);
+			sprintf (buffer, "write shape: %i vertices, %i triangles\r\n", static_cast<int>(writeShape->getVertices ().size ()), static_cast<int>(writeShape->getIndices ().size ()) / 3);
 			indent (result, indentLevel + 2);
 			result += buffer;
 		}

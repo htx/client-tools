@@ -392,13 +392,13 @@ unsigned long UITextStyle::GetChildCount( void ) const
 {
 	unsigned long nChildren = 0;
 	
-	for( int i = 0; i < GLYPH_ARRAY_SIZE; ++i )
+	for(auto* i : mGlyphArray)
 	{
-		if( mGlyphArray[i] )
+		if(i)
 			++nChildren;
 	}
 	
-	return nChildren + mGlyphMap->size ();
+	return nChildren + static_cast<unsigned long>(mGlyphMap->size());
 }
 
 // ==============================================================
@@ -1058,7 +1058,7 @@ void UITextStyle::RenderPrewrappedSelection  ( Alignment align, const UIStringCo
 	rect.left   = loc.x;
 	rect.top    = loc.y;
 	rect.right  = ClippingRect.right;
-	rect.bottom = loc.y + mLeading * (LinePointers.size() - 1);
+	rect.bottom = loc.y + mLeading * (static_cast<long>(LinePointers.size()) - 1);
 	
 	if( !UIUtils::ClipRect( rect, ClippingRect ) )
 		return;
@@ -1068,8 +1068,8 @@ void UITextStyle::RenderPrewrappedSelection  ( Alignment align, const UIStringCo
 	long LastLineIndex  = (rect.bottom - loc.y) / mLeading + 2;
 	
 	if( LastLineIndex > static_cast<long> (LinePointers.size()) )
-		LastLineIndex = LinePointers.size();
-			
+		LastLineIndex = static_cast<long>(LinePointers.size());
+	
 	int linesDrawn = 0;
 	
 	int ch = 0;
@@ -1229,7 +1229,7 @@ void UITextStyle::RenderPrewrappedText( Alignment align,
 	rect.left   = loc.x;
 	rect.top    = loc.y;
 	rect.right  = ClippingRect.right;
-	rect.bottom = loc.y + mLeading * (LinePointers.size() - 1);
+	rect.bottom = loc.y + mLeading * (static_cast<long>(LinePointers.size()) - 1);
 	
 	if( !UIUtils::ClipRect( rect, ClippingRect ) )
 		return;
@@ -1241,7 +1241,7 @@ void UITextStyle::RenderPrewrappedText( Alignment align,
 	UI_REPORT_LOG_PRINT (mLeading == 0, ("TextStyle [%s] has an mLeading of 0, which is BAD.\n", Unicode::wideToNarrow(mLogicalName).c_str()));
 
 	if( LastLineIndex > static_cast<long> (LinePointers.size()) )
-		LastLineIndex = LinePointers.size();
+		LastLineIndex = static_cast<long>(LinePointers.size());
 	
 	UIPoint	theOutdest( loc.x, loc.y + FirstLineIndex * mLeading );
 	

@@ -222,9 +222,9 @@ void UIImageFrame::GetChildren( UIObjectList &Out ) const
 unsigned long	UIImageFrame::GetChildCount( void ) const
 {
 	if( mFragments )
-		return mFragments->size();
-	else
-		return 0;
+		return static_cast<unsigned long>(mFragments->size());
+
+	return 0;
 }
 
 //======================================================================

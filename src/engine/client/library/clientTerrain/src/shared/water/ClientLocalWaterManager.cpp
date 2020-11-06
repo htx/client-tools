@@ -179,7 +179,8 @@ ClientLocalWaterManager::LocalShaderPrimitiveDefault::LocalShaderPrimitiveDefaul
 
 			VertexBufferWriteIterator vi = m_vertexBuffer->begin();
 
-			uint const numberOfVertices = vertices.size ();
+			uint const numberOfVertices = static_cast<uint>(vertices.size ());
+		
 			for (uint i = 0; i < numberOfVertices; ++i, ++vi)
 			{
 				Vector const & position = vertices [i];
@@ -322,7 +323,8 @@ ClientLocalWaterManager::LocalShaderPrimitiveDefault::LocalShaderPrimitiveDefaul
 
 			VertexBufferWriteIterator vi = m_vertexBuffer->begin();
 
-			uint const numberOfVertices = vertices.size ();
+			uint const numberOfVertices = static_cast<uint>(vertices.size ());
+		
 			for (uint i = 0; i < numberOfVertices; ++i, ++vi)
 			{
 				Vector const & position = vertices [i];
@@ -598,7 +600,8 @@ ClientLocalWaterManager::LocalShaderPrimitiveRibbonStrip::LocalShaderPrimitiveRi
 
 			VertexBufferWriteIterator vi = m_vertexBuffer->begin();
 
-			uint const numberOfVertices = vertices.size ();
+			uint const numberOfVertices = static_cast<uint>(vertices.size ());
+		
 			for (uint i = 0; i < numberOfVertices; ++i, ++vi)
 			{
 				Vector const & position = vertices [i];
@@ -880,10 +883,10 @@ void ClientLocalWaterManager::addWater (char const * debugName, const char* shad
 	{
 		//-- create initial vertices
 		{
-			const uint n = pointList.size ();
-			uint i;
-			for (i = 0; i < n; ++i)
-				vertices.push_back (Vector (pointList [i].x, height, pointList [i].y));
+			const size_t n = pointList.size ();
+			
+			for (size_t i = 0; i < n; ++i)
+				vertices.emplace_back (Vector (pointList [i].x, height, pointList [i].y));
 		}
 
 		//-- go through all triangles and make sure no sides are > 64m
@@ -918,8 +921,8 @@ void ClientLocalWaterManager::addRibbonEndCap (char const * debugName, const cha
 		extent.x1 = -FLT_MAX;
 		extent.y1 = -FLT_MAX;
 
-		for (uint i = 0; i < pointList.size (); ++i)
-			extent.expand (pointList [i]);
+		for(auto i : pointList)
+			extent.expand (i);
 
 		maximumLength = clamp (2.f, extent.getCenter ().magnitudeBetween (Vector2d (extent.x0, extent.y0)) / 16.f, 64.f);
 	}
@@ -933,10 +936,10 @@ void ClientLocalWaterManager::addRibbonEndCap (char const * debugName, const cha
 	{
 		//-- create initial vertices
 		{
-			const uint n = pointList.size ();
-			uint i;
-			for (i = 0; i < n; ++i)
-				vertices.push_back (Vector (pointList [i].x, height, pointList [i].y));
+			const size_t n = pointList.size ();
+			
+			for (size_t i = 0; i < n; ++i)
+				vertices.emplace_back (Vector (pointList [i].x, height, pointList [i].y));
 		}
 
 		//-- go through all triangles and make sure no sides are > 64m
@@ -950,15 +953,15 @@ void ClientLocalWaterManager::addRibbonEndCap (char const * debugName, const cha
 
 void ClientLocalWaterManager::addRibbonStrip (char const * debugName, const char* shaderTemplateName, float shaderSize, const std::vector<Vector>& pointList,  const std::vector<Vector>& texCoords, float velocity)
 {
-	const uint n = pointList.size ();
+	const int n = static_cast<int>(pointList.size());
 	std::vector<int> indices(n);
-	uint i;
-	for (i = 0; i < n; ++i)
+	
+	for (int i = 0; i < n; ++i)
 	{
 		indices[i] = i;
 	}
 
-	m_localShaderPrimitiveRibbonStripList->push_back (new LocalShaderPrimitiveRibbonStrip (debugName, m_appearance, shaderTemplateName, shaderSize, pointList, indices, texCoords, velocity));
+	m_localShaderPrimitiveRibbonStripList->emplace_back(new LocalShaderPrimitiveRibbonStrip (debugName, m_appearance, shaderTemplateName, shaderSize, pointList, indices, texCoords, velocity));
 }
 
 //-------------------------------------------------------------------
@@ -992,14 +995,15 @@ void ClientLocalWaterManager::draw () const
 
 static int findOrAdd (std::vector<Vector>& vertices, const Vector& vector)
 {
-	uint const numberOfVertices = vertices.size ();
-	for (uint i = 0; i < numberOfVertices; i++)
+	int const numberOfVertices = static_cast<int>(vertices.size ());
+	
+	for (int i = 0; i < numberOfVertices; i++)
 		if (vertices [i] == vector)
 			return static_cast<int> (i);
 
-	vertices.push_back (vector);
+	vertices.emplace_back (vector);
 
-	return static_cast<int> (numberOfVertices);
+	return numberOfVertices;
 }
 
 //-------------------------------------------------------------------

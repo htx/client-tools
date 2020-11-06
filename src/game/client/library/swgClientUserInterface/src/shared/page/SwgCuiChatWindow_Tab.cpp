@@ -325,7 +325,7 @@ int SwgCuiChatWindow::Tab::removeLeadingLines (int num)
 
 	if (pos != Unicode::String::npos)
 	{
-		numCharsCut = pos;
+		numCharsCut = static_cast<int>(pos);
 		m_text.erase (0, pos);
 	}
 	else

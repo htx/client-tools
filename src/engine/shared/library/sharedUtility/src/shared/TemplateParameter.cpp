@@ -947,11 +947,12 @@ DynamicVariableParamData::~DynamicVariableParamData()
 			break;
 		case DynamicVariableParamData::LIST:
 			{
-				int count = m_data.lparam->size();
+				int count = static_cast<int>(m_data.lparam->size());
+			
 				for (int i = 0; i < count; ++i)
 				{
 					DynamicVariableParamData *temp = m_data.lparam->at(i);
-					m_data.lparam->at(i) = NULL;
+					m_data.lparam->at(i) = nullptr;
 					delete temp;
 				}
 				delete m_data.lparam;
@@ -1041,8 +1042,10 @@ int8 data8;
 		case LIST:
 			{
 				NOT_NULL(m_data.lparam);
-				int32 count = m_data.lparam->size();
+				int32 count = static_cast<int32>(m_data.lparam->size());
+			
 				file.insertChunkData(&count, sizeof(count));
+			
 				for (int i = 0; i < count; ++i)
 				{
 					const DynamicVariableParamData *temp = m_data.lparam->at(i);
@@ -1068,11 +1071,13 @@ void DynamicVariableParamData::getDynamicVariableList(DynamicVariableList &list,
 {
 	DEBUG_FATAL(m_type != LIST, ("trying to load DynamicVariable list with non-list param"));
 	
-	int count = m_data.lparam->size();
+	int count = static_cast<int>(m_data.lparam->size());
+	
 	for (int i = 0; i < count; ++i)
 	{
 		const DynamicVariableParamData *item = m_data.lparam->at(i);
 		NOT_NULL(item);
+		
 		switch (item->m_type)
 		{
 			case INTEGER:

@@ -845,7 +845,7 @@ void ClientProceduralTerrainAppearance::retrieveCompletedChunkCreationRequests (
 
 	m_requestCriticalSection.enter ();
 	{
-		m_chunksGeneratedThisFrame = m_completedChunkRequestInfoList->size ();
+		m_chunksGeneratedThisFrame = static_cast<int>(m_completedChunkRequestInfoList->size ());
 
 		switch (m_requestThreadMode)
 		{

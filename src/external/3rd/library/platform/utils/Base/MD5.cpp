@@ -219,8 +219,8 @@ namespace Base
     void MD5::Update(State & state1, vector<char> achar0, int i, int j)
     {
         finalsNull = true;
-        if (j - i > (int)achar0.size())
-            j = achar0.size() - i;
+        if (j - i > static_cast<int>(achar0.size()))
+            j = static_cast<int>(achar0.size()) - i;
         int k = state1.count[0] >> 3 & 0x3f;
         if ((state1.count[0] += j << 3) < j << 3)
             state1.count[1]++;
@@ -255,12 +255,12 @@ namespace Base
         vector<char> achar(s.size(),0);
         for (int i=0; i<(int)s.size(); i++)
             achar[i] = s[i];
-        Update( achar, achar.size() );
+        Update( achar, static_cast<int>(achar.size()));
     }
 
     void MD5::Update(vector<char> achar0)
     {
-        Update(achar0, 0, achar0.size());
+        Update(achar0, 0, static_cast<int>(achar0.size()));
     }
 
     void MD5::Update(vector<char> achar0, int i)
