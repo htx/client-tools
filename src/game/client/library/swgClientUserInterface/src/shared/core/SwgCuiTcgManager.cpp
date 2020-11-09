@@ -146,7 +146,7 @@ void __stdcall SwgCuiTcgManagerNamespace::playSound(char *buffer, unsigned buffe
 {
 	DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::playSound() - %d, %d\n", bufferLenInBytes, type));
 
-	Audio::playBufferedSound(buffer, bufferLenInBytes, getAudioFormatExtension(type));
+	//Audio::playBufferedSound(buffer, bufferLenInBytes, getAudioFormatExtension(type));
 }
 
 // ----------------------------------------------------------------------
@@ -155,7 +155,7 @@ void __stdcall SwgCuiTcgManagerNamespace::playMusic(char *buffer, unsigned buffe
 {
 	DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::playMusic() - %d, %d\n", bufferLenInBytes, type));
 
-	Audio::playBufferedMusic(buffer, bufferLenInBytes, getAudioFormatExtension(type));
+	//Audio::playBufferedMusic(buffer, bufferLenInBytes, getAudioFormatExtension(type));
 }
 
 
@@ -165,7 +165,7 @@ void __stdcall SwgCuiTcgManagerNamespace::setSoundVolume(float zeroToOne)
 {
 	DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::setSoundVolume() - %f\n", zeroToOne));
 
-	Audio::setBufferedSoundVolume(zeroToOne);
+	//Audio::setBufferedSoundVolume(zeroToOne);
 }
 
 // ----------------------------------------------------------------------
@@ -174,7 +174,7 @@ void __stdcall SwgCuiTcgManagerNamespace::setMusicVolume(float zeroToOne)
 {
 	DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::setMusicVolume() - %f\n", zeroToOne));
 
-	Audio::setBufferedMusicVolume(zeroToOne);
+	//Audio::setBufferedMusicVolume(zeroToOne);
 }
 
 // ----------------------------------------------------------------------
@@ -183,8 +183,8 @@ void __stdcall SwgCuiTcgManagerNamespace::stopAllSounds()
 {
 	DEBUG_REPORT_LOG(true, ("SwgCuiTcgManagerNamespace::stopAllSounds()\n"));
 
-	Audio::stopBufferedSound();
-	Audio::stopBufferedMusic();
+	//Audio::stopBufferedSound();
+	//Audio::stopBufferedMusic();
 }
 
 // ----------------------------------------------------------------------

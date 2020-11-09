@@ -633,10 +633,10 @@ bool NameGenerator::verifyName(const Unicode::String &name) const
 			namelength = name.size() - pos;
 		}
 		
-		if (namelength < m_nameTemplates[nameindex].m_charsMin)
+		if (namelength < static_cast<unsigned int>(m_nameTemplates[nameindex].m_charsMin))
 			return false;
 		
-		if (namelength > m_nameTemplates[nameindex].m_charsMax)
+		if (namelength > static_cast<unsigned int>(m_nameTemplates[nameindex].m_charsMax))
 			return false;
 		
 		pos = newpos + 1;

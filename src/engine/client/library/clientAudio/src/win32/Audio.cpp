@@ -40,6 +40,8 @@
 #include <list>
 #include <map>
 
+#pragma warning (disable : 4100)
+
 // ============================================================================
 
 namespace AudioNamespace
@@ -54,7 +56,7 @@ namespace AudioNamespace
 		std::string m_name;
 	};
 
-	typedef std::map<HPROVIDER, ProviderData> ProviderMap;
+	typedef std::map<int, ProviderData> ProviderMap; //fix
 
 	ProviderMap get3dProviders();
 
@@ -95,8 +97,9 @@ namespace AudioNamespace
 	QueuedSamplesToStartList     s_queuedSamplesToStartList;
 	ProviderMap                  s_3dProviderMap;
 	bool                         s_debugPrintAllocations = false;
-	HDIGDRIVER                   s_digitalDevice2d = NULL;              // Digital playback device for 2d sounds
-	MSS_MC_SPEC                  s_speakers;
+	FMOD::Studio::System*		 s_fmod_studio_system = nullptr;
+	FMOD::System*				 s_fmod_core_system;
+	FMOD_SPEAKERMODE             s_speakers;
 	DataTable *                  s_musicDataTable;
 	MusicOffsetMap               s_musicOffsetMap;
 	SampleCache                  s_sampleCache;                         // The current cached digital sound samples
@@ -145,7 +148,7 @@ namespace AudioNamespace
 	int                          s_allAudioFadeCount = 0;
 	int const                    s_bufferFragmentsMin = 16;
 	float                        s_averageTimerDelay = 0.0f;
-	PerformanceTimer *           s_audioServePerformanceTimer = NULL;
+	PerformanceTimer *           s_audioServePerformanceTimer = nullptr;
 	float                        s_globalAudioFadeVolume = 1.0f;
 	float                        s_allAudioFadeFactor = 0.5f;
 	float                        s_nonBuffereMusicFadeVolume = 1.0f;
@@ -162,13 +165,7 @@ namespace AudioNamespace
 	int s_allocated3dSampleHandles = 0;
 	bool s_disableMiles = false;
 
-	HSAMPLE s_bufferedSoundSample = 0;
-	HSAMPLE s_bufferedMusicSample = 0;
-
 	bool s_silenceNonBufferedMusic = false;
-
-	HPROVIDER s_audioFilterProvider = 0;
-	HDRIVERSTATE s_audioFilter = 0;
 
 	int         getMaxStreamSampleCount();
 	char const *getAttenuationMethodString(Audio::AttenuationMethod const attenuationMethod);
@@ -186,12 +183,12 @@ namespace AudioNamespace
 	void               removeSoundFromPrioritizedPlayingSounds(Sound2 const &sound);
 	void               setSoundCategoryVolume(Audio::SoundCategory const soundCategory, float const volume);
 	float              getSoundCategoryVolume(Audio::SoundCategory const soundCategory, bool settingOnly=false);
-	bool queueSample(SoundBucketList & soundBucketList, Sound2 & sound, float const distanceSquared, bool const soundIsAlreadyPlaying);
-	void insertionSort(QueuedSamplesToStartList & list, Sound2 & sound);
-	int getMaxNumberOfSamples();
-	int getProviderSpec(std::string const & provider);
-	std::string const getSpeakerSpec();
-	bool isNonBufferedMusic(Audio::SoundCategory const soundCategory);
+	bool			   queueSample(SoundBucketList & soundBucketList, Sound2 & sound, float const distanceSquared, bool const soundIsAlreadyPlaying);
+	void			   insertionSort(QueuedSamplesToStartList & list, Sound2 & sound);
+	int				   getMaxNumberOfSamples();
+	FMOD_SPEAKERMODE   getProviderSpec(std::string const & provider);
+	std::string const  getSpeakerSpec();
+	bool			   isNonBufferedMusic(Audio::SoundCategory const soundCategory);
 
 #ifdef _DEBUG
 	char const * const getSoundCategoryString(Audio::SoundCategory const soundCategory);
@@ -224,20 +221,17 @@ namespace AudioNamespace
 using namespace AudioNamespace;
 
 // Callbacks for Miles to the TreeFile system
-
-static U32 __stdcall fileOpenCallBack(char const *fileName, uintptr_t *fileHandle);
-static void __stdcall fileCloseCallBack(uintptr_t fileHandle);
-static S32 __stdcall fileSeekCallBack(uintptr_t fileHandle, S32 offset, U32 type);
-static U32 __stdcall fileReadCallBack(uintptr_t fileHandle, void *buffer, U32 bytes);
+static FMOD_RESULT F_CALLBACK fileOpenCallBack(const char *fileName, unsigned int *fileSize, void **fileHandle, void *userData);
+static FMOD_RESULT F_CALLBACK fileCloseCallBack(void *fileHandle, void *userData);
+static FMOD_RESULT F_CALLBACK fileSeekCallBack(void *fileHandle, unsigned int offset, void *userData);
+static FMOD_RESULT F_CALLBACK fileReadCallBack(void *fileHandle, void *buffer, unsigned int sizeBytes, unsigned int *bytesRead, void *userData);
 
 static SoundId attachSound(SoundTemplate const *soundTemplate, Object const *object, char const *hardPointName=0);
 static bool cacheSound(SoundTemplate const *soundTemplate);
-static S32 getBits();
-static S32 getFrequency();
+static int getFrequency();
 static SampleIdToSample3dMap::iterator getIterSampleIdToSample3dMap(SampleId const &sampleId);
 static SoundIdToSoundMap::iterator getIterSoundIdToSoundMap(SoundId const &soundId);
 static void getSampleTime(char const *path, byte *fileImage, int fileSize, float &timeTotal, float &timeCurrent);
-//static int getSoundTemplateSampleSize(Sound2dTemplate const &sound2dTemplate);
 static bool isCached(CrcString const &path, SampleCache::iterator &iterSampleCache);
 static bool isSample2d(SampleId const &sampleId, SampleIdToSample2dMap::iterator &iterSampleIdToSample2dMap);
 static bool isSample3d(SampleId const &sampleId, SampleIdToSample3dMap::iterator &iterSampleIdToSample3dMap);
@@ -250,9 +244,9 @@ static Audio::AttenuationMethod getAttenuationMethod(SoundId const &soundId);
 static char const * getAttenuationMethodString(Audio::AttenuationMethod const attenuationMethod);
 static void stopAllSounds(float const fadeOutTime, bool const suspendActiveSounds);
 static void stopSample(Sound2 const &sound);
-static void __stdcall endOfSample2dCallBack(HSAMPLE sample);
-static void __stdcall endOfSample3dCallBack(HSAMPLE sample);
-static void __stdcall endOfSampleStreamCallBack(HSTREAM stream);
+static FMOD_RESULT F_CALLBACK endOfSample2dCallBack(FMOD_CHANNELCONTROL* chControl, FMOD_CHANNELCONTROL_TYPE cType, FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType, void* cmdData1, void* cmdData2);
+static FMOD_RESULT F_CALLBACK endOfSample3dCallBack(FMOD_CHANNELCONTROL* chControl, FMOD_CHANNELCONTROL_TYPE cType, FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType, void* cmdData1, void* cmdData2);
+static FMOD_RESULT F_CALLBACK endOfSampleStreamCallBack(FMOD_CHANNELCONTROL* chControl, FMOD_CHANNELCONTROL_TYPE cType, FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType, void* cmdData1, void* cmdData2);
 
 // ============================================================================
 //
@@ -274,50 +268,40 @@ ProviderData::ProviderData()
 // ============================================================================
 
 //-----------------------------------------------------------------------------
+
 char const *AudioNamespace::getAttenuationMethodString(Audio::AttenuationMethod const attenuationMethod)
 {
 	char const *result = "invalid";
 
 	switch (attenuationMethod)
 	{
-		case Audio::AM_none:
-			{
-				result = "attenuation: none";
-			}
-			break;
-		case Audio::AM_2d:
-			{
-				result = "attenuation: 2D";
-			}
-			break;
-		case Audio::AM_3d:
-			{
-				result = "attenuation: 3D";
-			}
-			break;
+		case Audio::AM_none: { result = "attenuation: none"; } break;
+		case Audio::AM_2d: { result = "attenuation: 2D"; } break;
+		case Audio::AM_3d: { result = "attenuation: 3D"; } break;
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::clearMusicOffsets()
 {
-	for(auto iterMusicOffsetMap = s_musicOffsetMap.begin(); iterMusicOffsetMap != s_musicOffsetMap.end(); ++iterMusicOffsetMap)
+	for(auto& iterMusicOffsetMap : s_musicOffsetMap)
 	{
-		delete iterMusicOffsetMap->first;
+		delete iterMusicOffsetMap.first;
 	}
 
 	s_musicOffsetMap.clear();
 }
 
 //-----------------------------------------------------------------------------
+
 bool AudioNamespace::rejectSound(SoundTemplate const &soundTemplate, Vector const &position)
 {
 	bool result = false;
 
-	if ((s_listenerObject != NULL) &&
-		!soundTemplate.isInfiniteLooping())
+	if (s_listenerObject != nullptr && !soundTemplate.isInfiniteLooping())
 	{
 		float const maxAudibleDistance = Audio::getFallOffDistance(soundTemplate.getDistanceAtMaxVolume());
 		float const distanceSquaredFromSound = Vector(position - s_listenerObject->getPosition_w()).magnitudeSquared();
@@ -325,9 +309,7 @@ bool AudioNamespace::rejectSound(SoundTemplate const &soundTemplate, Vector cons
 		if (distanceSquaredFromSound > (maxAudibleDistance * maxAudibleDistance))
 		{
 			result = true;
-
 			//DEBUG_REPORT_LOG(true, ("Audio: rejected %s\n", soundTemplate.getName()));
-
 			++s_instantRejectionCount;
 		}
 	}
@@ -336,29 +318,27 @@ bool AudioNamespace::rejectSound(SoundTemplate const &soundTemplate, Vector cons
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::decreaseReferenceCount(CrcString const &path)
 {
-	SampleCache::iterator iterSampleCache = s_sampleCache.find(&path);
+	auto iterSampleCache = s_sampleCache.find(&path);
 
 	if (iterSampleCache != s_sampleCache.end())
 	{
 		// Decrement the reference count
-
-		--(iterSampleCache->second.m_referenceCount);
+		--iterSampleCache->second.m_referenceCount;
 
 		//DEBUG_REPORT_LOG(Audio::isDebugEnabled(), ("Audio: Ref count decreased: %d %s\n", iterSampleCache->second.m_referenceCount, iterSampleCache->first->getString()));
-
+		
 		if(iterSampleCache->second.m_referenceCount <= 0)
 		{
 			// Deallocate its memory
-
 			delete [] iterSampleCache->second.m_sampleRawData;
 			s_currentCacheSize -= iterSampleCache->second.m_fileSize;
 
 			DEBUG_REPORT_LOG(Audio::isDebugEnabled(), ("Audio: Sample removed from cache: %s - cache size (%5dk)\n", iterSampleCache->first->getString(), Audio::getCurrentCacheSize() / 1024));
 
 			// Remove it from the sound cache
-
 			delete iterSampleCache->first;
 
 			s_sampleCache.erase(iterSampleCache);
@@ -371,26 +351,25 @@ void AudioNamespace::decreaseReferenceCount(CrcString const &path)
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::addPlayingSound(Sound2 const &sound)
 {
 	NP_PROFILER_AUTO_BLOCK_DEFINE("AudioNamespace::addPlayingSound");
 
 	SoundIdToSoundMap::const_iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(sound.getSoundId());
 
-	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
+	if(iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
-		PrioritizedPlayingSounds::iterator iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin();
-
-		for (; iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
+		auto iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin();
+		
+		for(; iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
 		{
 			int const newPriority = iterSoundIdToSoundMap->second->getTemplate()->getPriority();
 			int const currentPriority = (*iterPrioritizedPlayingSounds)->getTemplate()->getPriority();
 			float const newDistanceSquared = iterSoundIdToSoundMap->second->getDistanceSquaredFromListener();
 			float const currentDistanceSquared = (*iterPrioritizedPlayingSounds)->getDistanceSquaredFromListener();
 
-			if ((newPriority < currentPriority) ||
-				((newPriority == currentPriority) &&
-				 (newDistanceSquared < currentDistanceSquared)))
+			if(newPriority < currentPriority || (newPriority == currentPriority && newDistanceSquared < currentDistanceSquared))
 			{
 				s_prioritizedPlayingSounds.insert(iterPrioritizedPlayingSounds, NON_NULL(iterSoundIdToSoundMap->second));
 				//DEBUG_REPORT_LOG(s_debugSoundStartStop, ("1 Prioritized sound added: %d %s\n", sound.getSoundId().getId(), iterSoundIdToSoundMap->second->getTemplate()->getName()));
@@ -398,7 +377,7 @@ void AudioNamespace::addPlayingSound(Sound2 const &sound)
 			}
 		}
 
-		if (iterPrioritizedPlayingSounds == s_prioritizedPlayingSounds.end())
+		if(iterPrioritizedPlayingSounds == s_prioritizedPlayingSounds.end())
 		{
 			s_prioritizedPlayingSounds.push_back(NON_NULL(iterSoundIdToSoundMap->second));
 			//DEBUG_REPORT_LOG(s_debugSoundStartStop, ("2 Prioritized sound added: %d %s\n", sound.getSoundId().getId(), iterSoundIdToSoundMap->second->getTemplate()->getName()));
@@ -417,14 +396,10 @@ int AudioNamespace::getPlayingSoundCount(CrcString const *soundPath)
 {
 	int result = 0;
 
-	if (soundPath != NULL)
+	if (soundPath != nullptr)
 	{
-		PrioritizedPlayingSounds::const_iterator iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin();
-
-		for (; iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
+		for(auto* sound : s_prioritizedPlayingSounds)
 		{
-			Sound2 const *sound = (*iterPrioritizedPlayingSounds);
-
 			if (sound->getTemplate()->getCrcName() == *soundPath)
 			{
 				++result;
@@ -436,17 +411,16 @@ int AudioNamespace::getPlayingSoundCount(CrcString const *soundPath)
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId AudioNamespace::playSound(char const * const soundPath, Vector const * const position, Object const * const object, char const *hardPointName, CellProperty const * const parentCell)
 {
 //	DEBUG_WARNING((object != NULL) && !object->isInWorld(), ("Trying to play a sound on an object that is not in the world: %s object: %s", soundPath, object->getObjectTemplateName()));
 
 	SoundId result (0, soundPath);
 
-	if (s_installed &&
-		(soundPath != NULL))
+	if (s_installed && soundPath != nullptr)
 	{
 		// Get the extension
-
 		char const *extension = soundPath;
 		char const *currentPosition = soundPath;
 		bool done = false;
@@ -455,7 +429,7 @@ SoundId AudioNamespace::playSound(char const * const soundPath, Vector const * c
 		{
 			currentPosition = strchr(extension, '.');
 
-			if (currentPosition != NULL)
+			if (currentPosition != nullptr)
 			{
 				extension = currentPosition + 1;
 			}
@@ -467,32 +441,28 @@ SoundId AudioNamespace::playSound(char const * const soundPath, Vector const * c
 		while (!done);
 
 		// Make sure this is a supported sound file
-
 		if (_stricmp(extension, "snd") == 0)
 		{
 			SoundTemplate const *soundTemplate = SoundTemplateList::fetch(soundPath);
 
-			if (soundTemplate != NULL)
+			if (soundTemplate != nullptr)
 			{
 				// Don't reject a stereo sound
-
 				if (soundTemplate->getAttenuationMethod() != Audio::AM_none)
 				{
 					// The sound looks valid, queue it
-
-					if (position != NULL)
+					if (position != nullptr)
 					{
 						if (rejectSound(*soundTemplate, *position))
 						{
 							// Sound is out of range
-
 							//-- Release local resources.
 							SoundTemplateList::release(soundTemplate);
 							return result;
 						}
 					}
 
-					if (object != NULL)
+					if (object != nullptr)
 					{
 						if (rejectSound(*soundTemplate, object->getPosition_w()))
 						{
@@ -506,11 +476,11 @@ SoundId AudioNamespace::playSound(char const * const soundPath, Vector const * c
 
 				if (soundTemplate->is3d())
 				{
-					if (object != NULL)
+					if (object != nullptr)
 					{
 						result = attachSound(soundTemplate, object, hardPointName);
 					}
-					else if (position != NULL)
+					else if (position != nullptr)
 					{
 						result = playSound3d(soundTemplate, *position, parentCell);
 					}
@@ -518,13 +488,12 @@ SoundId AudioNamespace::playSound(char const * const soundPath, Vector const * c
 					{
 						DEBUG_WARNING(true, ("Playing a 3d sound template as a 2d sound because neither a position or object was specified: %s", soundPath));
 
-						result = playSound2d(soundTemplate, NULL, parentCell);
+						result = playSound2d(soundTemplate, nullptr, parentCell);
 					}
 				}
 				else if (soundTemplate->is2d())
 				{
-					if (   (object != NULL)
-						&& (soundTemplate->getAttenuationMethod() != Audio::AM_none))
+					if (object != nullptr && soundTemplate->getAttenuationMethod() != Audio::AM_none)
 					{
 						result = attachSound(soundTemplate, object, hardPointName);
 					}
@@ -558,24 +527,23 @@ SoundId AudioNamespace::playSound(char const * const soundPath, Vector const * c
 }
 
 //-----------------------------------------------------------------------------
+
 SampleId AudioNamespace::createSampleId(Sound2 &sound)
 {
 	SampleId sampleId;
 
-	if (sound.getSamplePath() == NULL)
+	if (sound.getSamplePath() == nullptr)
 	{
 		DEBUG_WARNING(true, ("Trying to play a sound with a NULL sample path: %s", sound.getTemplate()->getName()));
 	}
 	else
 	{
 		// Get the size of the sample
-
 		int sampleSize = 0;
 
 		SampleCache::const_iterator iterSampleCache = s_sampleCache.find(sound.getSamplePath());
 
-		if (iterSampleCache != s_sampleCache.end() &&
-			(iterSampleCache->second.m_fileSize != 0))
+		if(iterSampleCache != s_sampleCache.end() && iterSampleCache->second.m_fileSize != 0)
 		{
 			sampleSize = iterSampleCache->second.m_fileSize;
 		}
@@ -584,47 +552,50 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 			sampleSize = Audio::getSampleSize(sound.getSamplePath()->getString());
 		}
 
-		if (sound.is2d())
+		if(sound.is2d())
 		{
 			// See if this sample needs to be streamed or cached
-
-			if (sampleSize > Audio::getMaxCached2dSampleSize())
+			if(sampleSize > Audio::getMaxCached2dSampleSize())
 			{
 				// Stream the sample
-
 				SampleStream sampleStream;
 
-				sampleStream.m_stream = AIL_open_stream(s_digitalDevice2d, sound.getSamplePath()->getString(), 0);
+				FMOD_MODE eMode = FMOD_DEFAULT;
+			    eMode |= FMOD_2D;
+			    eMode |= FMOD_LOOP_OFF;
+			    eMode |= FMOD_CREATESTREAM;
 
-				if (sampleStream.m_stream != NULL)
+				s_fmod_core_system->createSound(sound.getSamplePath()->getString(), eMode, nullptr, &sampleStream.mFmodStream);
+
+				if (sampleStream.mFmodStream != nullptr)
 				{
 					sampleStream.setPath(sound.getSamplePath()->getString());
 					sampleStream.m_sound = &sound;
 					sampleStream.m_status = Audio::PS_notStarted;
 
 					// Save the current id
-
 					sampleId = SampleId(getNextSampleId());
 
 					// Add it to the stream sample map
-
 					s_sampleIdToSampleStreamMap.insert(std::make_pair(sampleId, sampleStream));
 				}
 			}
-			else if (sampleSize > 0)
+			else if(sampleSize > 0)
 			{
 				// Save the id to path mapping
-
 				Sample2d sample2d;
 
 				// Create the sample handle
+				FMOD_MODE eMode = FMOD_DEFAULT;
+			    eMode |= FMOD_2D;
+			    eMode |= FMOD_LOOP_OFF;
+			    eMode |= FMOD_CREATECOMPRESSEDSAMPLE;
 
-				sample2d.m_sample = AIL_allocate_sample_handle(s_digitalDevice2d);
+				s_fmod_core_system->createSound(sound.getSamplePath()->getString(), eMode, nullptr, &sample2d.mFmodSample);
 
-				if (sample2d.m_sample != NULL)
+				if (sample2d.mFmodSample != nullptr)
 				{
 					// Clear out the sample
-
 					++s_allocated2dSampleHandles;
 
 					sample2d.setPath(sound.getSamplePath()->getString());
@@ -632,26 +603,27 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 					sample2d.m_status = Audio::PS_notStarted;
 
 					// Save the current id
-
 					sampleId = SampleId(getNextSampleId());
 
 					// Add it to the 2d sample map
-
 					s_sampleIdToSample2dMap.insert(std::make_pair(sampleId, sample2d));
 				}
 			}
 		}
-		else if (sound.is3d())
+		else if(sound.is3d())
 		{
 			// Save the id to path mapping
-
 			Sample3d sample3d;
 
 			// Create the sample handle
+			FMOD_MODE eMode = FMOD_DEFAULT;
+		    eMode |= FMOD_3D;
+		    eMode |= FMOD_LOOP_OFF;
+		    eMode |= FMOD_CREATECOMPRESSEDSAMPLE;
 
-			sample3d.m_sample = AIL_allocate_sample_handle(s_digitalDevice2d);
+			s_fmod_core_system->createSound(sound.getSamplePath()->getString(), eMode, nullptr, &sample3d.mFmodSample);
 
-			if (sample3d.m_sample != NULL)
+			if (sample3d.mFmodSample != nullptr)
 			{
 				++s_allocated3dSampleHandles;
 
@@ -660,21 +632,10 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 				sample3d.m_status = Audio::PS_notStarted;
 
 				// Save the current id
-
 				sampleId = SampleId(getNextSampleId());
 
 				// Add it to the map
-
 				s_sampleIdToSample3dMap.insert(std::make_pair(sampleId, sample3d));
-			}
-			else
-			{
-#ifdef _DEBUG
-				int const count2d = AIL_active_sample_count(s_digitalDevice2d);
-				UNREF(count2d);
-				int const count3d = AIL_active_sample_count(s_digitalDevice2d);
-				UNREF(count3d);
-#endif // _DEBUG
 			}
 		}
 		else
@@ -687,14 +648,14 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::stopSound(SoundId const &soundId, float const fadeOutTime, bool const keepAlive)
 {
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
 		// Stop the sound
-
 		Sound2 * const sound = NON_NULL(iterSoundIdToSoundMap->second);
 		sound->stop(fadeOutTime, keepAlive);
 
@@ -725,9 +686,8 @@ void AudioNamespace::stopSound(SoundId const &soundId, float const fadeOutTime, 
 void AudioNamespace::removeSoundFromPrioritizedPlayingSounds(Sound2 const &sound)
 {
 	bool found = false;
-	PrioritizedPlayingSounds::iterator iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin();
 
-	for (; iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
+	for(auto iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin(); iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
 	{
 		Sound2 const &currentSound = *(*iterPrioritizedPlayingSounds);
 
@@ -790,29 +750,26 @@ float AudioNamespace::getSoundCategoryVolume(Audio::SoundCategory const soundCat
 }
 
 //-----------------------------------------------------------------------------
+
 bool AudioNamespace::queueSample(SoundBucketList & soundBucketList, Sound2 & sound, float const distanceSquared, bool const soundIsAlreadyPlaying)
 {
 	bool result = true;
 
 	// See if the sound already exists in the bucket
-
-	SoundBucketList::iterator iterSoundBucketList = soundBucketList.find(&sound.getTemplate()->getCrcName());
+	auto iterSoundBucketList = soundBucketList.find(&sound.getTemplate()->getCrcName());
 
 	if (iterSoundBucketList != soundBucketList.end())
 	{
 		SoundBucketData const & existingSound = iterSoundBucketList->second;
 		bool playNewSound = false;
 
-		if (   distanceSquared < existingSound.m_distanceSquared
-			|| (distanceSquared <= existingSound.m_distanceSquared && !sound.isInfiniteLooping()))
+		if(distanceSquared < existingSound.m_distanceSquared || distanceSquared <= existingSound.m_distanceSquared && !sound.isInfiniteLooping())
 		{
 			playNewSound = true;
 		}
-		else if (   !sound.isInfiniteLooping()
-				 && (distanceSquared > 0.0f))
+		else if(!sound.isInfiniteLooping() && distanceSquared > 0.0f)
 		{
 			// The sound is further from the listener, but check to see if we want to play it anyways
-
 			int const totalTimeMs = sound.getTotalTime();
 
 			if (totalTimeMs > 0)
@@ -826,11 +783,9 @@ bool AudioNamespace::queueSample(SoundBucketList & soundBucketList, Sound2 & sou
 		}
 
 		// Sound already exists in the bucket, if the new sound is closer, play it and stop the previous sound
-
 		if (playNewSound)
 		{
 			// Kill previous sound, since the new one is closer
-
 			float const fadeOutTime = 0.0f;
 			bool const keepAlive = iterSoundBucketList->second.m_sound->isInfiniteLooping();
 
@@ -838,7 +793,6 @@ bool AudioNamespace::queueSample(SoundBucketList & soundBucketList, Sound2 & sou
 			//DEBUG_REPORT_LOG(true, ("Audio::queueSample() iterSoundBucketList->second.m_sound->endOfSample(%s)\n", iterSoundBucketList->second.m_sound->getTemplate()->getName()));
 
 			// Insert the new sound
-
 			iterSoundBucketList->second.m_sound = &sound;
 			iterSoundBucketList->second.m_distanceSquared = distanceSquared;
 			iterSoundBucketList->second.m_soundIsAlreadyPlaying = soundIsAlreadyPlaying;
@@ -846,7 +800,6 @@ bool AudioNamespace::queueSample(SoundBucketList & soundBucketList, Sound2 & sou
 		else
 		{
 			// The new sound is NOT a better choice that what already exists
-
 			result = false;
 			//DEBUG_REPORT_LOG(true, ("Audio::queueSample() sound.endOfSample(%s)\n", sound.getTemplate()->getName()));
 		}
@@ -854,7 +807,6 @@ bool AudioNamespace::queueSample(SoundBucketList & soundBucketList, Sound2 & sou
 	else
 	{
 		// This sound is not in this bucket, add it
-
 		soundBucketList.insert(std::make_pair(&sound.getTemplate()->getCrcName(), SoundBucketData(&sound, distanceSquared, soundIsAlreadyPlaying)));
 		//DEBUG_REPORT_LOG(true, ("Audio::queueSample() soundBucketList.insert(%s)\n", sound.getTemplate()->getName()));
 	}
@@ -863,6 +815,7 @@ bool AudioNamespace::queueSample(SoundBucketList & soundBucketList, Sound2 & sou
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::insertionSort(QueuedSamplesToStartList & list, Sound2 & sound)
 {
 	int const newPriority = sound.getTemplate()->getPriority();
@@ -870,16 +823,14 @@ void AudioNamespace::insertionSort(QueuedSamplesToStartList & list, Sound2 & sou
 
 	// Insert the new sound into the queue sorted by priority then distance
 
-	QueuedSamplesToStartList::iterator iterQueuedSoundsToStartList = list.begin();
+	auto iterQueuedSoundsToStartList = list.begin();
 
 	for (; iterQueuedSoundsToStartList != list.end(); ++iterQueuedSoundsToStartList)
 	{
 		int const currentPriority = (*iterQueuedSoundsToStartList)->getTemplate()->getPriority();
 		float const currentDistanceSquaredFromListener = (*iterQueuedSoundsToStartList)->getDistanceSquaredFromListener();
 
-		if ((newPriority < currentPriority) ||
-			((newPriority == currentPriority) &&
-			 (newDistanceSquaredFromListener < currentDistanceSquaredFromListener)))
+		if (newPriority < currentPriority || (newPriority == currentPriority && newDistanceSquaredFromListener < currentDistanceSquaredFromListener))
 		{
 			list.insert(iterQueuedSoundsToStartList, &sound);
 			break;
@@ -887,10 +838,9 @@ void AudioNamespace::insertionSort(QueuedSamplesToStartList & list, Sound2 & sou
 	}
 
 	// If the item was not inserted previously, then it goes at the end of the list
-
 	if (iterQueuedSoundsToStartList == list.end())
 	{
-		list.push_back(&sound);
+		list.emplace_back(&sound);
 	}
 }
 
@@ -901,57 +851,33 @@ int AudioNamespace::getMaxNumberOfSamples()
 }
 
 //-----------------------------------------------------------------------------
-int AudioNamespace::getProviderSpec(std::string const & provider)
+FMOD_SPEAKERMODE  AudioNamespace::getProviderSpec(std::string const & provider)
 {
-	if (provider == "Windows Speaker Configuration")
-		return MSS_MC_USE_SYSTEM_CONFIG;
-	else if (provider == "Headphones")
-		return MSS_MC_HEADPHONES;
-	else if (provider == "2 Speakers")
-		return MSS_MC_STEREO;
-	else if (provider == "4 Speakers")
-		return MSS_MC_40_DISCRETE;
-	else if (provider == "5.1 Speakers")
-		return MSS_MC_51_DISCRETE;
-	else if (provider == "6.1 Speakers")
-		return MSS_MC_61_DISCRETE;
-	else if (provider == "7.1 Speakers")
-		return MSS_MC_71_DISCRETE;
-	else if (provider == "8.1 Speakers")
-		return MSS_MC_81_DISCRETE;
-	else if (provider == "Dolby Surround")
-		return MSS_MC_DOLBY_SURROUND;
+	if (provider == "2 Speakers") return FMOD_SPEAKERMODE_STEREO;
+	if (provider == "4 Speakers") return FMOD_SPEAKERMODE_QUAD;
+	if (provider == "5.1 Speakers")	return FMOD_SPEAKERMODE_5POINT1;
+	if (provider == "7.1 Speakers")	return FMOD_SPEAKERMODE_7POINT1;
+	if (provider == "Dolby Surround") return FMOD_SPEAKERMODE_SURROUND;
 
-	return MSS_MC_USE_SYSTEM_CONFIG;
+	return FMOD_SPEAKERMODE_DEFAULT;
 }
 
 //-----------------------------------------------------------------------------
 std::string const AudioNamespace::getSpeakerSpec()
 {
-	if (s_speakers == MSS_MC_USE_SYSTEM_CONFIG)
-		return "Windows Speaker Configuration";
-	else if (s_speakers == MSS_MC_HEADPHONES)
-		return "Headphones";
-	else if (s_speakers == MSS_MC_STEREO)
-		return "2 Speakers";
-	else if (s_speakers == MSS_MC_40_DISCRETE)
-		return "4 Speakers";
-	else if (s_speakers == MSS_MC_51_DISCRETE)
-		return "5.1 Speakers";
-	else if (s_speakers == MSS_MC_61_DISCRETE)
-		return "6.1 Speakers";
-	else if (s_speakers == MSS_MC_71_DISCRETE)
-		return "7.1 Speakers";
-	else if (s_speakers == MSS_MC_81_DISCRETE)
-		return "8.1 Speakers";
-	else if (s_speakers == MSS_MC_DOLBY_SURROUND)
-		return "Dolby Surround";
+	if (s_speakers == FMOD_SPEAKERMODE_DEFAULT)	return "Windows Speaker Configuration";
+	if (s_speakers == FMOD_SPEAKERMODE_STEREO) return "2 Speakers";
+	if (s_speakers == FMOD_SPEAKERMODE_QUAD) return "4 Speakers";
+	if (s_speakers == FMOD_SPEAKERMODE_5POINT1)	return "5.1 Speakers";
+	if (s_speakers == FMOD_SPEAKERMODE_7POINT1)	return "7.1 Speakers";
+	if (s_speakers == FMOD_SPEAKERMODE_SURROUND) return "Dolby Surround";
 
 	return "Unknown";
 }
 
 #ifdef _DEBUG
 //-----------------------------------------------------------------------------
+
 char const * const AudioNamespace::getSoundCategoryString(Audio::SoundCategory const soundCategory)
 {
 	switch (soundCategory)
@@ -990,7 +916,7 @@ char const * const AudioNamespace::getSoundCategoryString(Audio::SoundCategory c
 void Audio::showAudioDebug()
 {
 	DEBUG_REPORT_PRINT(!s_audioEnabled, ("Audio Enabled              - no\n"));
-	DEBUG_REPORT_PRINT(true, ("Miles Version              - %s\n", getMilesVersion().c_str()));
+	DEBUG_REPORT_PRINT(true, ("Miles Version              - %s\n", getFmodVersion().c_str()));
 	DEBUG_REPORT_PRINT(true, ("Cache Size                 - %d KB\n", getCurrentCacheSize() / 1024));
 	//DEBUG_REPORT_PRINT(true, ("Max Cached 2d Sample Size  - %d KB\n", getMaxCached2dSampleSize() / 1024));
 	DEBUG_REPORT_PRINT(true, ("Cached Samples             - %d\n", getCachedSampleCount()));
@@ -1126,6 +1052,7 @@ void Audio::showAudioDebug()
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::debugDumpAudioText()
 {
 	s_debugDumpCachedSamplesTextFile = false;
@@ -1199,18 +1126,21 @@ void Audio::debugDumpAudioText()
 #endif // _DEBUG
 
 //-----------------------------------------------------------------------------
+
 bool Audio::install()
 {
 	DEBUG_FATAL(s_installed, ("Already installed"));
 
 	s_disableMiles = ConfigFile::getKeyBool("ClientAudio", "disableMiles", false);
 
+	//====================================================================
+	
 	if (s_disableMiles)
 	{
-		REPORT_LOG(true, ("Audio: Miles is disabled. To enable miles, set \"disableMiles=false\" in the [ClientAudio] section of client.cfg.\n"));
+		REPORT_LOG(true, ("Audio: FMOD is disabled. To enable, set \"disableMiles=false\" in the [ClientAudio] section of client.cfg.\n"));
 		return false;
 	}
-
+	
 #ifdef _DEBUG
 	DebugFlags::registerFlag(s_debugTimerDelay, "ClientAudio", "debugView_TimerDelay");
 	DebugFlags::registerFlag(s_debugVisuals, "ClientAudio", "debugVisuals");
@@ -1221,14 +1151,12 @@ bool Audio::install()
 	DebugFlags::registerFlag(s_debugWindowQueuedSounds, "ClientAudio", "debugWindow_QueuedSounds");
 	DebugFlags::registerFlag(s_debugWindowPlayingSamples, "ClientAudio", "debugWindow_PlayingSamples");
 	DebugFlags::registerFlag(s_consolidateQueuedSounds, "ClientAudio", "consolidateQueuedSounds");
-#endif // _DEBUG
+#endif 
 
-	DEBUG_REPORT_LOG (true, ("+=======================================================================\n"));
 	REPORT_LOG(true, ("Audio: Starting intialization\n"));
 
 	// Set the initial sound category volumes
-
-	for (int i = 0; i < Audio::SC_count; ++i)
+	for (int i = 0; i < SC_count; ++i)
 	{
 		if (static_cast<SoundCategory>(i) == SC_backGroundMusic)
 		{
@@ -1251,7 +1179,6 @@ bool Audio::install()
 	s_allAudioFadeFactor = getDefaultFadeAllFactor();
 
 	// Load the settings from the previous session
-
 	const char * const section = "ClientAudio";
 	LocalMachineOptionManager::registerOption(s_masterVolume,                             section, "masterVolume");
 	LocalMachineOptionManager::registerOption(s_soundCategoryVolumes[SC_explosion],       section, "soundEffectVolume");
@@ -1272,62 +1199,79 @@ bool Audio::install()
 
 	s_localPurgeList.clear();
 
-	// Set the miles directory
+	// Initialize FMOD
+	REPORT_LOG(true, ("Audio: FMOD intialization\n"));
 
-	std::string redistDirectory(AIL_set_redist_directory("miles"));
+	s_maxDigitalMixerChannels = 64;
 
-	// Initialize the Miles Sound System
+	// create studio + core system
+	FMOD_RESULT fr = FMOD::Studio::System::create(&s_fmod_studio_system);
 
-	AIL_startup();
-
-	// Set the file system callbacks
-
-	AIL_set_file_callbacks(fileOpenCallBack, fileCloseCallBack, fileSeekCallBack, fileReadCallBack);
-
-	// Initialize the audio driver
-
-	s_maxDigitalMixerChannels = static_cast<int>(AIL_get_preference(DIG_MIXER_CHANNELS));
-
-	s_digitalDevice2d = AIL_open_digital_driver(getFrequency(), getBits(), getProviderSpec(getCurrent3dProvider()), 0);
-
-	if (!s_digitalDevice2d)
+	if(fr != FMOD_OK)
 	{
-		// If the sound driver set via the options fails, attempt to just use a default driver
-		WARNING(true, ("Audio:  Digital Audio - Attempting to use a generic stereo seting, user option failed. Miles Error (%s)", AIL_last_error()));
-		s_digitalDevice2d = AIL_open_digital_driver(getFrequency(), getBits(), MSS_MC_STEREO, 0);
-		s_soundProvider = "2 Speakers";
-
-		if (!s_digitalDevice2d)
-		{
-			// default driver also failed, shutting down the audio system
-			WARNING(true, ("Audio: Digital Audio - Shutting down the audio system. Miles Error (%s)", AIL_last_error()));
-
-			remove();
-			setEnabled(false);
-			return false;
-		}
+		REPORT_LOG(true, ("Audio: FMOD create error: (%d)\n", fr));
+		remove();
+		setEnabled(false);
+		return false;
 	}
 
-	s_listener.m_object = s_digitalDevice2d;
+	// get core system
+	fr = s_fmod_studio_system->getCoreSystem(&s_fmod_core_system);
+
+	if(fr != FMOD_OK)
+	{
+		REPORT_LOG(true, ("Audio: FMOD get core system error: (%d)\n", fr));
+		remove();
+		setEnabled(false);
+		return false;
+	}
+
+	// set speaker config
+	fr = s_fmod_core_system->setSoftwareFormat(getFrequency(), s_speakers, 0);
+
+	if(fr != FMOD_OK)
+	{
+		REPORT_LOG(true, ("Audio: FMOD set speaker format error: (%d)\n", fr));
+		remove();
+		setEnabled(false);
+		return false;
+	}
+
+	// set file callbacks
+	fr = s_fmod_core_system->setFileSystem(fileOpenCallBack, fileCloseCallBack, fileReadCallBack, fileSeekCallBack, nullptr, nullptr, -1);
+
+	if(fr != FMOD_OK)
+	{
+		REPORT_LOG(true, ("Audio: FMOD set file callbacks error: (%d)\n", fr));
+		remove();
+		setEnabled(false);
+		return false;
+	}
+	
+	// init
+	fr = s_fmod_studio_system->initialize(s_maxDigitalMixerChannels, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr);
+
+	if(fr != FMOD_OK)
+	{
+		REPORT_LOG(true, ("Audio: FMOD initialize error: (%d)\n", fr));
+		remove();
+		setEnabled(false);
+		return false;
+	}
+	
+	s_listener.mFmodCoreSystem = s_fmod_core_system;
 	s_listener.alter();
 
-	AIL_set_3D_rolloff_factor(s_digitalDevice2d, s_rollOffFactor);
-
-	AIL_speaker_configuration(s_digitalDevice2d, NULL, NULL, NULL, &s_speakers);
+	//AIL_set_3D_rolloff_factor(s_digitalDevice2d, s_rollOffFactor); // TODO : set per channel ?
 
 	REPORT_LOG(true, ("Audio: %s\n", getCurrent3dProvider().c_str()));
-	REPORT_LOG(true, ("Audio: Miles speakers are %s\n", getSpeakerSpec().c_str()));
-	REPORT_LOG(true, ("Audio: Miles Max DIG_MIXER_CHANNELS(%d)\n", getMaxDigitalMixerChannels()));
-
-	// This disables any reberb from a previous product
-
-	setRoomType(RT_generic);
+	REPORT_LOG(true, ("Audio: FMOD speakers are %s\n", getSpeakerSpec().c_str()));
+	REPORT_LOG(true, ("Audio: FMOD Max Channels set to %d\n", getMaxDigitalMixerChannels()));
 
 	s_obstruction = ConfigClientAudio::getObstruction();
 	s_occlusion = ConfigClientAudio::getOcclusion();
 
 	// Create the data table
-
 	clearMusicOffsets();
 
 	Iff dataTableIff;
@@ -1338,9 +1282,7 @@ bool Audio::install()
 		s_musicDataTable = new DataTable;
 		s_musicDataTable->load(dataTableIff);
 
-		// Store the row music name and its row index for fast indexing
-		// into the DataTable.
-
+		// Store the row music name and its row index for fast indexing into the DataTable.
 		const int rowCount = s_musicDataTable->getNumRows();
 
 		for (int index = 0; index < rowCount; ++index)
@@ -1350,8 +1292,6 @@ bool Audio::install()
 			s_musicOffsetMap.insert(std::make_pair(new PersistentCrcString(musicName.c_str(), true), index));
 		}
 	}
-
-	setNormalPreMixBuffer();
 
 	AbstractFile::setAudioServe(serve);
 
@@ -1366,6 +1306,7 @@ bool Audio::install()
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::remove()
 {
 	setRoomType(RT_generic);
@@ -1379,92 +1320,81 @@ void Audio::remove()
 	DebugFlags::unregisterFlag(s_debugWindowPlayingSamples);
 	DebugFlags::unregisterFlag(s_debugSoundStartStop);
 	DebugFlags::unregisterFlag(s_debugDumpCachedSamplesTextFile);
-#endif // _DEBUG
+#endif
 
-	Audio::stopAllSounds();
+	stopAllSounds();
 
 #ifdef _DEBUG
 	unsigned int const sample2dMapSize = static_cast<unsigned int>(s_sampleIdToSample2dMap.size());
 	UNREF(sample2dMapSize);
 	DEBUG_WARNING(!s_sampleIdToSample2dMap.empty(), ("Sample 2d map not empty"));
-#endif // _DEBUG
+#endif
 	s_sampleIdToSample2dMap.clear();
 
 #ifdef _DEBUG
 	unsigned int const sample3dMapSize = static_cast<unsigned int>(s_sampleIdToSample3dMap.size());
 	UNREF(sample3dMapSize);
 	DEBUG_WARNING(!s_sampleIdToSample3dMap.empty(), ("Sample 3d map not empty"));
-#endif // _DEBUG
+#endif
 	s_sampleIdToSample3dMap.clear();
 
 #ifdef _DEBUG
 	unsigned int const streamMapSize = static_cast<unsigned int>(s_sampleIdToSampleStreamMap.size());
 	UNREF(streamMapSize);
 	DEBUG_WARNING(!s_sampleIdToSampleStreamMap.empty(), ("Sample stream map not empty"));
-#endif // _DEBUG
+#endif 
 	s_sampleIdToSampleStreamMap.clear();
 
 	s_localPurgeList.clear();
 
-	// Shutdown Miles
-
+	// Shutdown FMOD
 	if (s_installed)
 	{
 		s_installed = false;
 
-		// Close the 3d driver
-
-
-		// Close the 2d driver
-
-		if (s_digitalDevice2d)
+		if(s_fmod_studio_system)
 		{
-			s_digitalDevice2d = 0;
+			s_fmod_studio_system->unloadAll();
+			s_fmod_studio_system->release();
+			s_fmod_studio_system = nullptr;
 		}
-
-		// Now shutdown Miles completely
-
-		AIL_shutdown();
 	}
 
 #ifdef _DEBUG
 	int const fileMapCount = static_cast<int>(s_fileMap.size());
 	DEBUG_WARNING((fileMapCount > 0), ("File handles (%d) are still allocated.", fileMapCount));
-#endif // _DEBUG
+#endif
 
 	clearMusicOffsets();
 
 	delete s_musicDataTable;
-	s_musicDataTable = NULL;
+	s_musicDataTable = nullptr;
 
 	// Delete all the reference counted samples
-
-	SampleCache::iterator iterSampleCache= s_sampleCache.begin();
-
-	for (; iterSampleCache != s_sampleCache.end(); ++iterSampleCache)
+	for(auto& it : s_sampleCache)
 	{
 		// Delete the CrcString
-
-		delete iterSampleCache->first;
+		delete it.first;
 
 		// Delete the sample data
-
-		delete [] iterSampleCache->second.m_sampleRawData;
+		delete [] it.second.m_sampleRawData;
 	}
 
 	s_sampleCache.clear();
 
 	delete s_audioServePerformanceTimer;
-	s_audioServePerformanceTimer = NULL;
+	s_audioServePerformanceTimer = nullptr;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isEnabled()
 {
 	return s_audioEnabled;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setEnabled(bool const enabled)
 {
 	s_audioEnabled = enabled;
@@ -1479,13 +1409,6 @@ bool Audio::isMilesEnabled()
 
 //-----------------------------------------------------------------------------
 
-void *Audio::getMilesDigitalDriver()
-{
-	return (void *)s_digitalDevice2d;
-}
-
-//-----------------------------------------------------------------------------
-
 CrcString const *Audio::increaseReferenceCount(const char *path, bool const needToCacheSample)
 {
 	SampleCache::iterator iterSampleCache;
@@ -1495,21 +1418,20 @@ CrcString const *Audio::increaseReferenceCount(const char *path, bool const need
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::cacheSample(TemporaryCrcString const &path, AbstractFile *file, SampleCache::iterator &iterSampleCache)
 {
-	if (file != NULL)
+	if (file != nullptr)
 	{
 		// Load and allocate the sample from disk
-
-		int fileSize = file->length();
+		const int fileSize = file->length();
 		byte *fileImage = file->readEntireFileAndClose();
 
-		if (fileImage != NULL)
+		if (fileImage != nullptr)
 		{
-			// Get the lenth of the sample
-
-			float timeTotal;
-			float timeCurrent;
+			// Get the length of the sample
+			float timeTotal = 0.0f;
+			float timeCurrent = 0.0f;
 
 			getSampleTime(path.getString(), fileImage, fileSize, timeTotal, timeCurrent);
 
@@ -1529,28 +1451,26 @@ void AudioNamespace::cacheSample(TemporaryCrcString const &path, AbstractFile *f
 }
 
 //-----------------------------------------------------------------------------
+
 CrcString const *AudioNamespace::cacheSound(TemporaryCrcString const &path, SampleCache::iterator &iterSampleCache, bool const needToCacheSample)
 {
-	CrcString const *result = NULL;
+	CrcString const *result = nullptr;
 
 	if (s_installed && !path.isEmpty())
 	{
 		bool const cached = isCached(path, iterSampleCache);
 
-		if (!cached ||
-			(needToCacheSample &&
-			(iterSampleCache->second.m_sampleRawData == NULL)))
+		if (!cached || (needToCacheSample && iterSampleCache->second.m_sampleRawData == nullptr))
 		{
 			AbstractFile *file = TreeFile::open(path.getString(), AbstractFile::PriorityData, true);
 
-			if (file != NULL)
+			if (file != nullptr)
 			{
 				++s_cacheMissCount;
 
 				if (cached)
 				{
 					// Since the sound was already cached but the sample was not, just cache the sample now
-
 					cacheSample(path, file, iterSampleCache);
 				}
 				else
@@ -1558,7 +1478,6 @@ CrcString const *AudioNamespace::cacheSound(TemporaryCrcString const &path, Samp
 					SampleCacheEntry sampleCacheEntry;
 
 					// Save information about this sample
-
 					sampleCacheEntry.setExtension(path.getString());
 
 					std::pair<SampleCache::iterator, bool> resultPair = s_sampleCache.insert(std::make_pair(new PersistentCrcString(path.getString(), path.getCrc()), sampleCacheEntry));
@@ -1582,22 +1501,18 @@ CrcString const *AudioNamespace::cacheSound(TemporaryCrcString const &path, Samp
 			else
 			{
 				// The file must not exist on disk or it is not a sound file
-
 				DEBUG_WARNING(true, ("The sound file does not exist: %s", path.getString()));
-				result = NULL;
+				result = nullptr;
 			}
 		}
 		else
 		{
 			// Increase the reference count to this sample
-
 			++(iterSampleCache->second.m_referenceCount);
 			//DEBUG_REPORT_LOG(Audio::isDebugEnabled(), ("Audio: Ref count increased: %d %s\n", iterSampleCache->second.m_referenceCount, iterSampleCache->first->getString()));
-
 			result = iterSampleCache->first;
 
 			// Increase the number of cache hits
-
 			++s_cacheHitCount;
 		}
 	}
@@ -1606,20 +1521,23 @@ CrcString const *AudioNamespace::cacheSound(TemporaryCrcString const &path, Samp
 }
 
 //-----------------------------------------------------------------------------
+
 bool AudioNamespace::isNonBufferedMusic(Audio::SoundCategory const soundCategory)
 {
 	switch (soundCategory)
 	{
-	case Audio::SC_backGroundMusic:
-	case Audio::SC_combatMusic:
-	case Audio::SC_playerMusic:
-		return true;
-	default:
-		return false;
+		case Audio::SC_backGroundMusic:
+		case Audio::SC_combatMusic:
+		case Audio::SC_playerMusic:
+		{
+			return true;
+		}
+		default: return false;
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 bool isCached(CrcString const &path, SampleCache::iterator &iterSampleCache)
 {
 	iterSampleCache = s_sampleCache.find(&path);
@@ -1628,6 +1546,7 @@ bool isCached(CrcString const &path, SampleCache::iterator &iterSampleCache)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::decreaseReferenceCount(CrcString const &path)
 {
 	AudioNamespace::decreaseReferenceCount(path);
@@ -1648,16 +1567,15 @@ void Audio::playSound(SoundId &soundId, Vector const *position, CellProperty con
 	if (s_installed)
 	{
 		// If this sound is currently playing, stop it
-
 		stopSound(soundId, 0.0f);
 
 		// Start the sound back up and re-assign a the new sound id
-
 		soundId = playSound(soundId.getPath().getString(), position, parentCell);
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::restartSound(SoundId &soundId, Vector const *position, float const fadeOutTime)
 {
 	if (s_installed)
@@ -1667,6 +1585,7 @@ void Audio::restartSound(SoundId &soundId, Vector const *position, float const f
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::restartSound(char const *path, Vector const *position, float const fadeOutTime)
 {
 	SoundId result;
@@ -1674,65 +1593,64 @@ SoundId Audio::restartSound(char const *path, Vector const *position, float cons
 	if (s_installed)
 	{
 		// Build a list of all the sounds playing with the same path
+		const TemporaryCrcString temporaryCrcString(path, true);
 
-		TemporaryCrcString temporaryCrcString(path, true);
-
-		SoundIdToSoundMap::const_iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.begin();
-
-		for (; iterSoundIdToSoundMap != s_soundIdToSoundMap.end(); ++iterSoundIdToSoundMap)
+		for (SoundIdToSoundMap::const_iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.begin(); iterSoundIdToSoundMap != s_soundIdToSoundMap.end(); ++iterSoundIdToSoundMap)
 		{
 			if (iterSoundIdToSoundMap->first.getPath() == temporaryCrcString)
 			{
-				s_localPurgeList.push_back(iterSoundIdToSoundMap->first);
+				s_localPurgeList.emplace_back(iterSoundIdToSoundMap->first);
 			}
 		}
 
 		// Remove all the sounds playing with the same path
-
-		for (uint i = 0; i < s_localPurgeList.size(); ++i)
+		for(auto& i : s_localPurgeList)
 		{
 			UNREF(fadeOutTime);
-			stopSound(s_localPurgeList[i], fadeOutTime);
+			stopSound(i, fadeOutTime);
 		}
 
 		s_localPurgeList.clear();
 
 		// Start a new instance of the sound
-
-		result = playSound(path, position, NULL);
+		result = playSound(path, position, nullptr);
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::playSound(char const * const path)
 {
-	return playSound(path, NULL, NULL);
+	return playSound(path, nullptr, nullptr);
 }
 
 // This always plays the sound as a 2d sound.
 //-----------------------------------------------------------------------------
 SoundId Audio::playSound(char const *path, CellProperty const * const parentCell)
 {
-	return playSound(path, NULL, parentCell);
+	return playSound(path, nullptr, parentCell);
 }
 
 // This could play the sound with either 2d or 3d depending on the file type
 // specified. Sound Templates could either be 2d, 2d attenuated, or 3d.
 //-----------------------------------------------------------------------------
+//
 SoundId Audio::playSound(char const *path, Vector const &position, CellProperty const * const parentCell)
 {
 	return playSound(path, &position, parentCell);
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::playSound(char const *path, Vector const * const position, CellProperty const * const parentCell)
 {
-	return AudioNamespace::playSound(path, position, NULL, NULL, parentCell);
+	return AudioNamespace::playSound(path, position, nullptr, nullptr, parentCell);
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId playSound2d(SoundTemplate const *soundTemplate, Vector const * const position, CellProperty const * const parentCell)
 {
 	SoundId result;
@@ -1741,18 +1659,17 @@ SoundId playSound2d(SoundTemplate const *soundTemplate, Vector const * const pos
 	{
 		if (soundTemplate->is2d())
 		{
-			Sound2dTemplate const *sound2dTemplate = static_cast<Sound2dTemplate const *>(soundTemplate);
+			const auto* sound2dTemplate = dynamic_cast<Sound2dTemplate const *>(soundTemplate);
 			NOT_NULL(sound2dTemplate);
 
 			// Create the 2d sound and assign it an id
-
-			result = SoundId(getNextSoundId(), (sound2dTemplate->getName() == 0) ? "" : sound2dTemplate->getName());
+			result = SoundId(getNextSoundId(), (sound2dTemplate->getName() == nullptr) ? "" : sound2dTemplate->getName());
 
 			DEBUG_REPORT_LOG(s_debugSoundStartStop, ("Audio play sound 2d: %4d %s\n", result.getId(), soundTemplate->getName()));
 
 			Sound2d *sound2d = new Sound2d(sound2dTemplate, result);
 
-			if (sound2d == NULL)
+			if (sound2d == nullptr)
 			{
 				result.invalidate();
 
@@ -1760,7 +1677,7 @@ SoundId playSound2d(SoundTemplate const *soundTemplate, Vector const * const pos
 			}
 			else
 			{
-				if (position != NULL)
+				if (position != nullptr)
 				{
 					sound2d->setPosition_w(*position);
 				}
@@ -1782,6 +1699,7 @@ SoundId playSound2d(SoundTemplate const *soundTemplate, Vector const * const pos
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId playSound3d(SoundTemplate const *soundTemplate, Vector const &position, CellProperty const * const parentCell)
 {
 	SoundId result;
@@ -1790,18 +1708,17 @@ SoundId playSound3d(SoundTemplate const *soundTemplate, Vector const &position, 
 	{
 		if (soundTemplate->is3d())
 		{
-			Sound3dTemplate const *sound3dTemplate = static_cast<Sound3dTemplate const *>(soundTemplate);
+			const auto* sound3dTemplate = dynamic_cast<Sound3dTemplate const *>(soundTemplate);
 			NOT_NULL(sound3dTemplate);
 
 			// Create the 3d sound and assign it an id
-
-			result = SoundId(getNextSoundId(), (soundTemplate->getName() == 0) ? "" : soundTemplate->getName());
+			result = SoundId(getNextSoundId(), (soundTemplate->getName() == nullptr) ? "" : soundTemplate->getName());
 
 			DEBUG_REPORT_LOG(s_debugSoundStartStop, ("Audio play sound 3d: %4d %s\n", result.getId(), soundTemplate->getName()));
 
 			Sound3d *sound3d = new Sound3d(sound3dTemplate, result);
 
-			if (sound3d == NULL)
+			if (sound3d == nullptr)
 			{
 				result.invalidate();
 
@@ -1818,7 +1735,6 @@ SoundId playSound3d(SoundTemplate const *soundTemplate, Vector const &position, 
 				{
 					Audio::fadeAllNonVoiceover();
 				}
-
 			}
 		}
 	}
@@ -1827,28 +1743,26 @@ SoundId playSound3d(SoundTemplate const *soundTemplate, Vector const &position, 
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId attachSound(SoundTemplate const * soundTemplate, Object const * object, char const * hardPointName)
 {
 	SoundId result;
 
-	if (s_installed &&
-		(soundTemplate != NULL) &&
-		(object != NULL))
+	if (s_installed && soundTemplate != nullptr && object != nullptr)
 	{
-		result = SoundId(getNextSoundId(), (soundTemplate->getName() == 0) ? "" : soundTemplate->getName());
+		result = SoundId(getNextSoundId(), (soundTemplate->getName() == nullptr) ? "" : soundTemplate->getName());
 
 		DEBUG_REPORT_LOG(s_debugSoundStartStop, ("Audio attach sound(%d) %s\n", result.getId(), soundTemplate->getName()));
 
 		if (soundTemplate->is3d())
 		{
-			Sound3dTemplate const *sound3dTemplate = static_cast<Sound3dTemplate const *>(soundTemplate);
+			const auto* sound3dTemplate = dynamic_cast<Sound3dTemplate const *>(soundTemplate);
 			NOT_NULL(sound3dTemplate);
 
 			// Create the 3d sound and assign it an id
-
 			Sound3d *sound3d = new Sound3d(sound3dTemplate, result);
 
-			if (sound3d == NULL)
+			if (sound3d == nullptr)
 			{
 				result.invalidate();
 
@@ -1871,43 +1785,43 @@ SoundId attachSound(SoundTemplate const * soundTemplate, Object const * object, 
 		{
 			if (soundTemplate->is2d())
 			{
-				Sound2dTemplate const *sound2dTemplate = static_cast<Sound2dTemplate const *>(soundTemplate);
+				const auto* sound2dTemplate = dynamic_cast<Sound2dTemplate const *>(soundTemplate);
 				NOT_NULL(sound2dTemplate);
 
 				switch (sound2dTemplate->getAttenuationMethod())
 				{
 					case Audio::AM_2d:
+					{
+						// Create the 2d attenuated sound and assign it an id
+						Sound2d *sound2d = new Sound2d(sound2dTemplate, result);
+
+						if (sound2d == nullptr)
 						{
-							// Create the 2d attenuated sound and assign it an id
+							result.invalidate();
 
-							Sound2d *sound2d = new Sound2d(sound2dTemplate, result);
+							DEBUG_REPORT_LOG(true, ("Audio: Sound is not playing because the memory block manager is full. %s\n", soundTemplate->getName()));
+						}
+						else
+						{
+							sound2d->setObject(object);
+							sound2d->setHardPointName(hardPointName);
 
-							if (sound2d == NULL)
+							s_soundIdToSoundMap.insert(std::make_pair(result, sound2d));
+
+							if (soundTemplate->getSoundCategory() == Audio::SC_voiceover)
 							{
-								result.invalidate();
-
-								DEBUG_REPORT_LOG(true, ("Audio: Sound is not playing because the memory block manager is full. %s\n", soundTemplate->getName()));
-							}
-							else
-							{
-								sound2d->setObject(object);
-								sound2d->setHardPointName(hardPointName);
-
-								s_soundIdToSoundMap.insert(std::make_pair(result, sound2d));
-
-								if (soundTemplate->getSoundCategory() == Audio::SC_voiceover)
-								{
-									Audio::fadeAllNonVoiceover();
-								}
+								Audio::fadeAllNonVoiceover();
 							}
 						}
-						break;
+					}
+					break;
+					
 					case Audio::AM_none:
 					default:
-						{
-							DEBUG_WARNING(true, ("Trying to attach a non-3d or non-attenuated 2d sound to an object: %s", soundTemplate->getName()));
-						}
-						break;
+					{
+						DEBUG_WARNING(true, ("Trying to attach a non-3d or non-attenuated 2d sound to an object: %s", soundTemplate->getName()));
+					}
+					break;
 				}
 			}
 		}
@@ -1928,21 +1842,9 @@ void Audio::alter(float const deltaTime, Object const *listener)
 	}
 
 	{
-		NP_PROFILER_AUTO_BLOCK_DEFINE("update listener");
-
-		s_timerCurrentDelay = static_cast<int>(AIL_get_timer_highest_delay());
-		s_timerHighestDelay = (s_timerCurrentDelay > s_timerHighestDelay) ? s_timerCurrentDelay : s_timerHighestDelay;
-		s_digitalLatency = getDigitalLatency();
-		s_digitalCpuPercent = getDigitalCpuPercent();
-
-		s_averageTimerDelay = (s_averageTimerDelay * 0.95f) + (s_timerCurrentDelay * 0.05f);
-
-		DEBUG_REPORT_LOG(s_debugWindow && (s_timerCurrentDelay > s_digitalLatency) && !s_prioritizedPlayingSounds.empty(), ("AUDIO WARNING: timer delay %d ms > premix buffer %d ms\n", s_timerCurrentDelay, s_digitalLatency));
-		DEBUG_REPORT_LOG(s_debugTimerDelay && (s_timerCurrentDelay > 50), ("Audio: timer delay (%d)", s_timerCurrentDelay));
-
 		// Update the position of the listener
 		{
-			if (listener != NULL)
+			if (listener != nullptr)
 			{
 				s_listener.m_positionCurrent = listener->getPosition_w();
 				s_listener.m_vectorForward = listener->getObjectFrameK_w();
@@ -1958,31 +1860,23 @@ void Audio::alter(float const deltaTime, Object const *listener)
 
 		s_utilitySoundList.clear();
 		{
-			PrioritizedPlayingSounds::iterator iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin();
-
-			for (; iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
+			for(auto* sound : s_prioritizedPlayingSounds)
 			{
-				Sound2 * sound = *iterPrioritizedPlayingSounds;
-				s_utilitySoundList.push_back(sound);
+				s_utilitySoundList.emplace_back(sound);
 			}
 		}
 
 		// Insert all the current sounds into the consilidation buckets, if the sounds are in range
-
 		{
-			UtilitySoundList::iterator iterUtilitySoundList = s_utilitySoundList.begin();
-
-			for (; iterUtilitySoundList != s_utilitySoundList.end(); ++iterUtilitySoundList)
+			for(auto& iterUtilitySoundList : s_utilitySoundList)
 			{
-				Sound2 * sound = *iterUtilitySoundList;
+				Sound2 * sound = iterUtilitySoundList;
 				bool const soundIsAlreadyPlaying = true;
 
-				if (   (sound->getDistanceSquaredFromListener() > sqr(sound->getDistanceAtVolumeCutOff()))
-					|| !queueSample(*sound, soundIsAlreadyPlaying))
+				if ( sound->getDistanceSquaredFromListener() > sqr(sound->getDistanceAtVolumeCutOff()) || !queueSample(*sound, soundIsAlreadyPlaying))
 				{
 					// The sample is not a good choice to play so stop it
-
-					Sound2 * sound2 = (*iterUtilitySoundList);
+					Sound2 * sound2 = iterUtilitySoundList;
 					float const fadeOutTime = 0.0f;
 					bool const keepAlive = sound2->isInfiniteLooping();
 
@@ -1990,6 +1884,7 @@ void Audio::alter(float const deltaTime, Object const *listener)
 				}
 			}
 		}
+		
 		s_utilitySoundList.clear();
 	}
 
@@ -1997,14 +1892,11 @@ void Audio::alter(float const deltaTime, Object const *listener)
 		NP_PROFILER_AUTO_BLOCK_DEFINE("update existing");
 
 		// Update the sounds, samples get queued up in the alter calls if a sound is ready to play
-
-		SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.begin();
-
-		for (; iterSoundIdToSoundMap != s_soundIdToSoundMap.end(); ++iterSoundIdToSoundMap)
+		for(auto& iterSoundIdToSoundMap : s_soundIdToSoundMap)
 		{
-			Sound2 * const sound = iterSoundIdToSoundMap->second;
+			Sound2 * const sound = iterSoundIdToSoundMap.second;
 
-			if (sound != NULL)
+			if (sound != nullptr)
 			{
 				sound->alter(deltaTime);
 			}
@@ -2015,63 +1907,51 @@ void Audio::alter(float const deltaTime, Object const *listener)
 		NP_PROFILER_AUTO_BLOCK_DEFINE("build sample list");
 
 		// Build the queued sample list from the consolidation buckets
-
 		s_queuedSamplesToStartList.clear();
 
 		// Center
-		QueuedSamplesToStartList::iterator iterCenterBucket = s_centerBucket.begin();
-
-		for (; iterCenterBucket != s_centerBucket.end(); ++iterCenterBucket)
+		for(auto& iterCenterBucket : s_centerBucket)
 		{
-			insertionSort(s_queuedSamplesToStartList, **iterCenterBucket);
+			insertionSort(s_queuedSamplesToStartList, *iterCenterBucket);
 		}
 
 		// Front
-		SoundBucketList::iterator iterFrontBucket = s_frontBucket.begin();
-
-		for (; iterFrontBucket != s_frontBucket.end(); ++iterFrontBucket)
+		for(auto& iterFrontBucket : s_frontBucket)
 		{
-			if (!iterFrontBucket->second.m_soundIsAlreadyPlaying)
+			if (!iterFrontBucket.second.m_soundIsAlreadyPlaying)
 			{
-				insertionSort(s_queuedSamplesToStartList, *(iterFrontBucket->second.m_sound));
+				insertionSort(s_queuedSamplesToStartList, *(iterFrontBucket.second.m_sound));
 			}
 		}
 
 		// Back
-		SoundBucketList::iterator iterBackBucket = s_backBucket.begin();
-
-		for (; iterBackBucket != s_backBucket.end(); ++iterBackBucket)
+		for(auto& iterBackBucket : s_backBucket)
 		{
-			if (!iterBackBucket->second.m_soundIsAlreadyPlaying)
+			if (!iterBackBucket.second.m_soundIsAlreadyPlaying)
 			{
-				insertionSort(s_queuedSamplesToStartList, *(iterBackBucket->second.m_sound));
+				insertionSort(s_queuedSamplesToStartList, *(iterBackBucket.second.m_sound));
 			}
 		}
 
 		// Left
-		SoundBucketList::iterator iterLeftBucket = s_leftBucket.begin();
-
-		for (; iterLeftBucket != s_leftBucket.end(); ++iterLeftBucket)
+		for(auto& iterLeftBucket : s_leftBucket)
 		{
-			if (!iterLeftBucket->second.m_soundIsAlreadyPlaying)
+			if (!iterLeftBucket.second.m_soundIsAlreadyPlaying)
 			{
-				insertionSort(s_queuedSamplesToStartList, *(iterLeftBucket->second.m_sound));
+				insertionSort(s_queuedSamplesToStartList, *(iterLeftBucket.second.m_sound));
 			}
 		}
 
 		// Right
-		SoundBucketList::iterator iterRightBucket = s_rightBucket.begin();
-
-		for (; iterRightBucket != s_rightBucket.end(); ++iterRightBucket)
+		for(auto& iterRightBucket : s_rightBucket)
 		{
-			if (!iterRightBucket->second.m_soundIsAlreadyPlaying)
+			if (!iterRightBucket.second.m_soundIsAlreadyPlaying)
 			{
-				insertionSort(s_queuedSamplesToStartList, *(iterRightBucket->second.m_sound));
+				insertionSort(s_queuedSamplesToStartList, *(iterRightBucket.second.m_sound));
 			}
 		}
 
 		// Clear the consolidation buckets
-
 		s_centerBucket.clear();
 		s_leftBucket.clear();
 		s_rightBucket.clear();
@@ -2083,28 +1963,19 @@ void Audio::alter(float const deltaTime, Object const *listener)
 		NP_PROFILER_AUTO_BLOCK_DEFINE("delete old sounds");
 
 		// Delete any old sounds, if an object dies that had a sound attachment, the sound will die here
-
-		SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.begin();
-
-		for (; iterSoundIdToSoundMap != s_soundIdToSoundMap.end(); ++iterSoundIdToSoundMap)
+		for(auto& iterSoundIdToSoundMap : s_soundIdToSoundMap)
 		{
-			SoundId const &soundId = iterSoundIdToSoundMap->first;
-			Sound2 * const sound = iterSoundIdToSoundMap->second;
+			SoundId const &soundId = iterSoundIdToSoundMap.first;
+			Sound2 * const sound = iterSoundIdToSoundMap.second;
 
-			if (((sound != NULL) &&
-				  sound->isDeletable()) ||
-				(sound == NULL))
+			if ((sound != nullptr && sound->isDeletable()) || sound == nullptr)
 			{
-				s_localPurgeList.push_back(soundId);
+				s_localPurgeList.emplace_back(soundId);
 			}
 		}
 
-		SoundIdList::const_iterator iterLocalPurgeList = s_localPurgeList.begin();
-
-		for (; iterLocalPurgeList != s_localPurgeList.end(); ++iterLocalPurgeList)
+		for(const auto& soundId : s_localPurgeList)
 		{
-			SoundId const & soundId = (*iterLocalPurgeList);
-
 			stopSound(soundId);
 		}
 
@@ -2115,26 +1986,21 @@ void Audio::alter(float const deltaTime, Object const *listener)
 		NP_PROFILER_AUTO_BLOCK_DEFINE("replace sounds");
 
 		// Check and see if the playing sounds need to be replaced by any new sounds that are queued to play
-
 		if (static_cast<int>(s_prioritizedPlayingSounds.size() + s_queuedSamplesToStartList.size()) > getMaxNumberOfSamples())
 		{
 			// Populate the swap vector
-
 			s_utilitySoundList.clear();
 
-			PrioritizedPlayingSounds::iterator iterPrioritizedPlayingSounds = s_prioritizedPlayingSounds.begin();
-
 			//DEBUG_REPORT_LOG(s_debugWindow, ("Pre Sort\n"));
-			for (; iterPrioritizedPlayingSounds != s_prioritizedPlayingSounds.end(); ++iterPrioritizedPlayingSounds)
+			for(auto& s_prioritizedPlayingSound : s_prioritizedPlayingSounds)
 			{
-				s_utilitySoundList.push_back(*iterPrioritizedPlayingSounds);
-
+				s_utilitySoundList.emplace_back(s_prioritizedPlayingSound);
 				//DEBUG_REPORT_LOG(s_debugWindow, ("Priority: %d Distance: %.2f\n", (*iterPrioritizedPlayingSounds)->getTemplate()->getPriority(), (*iterPrioritizedPlayingSounds)->getDistanceSquaredFromListener()));
 			}
 
 			// See if the prioritized sounds are already sorted
-
 			bool sorted = true;
+			
 			{
 				for (unsigned int i = 1; i < s_utilitySoundList.size(); ++i)
 				{
@@ -2144,9 +2010,7 @@ void Audio::alter(float const deltaTime, Object const *listener)
 					int const previousPriority = s_utilitySoundList[i - 1]->getTemplate()->getPriority();
 					float const previousDistanceSquaredFromListener = s_utilitySoundList[i - 1]->getDistanceSquaredFromListener();
 
-					if ((currentPriority < previousPriority) ||
-						((currentPriority == previousPriority) &&
-						 (currentDistanceSquaredFromListener < previousDistanceSquaredFromListener)))
+					if ((currentPriority < previousPriority) || ((currentPriority == previousPriority) && (currentDistanceSquaredFromListener < previousDistanceSquaredFromListener)))
 					{
 						sorted = false;
 						break;
@@ -2160,7 +2024,6 @@ void Audio::alter(float const deltaTime, Object const *listener)
 
 				// Re-sort the prioritized playing sounds since they are not in the correct order due to the movement
 				// of the listener
-
 				for (unsigned int i = 0; i < s_utilitySoundList.size(); ++i)
 				{
 					for (unsigned int j = i + 1; j < s_utilitySoundList.size(); ++j)
@@ -2171,14 +2034,11 @@ void Audio::alter(float const deltaTime, Object const *listener)
 						int const previousPriority = s_utilitySoundList[i]->getTemplate()->getPriority();
 						float const previousDistanceSquaredFromListener = s_utilitySoundList[i]->getDistanceSquaredFromListener();
 
-						if ((currentPriority < previousPriority) ||
-							((currentPriority == previousPriority) &&
-							 (currentDistanceSquaredFromListener < previousDistanceSquaredFromListener)))
+						if ((currentPriority < previousPriority) ||	((currentPriority == previousPriority) && (currentDistanceSquaredFromListener < previousDistanceSquaredFromListener)))
 						{
 							//DEBUG_REPORT_LOG(s_debugWindow, ("Swapping sound due to higher priority/distance: previous: %d %.2f current %d %.2f\n", previousPriority, previousDistanceSquaredFromListener, currentPriority, currentDistanceSquaredFromListener));
 
 							// Swap current and previous
-
 							Sound2 *temp = s_utilitySoundList[j];
 							s_utilitySoundList[j] = s_utilitySoundList[i];
 							s_utilitySoundList[i] = temp;
@@ -2192,33 +2052,26 @@ void Audio::alter(float const deltaTime, Object const *listener)
 			}
 
 			// Shove the re-sorted vector back into the list
-
 			s_prioritizedPlayingSounds.clear();
 
-			UtilitySoundList::iterator iterSwapVector = s_utilitySoundList.begin();
-
 			//DEBUG_REPORT_LOG(s_debugWindow, ("Post Sort\n"));
-			for (; iterSwapVector != s_utilitySoundList.end(); ++iterSwapVector)
+			for(auto& iterSwapVector : s_utilitySoundList)
 			{
-				NOT_NULL(*iterSwapVector);
-				s_prioritizedPlayingSounds.push_back(*iterSwapVector);
-
+				NOT_NULL(iterSwapVector);
+				s_prioritizedPlayingSounds.emplace_back(iterSwapVector);
 				//DEBUG_REPORT_LOG(s_debugWindow, ("Priority: %d Distance: %.2f\n", (*iterSwapVector)->getTemplate()->getPriority(), (*iterSwapVector)->getDistanceSquaredFromListener()));
 			}
 
 			// Trim the lists
-
 			for (;;)
 			{
 				if (static_cast<int>(s_prioritizedPlayingSounds.size() + s_queuedSamplesToStartList.size()) <= getMaxNumberOfSamples())
 				{
 					// Done trimming
-
 					break;
 				}
 
 				// If the user switches the max number of sounds on the fly, we may need to trim the playing sounds
-
 				if (static_cast<int>(s_prioritizedPlayingSounds.size()) > getMaxNumberOfSamples())
 				{
 					Sound2 * const sound = s_prioritizedPlayingSounds.back();
@@ -2230,12 +2083,9 @@ void Audio::alter(float const deltaTime, Object const *listener)
 					DEBUG_FATAL(s_queuedSamplesToStartList.empty(), ("Empty queued sample list"));
 
 					// Too many sounds to play, remove some more
-
-					if ((s_prioritizedPlayingSounds.size() > 0) &&
-						(s_queuedSamplesToStartList.size() > 0))
+					if (!s_prioritizedPlayingSounds.empty() && !s_queuedSamplesToStartList.empty())
 					{
 						// Remove a sound from the list which has the lowest priority/distance
-
 						int const queuedPriority = s_queuedSamplesToStartList.back()->getTemplate()->getPriority();
 						float const queuedDistanceSquaredFromListener = s_queuedSamplesToStartList.back()->getDistanceSquaredFromListener();
 
@@ -2261,7 +2111,6 @@ void Audio::alter(float const deltaTime, Object const *listener)
 						else if (s_prioritizedPlayingSounds.back()->getTemplate()->getPriority() > queuedPriority)
 						{
 							// The playing sound has a worse priority then the queued sound, so stop the playing sound
-
 							Sound2 * const sound = s_prioritizedPlayingSounds.back();
 							bool const keepAlive = sound->isInfiniteLooping();
 							AudioNamespace::stopSound(s_prioritizedPlayingSounds.back()->getSoundId(), 0.0f, keepAlive);
@@ -2269,7 +2118,6 @@ void Audio::alter(float const deltaTime, Object const *listener)
 						else
 						{
 							// The queued sound has a worse priority then the playing sound, so stop the queued sound
-
 							Sound2 * const sound = s_queuedSamplesToStartList.back();
 							float const fadeOutTime = 0.0f;
 							bool const keepAlive = sound->isInfiniteLooping();
@@ -2279,7 +2127,7 @@ void Audio::alter(float const deltaTime, Object const *listener)
 							s_queuedSamplesToStartList.pop_back();
 						}
 					}
-					else if (s_queuedSamplesToStartList.size() > 0)
+					else if (!s_queuedSamplesToStartList.empty())
 					{
 						Sound2 * const sound = s_queuedSamplesToStartList.back();
 						float const fadeOutTime = 0.0f;
@@ -2289,7 +2137,7 @@ void Audio::alter(float const deltaTime, Object const *listener)
 
 						s_queuedSamplesToStartList.pop_back();
 					}
-					else if (s_prioritizedPlayingSounds.size() > 0)
+					else if (!s_prioritizedPlayingSounds.empty())
 					{
 						DEBUG_FATAL(true, ("Somehow there is more prioritized sounds playing than the maximum number of sounds."));
 					}
@@ -2306,25 +2154,19 @@ void Audio::alter(float const deltaTime, Object const *listener)
 		NP_PROFILER_AUTO_BLOCK_DEFINE("start sounds");
 
 		// Start the new queued sounds that did not get thrown out
+		lock();
 
-		Audio::lock();
-
-		QueuedSamplesToStartList::const_iterator iterQueuedSoundsToStartdList = s_queuedSamplesToStartList.begin();
-
-		for (; iterQueuedSoundsToStartdList != s_queuedSamplesToStartList.end(); ++iterQueuedSoundsToStartdList)
+		for(auto* sound : s_queuedSamplesToStartList)
 		{
-			Sound2 * const sound = NON_NULL(*iterQueuedSoundsToStartdList);
-
 			// Make sure the sound is still valid because it could have died between the time it was
 			// inserted in the queue and the time it should start playing
-
 			if (isSoundValid(sound->getSoundId()))
 			{
 				startSample(*sound);
 			}
 		}
 
-		Audio::unLock();
+		unLock();
 
 		s_queuedSamplesToStartList.clear();
 
@@ -2435,85 +2277,93 @@ void Audio::alter(float const deltaTime, Object const *listener)
 	}
 
 	{
-		NP_PROFILER_AUTO_BLOCK_DEFINE("Miles AIL_serve()");
+		NP_PROFILER_AUTO_BLOCK_DEFINE("fmod update()");
 
-		serve();
+		s_fmod_studio_system->update();
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSamplePosition_w(SampleId const &sampleId, Vector const &position_w)
 {
-	SampleIdToSample3dMap::const_iterator iterSampleIdToSample3dMap = s_sampleIdToSample3dMap.find(sampleId);
+	const SampleIdToSample3dMap::const_iterator it = s_sampleIdToSample3dMap.find(sampleId);
 
-	if (iterSampleIdToSample3dMap != s_sampleIdToSample3dMap.end())
+	if (it != s_sampleIdToSample3dMap.end())
 	{
-		AIL_set_sample_3D_position(iterSampleIdToSample3dMap->second.m_sample, position_w.x, position_w.y, position_w.z);
+		FMOD_VECTOR pos = { position_w.x, position_w.y, position_w.z };
+		FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+
+		if(it->second.mFmodChannel)
+		{
+			it->second.mFmodChannel->set3DAttributes(&pos, &vel);
+		}
+		else
+		{
+			REPORT_LOG(true, ("Audio: setsamplepos no channel\n"));
+		}
 	}
 }
 
 //-----------------------------------------------------------------------------
-std::string Audio::getMilesVersion()
+
+std::string Audio::getFmodVersion()
 {
 	char version[256];
-	AIL_MSS_version(version, sizeof(version));
+	unsigned int nr = 0;
+	
+	s_fmod_core_system->getVersion(&nr);
+	sprintf(version, "%x", nr);
 
 	return version;
 }
 
 //-----------------------------------------------------------------------------
-S32 getFrequency()
-{
-	// Should this value be user definable?
 
+int getFrequency()
+{
 	return 22050;
 }
 
 //-----------------------------------------------------------------------------
-S32 getBits()
+
+int getChannels()
 {
-	// Should this value be user definable?
-
-	return 16;
-}
-
-//-----------------------------------------------------------------------------
-S32 getChannels()
-{
-	// Should this value be user definable?
-
 	return 2;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getCurrentCacheSize()
 {
 	return s_currentCacheSize;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getCacheHitCount()
 {
 	return s_cacheHitCount;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getCacheMissCount()
 {
 	return s_cacheMissCount;
 }
 
 //-----------------------------------------------------------------------------
+
 std::vector<std::string> Audio::get3dProviders()
 {
 	std::vector<std::string> providers;
-	ProviderMap::const_iterator iter3dProviderMap = s_3dProviderMap.begin();
 
-	for (; iter3dProviderMap != s_3dProviderMap.end(); ++iter3dProviderMap)
+	for(const auto& it : s_3dProviderMap)
 	{
-		if (iter3dProviderMap->second.m_supported)
+		if(it.second.m_supported)
 		{
-			providers.push_back(iter3dProviderMap->second.m_name);
+			providers.emplace_back(it.second.m_name);
 		}
 	}
 
@@ -2521,22 +2371,21 @@ std::vector<std::string> Audio::get3dProviders()
 }
 
 //-----------------------------------------------------------------------------
+
 std::string Audio::getSampleType(void *fileImage, int fileSize)
 {
-	std::string text("");
+	std::string text;
 
 	if (s_installed)
 	{
 		// Get the file size
-
 		if (fileImage && fileSize > 0)
 		{
+			text = "Standard PCM wav file";
 			// Get the file type
-
-			S32 fileType = AIL_file_type(fileImage, fileSize);
+		/*	S32 fileType = AIL_file_type(fileImage, fileSize);
 
 			// Set the file type string
-
 			switch (fileType)
 			{
 				case AILFILETYPE_PCM_WAV:
@@ -2562,26 +2411,6 @@ std::string Audio::getSampleType(void *fileImage, int fileSize)
 				case AILFILETYPE_VOC:
 					{
 						text = "Creative VOC digital sound file";
-					}
-					break;
-				case AILFILETYPE_MIDI:
-					{
-						text = "Standard MIDI file";
-					}
-					break;
-				case AILFILETYPE_XMIDI:
-					{
-						text = "XMIDI file";
-					}
-					break;
-				case AILFILETYPE_XMIDI_DLS:
-					{
-						text = "XMIDI file containing embedded, umcompressed DLS data";
-					}
-					break;
-				case AILFILETYPE_XMIDI_MLS:
-					{
-						text = "XMIDI file containing embedded, compressed DLS data";
 					}
 					break;
 				case AILFILETYPE_DLS:
@@ -2618,7 +2447,7 @@ std::string Audio::getSampleType(void *fileImage, int fileSize)
 						text = "The file is not one of the supported types";
 					}
 					break;
-			}
+			}*/
 		}
 		else
 		{
@@ -2630,12 +2459,12 @@ std::string Audio::getSampleType(void *fileImage, int fileSize)
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSampleSize(char const *path)
 {
 	int const result = TreeFile::getFileSize(path);
 
 	// If you hit this error, you should probably fix the code that is calling this
-
 	DEBUG_WARNING(!DataLint::isEnabled() && (result == -1), ("Could not get sample size for %s", path));
 
 	return result;
@@ -2657,7 +2486,7 @@ Audio::PlayBackStatus Audio::getSoundPlayBackStatus(SoundId const &soundId)
 
 	if (s_installed)
 	{
-		SoundIdToSoundMap::iterator soundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+		auto soundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 		if (soundIdToSoundMap != s_soundIdToSoundMap.end())
 		{
@@ -2678,6 +2507,7 @@ Audio::PlayBackStatus Audio::getSoundPlayBackStatus(SoundId const &soundId)
 }
 
 //-----------------------------------------------------------------------------
+
 Audio::PlayBackStatus Audio::getSamplePlayBackStatus(SampleId const &sampleId)
 {
 	PlayBackStatus result = PS_done;
@@ -2688,37 +2518,29 @@ Audio::PlayBackStatus Audio::getSamplePlayBackStatus(SampleId const &sampleId)
 		SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap;
 		SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap;
 
-		U32 status = PS_done;
+		int status = PS_done;
 		PlayBackStatus samplePlayBackStatus = PS_done;
 
 		if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 		{
-			status = AIL_sample_status(iterSampleIdToSample2dMap->second.m_sample);
+			status = iterSampleIdToSample2dMap->second.getChannelStatus();
 			samplePlayBackStatus = iterSampleIdToSample2dMap->second.m_status;
 		}
 		else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 		{
-			status = AIL_sample_status(iterSampleIdToSample3dMap->second.m_sample);
+			status = iterSampleIdToSample3dMap->second.getChannelStatus();
 			samplePlayBackStatus = iterSampleIdToSample3dMap->second.m_status;
 		}
 		else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 		{
-			status = AIL_stream_status(iterSampleIdToSampleStreamMap->second.m_stream);
+			status = iterSampleIdToSampleStreamMap->second.getChannelStatus();
 			samplePlayBackStatus = iterSampleIdToSampleStreamMap->second.m_status;
 		}
 
 		switch (status)
 		{
-			case SMP_DONE:
-				{
-					result = samplePlayBackStatus;
-				}
-				break;
-			case SMP_PLAYING:
-				{
-					result = PS_playing;
-				}
-				break;
+			case Sample2d::ChannelReady: { result = samplePlayBackStatus;} break;
+			case Sample2d::ChannelPlaying:	{ result = PS_playing; } break;
 		}
 	}
 
@@ -2726,6 +2548,7 @@ Audio::PlayBackStatus Audio::getSamplePlayBackStatus(SampleId const &sampleId)
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isSampleValid(SampleId const &sampleId)
 {
 	bool result = false;
@@ -2757,23 +2580,25 @@ bool Audio::isSampleValid(SampleId const &sampleId)
 
 bool Audio::isSampleForSoundIdPlaying (const SoundId & soundId)
 {
-	const Sound2 * const sound = getSoundById (soundId);
+	const Sound2 * const sound = getSoundById(soundId);
+	
 	if (sound)
-		return isSampleValid (sound->getSampleId ());
+		return isSampleValid(sound->getSampleId());
 
 	return false;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isSoundValid(SoundId const &soundId)
 {
 	bool result = false;
 
 	if (s_installed)
 	{
-		SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+		const auto it = s_soundIdToSoundMap.find(soundId);
 
-		if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
+		if (it != s_soundIdToSoundMap.end())
 		{
 			result = true;
 		}
@@ -2783,6 +2608,7 @@ bool Audio::isSoundValid(SoundId const &soundId)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::startSample(Sound2 &sound)
 {
 	NP_PROFILER_AUTO_BLOCK_DEFINE("Audio::startSample");
@@ -2808,22 +2634,18 @@ void Audio::startSample(Sound2 &sound)
 	if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 	{
 		NP_PROFILER_AUTO_BLOCK_DEFINE("Audio::startSample::isSample2d");
-		NOT_NULL(iterSampleIdToSample2dMap->second.m_sample);
+		NOT_NULL(iterSampleIdToSample2dMap->second.mFmodSample);
 
 		// Get the sample from the cache
-
-		SampleCache::iterator iterSample = s_sampleCache.find(iterSampleIdToSample2dMap->second.getPath());
+		auto iterSample = s_sampleCache.find(iterSampleIdToSample2dMap->second.getPath());
 
 		if (iterSample != s_sampleCache.end())
 		{
-			char const *extension = iterSample->second.getExtension();
-			void *sampleRawData = iterSample->second.m_sampleRawData;
-			NOT_NULL(sampleRawData);
-			U32 fileSize = iterSample->second.m_fileSize;
-			DEBUG_FATAL((fileSize == 0), ("File size is 0 %s", iterSampleIdToSample2dMap->second.getPath()));
-			HSAMPLE sample2d = iterSampleIdToSample2dMap->second.m_sample;
+			DEBUG_FATAL((iterSample->second.m_fileSize == 0), ("File size is 0 %s", iterSampleIdToSample2dMap->second.getPath()));
 
-			if (AIL_set_named_sample_file(sample2d, extension, sampleRawData, fileSize, 0))
+			FMOD_RESULT fr = s_fmod_core_system->playSound(iterSampleIdToSample2dMap->second.mFmodSample, nullptr, true, &iterSampleIdToSample2dMap->second.mFmodChannel);
+
+			if(fr == FMOD_OK)
 			{
 				setSampleVolume(iterSampleIdToSample2dMap->first, sound.getVolume());
 
@@ -2832,17 +2654,15 @@ void Audio::startSample(Sound2 &sound)
 				setSamplePlayBackRate(iterSampleIdToSample2dMap->first, sound.getPlayBackRate(), sound.getPlayBackRateDelta());
 
 				// Set the loop points
+				int loopStartOffset = 0;
+				int loopEndOffset = 0;
 
-				int loopStartOffset;
-				int loopEndOffset;
-
-				if (Audio::getLoopOffsets(*iterSampleIdToSample2dMap->second.getPath(), loopStartOffset, loopEndOffset))
+				if (getLoopOffsets(*iterSampleIdToSample2dMap->second.getPath(), loopStartOffset, loopEndOffset))
 				{
-					AIL_set_sample_loop_block(sample2d, static_cast<S32>(loopStartOffset), static_cast<S32>(loopEndOffset));
+					iterSampleIdToSample2dMap->second.mFmodChannel->setLoopPoints(static_cast<unsigned int>(loopStartOffset), FMOD_TIMEUNIT_MS, static_cast<unsigned int>(loopEndOffset), FMOD_TIMEUNIT_MS);
 				}
 
 				// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
-
 				int const loopCount = iterSampleIdToSample2dMap->second.m_sound->getLoopCount();
 				bool const infiniteLooping = iterSampleIdToSample2dMap->second.m_sound->getTemplate()->isInfiniteLooping();
 				bool const noDelay = (iterSampleIdToSample2dMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
@@ -2851,43 +2671,35 @@ void Audio::startSample(Sound2 &sound)
 				if (infiniteLooping && noDelay && (sampleCount <= 1))
 				{
 					// Specify infinite looping
-
-					AIL_set_sample_loop_count(sample2d, 0);
+					iterSampleIdToSample2dMap->second.mFmodChannel->setLoopCount(-1);
 				}
 				else
 				{
-					if ((loopCount >= 1) && noDelay && (sampleCount <= 1))
+					if (loopCount >= 1 && noDelay && sampleCount <= 1)
 					{
 						// Specify the loop count
-
-						AIL_set_sample_loop_count(sample2d, loopCount);
+						iterSampleIdToSample2dMap->second.mFmodChannel->setLoopCount(loopCount);
 					}
 
 					// Register the end of sample callback
-
-					AIL_register_EOS_callback(sample2d, &endOfSample2dCallBack);
+					iterSampleIdToSample2dMap->second.mFmodChannel->setCallback(&endOfSample2dCallBack);
 				}
 
 				// Play the sample
+				fr = iterSampleIdToSample2dMap->second.mFmodChannel->setPaused(false);
 
-				AIL_start_sample(sample2d);
-
+				if(fr != FMOD_OK)
+				{
+					REPORT_LOG(true, ("Audio: failed playback\n"));
+				}
+				
 				sound.setSampleId(sampleId);
 
 				addPlayingSound(sound);
-
-//#ifdef _DEBUG
-//				float leftLevel;
-//				float rightLevel;
-//				AIL_sample_volume_levels(iterSampleIdToSample2dMap->second.m_sample, &leftLevel, &rightLevel);
-//
-//				DEBUG_REPORT_LOG(true, ("AIL_start_sample() <id> %s <left vol> %.2f <right vol> %.2f\n", iterSample->first->getString(), leftLevel, rightLevel));
-//#endif // _DEBUG
 			}
 			else
 			{
-				DEBUG_WARNING(true, ("Error preparing 2D sample for playback: %s (%s)\n", iterSampleIdToSample2dMap->second.getPath()->getString(), AIL_last_error()));
-				DEBUG_WARNING(true, ("  Miles 2d count: %d\n", (s_digitalDevice2d != NULL) ? AIL_active_sample_count(s_digitalDevice2d) : 0));
+				DEBUG_WARNING(true, ("Error preparing 2D sample for playback: %s\n", iterSampleIdToSample2dMap->second.getPath()->getString()));
 
 				result = false;
 			}
@@ -2901,20 +2713,16 @@ void Audio::startSample(Sound2 &sound)
 	else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 	{
 		NP_PROFILER_AUTO_BLOCK_DEFINE("Audio::startSample::isSample3d");
-		NOT_NULL(iterSampleIdToSample3dMap->second.m_sample);
+		NOT_NULL(iterSampleIdToSample3dMap->second.mFmodSample);
 
 		// Get the sample from the cache
-
-		SampleCache::iterator iterSample = s_sampleCache.find(iterSampleIdToSample3dMap->second.getPath());
+		auto iterSample = s_sampleCache.find(iterSampleIdToSample3dMap->second.getPath());
 
 		if (iterSample != s_sampleCache.end())
 		{
-			void *sampleRawData = iterSample->second.m_sampleRawData;
-			HSAMPLE hSample3d = iterSampleIdToSample3dMap->second.m_sample;
+			FMOD_RESULT fr = s_fmod_core_system->playSound(iterSampleIdToSample3dMap->second.mFmodSample, nullptr, true, &iterSampleIdToSample3dMap->second.mFmodChannel);
 
-			S32 resultSet3dSampleFile = AIL_set_sample_file(hSample3d, sampleRawData, 0);
-
-			if (resultSet3dSampleFile != 0)
+			if(fr == FMOD_OK)
 			{
 				setSampleVolume(iterSampleIdToSample3dMap->first, sound.getVolume());
 				setSampleOcclusion(iterSampleIdToSample3dMap->first, sound.getOcclusion());
@@ -2924,7 +2732,6 @@ void Audio::startSample(Sound2 &sound)
 				setSamplePlayBackRate(iterSampleIdToSample3dMap->first, sound.getPlayBackRate(), sound.getPlayBackRateDelta());
 
 				// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
-
 				int const loopCount = iterSampleIdToSample3dMap->second.m_sound->getLoopCount();
 				bool const infiniteLooping = iterSampleIdToSample3dMap->second.m_sound->isInfiniteLooping();
 				bool const noDelay = (iterSampleIdToSample3dMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
@@ -2933,30 +2740,28 @@ void Audio::startSample(Sound2 &sound)
 				if (infiniteLooping && noDelay && (sampleCount <= 1))
 				{
 					// Specify infinite looping
-
-					AIL_set_sample_loop_count(hSample3d, 0);
+					iterSampleIdToSample3dMap->second.mFmodChannel->setLoopCount(-1);
 				}
 				else
 				{
-					if ((loopCount >= 1) && noDelay && (sampleCount <= 1))
+					if (loopCount >= 1 && noDelay && sampleCount <= 1)
 					{
 						// Specify the loop count
-
-						AIL_set_sample_loop_count(hSample3d, loopCount);
+						iterSampleIdToSample3dMap->second.mFmodChannel->setLoopCount(loopCount);
 					}
 
 					// Register the end of sample callback
-
-					AIL_register_EOS_callback(hSample3d, &endOfSample3dCallBack);
+					iterSampleIdToSample3dMap->second.mFmodChannel->setCallback(&endOfSample3dCallBack);
 				}
 
 				Vector const position(iterSampleIdToSample3dMap->second.m_sound->getPosition_w());
 
-				AIL_set_sample_3D_position(hSample3d, position.x, position.y, position.z);
-				AIL_set_sample_3D_velocity_vector(hSample3d, 0.0f, 0.0f, 0.0f);
+				FMOD_VECTOR pos = { position.x, position.y, position.z };
+				FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+				
+				iterSampleIdToSample3dMap->second.mFmodChannel->set3DAttributes(&pos, &vel);
 
 				// Set the audible distances
-
 				float distanceAtMaxVolume = iterSampleIdToSample3dMap->second.m_sound->getTemplate()->getDistanceAtMaxVolume();
 
 				bool fixDistanceMin = false;
@@ -2973,17 +2778,17 @@ void Audio::startSample(Sound2 &sound)
 				}
 
 				float const distanceMin = distanceAtMaxVolume;
-				float const distanceMax = Audio::getFallOffDistance(distanceMin);
+				float const distanceMax = getFallOffDistance(distanceMin);
 
-				AIL_set_sample_3D_distances(hSample3d, distanceMax, distanceMin, 1);
+				iterSampleIdToSample3dMap->second.mFmodChannel->set3DMinMaxDistance(distanceMin, distanceMax);
 
 				// Play the sample
+				fr = iterSampleIdToSample3dMap->second.mFmodChannel->setPaused(false);
 
-				AIL_start_sample(hSample3d);
-
-//#ifdef _DEBUG
-//				DEBUG_REPORT_LOG(true, ("AIL_start_sample() <id> %s <vol> %.2f\n", iterSample->first->getString(), AIL_sample_volume_levels(hSample3d)));
-//#endif // _DEBUG
+				if(fr != FMOD_OK)
+				{
+					REPORT_LOG(true, ("Audio: failed playback\n"));
+				}
 
 				sound.setSampleId(sampleId);
 
@@ -2991,8 +2796,6 @@ void Audio::startSample(Sound2 &sound)
 			}
 			else
 			{
-				DEBUG_WARNING(true, ("Error preparing 3D sample for playback: \"%s\" Miles Error: (%s) Prioritized Sound Count(%d)", iterSampleIdToSample3dMap->second.getPath()->getString(), AIL_last_error(), static_cast<int>(s_prioritizedPlayingSounds.size())));
-				DEBUG_REPORT_LOG(true, ("  Miles count(%d)\n", AIL_active_sample_count(s_digitalDevice2d)));
 				DEBUG_REPORT_LOG(true, ("  Sample:    %s\n", iterSample->first->getString()));
 				DEBUG_REPORT_LOG(true, ("  FileSize:  %d\n", iterSample->second.m_fileSize));
 				DEBUG_REPORT_LOG(true, ("  Time:      %f\n", iterSample->second.m_time));
@@ -3011,77 +2814,69 @@ void Audio::startSample(Sound2 &sound)
 	{
 		NP_PROFILER_AUTO_BLOCK_DEFINE("Audio::startSample::isSampleStream");
 		// The number of streamed samples is further limited due to disk access
-
-		if (iterSampleIdToSampleStreamMap->second.m_stream != NULL)
+		if (iterSampleIdToSampleStreamMap->second.mFmodStream != nullptr)
 		{
-			setSampleVolume(iterSampleIdToSampleStreamMap->first, sound.getVolume());
+			FMOD_RESULT fr = s_fmod_core_system->playSound(iterSampleIdToSampleStreamMap->second.mFmodStream, nullptr, true, &iterSampleIdToSampleStreamMap->second.mFmodChannel);
 
-			sound.setPlayBackRate(getSamplePlayBackRate(iterSampleIdToSampleStreamMap->first));
-			setSamplePlayBackRate(iterSampleIdToSampleStreamMap->first, sound.getPlayBackRate(), sound.getPlayBackRateDelta());
-
-			HSTREAM sampleStream = iterSampleIdToSampleStreamMap->second.m_stream;
-
-			// Set the loop points
-
-			int loopStartOffset;
-			int loopEndOffset;
-
-			if (Audio::getLoopOffsets(*iterSampleIdToSampleStreamMap->second.getPath(), loopStartOffset, loopEndOffset))
+			if(fr == FMOD_OK)
 			{
-				AIL_set_stream_loop_block(sampleStream, static_cast<S32>(loopStartOffset), static_cast<S32>(loopEndOffset));
-			}
+				setSampleVolume(iterSampleIdToSampleStreamMap->first, sound.getVolume());
 
-			DEBUG_REPORT_LOG(s_debugSoundStartStop, ("Audio start stream: %s\n", iterSampleIdToSampleStreamMap->second.getPath()->getString()));
+				sound.setPlayBackRate(getSamplePlayBackRate(iterSampleIdToSampleStreamMap->first));
+				setSamplePlayBackRate(iterSampleIdToSampleStreamMap->first, sound.getPlayBackRate(), sound.getPlayBackRateDelta());
+				
+				// Set the loop points
+				int loopStartOffset = 0;
+				int loopEndOffset = 0;
 
-			// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
-
-			int const loopCount = iterSampleIdToSampleStreamMap->second.m_sound->getLoopCount();
-			bool const infiniteLooping = (loopCount <= -1);
-			bool const noDelay = (iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
-			int const sampleCount = iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->getSampleCount();
-
-			// This is being changed to see if I can handle the looping using callbacks and it still not have a hitch
-
-			if (infiniteLooping && noDelay && (sampleCount <= 1))
-			{
-				// Specify infinite looping
-
-				AIL_set_stream_loop_count(sampleStream, 0);
-			}
-			else
-			{
-				if ((loopCount >= 1) && noDelay && (sampleCount <= 1))
+				if(getLoopOffsets(*iterSampleIdToSampleStreamMap->second.getPath(), loopStartOffset, loopEndOffset))
 				{
-					// Specify the loop count
-
-					AIL_set_stream_loop_count(sampleStream, loopCount);
+					iterSampleIdToSampleStreamMap->second.mFmodChannel->setLoopPoints(static_cast<unsigned int>(loopStartOffset), FMOD_TIMEUNIT_MS, static_cast<unsigned int>(loopEndOffset), FMOD_TIMEUNIT_MS);
 				}
 
-				// Register the end of sample callback
+				DEBUG_REPORT_LOG(s_debugSoundStartStop, ("Audio start stream: %s\n", iterSampleIdToSampleStreamMap->second.getPath()->getString()));
 
-				AIL_register_stream_callback(sampleStream, &endOfSampleStreamCallBack);
+				// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
+				int const loopCount = iterSampleIdToSampleStreamMap->second.m_sound->getLoopCount();
+				bool const infiniteLooping = (loopCount <= -1);
+				bool const noDelay = (iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
+				int const sampleCount = iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->getSampleCount();
+
+				// This is being changed to see if I can handle the looping using callbacks and it still not have a hitch
+				if (infiniteLooping && noDelay && (sampleCount <= 1))
+				{
+					// Specify infinite looping
+					iterSampleIdToSampleStreamMap->second.mFmodChannel->setLoopCount(-1);
+				}
+				else
+				{
+					if ((loopCount >= 1) && noDelay && (sampleCount <= 1))
+					{
+						// Specify the loop count
+						iterSampleIdToSampleStreamMap->second.mFmodChannel->setLoopCount(loopCount);
+					}
+
+					// Register the end of sample callback
+					iterSampleIdToSampleStreamMap->second.mFmodChannel->setCallback(&endOfSampleStreamCallBack);
+				}
+
+				fr = iterSampleIdToSampleStreamMap->second.mFmodChannel->setPaused(false);
+
+				if(fr != FMOD_OK)
+				{
+					REPORT_LOG(true, ("Audio: failed playback\n"));
+				}
+
+				sound.setSampleId(sampleId);
+
+				addPlayingSound(sound);
 			}
-
-//#ifdef _DEBUG
-//			float leftLevel;
-//			float rightLevel;
-//			AIL_stream_volume_levels(iterSampleIdToSampleStreamMap->second.m_stream, &leftLevel, &rightLevel);
-//
-//			DEBUG_REPORT_LOG(true, ("AIL_start_stream() <id> %d <left vol> %.2f <right vol> %.2f\n", iterSampleIdToSampleStreamMap->first.getId(), leftLevel, rightLevel));
-//#endif // _DEBUG
-
-			AIL_start_stream(sampleStream);
-
-			sound.setSampleId(sampleId);
-
-			addPlayingSound(sound);
 		}
 		else
 		{
 			DEBUG_WARNING(true, ("Sound stream is NULL\n"));
 
 			// This should not happen but lets be graceful and not crash
-
 			s_sampleIdToSampleStreamMap.erase(iterSampleIdToSampleStreamMap);
 			result = false;
 		}
@@ -3093,7 +2888,6 @@ void Audio::startSample(Sound2 &sound)
 	}
 
 	// If there was an error, release this sampleId
-
 	if (!result)
 	{
 		DEBUG_REPORT_LOG(true, ("Unable to start the sample...releasing: %s\n", sound.getTemplate()->getName()));
@@ -3106,6 +2900,7 @@ void Audio::startSample(Sound2 &sound)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSampleOcclusion(SampleId const &sampleId, float const occlusion)
 {
 	DEBUG_WARNING((occlusion < 0.0f) || (occlusion > 1.0f), ("occlusion(%f) must be [0...1]", occlusion));
@@ -3116,11 +2911,19 @@ void Audio::setSampleOcclusion(SampleId const &sampleId, float const occlusion)
 	{
 		Sample3d const &sample3d = iterSampleIdToSample3dMap->second;
 
-		AIL_set_sample_occlusion(sample3d.m_sample, clamp(0.0f, occlusion, 1.0f));
+		if(sample3d.mFmodChannel)
+		{
+			sample3d.mFmodChannel->set3DOcclusion(clamp(0.0f, occlusion, 1.0f), clamp(0.0f, occlusion, 1.0f));
+		}
+		else
+		{
+			REPORT_LOG(true, ("Audio: failed setting occlusion: no channel.\n"));
+		}
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSampleObstruction(SampleId const &sampleId, float const obstruction)
 {
 	DEBUG_WARNING((obstruction < 0.0f) || (obstruction > 1.0f), ("obstruction(%f) must be [0...1]", obstruction));
@@ -3131,11 +2934,20 @@ void Audio::setSampleObstruction(SampleId const &sampleId, float const obstructi
 	{
 		Sample3d const &sample3d = iterSampleIdToSample3dMap->second;
 
-		AIL_set_sample_obstruction(sample3d.m_sample, clamp(0.0f, obstruction, 1.0f));
+		
+		if(sample3d.mFmodChannel)
+		{
+			// nope
+		}
+		else
+		{
+			REPORT_LOG(true, ("Audio: failed setting occlusion: no channel.\n"));
+		}
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSampleVolume(SampleId const &sampleId, float const volume)
 {
 #ifdef _DEBUG
@@ -3150,22 +2962,20 @@ void Audio::setSampleVolume(SampleId const &sampleId, float const volume)
 
 	if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 	{
-		NOT_NULL(iterSampleIdToSample2dMap->second.m_sample);
+		NOT_NULL(iterSampleIdToSample2dMap->second.mFmodSample);
+		NOT_NULL(iterSampleIdToSample2dMap->second.mFmodChannel);
 
 		float const finalVolume = !s_audioEnabled ? 0.0f : clamp(0.0f, volume * s_masterVolume * getSoundCategoryVolume(iterSampleIdToSample2dMap->second.m_sound->getTemplate()->getSoundCategory()), 1.0f);
-		float const leftLevel = finalVolume;
-		float const rightLevel = finalVolume;
-
-		//DEBUG_REPORT_LOG((getSampleVolume(sampleId) != finalVolume), ("Audio::setSampleVolume() %d <id> %s <volume> %.2f <old volume> %.2f\n", count++, iterSampleIdToSample2dMap->second.getPath()->getString(), finalVolume, getSampleVolume(sampleId)));
 
 		Sample2d const &sample2d = iterSampleIdToSample2dMap->second;
 
-		AIL_set_sample_volume_levels(sample2d.m_sample, leftLevel, rightLevel);
-		AIL_set_sample_reverb_levels(sample2d.m_sample, 1.0f, 0.0f);
+		sample2d.mFmodChannel->setVolume(finalVolume);
+		sample2d.mFmodChannel->setReverbProperties(0, 0.0f);
 	}
 	else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 	{
-		NOT_NULL(iterSampleIdToSample3dMap->second.m_sample);
+		NOT_NULL(iterSampleIdToSample3dMap->second.mFmodSample);
+		NOT_NULL(iterSampleIdToSample3dMap->second.mFmodChannel);
 
 		static float finalVolume;
 
@@ -3173,43 +2983,37 @@ void Audio::setSampleVolume(SampleId const &sampleId, float const volume)
 
 		// This is a hack because the EAX providers sometimes play sounds at full volume
 		// even when passing in a small number for the volume
-
 		if (finalVolume < 0.01)
 		{
 			finalVolume = 0.0f;
 		}
 
-		//DEBUG_REPORT_LOG((getSampleVolume(sampleId) != finalVolume), ("Audio::setSampleVolume() %d <id> %s <volume> %.2f <old volume> %.2f\n", count++, iterSampleIdToSample3dMap->second.getPath()->getString(), finalVolume, getSampleVolume(sampleId)));
-
 		Sample3d const &sample3d = iterSampleIdToSample3dMap->second;
 
-		AIL_set_sample_volume_levels(sample3d.m_sample, finalVolume, finalVolume);
-		AIL_set_sample_reverb_levels(sample3d.m_sample, 1.0f, 0.0f);
+		sample3d.mFmodChannel->setVolume(finalVolume);
+		sample3d.mFmodChannel->setReverbProperties(0, 0.0f);
 	}
 	else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 	{
-		NOT_NULL(iterSampleIdToSampleStreamMap->second.m_stream);
+		NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodStream);
+		NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodChannel);
 
 		float const finalVolume = !s_audioEnabled ? 0.0f : clamp(0.0f, volume * s_masterVolume * getSoundCategoryVolume(iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->getSoundCategory()), 1.0f);
-		float const leftLevel = finalVolume;
-		float const rightLevel = finalVolume;
 
 		SampleStream const &sampleStream = iterSampleIdToSampleStreamMap->second;
 
-		//DEBUG_REPORT_LOG((getSampleVolume(sampleId) != finalVolume), ("Audio::setSampleVolume() %d <id> %s <volume> %.2f <old volume> %.2f\n", count++, iterSampleIdToSampleStreamMap->second.getPath()->getString(), finalVolume, getSampleVolume(sampleId)));
-
-		AIL_set_sample_volume_levels((AIL_stream_sample_handle(sampleStream.m_stream)), leftLevel, rightLevel);
-		AIL_set_sample_reverb_levels((AIL_stream_sample_handle(sampleStream.m_stream)), 1.0f, 0.0f);
+		sampleStream.mFmodChannel->setVolume(finalVolume);
+		sampleStream.mFmodChannel->setReverbProperties(0, 0.0f);
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSamplePlayBackRate(SampleId const &sampleId, int const playBackRate, float const playBackRateDelta)
 {
 	DEBUG_FATAL((playBackRate <= 0), ("Invalid initial playback rate: %d", playBackRate));
 
-	if (s_installed &&
-		(playBackRateDelta > 0.0f))
+	if (s_installed && playBackRateDelta > 0.0f)
 	{
 		int const finalPlayBackRate = static_cast<int>(static_cast<float>(playBackRate) * playBackRateDelta);
 		static int const minPlayBackRate = 5000;
@@ -3230,24 +3034,30 @@ void Audio::setSamplePlayBackRate(SampleId const &sampleId, int const playBackRa
 #ifdef _DEBUG
 			fileName = iterSampleIdToSample2dMap->second.getPath();
 #endif
+			NOT_NULL(iterSampleIdToSample2dMap->second.mFmodSample);
+			NOT_NULL(iterSampleIdToSample2dMap->second.mFmodChannel);
 
-			AIL_set_sample_playback_rate(iterSampleIdToSample2dMap->second.m_sample, clampedPlayBackRate);
+			iterSampleIdToSample2dMap->second.mFmodChannel->setFrequency(static_cast<float>(clampedPlayBackRate));
 		}
 		else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 		{
 #ifdef _DEBUG
 			fileName = iterSampleIdToSample3dMap->second.getPath();
 #endif
+			NOT_NULL(iterSampleIdToSample3dMap->second.mFmodSample);
+			NOT_NULL(iterSampleIdToSample3dMap->second.mFmodChannel);
 
-			AIL_set_sample_playback_rate(iterSampleIdToSample3dMap->second.m_sample, clampedPlayBackRate);
+			iterSampleIdToSample3dMap->second.mFmodChannel->setFrequency(static_cast<float>(clampedPlayBackRate));
 		}
 		else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 		{
 #ifdef _DEBUG
 			fileName = iterSampleIdToSampleStreamMap->second.getPath();
 #endif
+			NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodStream);
+			NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodChannel);
 
-			AIL_set_sample_playback_rate((AIL_stream_sample_handle(iterSampleIdToSampleStreamMap->second.m_stream)), clampedPlayBackRate);
+			iterSampleIdToSampleStreamMap->second.mFmodChannel->setFrequency(static_cast<float>(clampedPlayBackRate));
 		}
 		else
 		{
@@ -3261,6 +3071,7 @@ void Audio::setSamplePlayBackRate(SampleId const &sampleId, int const playBackRa
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getSampleVolume(SampleId const &sampleId)
 {
 	float result = 0.0f;
@@ -3271,39 +3082,34 @@ float Audio::getSampleVolume(SampleId const &sampleId)
 
 	if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 	{
-		float leftLevel;
-		float rightLevel;
+		NOT_NULL(iterSampleIdToSample2dMap->second.mFmodSample);
+		NOT_NULL(iterSampleIdToSample2dMap->second.mFmodChannel);
 
-		AIL_sample_volume_levels(iterSampleIdToSample2dMap->second.m_sample, &leftLevel, &rightLevel);
-
-		result = (leftLevel + rightLevel) / 2.0f;
+		iterSampleIdToSample2dMap->second.mFmodChannel->getVolume(&result);
 	}
 	else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 	{
-		float leftLevel = 0.0f;
-		float rightLevel = 0.0f;
+		NOT_NULL(iterSampleIdToSample3dMap->second.mFmodSample);
+		NOT_NULL(iterSampleIdToSample3dMap->second.mFmodChannel);
 
-		AIL_sample_volume_levels(iterSampleIdToSample3dMap->second.m_sample, &leftLevel, &rightLevel);
-
-		result = (leftLevel + rightLevel) / 2.0f;
+		iterSampleIdToSample3dMap->second.mFmodChannel->getVolume(&result);
 	}
 	else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 	{
-		float leftLevel = 0.0f;
-		float rightLevel = 0.0f;
+		NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodStream);
+		NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodChannel);
 
-		AIL_sample_volume_levels((AIL_stream_sample_handle(iterSampleIdToSampleStreamMap->second.m_stream)), &leftLevel, &rightLevel);
-
-		result = (leftLevel + rightLevel) / 2.0f;
+		iterSampleIdToSampleStreamMap->second.mFmodChannel->getVolume(&result);
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSamplePlayBackRate(SampleId const &sampleId)
 {
-	int result = 0;
+	float result = 0.0f;
 
 	if (s_installed)
 	{
@@ -3313,15 +3119,24 @@ int Audio::getSamplePlayBackRate(SampleId const &sampleId)
 
 		if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 		{
-			result = AIL_sample_playback_rate(iterSampleIdToSample2dMap->second.m_sample);
+			NOT_NULL(iterSampleIdToSample2dMap->second.mFmodSample);
+			NOT_NULL(iterSampleIdToSample2dMap->second.mFmodChannel);
+
+			iterSampleIdToSample2dMap->second.mFmodChannel->getFrequency(&result);
 		}
 		else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 		{
-			result = AIL_sample_playback_rate(iterSampleIdToSample3dMap->second.m_sample);
+			NOT_NULL(iterSampleIdToSample3dMap->second.mFmodSample);
+			NOT_NULL(iterSampleIdToSample3dMap->second.mFmodChannel);
+
+			iterSampleIdToSample3dMap->second.mFmodChannel->getFrequency(&result);
 		}
 		else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 		{
-			result = AIL_sample_playback_rate((AIL_stream_sample_handle(iterSampleIdToSampleStreamMap->second.m_stream)));
+			NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodStream);
+			NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodChannel);
+
+			iterSampleIdToSampleStreamMap->second.mFmodChannel->getFrequency(&result);
 		}
 		else
 		{
@@ -3329,10 +3144,11 @@ int Audio::getSamplePlayBackRate(SampleId const &sampleId)
 		}
 	}
 
-	return result;
+	return static_cast<int>(result);
 }
 
 //-----------------------------------------------------------------------------
+
 void stopSample(Sound2 const &sound)
 {
 	if (s_installed)
@@ -3343,19 +3159,28 @@ void stopSample(Sound2 const &sound)
 
 		if (isSample2d(sound.getSampleId(), iterSampleIdToSample2dMap))
 		{
-			AIL_stop_sample(iterSampleIdToSample2dMap->second.m_sample);
-			AIL_end_sample(iterSampleIdToSample2dMap->second.m_sample);
+			NOT_NULL(iterSampleIdToSample2dMap->second.mFmodSample);
+			NOT_NULL(iterSampleIdToSample2dMap->second.mFmodChannel);
+
+			iterSampleIdToSample2dMap->second.mFmodChannel->stop();
+			iterSampleIdToSample2dMap->second.mFmodChannel = nullptr;
 		}
 		else if (isSample3d(sound.getSampleId(), iterSampleIdToSample3dMap))
 		{
-			AIL_stop_sample(iterSampleIdToSample3dMap->second.m_sample);
-			AIL_end_sample(iterSampleIdToSample3dMap->second.m_sample);
+			NOT_NULL(iterSampleIdToSample3dMap->second.mFmodSample);
+			NOT_NULL(iterSampleIdToSample3dMap->second.mFmodChannel);
+
+			iterSampleIdToSample3dMap->second.mFmodChannel->stop();
+			iterSampleIdToSample3dMap->second.mFmodChannel = nullptr;
 		}
 		else if (isSampleStream(sound.getSampleId(), iterSampleIdToSampleStreamMap))
 		{
-			//AIL_pause_stream(iterSampleIdToSampleStreamMap->second.m_stream, 1);
-			AIL_close_stream(iterSampleIdToSampleStreamMap->second.m_stream);
-			iterSampleIdToSampleStreamMap->second.m_stream = NULL;
+			NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodStream);
+			NOT_NULL(iterSampleIdToSampleStreamMap->second.mFmodChannel);
+
+			iterSampleIdToSampleStreamMap->second.mFmodChannel->stop();
+			iterSampleIdToSampleStreamMap->second.mFmodChannel = nullptr;
+			iterSampleIdToSampleStreamMap->second.mFmodStream = nullptr;
 		}
 		else
 		{
@@ -3370,35 +3195,39 @@ void Audio::releaseSampleId(Sound2 const &sound)
 	if (s_installed)
 	{
 		// Make sure the sample is stopped
-
 		stopSample(sound);
 
 		// Now release the id
-
 		SampleIdToSample2dMap::iterator iterSampleIdToSample2dMap;
 		SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap;
 		SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap;
 
 		if (isSample2d(sound.getSampleId(), iterSampleIdToSample2dMap))
 		{
-			AIL_release_sample_handle(iterSampleIdToSample2dMap->second.m_sample);
+			iterSampleIdToSample2dMap->second.mFmodSample->release();
 			--s_allocated2dSampleHandles;
-			iterSampleIdToSample2dMap->second.m_sample = NULL;
+			iterSampleIdToSample2dMap->second.mFmodSample = nullptr;
+			iterSampleIdToSample2dMap->second.mFmodChannel = nullptr;
 
 			s_sampleIdToSample2dMap.erase(iterSampleIdToSample2dMap);
 			removeSoundFromPrioritizedPlayingSounds(sound);
 		}
 		else if (isSample3d(sound.getSampleId(), iterSampleIdToSample3dMap))
 		{
-			AIL_release_sample_handle(iterSampleIdToSample3dMap->second.m_sample);
+			iterSampleIdToSample3dMap->second.mFmodSample->release();
 			--s_allocated3dSampleHandles;
-			iterSampleIdToSample3dMap->second.m_sample = NULL;
+			iterSampleIdToSample3dMap->second.mFmodSample = nullptr;
+			iterSampleIdToSample3dMap->second.mFmodChannel = nullptr;
 
 			s_sampleIdToSample3dMap.erase(iterSampleIdToSample3dMap);
 			removeSoundFromPrioritizedPlayingSounds(sound);
 		}
 		else if (isSampleStream(sound.getSampleId(), iterSampleIdToSampleStreamMap))
 		{
+			iterSampleIdToSampleStreamMap->second.mFmodStream->release();
+			iterSampleIdToSampleStreamMap->second.mFmodStream = nullptr;
+			iterSampleIdToSampleStreamMap->second.mFmodChannel = nullptr;
+			
 			s_sampleIdToSampleStreamMap.erase(iterSampleIdToSampleStreamMap);
 			removeSoundFromPrioritizedPlayingSounds(sound);
 		}
@@ -3410,45 +3239,45 @@ void Audio::releaseSampleId(Sound2 const &sound)
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getSoundTemplateVolume(SoundId const &soundId)
 {
 	float result = 0.0f;
+	const auto it = getIterSoundIdToSoundMap(soundId);
 
-	SoundIdToSoundMap::iterator iterSoundMap = getIterSoundIdToSoundMap(soundId);
-
-	if (iterSoundMap != s_soundIdToSoundMap.end())
+	if (it != s_soundIdToSoundMap.end())
 	{
-		result = iterSoundMap->second->getTemplateVolume();
+		result = it->second->getTemplateVolume();
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getSoundAttenuation(SoundId const &soundId)
 {
 	float result = 0.0f;
+	const auto it = getIterSoundIdToSoundMap(soundId);
 
-	SoundIdToSoundMap::iterator iterSoundMap = getIterSoundIdToSoundMap(soundId);
-
-	if (iterSoundMap != s_soundIdToSoundMap.end())
+	if (it != s_soundIdToSoundMap.end())
 	{
-		result = iterSoundMap->second->getAttenuation();
+		result = it->second->getAttenuation();
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getSoundVolume(SoundId const &soundId)
 {
 	float result = 0.0f;
+	auto it = getIterSoundIdToSoundMap(soundId);
 
-	SoundIdToSoundMap::iterator iterSoundMap = getIterSoundIdToSoundMap(soundId);
-
-	if (iterSoundMap != s_soundIdToSoundMap.end())
+	if (it != s_soundIdToSoundMap.end())
 	{
-		result = iterSoundMap->second->getVolume();
+		result = it->second->getVolume();
 	}
 
 	return result;
@@ -3459,92 +3288,103 @@ float Audio::getSoundVolume(SoundId const &soundId)
 float Audio::getSoundPitchDelta(SoundId const &soundId)
 {
 	float result = 0.0f;
+	const auto it = getIterSoundIdToSoundMap(soundId);
 
-	SoundIdToSoundMap::iterator iterSoundMap = getIterSoundIdToSoundMap(soundId);
-
-	if (iterSoundMap != s_soundIdToSoundMap.end())
+	if (it != s_soundIdToSoundMap.end())
 	{
-		result = iterSoundMap->second->getPitchDelta();
+		result = it->second->getPitchDelta();
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getCachedSampleCount()
 {
 	return static_cast<int>(s_sampleCache.size());
 }
 
 //-----------------------------------------------------------------------------
+
+
 int Audio::getSample2dCount()
 {
 	return static_cast<int>(s_sampleIdToSample2dMap.size());
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSample3dCount()
 {
 	return static_cast<int>(s_sampleIdToSample3dMap.size());
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSampleStreamCount()
 {
 	return static_cast<int>(s_sampleIdToSampleStreamMap.size());
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSampleCount()
 {
 	return getSample2dCount() + getSample3dCount() + getSampleStreamCount();
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSoundCount()
 {
 	return static_cast<int>(s_soundIdToSoundMap.size());
 }
 
 //-----------------------------------------------------------------------------
-int Audio::getDigitalCpuPercent()
+
+float Audio::getDigitalCpuPercent()
 {
-	int result = 0;
+	float result = 0.0f;
 
 	if (s_installed)
 	{
-		result = AIL_digital_CPU_percent(s_digitalDevice2d);
+		s_fmod_core_system->getCPUUsage(nullptr, nullptr, nullptr, nullptr, &result);
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getDigitalLatency()
 {
 	int result = 0;
 
 	if (s_installed)
 	{
-		result = AIL_digital_latency(s_digitalDevice2d);
+		// nope
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::playSound(Iff &iff)
 {
-	return playSound(iff, NULL, NULL);
+	return playSound(iff, nullptr, nullptr);
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::playSound(Iff &iff, Vector const &position)
 {
-	return playSound(iff, &position, NULL);
+	return playSound(iff, &position, nullptr);
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::playSound(Iff &iff, Vector const * const position, CellProperty const * const parentCell)
 {
 	SoundId result;
@@ -3553,10 +3393,9 @@ SoundId Audio::playSound(Iff &iff, Vector const * const position, CellProperty c
 	{
 		SoundTemplate const *soundTemplate = SoundTemplateList::fetch(&iff);
 
-		if (soundTemplate != NULL)
+		if (soundTemplate != nullptr)
 		{
-			if ((position != NULL) &&
-				soundTemplate->is3d())
+			if (position != nullptr && soundTemplate->is3d())
 			{
 				result = playSound3d(soundTemplate, *position, parentCell);
 			}
@@ -3577,22 +3416,23 @@ SoundId Audio::playSound(Iff &iff, Vector const * const position, CellProperty c
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::attachSound(char const *path, Object const *object, char const *hardPointName)
 {
-	return AudioNamespace::playSound(path, NULL, object, hardPointName, NULL);
+	return AudioNamespace::playSound(path, nullptr, object, hardPointName, nullptr);
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId Audio::attachSound(Iff &iff, Object const *object, char const *hardPointName)
 {
 	SoundId result;
 
-	if (s_installed &&
-		(object != NULL))
+	if (s_installed && object != nullptr)
 	{
 		SoundTemplate const *soundTemplate = SoundTemplateList::fetch(&iff);
 
-		if (soundTemplate != NULL)
+		if (soundTemplate != nullptr)
 		{
 			result = ::attachSound(soundTemplate, object, hardPointName);
 
@@ -3614,26 +3454,25 @@ void Audio::detachSound(SoundId const &soundId, float const fadeOutTime)
 //-----------------------------------------------------------------------------
 void Audio::detachSound(Object const &object, float const fadeOutTime)
 {
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.begin();
 	s_localPurgeList.clear();
 
-	for (; iterSoundIdToSoundMap != s_soundIdToSoundMap.end(); ++iterSoundIdToSoundMap)
+	for(auto& iterSoundIdToSoundMap : s_soundIdToSoundMap)
 	{
-		if (iterSoundIdToSoundMap->second->getObject() == &object)
+		if (iterSoundIdToSoundMap.second->getObject() == &object)
 		{
-			s_localPurgeList.push_back(iterSoundIdToSoundMap->first);
+			s_localPurgeList.emplace_back(iterSoundIdToSoundMap.first);
 		}
 	}
 
 	// Stop all the sounds
-
-	for (unsigned int i = 0; i < s_localPurgeList.size(); ++i)
+	for(auto& i : s_localPurgeList)
 	{
-		stopSound(s_localPurgeList[i], fadeOutTime);
+		stopSound(i, fadeOutTime);
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 bool isSample2d(SampleId const &sampleId, SampleIdToSample2dMap::iterator &iterSampleIdToSample2dMap)
 {
 	bool result = false;
@@ -3642,13 +3481,14 @@ bool isSample2d(SampleId const &sampleId, SampleIdToSample2dMap::iterator &iterS
 	{
 		iterSampleIdToSample2dMap = s_sampleIdToSample2dMap.find(sampleId);
 
-		result = (iterSampleIdToSample2dMap != s_sampleIdToSample2dMap.end());
+		result = iterSampleIdToSample2dMap != s_sampleIdToSample2dMap.end();
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 bool isSample3d(SampleId const &sampleId, SampleIdToSample3dMap::iterator &iterSampleIdToSample3dMap)
 {
 	bool result = false;
@@ -3657,13 +3497,14 @@ bool isSample3d(SampleId const &sampleId, SampleIdToSample3dMap::iterator &iterS
 	{
 		iterSampleIdToSample3dMap = s_sampleIdToSample3dMap.find(sampleId);
 
-		result = (iterSampleIdToSample3dMap != s_sampleIdToSample3dMap.end());
+		result = iterSampleIdToSample3dMap != s_sampleIdToSample3dMap.end();
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 bool isSampleStream(SampleId const &sampleId, SampleIdToSampleStreamMap::iterator &iterSampleIdToSampleStreamMap)
 {
 	bool result = false;
@@ -3672,7 +3513,7 @@ bool isSampleStream(SampleId const &sampleId, SampleIdToSampleStreamMap::iterato
 	{
 		iterSampleIdToSampleStreamMap = s_sampleIdToSampleStreamMap.find(sampleId);
 
-		result = (iterSampleIdToSampleStreamMap != s_sampleIdToSampleStreamMap.end());
+		result = iterSampleIdToSampleStreamMap != s_sampleIdToSampleStreamMap.end();
 	}
 
 	return result;
@@ -3680,11 +3521,12 @@ bool isSampleStream(SampleId const &sampleId, SampleIdToSampleStreamMap::iterato
 
 
 //-----------------------------------------------------------------------------
+// only used by soundeditor
 AudioSampleInformation Audio::getSampleInformation(std::string const &path)
 {
 	AudioSampleInformation audioSampleInformation;
 
-	if (s_installed)
+	/*if (s_installed)
 	{
 		if (!path.empty())
 		{
@@ -3697,7 +3539,7 @@ AudioSampleInformation Audio::getSampleInformation(std::string const &path)
 				byte *fileImage = file->readEntireFileAndClose();
 				delete file;
 
-				S32 result = AIL_WAV_info(fileImage, &soundInfo);
+				S32 result = false;//AIL_WAV_info(fileImage, &soundInfo);
 
 				if (result)
 				{
@@ -3718,7 +3560,7 @@ AudioSampleInformation Audio::getSampleInformation(std::string const &path)
 				delete [] fileImage;
 			}
 		}
-	}
+	}*/
 
 	return audioSampleInformation;
 }
@@ -3734,33 +3576,28 @@ void Audio::stopAllSounds(float const fadeOutTime)
 }
 
 //-----------------------------------------------------------------------------
+
 void stopAllSounds(float const fadeOutTime, bool const keepAlive)
 {
 	s_localPurgeList.clear();
-	SoundIdToSoundMap::const_iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.begin();
 
-	for (; iterSoundIdToSoundMap != s_soundIdToSoundMap.end(); ++iterSoundIdToSoundMap)
+	for(const auto& iterSoundIdToSoundMap : s_soundIdToSoundMap)
 	{
-		s_localPurgeList.push_back(iterSoundIdToSoundMap->first);
+		s_localPurgeList.emplace_back(iterSoundIdToSoundMap.first);
 	}
 
-	SoundIdList::const_iterator iterLocalPurgeList = s_localPurgeList.begin();
-
-	for (; iterLocalPurgeList != s_localPurgeList.end(); ++iterLocalPurgeList)
+	for(const auto& soundId : s_localPurgeList)
 	{
-		SoundId const & soundId = (*iterLocalPurgeList);
 		stopSound(soundId, fadeOutTime, keepAlive);
 	}
 
 	s_localPurgeList.clear();
 
-	Audio::stopBufferedSound();
-	Audio::stopBufferedMusic();
-
 	Audio::alter(0.0f, s_listenerObject);
 }
 
 //-----------------------------------------------------------------------------
+
 std::string const &Audio::getCurrent3dProvider()
 {
 	return s_soundProvider;
@@ -3773,82 +3610,84 @@ void Audio::setRoomType(RoomType const roomType)
 {
 	if (s_installed && isRoomTypeSupported())
 	{
+		FMOD_REVERB_PROPERTIES revProps = FMOD_PRESET_GENERIC;
+		
 		switch (roomType)
 		{
-			case RT_alley:           { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_ALLEY); } break;
-			case RT_arena:           { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_ARENA); } break;
-			case RT_auditorium:      { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_AUDITORIUM); } break;
-			case RT_bathRoom:        { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_BATHROOM); } break;
-			case RT_carpetedHallway: { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_HALLWAY); } break;
-			case RT_cave:            { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_CAVE); } break;
-			case RT_city:            { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_CITY); } break;
-			case RT_concertHall:     { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_CONCERTHALL); } break;
-			case RT_dizzy:           { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_DIZZY); } break;
-			case RT_drugged:         { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_DRUGGED); } break;
-			case RT_forest:          { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_FOREST); } break;
-			case RT_generic:         { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_GENERIC); } break;
-			case RT_hallway:         { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_HALLWAY); } break;
-			case RT_hangar:          { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_HANGAR); } break;
-			case RT_livingRoom:      { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_LIVINGROOM); } break;
-			case RT_mountains:       { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_MOUNTAINS); } break;
-			case RT_paddedCell:      { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_PADDEDCELL); } break;
-			case RT_parkingLot:      { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_PARKINGLOT); } break;
-			case RT_plain:           { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_PLAIN); } break;
-			case RT_psychotic:       { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_PSYCHOTIC); } break;
-			case RT_quarry:          { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_QUARRY); } break;
-			case RT_room:            { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_ROOM); } break;
-			case RT_sewerPipe:       { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_SEWERPIPE); } break;
-			case RT_stoneCorridor:   { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_STONECORRIDOR); } break;
-			case RT_stoneRoom:       { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_STONEROOM); } break;
-			case RT_underWater:      { AIL_set_room_type(s_digitalDevice2d, ENVIRONMENT_UNDERWATER); } break;
+			case RT_alley:           { revProps = FMOD_PRESET_ALLEY; } break;
+			case RT_arena:           { revProps = FMOD_PRESET_ARENA; } break;
+			case RT_auditorium:      { revProps = FMOD_PRESET_AUDITORIUM; } break;
+			case RT_bathRoom:        { revProps = FMOD_PRESET_BATHROOM; } break;
+			case RT_carpetedHallway: { revProps = FMOD_PRESET_CARPETTEDHALLWAY; } break;
+			case RT_cave:            { revProps = FMOD_PRESET_CAVE; } break;
+			case RT_city:            { revProps = FMOD_PRESET_CITY; } break;
+			case RT_concertHall:     { revProps = FMOD_PRESET_CONCERTHALL; } break;
+			case RT_dizzy:           { revProps = FMOD_PRESET_GENERIC; } break;
+			case RT_drugged:         { revProps = FMOD_PRESET_GENERIC; } break;
+			case RT_forest:          { revProps = FMOD_PRESET_FOREST; } break;
+			case RT_generic:         { revProps = FMOD_PRESET_GENERIC; } break;
+			case RT_hallway:         { revProps = FMOD_PRESET_HALLWAY; } break;
+			case RT_hangar:          { revProps = FMOD_PRESET_HANGAR; } break;
+			case RT_livingRoom:      { revProps = FMOD_PRESET_LIVINGROOM; } break;
+			case RT_mountains:       { revProps = FMOD_PRESET_MOUNTAINS; } break;
+			case RT_paddedCell:      { revProps = FMOD_PRESET_PADDEDCELL; } break;
+			case RT_parkingLot:      { revProps = FMOD_PRESET_PARKINGLOT; } break;
+			case RT_plain:           { revProps = FMOD_PRESET_PLAIN; } break;
+			case RT_psychotic:       { revProps = FMOD_PRESET_GENERIC; } break;
+			case RT_quarry:          { revProps = FMOD_PRESET_QUARRY; } break;
+			case RT_room:            { revProps = FMOD_PRESET_ROOM; } break;
+			case RT_sewerPipe:       { revProps = FMOD_PRESET_SEWERPIPE; } break;
+			case RT_stoneCorridor:   { revProps = FMOD_PRESET_STONECORRIDOR; } break;
+			case RT_stoneRoom:       { revProps = FMOD_PRESET_STONEROOM; } break;
+			case RT_underWater:      { revProps = FMOD_PRESET_UNDERWATER; } break;
 			default:                 { DEBUG_FATAL(true, ("Trying to set an unknown room type.")); } break;
 		}
+
+		s_fmod_core_system->setReverbProperties(0, &revProps);
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 Audio::RoomType Audio::getRoomType()
 {
 	RoomType result = RT_notSupported;
 
-	if (s_digitalDevice2d != NULL)
+	if (s_fmod_core_system != nullptr)
 	{
-		switch (AIL_room_type(s_digitalDevice2d))
-		{
-			case ENVIRONMENT_ALLEY:           { result = RT_alley; } break;
-			case ENVIRONMENT_ARENA:           { result = RT_arena; } break;
-			case ENVIRONMENT_AUDITORIUM:      { result = RT_auditorium; } break;
-			case ENVIRONMENT_BATHROOM:        { result = RT_bathRoom; } break;
-			case ENVIRONMENT_CARPETEDHALLWAY: { result = RT_carpetedHallway; } break;
-			case ENVIRONMENT_CAVE:            { result = RT_cave; } break;
-			case ENVIRONMENT_CITY:            { result = RT_city; } break;
-			case ENVIRONMENT_CONCERTHALL:     { result = RT_concertHall; } break;
-			case ENVIRONMENT_DIZZY:           { result = RT_dizzy;}  break;
-			case ENVIRONMENT_DRUGGED:         { result = RT_drugged; } break;
-			case ENVIRONMENT_FOREST:          { result = RT_forest; } break;
-			case ENVIRONMENT_GENERIC:         { result = RT_generic; } break;
-			case ENVIRONMENT_HALLWAY:         { result = RT_hallway; } break;
-			case ENVIRONMENT_HANGAR:          { result = RT_hangar; } break;
-			case ENVIRONMENT_LIVINGROOM:      { result = RT_livingRoom; } break;
-			case ENVIRONMENT_MOUNTAINS:       { result = RT_mountains; } break;
-			case ENVIRONMENT_PADDEDCELL:      { result = RT_paddedCell; } break;
-			case ENVIRONMENT_PARKINGLOT:      { result = RT_parkingLot; } break;
-			case ENVIRONMENT_PLAIN:           { result = RT_plain; } break;
-			case ENVIRONMENT_PSYCHOTIC:       { result = RT_psychotic; } break;
-			case ENVIRONMENT_QUARRY:          { result = RT_quarry; } break;
-			case ENVIRONMENT_ROOM:            { result = RT_room; } break;
-			case ENVIRONMENT_SEWERPIPE:       { result = RT_sewerPipe; } break;
-			case ENVIRONMENT_STONECORRIDOR:   { result = RT_stoneCorridor; } break;
-			case ENVIRONMENT_STONEROOM:       { result = RT_stoneRoom; } break;
-			case ENVIRONMENT_UNDERWATER:      { result = RT_underWater; } break;
-			default:                          {} break;
-		}
+		FMOD_REVERB_PROPERTIES revProps = { 0 };
+		s_fmod_core_system->getReverbProperties(0, &revProps);
+
+		if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_ALLEY)) result = RT_alley;
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_ARENA)) result = RT_arena;
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_AUDITORIUM)) result = RT_auditorium;
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_BATHROOM)) result = RT_bathRoom;			
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_CARPETTEDHALLWAY)) result = RT_carpetedHallway;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_CAVE)) result = RT_cave;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_CITY)) result = RT_city;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_CONCERTHALL)) result = RT_concertHall;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_GENERIC)) result = RT_generic;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_FOREST)) result = RT_forest;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_HALLWAY)) result = RT_hallway;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_HANGAR)) result = RT_hangar;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_LIVINGROOM)) result = RT_livingRoom;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_MOUNTAINS)) result = RT_mountains;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_PADDEDCELL)) result = RT_paddedCell;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_PARKINGLOT)) result = RT_parkingLot;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_PLAIN)) result = RT_plain;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_QUARRY)) result = RT_quarry;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_ROOM)) result = RT_room;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_SEWERPIPE)) result = RT_sewerPipe;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_STONECORRIDOR)) result = RT_stoneCorridor;
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_STONEROOM)) result = RT_stoneRoom;	
+		else if(revProps == FMOD_REVERB_PROPERTIES(FMOD_PRESET_UNDERWATER)) result = RT_underWater;	
 	}
 
 	return result;
 }
 
 //-----------------------------------------------------------------------------
+
 char const * const Audio::getRoomTypeString()
 {
 	static char const * result = "";
@@ -3888,22 +3727,28 @@ char const * const Audio::getRoomTypeString()
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSampleEffectsLevel(SampleId const &sampleId, float const effectLevel)
 {
 	DEBUG_FATAL(((effectLevel == -0.0f) || (effectLevel < 0.0f) || (effectLevel > 1.0f)), ("effectLevel out of range: %f", effectLevel));
 
 	if (s_installed)
 	{
-		SampleIdToSample3dMap::iterator iterSampleIdToData3dMap = getIterSampleIdToSample3dMap(sampleId);
+		auto it = getIterSampleIdToSample3dMap(sampleId);
 
-		if (iterSampleIdToData3dMap != s_sampleIdToSample3dMap.end())
+		if (it != s_sampleIdToSample3dMap.end())
 		{
-			AIL_set_sample_reverb_levels(iterSampleIdToData3dMap->second.m_sample, static_cast<F32>(clamp(0.0f, effectLevel, 1.0f)), 0.0f);
+			//NOT_NULL(it->second.mFmodSample);
+			//NOT_NULL(it->second.mFmodChannel);
+
+			// TODO : dry level ??
+			it->second.mFmodChannel->setReverbProperties(0, 0.0f);
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getSampleEffectsLevel(SampleId const &sampleId)
 {
 	float resultDry = 0.0f;
@@ -3911,24 +3756,28 @@ float Audio::getSampleEffectsLevel(SampleId const &sampleId)
 
 	if (s_installed)
 	{
-		SampleIdToSample3dMap::iterator iterSampleIdToData3dMap = getIterSampleIdToSample3dMap(sampleId);
+		auto it = getIterSampleIdToSample3dMap(sampleId);
 
-		if (iterSampleIdToData3dMap != s_sampleIdToSample3dMap.end())
+		if (it != s_sampleIdToSample3dMap.end())
 		{
-			AIL_sample_reverb_levels(iterSampleIdToData3dMap->second.m_sample, &resultDry, &resultWet);
+			NOT_NULL(it->second.mFmodSample);
+			NOT_NULL(it->second.mFmodChannel);
+
+			// TODO : dry level ?
+			it->second.mFmodChannel->getReverbProperties(0, &resultWet);
 		}
 	}
 
 	return resultDry;
 }
 
+//-----------------------------------------------------------------------------
 
 static int once = true;
 
-//-----------------------------------------------------------------------------
-U32 __stdcall fileOpenCallBack(char const *fileName, uintptr_t *fileHandle)
+FMOD_RESULT F_CALLBACK fileOpenCallBack(const char *fileName, unsigned int *fileSize, void **fileHandle, void *userData)
 {
-	if (once && !Os::isMainThread())
+	if (!Os::isMainThread() && !PerThreadData::isThreadInstalled())
 	{
 		once = false;
 		PerThreadData::threadInstall(false);
@@ -3938,157 +3787,123 @@ U32 __stdcall fileOpenCallBack(char const *fileName, uintptr_t *fileHandle)
 
 	if (abstractFile != nullptr)
 	{
-		*fileHandle = s_nextFileHandle;
+		*fileSize = static_cast<unsigned int>(abstractFile->length());
+		*fileHandle = reinterpret_cast<void *>(s_nextFileHandle);
 		s_fileMap.insert(std::make_pair(s_nextFileHandle, abstractFile));
 		++s_nextFileHandle;
 
 #ifdef _DEBUG
-		ms_handleNameMap.insert(std::make_pair(*fileHandle, fileName));
+		ms_handleNameMap.insert(std::make_pair(reinterpret_cast<uintptr_t>(*fileHandle), fileName));
 #endif
 	}
 	else
 	{
-		*fileHandle = NULL;
+		*fileHandle = nullptr;
 	}
 
-	return (abstractFile != nullptr);
+	return (abstractFile != nullptr ? FMOD_OK : FMOD_ERR_FILE_NOTFOUND);
 }
 
 //-----------------------------------------------------------------------------
-void __stdcall fileCloseCallBack(uintptr_t const fileHandle)
+
+FMOD_RESULT F_CALLBACK fileCloseCallBack(void *fileHandle, void *userData)
 {
-	if (once && !Os::isMainThread())
+	if (!Os::isMainThread() && !PerThreadData::isThreadInstalled())
 	{
 		once = false;
 		PerThreadData::threadInstall(false);
 	}
 
-	auto fileMapIter = s_fileMap.find(fileHandle);
+	auto fileMapIter = s_fileMap.find(reinterpret_cast<uintptr_t>(fileHandle));
 
 	if (fileMapIter != s_fileMap.end())
 	{
 		AbstractFile *abstractFile = fileMapIter->second;
 
-		// Close the file
-
 		abstractFile->close();
 
-		// Delete the file pointer
-
 		delete abstractFile;
-
-		// Remove the file from the list
 
 		s_fileMap.erase(fileMapIter);
 
 #ifdef _DEBUG
-		ms_fileCloseHandleSet.insert(fileHandle);
+		ms_fileCloseHandleSet.insert(reinterpret_cast<uintptr_t>(fileHandle));
 #endif
 	}
 	else
 	{
 #ifdef _DEBUG
-		determineCallbackError("close", fileHandle);
+		determineCallbackError("close", reinterpret_cast<uintptr_t>(fileHandle));
 #endif
+		return FMOD_ERR_FILE_NOTFOUND;
 	}
+
+	return FMOD_OK;
 }
 
 //-----------------------------------------------------------------------------
-S32 __stdcall fileSeekCallBack(uintptr_t const fileHandle, S32 const offset, U32 const type)
+
+static FMOD_RESULT F_CALLBACK fileSeekCallBack(void *fileHandle, unsigned int offset, void *userData)
 {
-	if (once && !Os::isMainThread())
+	if (!Os::isMainThread() && !PerThreadData::isThreadInstalled())
 	{
 		once = false;
 		PerThreadData::threadInstall(false);
 	}
 
-	int result = 0;
-	FileMap::iterator fileMapIter = s_fileMap.find(fileHandle);
+	auto fileMapIter = s_fileMap.find(reinterpret_cast<uintptr_t>(fileHandle));
 
 	if (fileMapIter != s_fileMap.end())
 	{
 		AbstractFile *abstractFile = fileMapIter->second;
 
-		switch (type)
-		{
-			case AIL_FILE_SEEK_BEGIN:   // Seek relative to the beginning of the file
-				{
-					abstractFile->seek(AbstractFile::SeekBegin, offset);
-				}
-				break;
-			case AIL_FILE_SEEK_CURRENT: // Seek relative to the current position of the file
-				{
-					abstractFile->seek(AbstractFile::SeekCurrent, offset);
-				}
-				break;
-			case AIL_FILE_SEEK_END:     // Seek relative to the end of the file
-				{
-					abstractFile->seek(AbstractFile::SeekEnd, offset);
-				}
-				break;
-			default:
-				{
-					FATAL(1, ("Unkown file seek callback type: %d", type));
-				}
-				break;
-		}
-
+		abstractFile->seek(AbstractFile::SeekBegin, static_cast<int>(offset));
+		
 		// Set the current file position
-
-		result = abstractFile->tell();
+		abstractFile->tell();
 	}
 	else
 	{
 #ifdef _DEBUG
-		determineCallbackError("seek", fileHandle);
+		determineCallbackError("seek", reinterpret_cast<uintptr_t>(fileHandle));
 #endif
+		return FMOD_ERR_FILE_COULDNOTSEEK;
 	}
 
-	// Return the new absolute position of the file pointer (relative to the beginning of the file)
-
-	return result;
+	return FMOD_OK;
 }
 
 //-----------------------------------------------------------------------------
-U32 __stdcall fileReadCallBack(uintptr_t const fileHandle, void *buffer, U32 const bytes)
-{
-// miles crasher hack
-#if 0
-	static bool trashMiles = false;
 
-	if(trashMiles)
-	{
-		buffer = (void *)0xdeadbeef;
-	}
-#endif
-// end miles crasher hack
-	if (once && !Os::isMainThread())
+static FMOD_RESULT F_CALLBACK fileReadCallBack(void *fileHandle, void *buffer, unsigned int sizeBytes, unsigned int *bytesRead, void *userData)
+{
+	if (!Os::isMainThread() && !PerThreadData::isThreadInstalled())
 	{
 		once = false;
 		PerThreadData::threadInstall(false);
 	}
 
-	int bytesRead = 0;
-
-	auto fileMapIter = s_fileMap.find(fileHandle);
+	auto fileMapIter = s_fileMap.find(reinterpret_cast<uintptr_t>(fileHandle));
 
 	if (fileMapIter != s_fileMap.end())
 	{
 		AbstractFile *abstractFile = fileMapIter->second;
-
-		bytesRead = abstractFile->read(buffer, bytes);
+		
+		*bytesRead = static_cast<unsigned int>(abstractFile->read(buffer, static_cast<int>(sizeBytes)));
 	}
 	else
 	{
 #ifdef _DEBUG
-		determineCallbackError("read", fileHandle);
+		determineCallbackError("read", reinterpret_cast<uintptr_t>(fileHandle));
 #endif
+		return FMOD_ERR_FILE_BAD;
 	}
 
-	return static_cast<U32>(bytesRead);
+	return FMOD_OK;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isRoomTypeSupported()
 {
 	return (getRoomType() != RT_notSupported);
@@ -4117,15 +3932,16 @@ void Audio::getCurrentSampleTime(SoundId const &soundId, float &timeTotal, float
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setCurrentSoundTime(SoundId const &soundId, int const milliSecond)
 {
-	SoundIdToSoundMap::iterator iterSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundMap != s_soundIdToSoundMap.end())
 	{
 		Sound2 *sound = iterSoundMap->second;
 
-		if (sound != NULL)
+		if (sound != nullptr)
 		{
 			sound->setCurrentTime(milliSecond);
 		}
@@ -4133,6 +3949,7 @@ void Audio::setCurrentSoundTime(SoundId const &soundId, int const milliSecond)
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::getCurrentSoundTime(SoundId const &soundId, int &milliSecond)
 {
 	bool result = false;
@@ -4142,7 +3959,7 @@ bool Audio::getCurrentSoundTime(SoundId const &soundId, int &milliSecond)
 	{
 		Sound2 * const sound = iterSoundMap->second;
 
-		if (sound != NULL)
+		if (sound != nullptr)
 		{
 			result = true;
 			milliSecond = sound->getCurrentTime();
@@ -4153,6 +3970,7 @@ bool Audio::getCurrentSoundTime(SoundId const &soundId, int &milliSecond)
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::getCurrentSoundTime(SoundId const &soundId, int &totalMilliSecond, int &milliSecond)
 {
 	bool result = false;
@@ -4162,7 +3980,7 @@ bool Audio::getCurrentSoundTime(SoundId const &soundId, int &totalMilliSecond, i
 	{
 		Sound2 * const sound = iterSoundMap->second;
 
-		if (sound != NULL)
+		if (sound != nullptr)
 		{
 			result = true;
 			milliSecond = sound->getCurrentTime();
@@ -4174,6 +3992,7 @@ bool Audio::getCurrentSoundTime(SoundId const &soundId, int &totalMilliSecond, i
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::getTotalSoundTime(SoundId const &soundId, int &milliSecond)
 {
 	bool result = false;
@@ -4183,7 +4002,7 @@ bool Audio::getTotalSoundTime(SoundId const &soundId, int &milliSecond)
 	{
 		Sound2 * const sound = iterSoundMap->second;
 
-		if (sound != NULL)
+		if (sound != nullptr)
 		{
 			result = true;
 			milliSecond = sound->getTotalTime();
@@ -4194,12 +4013,13 @@ bool Audio::getTotalSoundTime(SoundId const &soundId, int &milliSecond)
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isSampleAtEnd(SoundId const &soundId)
 {
 	bool result = false;
 	SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap;
 
-	SoundIdToSoundMap::iterator iterSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -4207,13 +4027,13 @@ bool Audio::isSampleAtEnd(SoundId const &soundId)
 
 		if (isSampleStream(sound->getSampleId(), iterSampleIdToSampleStreamMap))
 		{
-			HSTREAM stream = iterSampleIdToSampleStreamMap->second.m_stream;
-			S32 millisecondsTotal = 0;
-			S32 millisecondsCurrent = 0;
+			unsigned int millisecondsTotal = 0;
+			unsigned int millisecondsCurrent = 0;
 
-			AIL_stream_ms_position(stream, &millisecondsTotal, &millisecondsCurrent);
-
-			result = (millisecondsTotal == millisecondsCurrent);
+			iterSampleIdToSampleStreamMap->second.mFmodChannel->getPosition(&millisecondsCurrent, FMOD_TIMEUNIT_MS);
+			iterSampleIdToSampleStreamMap->second.mFmodStream->getLength(&millisecondsTotal, FMOD_TIMEUNIT_MS);
+			
+			result = millisecondsTotal == millisecondsCurrent;
 		}
 	}
 
@@ -4221,6 +4041,7 @@ bool Audio::isSampleAtEnd(SoundId const &soundId)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::getSampleTime(SampleId const &sampleId, float &timeTotal, float &timeCurrent)
 {
 	timeTotal = 0.0f;
@@ -4234,12 +4055,12 @@ void Audio::getSampleTime(SampleId const &sampleId, float &timeTotal, float &tim
 
 		if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 		{
-			HSAMPLE sample = iterSampleIdToSample2dMap->second.m_sample;
-			S32 millisecondsTotal = 0;
-			S32 millisecondsCurrent = 0;
+			unsigned int millisecondsTotal = 0;
+			unsigned int millisecondsCurrent = 0;
 
-			AIL_sample_ms_position(sample, &millisecondsTotal, &millisecondsCurrent);
-
+			iterSampleIdToSample2dMap->second.mFmodChannel->getPosition(&millisecondsCurrent, FMOD_TIMEUNIT_MS);
+			iterSampleIdToSample2dMap->second.mFmodSample->getLength(&millisecondsTotal, FMOD_TIMEUNIT_MS);
+			
 			timeTotal = static_cast<float>(millisecondsTotal) / 1000.0f;
 			timeCurrent = static_cast<float>(millisecondsCurrent) / 1000.0f;
 		}
@@ -4254,7 +4075,9 @@ void Audio::getSampleTime(SampleId const &sampleId, float &timeTotal, float &tim
 			{
 				timeTotal = iterSampleCache->second.m_time;
 
-				int const sampleOffset = static_cast<int>(AIL_sample_position(iterSampleIdToSample3dMap->second.m_sample));
+				unsigned int sampleOffset = 0;
+				iterSampleIdToSample3dMap->second.mFmodChannel->getPosition(&sampleOffset, FMOD_TIMEUNIT_PCMBYTES);
+				
 				int const sampleSize = iterSampleIdToSample3dMap->second.getFileSize();
 
 				if (sampleSize > 0)
@@ -4265,12 +4088,12 @@ void Audio::getSampleTime(SampleId const &sampleId, float &timeTotal, float &tim
 		}
 		else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 		{
-			HSTREAM stream = iterSampleIdToSampleStreamMap->second.m_stream;
-			S32 millisecondsTotal = 0;
-			S32 millisecondsCurrent = 0;
+			unsigned int millisecondsTotal = 0;
+			unsigned int millisecondsCurrent = 0;
 
-			AIL_stream_ms_position(stream, &millisecondsTotal, &millisecondsCurrent);
-
+			iterSampleIdToSampleStreamMap->second.mFmodChannel->getPosition(&millisecondsCurrent, FMOD_TIMEUNIT_MS);
+			iterSampleIdToSampleStreamMap->second.mFmodStream->getLength(&millisecondsTotal, FMOD_TIMEUNIT_MS);
+			
 			timeTotal = static_cast<float>(millisecondsTotal) / 1000.0f;
 			timeCurrent = static_cast<float>(millisecondsCurrent) / 1000.0f;
 		}
@@ -4278,21 +4101,17 @@ void Audio::getSampleTime(SampleId const &sampleId, float &timeTotal, float &tim
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getSampleCurrentTime(SampleId const &sampleId)
 {
-	int result = 0;
+	unsigned int result = 0;
 	SampleIdToSample2dMap::iterator iterSampleIdToSample2dMap;
 	SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap;
 	SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap;
 
 	if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 	{
-		S32 millisecondsTotal = 0;
-		S32 millisecondsCurrent = 0;
-
-		AIL_sample_ms_position(iterSampleIdToSample2dMap->second.m_sample, &millisecondsTotal, &millisecondsCurrent);
-
-		result = millisecondsCurrent;
+		iterSampleIdToSample2dMap->second.mFmodChannel->getPosition(&result, FMOD_TIMEUNIT_MS);
 	}
 	else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 	{
@@ -4301,7 +4120,9 @@ int Audio::getSampleCurrentTime(SampleId const &sampleId)
 
 		if (iterSampleCache != s_sampleCache.end())
 		{
-			int const sampleOffset = static_cast<int>(AIL_sample_position(iterSampleIdToSample3dMap->second.m_sample));
+			unsigned int sampleOffset = 0;
+			iterSampleIdToSample3dMap->second.mFmodChannel->getPosition(&sampleOffset, FMOD_TIMEUNIT_PCMBYTES);
+			
 			int const sampleSize = iterSampleIdToSample3dMap->second.getFileSize();
 
 			if (sampleSize > 0)
@@ -4312,31 +4133,26 @@ int Audio::getSampleCurrentTime(SampleId const &sampleId)
 	}
 	else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 	{
-		S32 millisecondsTotal = 0;
-		S32 millisecondsCurrent = 0;
-
-		AIL_stream_ms_position(iterSampleIdToSampleStreamMap->second.m_stream, &millisecondsTotal, &millisecondsCurrent);
-
-		result = millisecondsCurrent;
+		iterSampleIdToSampleStreamMap->second.mFmodChannel->getPosition(&result, FMOD_TIMEUNIT_MS);
 	}
 
-	return result;
+	return static_cast<unsigned int>(result);
 }
 
 //-----------------------------------------------------------------------------
-int Audio::getSampleTotalTime(SampleId const &sampleId)
+
+unsigned int Audio::getSampleTotalTime(SampleId const &sampleId)
 {
-	int result = 0;
+	unsigned int result = 0;
 	SampleIdToSample2dMap::iterator iterSampleIdToSample2dMap;
 	SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap;
 	SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap;
 
 	if (isSample2d(sampleId, iterSampleIdToSample2dMap))
 	{
-		S32 millisecondsTotal = 0;
-		S32 millisecondsCurrent = 0;
+		unsigned int millisecondsTotal = 0;
 
-		AIL_sample_ms_position(iterSampleIdToSample2dMap->second.m_sample, &millisecondsTotal, &millisecondsCurrent);
+		iterSampleIdToSample2dMap->second.mFmodSample->getLength(&millisecondsTotal, FMOD_TIMEUNIT_MS);
 
 		result = millisecondsTotal;
 	}
@@ -4347,15 +4163,14 @@ int Audio::getSampleTotalTime(SampleId const &sampleId)
 
 		if (iterSampleCache != s_sampleCache.end())
 		{
-			result = static_cast<int>(iterSampleCache->second.m_time * 1000.0f);
+			result = static_cast<unsigned int>(iterSampleCache->second.m_time * 1000.0f);
 		}
 	}
 	else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 	{
-		S32 millisecondsTotal = 0;
-		S32 millisecondsCurrent = 0;
+		unsigned int millisecondsTotal = 0;
 
-		AIL_stream_ms_position(iterSampleIdToSampleStreamMap->second.m_stream, &millisecondsTotal, &millisecondsCurrent);
+		iterSampleIdToSampleStreamMap->second.mFmodStream->getLength(&millisecondsTotal, FMOD_TIMEUNIT_MS);
 
 		result = millisecondsTotal;
 	}
@@ -4364,6 +4179,7 @@ int Audio::getSampleTotalTime(SampleId const &sampleId)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSampleCurrentTime(SampleId const &sampleId, int const milliSeconds)
 {
 	SampleIdToSample2dMap::iterator iterSampleIdToSample2dMap;
@@ -4374,11 +4190,19 @@ void Audio::setSampleCurrentTime(SampleId const &sampleId, int const milliSecond
 	{
 		if (milliSeconds == 0)
 		{
-			AIL_start_sample(iterSampleIdToSample2dMap->second.m_sample);
+			FMOD_RESULT fr = s_fmod_core_system->playSound(iterSampleIdToSample2dMap->second.mFmodSample, nullptr, false, &iterSampleIdToSample2dMap->second.mFmodChannel);
+
+			if(fr != FMOD_OK)
+			{
+				REPORT_LOG(true, ("Audio: setsamplecurrenttime: failed playback\n"));
+			}
 		}
 		else
 		{
-			AIL_set_sample_ms_position(iterSampleIdToSample2dMap->second.m_sample, milliSeconds);
+			if(iterSampleIdToSample2dMap->second.mFmodChannel)
+			{
+				iterSampleIdToSample2dMap->second.mFmodChannel->setPosition(milliSeconds, FMOD_TIMEUNIT_MS);
+			}
 		}
 	}
 	else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
@@ -4393,7 +4217,10 @@ void Audio::setSampleCurrentTime(SampleId const &sampleId, int const milliSecond
 
 			offset -= offset % 4;
 
-			AIL_set_sample_position(iterSampleIdToSample3dMap->second.m_sample, offset);
+			if(iterSampleIdToSample3dMap->second.mFmodChannel)
+			{
+				iterSampleIdToSample3dMap->second.mFmodChannel->setPosition(offset, FMOD_TIMEUNIT_PCMBYTES);
+			}
 		}
 		else
 		{
@@ -4404,16 +4231,25 @@ void Audio::setSampleCurrentTime(SampleId const &sampleId, int const milliSecond
 	{
 		if (milliSeconds == 0)
 		{
-			AIL_start_stream(iterSampleIdToSampleStreamMap->second.m_stream);
+			FMOD_RESULT fr = s_fmod_core_system->playSound(iterSampleIdToSampleStreamMap->second.mFmodStream, nullptr, false, &iterSampleIdToSampleStreamMap->second.mFmodChannel);
+
+			if(fr != FMOD_OK)
+			{
+				REPORT_LOG(true, ("Audio: setsamplecurrenttime: failed playback\n"));
+			}
 		}
 		else
 		{
-			AIL_set_stream_ms_position(iterSampleIdToSampleStreamMap->second.m_stream, milliSeconds);
+			if(iterSampleIdToSampleStreamMap->second.mFmodChannel)
+			{
+				iterSampleIdToSampleStreamMap->second.mFmodChannel->setPosition(milliSeconds, FMOD_TIMEUNIT_MS);
+			}
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void getSampleTime(char const *path, byte *fileImage, int fileSize, float &timeTotal, float &timeCurrent)
 {
 	timeTotal = 0.0f;
@@ -4421,45 +4257,46 @@ void getSampleTime(char const *path, byte *fileImage, int fileSize, float &timeT
 
 	if (s_installed && (fileSize > 0))
 	{
-		S32 total = 0;
-		S32 current = 0;
+		unsigned int total = 0;
+		
+		FMOD::Sound* sample = nullptr;
+		
+		FMOD_CREATESOUNDEXINFO info;
+		memset(&info, 0, sizeof(info));
+		info.length = fileSize;
+		info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
 
-		HSAMPLE sample = AIL_allocate_sample_handle(s_digitalDevice2d);
+		FMOD_RESULT fr = s_fmod_core_system->createSound(reinterpret_cast<const char*>(fileImage), FMOD_OPENMEMORY, &info, &sample);
 
-		if (sample != NULL)
+		if (fr == FMOD_OK)
 		{
-
 			SampleCacheEntry sampleCacheEntry;
 			sampleCacheEntry.m_sampleRawData = fileImage;
 			sampleCacheEntry.m_fileSize = fileSize;
 			sampleCacheEntry.setExtension(path);
 
-			if (sampleCacheEntry.m_sampleRawData != NULL)
+			if (sampleCacheEntry.m_sampleRawData != nullptr)
 			{
-				S32 result = AIL_set_named_sample_file(sample, sampleCacheEntry.getExtension(), sampleCacheEntry.m_sampleRawData, sampleCacheEntry.m_fileSize, 0);
-
-				if (result)
-				{
-					AIL_sample_ms_position(sample, &total, &current);
-					AIL_end_sample(sample);
-					AIL_release_sample_handle(sample);
-				}
+				sample->getLength(&total, FMOD_TIMEUNIT_MS);
 			}
+
+			sample->release();
 		}
 
 		timeTotal = static_cast<float>(total) / 1000.0f;
-		timeCurrent = static_cast<float>(current) / 1000.0f;
+		timeCurrent = 0.0f;
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::getCurrentSample(SoundId const &soundId, TemporaryCrcString &path)
 {
 	path.clear();
 
 	if (s_installed)
 	{
-		SoundIdToSoundMap::iterator current = s_soundIdToSoundMap.find(soundId);
+		auto current = s_soundIdToSoundMap.find(soundId);
 
 		if (current != s_soundIdToSoundMap.end())
 		{
@@ -4495,6 +4332,7 @@ void Audio::getCurrentSample(SoundId const &soundId, TemporaryCrcString &path)
 }
 
 //-----------------------------------------------------------------------------
+
 SoundIdToSoundMap::iterator getIterSoundIdToSoundMap(SoundId const &soundId)
 {
 #ifdef _DEBUG
@@ -4502,27 +4340,18 @@ SoundIdToSoundMap::iterator getIterSoundIdToSoundMap(SoundId const &soundId)
 	UNREF(count);
 #endif // _DEBUG
 
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	DEBUG_FATAL(s_installed && (iterSoundIdToSoundMap == s_soundIdToSoundMap.end()), ("Audio::getIterSoundIdToSoundMap - Trying to get a sound id [%i] that no longer exists.", soundId.getId()));
 
 	return iterSoundIdToSoundMap;
 }
 
-////-----------------------------------------------------------------------------
-//SoundIdToObjectAttachmentMap::iterator getIterSoundIdToObjectAttachmentMap(SoundId const &soundId)
-//{
-//	SoundIdToObjectAttachmentMap::iterator iterSoundIdToObjectAttachmentMap = s_soundIdToObjectAttachmentMap.find(soundId);
-//
-//	DEBUG_FATAL((iterSoundIdToObjectAttachmentMap == s_soundIdToObjectAttachmentMap.end()), ("Audio::getIterSoundIdToObjectAttachmentMap - Trying to get a sound id [%i] that no longer exists.", soundId.getId()));
-//
-//	return iterSoundIdToObjectAttachmentMap;
-//}
-
 //-----------------------------------------------------------------------------
+
 SampleIdToSample3dMap::iterator getIterSampleIdToSample3dMap(SampleId const &sampleId)
 {
-	SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap = s_sampleIdToSample3dMap.find(sampleId);
+	auto iterSampleIdToSample3dMap = s_sampleIdToSample3dMap.find(sampleId);
 
 	DEBUG_FATAL(s_installed && (iterSampleIdToSample3dMap == s_sampleIdToSample3dMap.end()), ("Audio::getIterSampleIdToSample3dMap - Trying to get a sample id [%i] of a 3d sample that no longer exists.", sampleId.getId()));
 
@@ -4534,18 +4363,6 @@ char const *getFileError()
 {
 	char const *result = "";
 
-	switch (AIL_file_error())
-	{
-		case AIL_NO_ERROR:        { result = "No file errors have occurred"; } break;
-		case AIL_IO_ERROR:        { result = "An unspecified I/O error has occurred"; } break;
-		case AIL_OUT_OF_MEMORY:   { result = "Couldn't allocate enough memory."; } break;
-		case AIL_FILE_NOT_FOUND:  { result = "The file you tried to read could not be found."; } break;
-		case AIL_CANT_WRITE_FILE: { result = "Error writing to file."; } break;
-		case AIL_CANT_READ_FILE:  { result = "Error reading from file."; } break;
-		case AIL_DISK_FULL:       { result = "The drive you are writing to is full."; } break;
-		default:                  { result = "Unknown error."; } break;
-	}
-
 	return result;
 }
 
@@ -4556,16 +4373,15 @@ Vector const &Audio::getListenerPosition()
 }
 
 //-----------------------------------------------------------------------------
+
 int getNextSampleId()
 {
 	// Find the next not used sample id
-
 	do
 	{
 		++s_nextSampleId;
 
 		// Handle the wrap
-
 		if (s_nextSampleId >= std::numeric_limits<int>::max())
 		{
 			s_nextSampleId = 1;
@@ -4577,16 +4393,15 @@ int getNextSampleId()
 }
 
 //-----------------------------------------------------------------------------
+
 int getNextSoundId()
 {
 	// Find the next not used sound id
-
 	do
 	{
 		++s_nextSoundId;
 
 		// Handle the wrap
-
 		if (s_nextSoundId >= std::numeric_limits<int>::max())
 		{
 			s_nextSoundId = 1;
@@ -4598,12 +4413,14 @@ int getNextSoundId()
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isSoundPlaying(SoundId const &soundId)
 {
 	return isSoundValid(soundId);
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::getSoundWorldPosition(SoundId const &soundId, Vector &position)
 {
 	bool result = false;
@@ -4621,6 +4438,7 @@ bool Audio::getSoundWorldPosition(SoundId const &soundId, Vector &position)
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getFallOffDistance(float const minDistance)
 {
 	float result = minDistance;
@@ -4634,45 +4452,14 @@ float Audio::getFallOffDistance(float const minDistance)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSoundFallOffPower(int const power)
 {
 	s_soundFallOffPower = clamp(3, power, 6);
 }
 
-////-----------------------------------------------------------------------------
-//Audio::AttenuationMethod Audio::getAttenuationMethod(SoundId const &soundId)
-//{
-//	AttenuationMethod result = Audio::AM_none;
-//
-//	if (s_installed)
-//	{
-//		SampleIdToSample2dMap::iterator iterSampleIdToSample2dMap;
-//		SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap;
-//		SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap;
-//
-//		if (isSample2d(sampleId, iterSampleIdToSample2dMap))
-//		{
-//			result = iterSampleIdToSample2dMap->second.m_sound->getTemplate()->m_attenuationMethod;
-//		}
-//		else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
-//		{
-//			result = iterSampleIdToSample3dMap->second.m_sound->getTemplate()->m_attenuationMethod;
-//		}
-//		else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
-//		{
-//			result = iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->m_attenuationMethod;
-//		}
-//		else
-//		{
-//			DEBUG_WARNING(true, ("Trying to get the attenuation method of a sample that no longer exists."));
-//		}
-//	}
-//
-//	return result;
-//}
-//
-
 //-----------------------------------------------------------------------------
+
 bool Audio::getLoopOffsets(CrcString const &path, int &loopStartOffset, int &loopEndOffset)
 {
 	bool result = false;
@@ -4684,7 +4471,7 @@ bool Audio::getLoopOffsets(CrcString const &path, int &loopStartOffset, int &loo
 	{
 		currentPosition = strstr(fileName, "/");
 
-		if (currentPosition != NULL)
+		if (currentPosition != nullptr)
 		{
 			fileName = currentPosition + 1;
 		}
@@ -4717,90 +4504,96 @@ bool Audio::getLoopOffsets(CrcString const &path, int &loopStartOffset, int &loo
 }
 
 //-----------------------------------------------------------------------------
-void __stdcall endOfSample2dCallBack(HSAMPLE sample)
+
+FMOD_RESULT F_CALLBACK endOfSample2dCallBack(FMOD_CHANNELCONTROL* chControl, FMOD_CHANNELCONTROL_TYPE cType, FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType, void* cmdData1, void* cmdData2)
 {
-	SampleIdToSample2dMap::iterator iterSampleIdToSample2dMap = s_sampleIdToSample2dMap.begin();
-
-	for (; iterSampleIdToSample2dMap != s_sampleIdToSample2dMap.end(); ++iterSampleIdToSample2dMap)
+	if(cType == FMOD_CHANNELCONTROL_CHANNEL && cbType == FMOD_CHANNELCONTROL_CALLBACK_END)
 	{
-		if (iterSampleIdToSample2dMap->second.m_sample == sample)
+		for(auto& iterSampleIdToSample2dMap : s_sampleIdToSample2dMap)
 		{
-			iterSampleIdToSample2dMap->second.m_status = Audio::PS_done;
+			if (iterSampleIdToSample2dMap.second.mFmodChannel == reinterpret_cast<FMOD::Channel*>(chControl))
+			{
+				iterSampleIdToSample2dMap.second.m_status = Audio::PS_done;
 
-			Sound2 *sound = iterSampleIdToSample2dMap->second.m_sound;
-			NOT_NULL(sound);
+				Sound2 *sound = iterSampleIdToSample2dMap.second.m_sound;
+				NOT_NULL(sound);
 
-			sound->endOfSample();
+				sound->endOfSample();
 
-			break;
+				break;
+			}
 		}
 	}
+	
+	return FMOD_OK;
 }
 
 //-----------------------------------------------------------------------------
-void __stdcall endOfSample3dCallBack(HSAMPLE sample)
+
+FMOD_RESULT F_CALLBACK endOfSample3dCallBack(FMOD_CHANNELCONTROL* chControl, FMOD_CHANNELCONTROL_TYPE cType, FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType, void* cmdData1, void* cmdData2)
 {
-	SampleIdToSample3dMap::iterator iterSampleIdToSample3dMap = s_sampleIdToSample3dMap.begin();
-
-	for (; iterSampleIdToSample3dMap != s_sampleIdToSample3dMap.end(); ++iterSampleIdToSample3dMap)
+	if(cType == FMOD_CHANNELCONTROL_CHANNEL && cbType == FMOD_CHANNELCONTROL_CALLBACK_END)
 	{
-		if (iterSampleIdToSample3dMap->second.m_sample == sample)
+		for(auto& iterSampleIdToSample3dMap : s_sampleIdToSample3dMap)
 		{
-			iterSampleIdToSample3dMap->second.m_status = Audio::PS_done;
+			if(iterSampleIdToSample3dMap.second.mFmodChannel ==  reinterpret_cast<FMOD::Channel*>(chControl))
+			{
+				iterSampleIdToSample3dMap.second.m_status = Audio::PS_done;
 
-			Sound2 *sound = iterSampleIdToSample3dMap->second.m_sound;
-			NOT_NULL(sound);
+				Sound2 *sound = iterSampleIdToSample3dMap.second.m_sound;
+				NOT_NULL(sound);
 
-			sound->endOfSample();
+				sound->endOfSample();
 
-			break;
+				break;
+			}
 		}
 	}
+
+	return FMOD_OK;
 }
 
 //-----------------------------------------------------------------------------
-void __stdcall endOfSampleStreamCallBack(HSTREAM stream)
+
+FMOD_RESULT F_CALLBACK endOfSampleStreamCallBack(FMOD_CHANNELCONTROL* chControl, FMOD_CHANNELCONTROL_TYPE cType, FMOD_CHANNELCONTROL_CALLBACK_TYPE cbType, void* cmdData1, void* cmdData2)
 {
-	SampleIdToSampleStreamMap::iterator iterSampleIdToSampleStreamMap = s_sampleIdToSampleStreamMap.begin();
-
-	for (; iterSampleIdToSampleStreamMap != s_sampleIdToSampleStreamMap.end(); ++iterSampleIdToSampleStreamMap)
+	if(cType == FMOD_CHANNELCONTROL_CHANNEL && cbType == FMOD_CHANNELCONTROL_CALLBACK_END)
 	{
-		if (iterSampleIdToSampleStreamMap->second.m_stream == stream)
+		for(auto& iterSampleIdToSampleStreamMap : s_sampleIdToSampleStreamMap)
 		{
-			iterSampleIdToSampleStreamMap->second.m_status = Audio::PS_done;
+			if(iterSampleIdToSampleStreamMap.second.mFmodChannel == reinterpret_cast<FMOD::Channel*>(chControl))
+			{
+				iterSampleIdToSampleStreamMap.second.m_status = Audio::PS_done;
 
-			Sound2 *sound = iterSampleIdToSampleStreamMap->second.m_sound;
-			NOT_NULL(sound);
+				Sound2 *sound = iterSampleIdToSampleStreamMap.second.m_sound;
+				NOT_NULL(sound);
 
-			sound->endOfSample();
+				sound->endOfSample();
 
-			break;
+				break;
+			}
 		}
 	}
+
+	return FMOD_OK;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setMasterVolume(float const volume)
 {
 	s_masterVolume = clamp(0.0f, volume, 1.0f);
-
-	//if (s_digitalDevice2d != NULL)
-	//{
-	//	AIL_set_digital_master_volume_level(s_digitalDevice2d, s_masterVolume);
-	//
-	//	float const dry = s_masterVolume;
-	//	float const wet = 0.0f;
-	//	AIL_set_digital_master_reverb_levels(s_digitalDevice2d, dry, wet);
-	//}
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getMasterVolume()
 {
 	return s_masterVolume;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSoundEffectVolume(float const volume)
 {
 	setSoundCategoryVolume(SC_explosion, volume);
@@ -4814,78 +4607,91 @@ void Audio::setSoundEffectVolume(float const volume)
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getSoundEffectVolume()
 {
 	return getSoundCategoryVolume(SC_explosion, true);
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getAmbientEffectVolume()
 {
 	return getSoundCategoryVolume(SC_ambient, true);
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setAmbientEffectVolume(float volume)
 {
 	setSoundCategoryVolume(SC_ambient, volume);
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setBackGroundMusicVolume(float const volume)
 {
 	setSoundCategoryVolume(SC_backGroundMusic, volume);
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getBackGroundMusicVolume()
 {
 	return getSoundCategoryVolume(SC_backGroundMusic, true);
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setPlayerMusicVolume(float const volume)
 {
 	setSoundCategoryVolume(SC_playerMusic, volume);
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getPlayerMusicVolume()
 {
 	return getSoundCategoryVolume(SC_playerMusic, true);
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setUserInterfaceVolume(float const volume)
 {
 	setSoundCategoryVolume(SC_userInterface, volume);
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getUserInterfaceVolume()
 {
 	return getSoundCategoryVolume(SC_userInterface, true);
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setRequestedMaxNumberOfSamples(int const max)
 {
 	s_requestedMaxNumberOfSamples = clamp(16, max, 64);
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getRequestedMaxNumberOfSamples()
 {
 	return s_requestedMaxNumberOfSamples;
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getMaxDigitalMixerChannels()
 {
 	return s_maxDigitalMixerChannels;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setMaxCached2dSampleSize(int const bytes)
 {
 	int const min = 1024 * 64;
@@ -4895,33 +4701,38 @@ void Audio::setMaxCached2dSampleSize(int const bytes)
 }
 
 //-----------------------------------------------------------------------------
+
 int Audio::getMaxCached2dSampleSize()
 {
 	return s_maxCached2dSampleSize;
 }
 
 //-----------------------------------------------------------------------------
+
 Object const * const Audio::getListener()
 {
 	return s_listenerObject.getPointer();
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::lock()
 {
-	AIL_lock();
+	
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::unLock()
 {
-	AIL_unlock();
+	
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setAutoDelete(SoundId const &soundId, bool const autoDelete)
 {
-	SoundIdToSoundMap::iterator iterSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -4930,14 +4741,13 @@ void Audio::setAutoDelete(SoundId const &soundId, bool const autoDelete)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::serve()
 {
-	if (Os::isMainThread() &&
-		(s_digitalDevice2d != NULL) &&
-		(s_prioritizedPlayingSounds.size() > 0) &&
-		(s_audioServePerformanceTimer != NULL))
+	if (Os::isMainThread() && s_fmod_studio_system != nullptr && !s_prioritizedPlayingSounds.empty() && s_audioServePerformanceTimer != nullptr)
 	{
 		static float deltaTime = 0.0f;
+		
 		s_audioServePerformanceTimer->stop();
 		deltaTime += s_audioServePerformanceTimer->getElapsedTime();
 		s_audioServePerformanceTimer->start();
@@ -4945,15 +4755,16 @@ void Audio::serve()
 		if (deltaTime > 0.05f)
 		{
 			deltaTime = 0.0f;
-			AIL_serve();
+			s_fmod_studio_system->update();
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setEndOfSampleCallBack(SoundId const &soundId, EndOfSampleCallBack callBack)
 {
-	SoundIdToSoundMap::iterator iterSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -4965,9 +4776,9 @@ void Audio::setEndOfSampleCallBack(SoundId const &soundId, EndOfSampleCallBack c
 
 void Audio::getSoundsAttachedToObject (const Object & obj, SoundVector & sv)
 {
-	for (SoundIdToSoundMap::const_iterator it = s_soundIdToSoundMap.begin (); it != s_soundIdToSoundMap.end (); ++it)
+	for(const auto& it : s_soundIdToSoundMap)
 	{
-		Sound2 * const sound = (*it).second;
+		Sound2 * const sound = it.second;
 
 		if (sound && sound->getObject () == &obj)
 			sv.push_back (sound);
@@ -4978,10 +4789,11 @@ void Audio::getSoundsAttachedToObject (const Object & obj, SoundVector & sv)
 
 void Audio::transferOwnershipOfSounds(Object const & previousOwner, Object const & newOwner, Plane const * const /*partition*/)
 {
-	for (SoundIdToSoundMap::const_iterator it = s_soundIdToSoundMap.begin (); it != s_soundIdToSoundMap.end (); ++it)
+	for(const auto& it : s_soundIdToSoundMap)
 	{
-		Sound2 * const sound = (*it).second;
-		if (NULL == sound || sound->getObject() != &previousOwner)
+		Sound2 * const sound = it.second;
+		
+		if (nullptr == sound || sound->getObject() != &previousOwner)
 			continue;
 
 		// @todo - handle partition
@@ -4999,37 +4811,42 @@ Sound2 * Audio::getSoundById (const SoundId & soundId)
 	if (it != s_soundIdToSoundMap.end())
 		return (*it).second;
 
-	return 0;
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setDebugEnabled(bool const enabled)
 {
 	s_debugVisuals = enabled;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isDebugEnabled()
 {
 	return s_debugVisuals;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getObstruction()
 {
 	return s_obstruction;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getOcclusion()
 {
 	return s_occlusion;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSoundPosition_w(SoundId const &soundId, Vector const &position_w)
 {
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -5038,9 +4855,10 @@ void Audio::setSoundPosition_w(SoundId const &soundId, Vector const &position_w)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSoundVolume(SoundId const &soundId, float volume)
 {
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -5049,9 +4867,10 @@ void Audio::setSoundVolume(SoundId const &soundId, float volume)
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::setSoundPitchDelta(SoundId const &soundId, float pitchDelta)
 {
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -5060,11 +4879,12 @@ void Audio::setSoundPitchDelta(SoundId const &soundId, float pitchDelta)
 }
 
 //-----------------------------------------------------------------------------
+
 Vector Audio::getSoundPosition_w(SoundId const &soundId)
 {
 	Vector result;
 
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -5075,11 +4895,12 @@ Vector Audio::getSoundPosition_w(SoundId const &soundId)
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDistanceAtVolumeCutOff(SoundId const &soundId)
 {
 	float result = 0.0f;
 
-	SoundIdToSoundMap::iterator iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
+	auto iterSoundIdToSoundMap = s_soundIdToSoundMap.find(soundId);
 
 	if (iterSoundIdToSoundMap != s_soundIdToSoundMap.end())
 	{
@@ -5090,6 +4911,7 @@ float Audio::getDistanceAtVolumeCutOff(SoundId const &soundId)
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::isToolApplication()
 {
 	return s_toolApplication;
@@ -5097,26 +4919,14 @@ bool Audio::isToolApplication()
 
 
 //-----------------------------------------------------------------------------
+
 void Audio::setToolApplication(bool const toolApplication)
 {
 	s_toolApplication = toolApplication;
 }
 
 //-----------------------------------------------------------------------------
-void Audio::setLargePreMixBuffer()
-{
-	AIL_set_preference(DIG_DS_MIX_FRAGMENT_CNT, 64);
-	AIL_serve();
-}
 
-//-----------------------------------------------------------------------------
-void Audio::setNormalPreMixBuffer()
-{
-	AIL_set_preference(DIG_DS_MIX_FRAGMENT_CNT, s_bufferFragmentsMin);
-	AIL_serve();
-}
-
-//-----------------------------------------------------------------------------
 void Audio::silenceAllNonBackgroundMusic()
 {
 	//DEBUG_REPORT_LOG(true, ("Audio: Silence\n"));
@@ -5125,6 +4935,7 @@ void Audio::silenceAllNonBackgroundMusic()
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::unSilenceAllNonBackgroundMusic()
 {
 	//DEBUG_REPORT_LOG(true, ("Audio: UnSilence\n"));
@@ -5133,27 +4944,32 @@ void Audio::unSilenceAllNonBackgroundMusic()
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::fadeAllNonVoiceover()
 {
 	++s_nonVoiceoverFadeCount;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::unFadeAllNonVoiceover()
 {
 	--s_nonVoiceoverFadeCount;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::fadeAll()
 {
 	++s_allAudioFadeCount;
 }
 
 //-----------------------------------------------------------------------------
+
 void Audio::unfadeAll()
 {
 	--s_allAudioFadeCount;
+	
 	if(s_allAudioFadeCount < 0)
 	{
 		DEBUG_WARNING(true, ("Audio fade all count below 0"));
@@ -5162,50 +4978,62 @@ void Audio::unfadeAll()
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDefaultMasterVolume()
 {
 	return 1.0f;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDefaultSoundEffectVolume()
 {
 	return 1.0f;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDefaultAmbientEffectVolume()
 {
 	return 1.0f;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDefaultBackGroundMusicVolume()
 {
 	return 0.75f;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDefaultPlayerMusicVolume()
 {
 	return 0.5f;
 }
 
 //-----------------------------------------------------------------------------
+
 float Audio::getDefaultUserInterfaceVolume()
 {
 	return 0.75f;
 }
+
+//-----------------------------------------------------------------------------
 
 void Audio::setFadeAllFactor(float factor)
 {
 	s_allAudioFadeFactor = factor;
 }
 
+//-----------------------------------------------------------------------------
+
 float Audio::getFadeAllFactor()
 {
 	return s_allAudioFadeFactor;
 }
+
+//-----------------------------------------------------------------------------
 
 float Audio::getDefaultFadeAllFactor()
 {
@@ -5213,6 +5041,7 @@ float Audio::getDefaultFadeAllFactor()
 }
 
 //-----------------------------------------------------------------------------
+
 bool Audio::queueSample(Sound2 & sound, bool const soundIsAlreadyPlaying)
 {
 	bool result = true;
@@ -5222,15 +5051,15 @@ bool Audio::queueSample(Sound2 & sound, bool const soundIsAlreadyPlaying)
 	{
 		if (!soundIsAlreadyPlaying)
 		{
-			s_centerBucket.push_back(&sound);
+			s_centerBucket.emplace_back(&sound);
 			//DEBUG_REPORT_LOG(true, ("Audio::queueSample() s_centerBucket.push_back1(%s)\n", sound.getTemplate()->getName()));
 		}
+		
 		return result;
 	}
 
 	// Find the bucket to put the sound in
-
-	Vector const listenerPosition_w((s_listenerObject != NULL) ? s_listenerObject->getPosition_w() : Vector::zero);
+	Vector const listenerPosition_w(s_listenerObject != nullptr ? s_listenerObject->getPosition_w() : Vector::zero);
 	Vector const position_w(sound.getPosition_w());
 	float const distanceFromListenerSquared = listenerPosition_w.magnitudeBetweenSquared(position_w);
 
@@ -5238,14 +5067,13 @@ bool Audio::queueSample(Sound2 & sound, bool const soundIsAlreadyPlaying)
 	{
 		if (!soundIsAlreadyPlaying)
 		{
-			s_centerBucket.push_back(&sound);
+			s_centerBucket.emplace_back(&sound);
 			//DEBUG_REPORT_LOG(true, ("Audio::queueSample() s_centerBucket.push_back2(%s)\n", sound.getTemplate()->getName()));
 		}
 	}
-	else if (s_listenerObject != NULL)
+	else if (s_listenerObject != nullptr)
 	{
 		// Rotate the sound to the object space of the listener
-
 		Vector const position_l(s_listenerObject->rotateTranslate_w2o(position_w));
 
 		float const absolutePositionX_l = fabsf(position_l.x);
@@ -5315,84 +5143,7 @@ bool Audio::queueSample(Sound2 & sound, bool const soundIsAlreadyPlaying)
 }
 
 //-----------------------------------------------------------------------------
-void Audio::playBufferedSound(char const * buffer, uint32 bufferLength, char const * const extension)
-{
-	if (!s_audioEnabled)
-		return;
 
-	if (!s_bufferedSoundSample)
-		s_bufferedSoundSample = AIL_allocate_sample_handle(s_digitalDevice2d);
-	else
-		stopBufferedSound();
-
-	AIL_set_named_sample_file(s_bufferedSoundSample, extension, buffer, bufferLength, 0);
-
-	float const volume = s_masterVolume * getSoundCategoryVolume(SC_bufferedSound);
-
-	AIL_set_sample_volume_levels(s_bufferedSoundSample, volume, volume);
-
-	AIL_start_sample(s_bufferedSoundSample);
-}
-
-//-----------------------------------------------------------------------------
-void Audio::playBufferedMusic(char const * buffer, uint32 bufferLength, char const * const extension)
-{
-	if (!s_audioEnabled)
-		return;
-
-	if (!s_bufferedMusicSample)
-		s_bufferedMusicSample = AIL_allocate_sample_handle(s_digitalDevice2d);
-	else
-		stopBufferedMusic();
-
-	AIL_set_named_sample_file(s_bufferedMusicSample, extension, buffer, bufferLength, 0);
-
-	float const volume = s_masterVolume * getSoundCategoryVolume(SC_bufferedMusic);
-
-	AIL_set_sample_volume_levels(s_bufferedMusicSample, volume, volume);
-
-	AIL_start_sample(s_bufferedMusicSample);
-}
-
-//-----------------------------------------------------------------------------
-void Audio::stopBufferedSound()
-{
-	if (s_bufferedSoundSample)
-	{
-		AIL_stop_sample(s_bufferedSoundSample);
-		AIL_end_sample(s_bufferedSoundSample);
-	}
-}
-
-//-----------------------------------------------------------------------------
-void Audio::stopBufferedMusic()
-{
-	if (s_bufferedMusicSample)
-	{
-		AIL_stop_sample(s_bufferedMusicSample);
-		AIL_end_sample(s_bufferedMusicSample);
-	}
-}
-
-//-----------------------------------------------------------------------------
-void Audio::setBufferedSoundVolume(float volume)
-{
-	if (s_bufferedSoundSample)
-		AIL_set_sample_volume_levels(s_bufferedSoundSample, volume, volume);
-
-	setSoundCategoryVolume(SC_bufferedSound, volume);
-}
-
-//-----------------------------------------------------------------------------
-void Audio::setBufferedMusicVolume(float volume)
-{
-	if (s_bufferedMusicSample)
-		AIL_set_sample_volume_levels(s_bufferedMusicSample, volume, volume);
-
-	setSoundCategoryVolume(SC_bufferedMusic, volume);
-}
-
-//-----------------------------------------------------------------------------
 void Audio::silenceNonBufferedMusic(bool silence)
 {
 	s_silenceNonBufferedMusic = silence;

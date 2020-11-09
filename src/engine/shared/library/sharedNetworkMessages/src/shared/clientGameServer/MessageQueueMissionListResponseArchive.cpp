@@ -36,7 +36,7 @@ namespace Archive
 		{
 			MessageQueueMissionListResponse::DataElement r;
 			Archive::get(source, r);
-			v.push_back(r);		
+			v.emplace_back(r);		
 		}
 		
 		target.set (v, sequenceId, b);
@@ -53,9 +53,9 @@ namespace Archive
 		typedef MessageQueueMissionListResponse::DataVector DataVector;
 		const DataVector & v = source.getResponse();
 		
-		for(DataVector::const_iterator i = v.begin(); i != v.end(); ++i)
+		for(const auto& i : v)
 		{
-			Archive::put(target, *i);
+			Archive::put(target, i);
 		}
 	}
 }

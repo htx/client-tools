@@ -19,10 +19,11 @@ public:
 
 	void alter();
 
-	HDIGDRIVER    m_object;
-	Vector     m_positionCurrent;
-	Vector     m_vectorForward;
-	Vector     m_vectorUp;
+	FMOD::System* mFmodCoreSystem;
+	
+	Vector		m_positionCurrent;
+	Vector		m_vectorForward;
+	Vector		m_vectorUp;
 
 private:
 

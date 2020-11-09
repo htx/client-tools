@@ -335,19 +335,19 @@ bool SharedImageDesignerManager::isSessionValid(SharedImageDesignerManager::Sess
 	CustomizationManager::Customization customization;
 
 	//check morph changes
-	for(std::map<std::string, float>::const_iterator i = session.morphChanges.begin(); i != session.morphChanges.end(); ++i)
+	for(const auto& morphChange : session.morphChanges)
 	{
-		if(!isMorphChangeValid(i->first, i->second, designerSkills, recipientSpeciesGender))
+		if(!isMorphChangeValid(morphChange.first, morphChange.second, designerSkills, recipientSpeciesGender))
 		{
-			DEBUG_REPORT_PRINT(ConfigSharedGame::getImageDesignerVerboseOutput(), ("ImageDesigner: Designer[%s] can't change Recipient[%s]'s [%s] to [%f] as requested", session.designerId.getValueString().c_str(), session.recipientId.getValueString().c_str(), i->first.c_str(), i->second));
+			DEBUG_REPORT_PRINT(ConfigSharedGame::getImageDesignerVerboseOutput(), ("ImageDesigner: Designer[%s] can't change Recipient[%s]'s [%s] to [%f] as requested", session.designerId.getValueString().c_str(), session.recipientId.getValueString().c_str(), morphChange.first.c_str(), morphChange.second));
 			return false;
 		}
 	}
 
 	//check index changes
-	for(std::map<std::string, int>::const_iterator j = session.indexChanges.begin(); j != session.indexChanges.end(); ++j)
+	for(const auto& indexChange : session.indexChanges)
 	{
-		bool const result = CustomizationManager::getCustomization(recipientSpeciesGender, j->first, customization);
+		bool const result = CustomizationManager::getCustomization(recipientSpeciesGender, indexChange.first, customization);
 		if(!result)
 			return false;
 
@@ -363,9 +363,9 @@ bool SharedImageDesignerManager::isSessionValid(SharedImageDesignerManager::Sess
 
 		if(customizationDataForThisCustomization)
 		{
-			if(!isIndexChangeValid(j->first, j->second, designerSkills, recipientSpeciesGender, customizationDataForThisCustomization) && !customization.isVarHairColor)
+			if(!isIndexChangeValid(indexChange.first, indexChange.second, designerSkills, recipientSpeciesGender, customizationDataForThisCustomization) && !customization.isVarHairColor)
 			{
-				DEBUG_REPORT_PRINT(ConfigSharedGame::getImageDesignerVerboseOutput(), ("ImageDesigner: Designer[%s] can't change Recipient[%s]'s [%s] to [%d] as requested", session.designerId.getValueString().c_str(), session.recipientId.getValueString().c_str(), j->first.c_str(), j->second));
+				DEBUG_REPORT_PRINT(ConfigSharedGame::getImageDesignerVerboseOutput(), ("ImageDesigner: Designer[%s] can't change Recipient[%s]'s [%s] to [%d] as requested", session.designerId.getValueString().c_str(), session.recipientId.getValueString().c_str(), indexChange.first.c_str(), indexChange.second));
 				return false;
 			}
 		}

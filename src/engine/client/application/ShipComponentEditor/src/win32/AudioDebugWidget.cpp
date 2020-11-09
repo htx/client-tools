@@ -97,7 +97,7 @@ void AudioDebugWidget::timerTimout()
 	{
 		m_debugListView->insertItem(new QListViewItem(m_debugListView, "Digital CPU Percent"));
 	}
-	text.sprintf("%d", Audio::getDigitalCpuPercent());
+	text.sprintf("%f", Audio::getDigitalCpuPercent());
 	setText(rowCount, 1, text);
 	++rowCount;
 

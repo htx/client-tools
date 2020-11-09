@@ -70,9 +70,9 @@ namespace Sound2dNamespace
 
 	void clearIndexPools()
 	{
-		for (unsigned int i = 0; i < s_indexPools.size(); ++i)
+		for(auto& s_indexPool : s_indexPools)
 		{
-			delete s_indexPools[i];
+			delete s_indexPool;
 		}
 
 		s_indexPools.clear();
@@ -786,11 +786,12 @@ void Sound2d::stop(float const fadeOutTime, bool const stoppingOfOutOfRange)
 }
 
 //-----------------------------------------------------------------------------
+
 Sound2dTemplate const *Sound2d::getTemplate() const
 {
 	NOT_NULL(m_template);
 
-	Sound2dTemplate const *sound2dTemplate = static_cast<Sound2dTemplate const *>(m_template);
+	const auto* sound2dTemplate = dynamic_cast<Sound2dTemplate const *>(m_template);
 	NOT_NULL(sound2dTemplate);
 
 	return sound2dTemplate;
@@ -804,16 +805,13 @@ void Sound2d::reset()
 	m_sampleStarted = false;
 
 	// Release the sample Id from the audio system
-
-	if (m_autoDelete &&
-	    Audio::isSampleValid(m_sampleId))
+	if (m_autoDelete && Audio::isSampleValid(m_sampleId))
 	{
 		Audio::releaseSampleId(*this);
 		m_sampleId.invalidate();
 	}
 
 	// Setup values for the next loop
-
 	if (isStillLooping())
 	{
 		setupNextSample();
@@ -826,13 +824,12 @@ void Sound2d::reset()
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2d::usesSample(CrcString const &path) const
 {
-	Sound2dTemplate::StringList::const_iterator imageFileNameIter = std::find(getTemplate()->getSampleList().begin(), getTemplate()->getSampleList().end(), &path);
+	auto it = std::find(getTemplate()->getSampleList().begin(), getTemplate()->getSampleList().end(), &path);
 
-	bool result = (imageFileNameIter != getTemplate()->getSampleList().end());
-
-	return result;
+	return it != getTemplate()->getSampleList().end();
 }
 
 //-----------------------------------------------------------------------------
@@ -853,7 +850,7 @@ void Sound2d::endOfSample()
 
 	// Signal the end of the sample was reached
 
-	if (m_callBack != NULL)
+	if (m_callBack != nullptr)
 	{
 		(*m_callBack)();
 	}
@@ -868,6 +865,7 @@ void Sound2d::endOfSample()
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2d::getSampleTime(float &timeCurrent, float &timeTotal)
 {
 	bool result = true;
@@ -892,12 +890,14 @@ bool Sound2d::getSampleTime(float &timeCurrent, float &timeTotal)
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2d::getCurrentSoundTime() const
 {
 	return m_currentSoundTime;
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2d::getStartDelay() const
 {
 	return m_startDelay;
@@ -933,6 +933,7 @@ void Sound2d::startSample()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setupNextSample()
 {
 	// Find a new sample to play
@@ -964,7 +965,7 @@ void Sound2d::setupNextSample()
 			m_sampleIndex = (*m_indexPool)[nextIndex];
 
 			m_indexPool->erase(m_indexPool->begin() + nextIndex);
-			m_indexPool->push_back(m_sampleIndex);
+			m_indexPool->emplace_back(m_sampleIndex);
 
 			if (m_indexPoolDepth > sampleCount - noRepeatDepth)
 			{
@@ -989,6 +990,7 @@ void Sound2d::setupNextSample()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setupStartDelay()
 {
 	if (m_currentLoop <= 0)
@@ -1066,6 +1068,7 @@ void Sound2d::setupFadeIn()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setupFadeOut()
 {
 	if (!m_manualFadeOutStarted)
@@ -1105,9 +1108,10 @@ void Sound2d::setupFadeOut()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setupVolume()
 {
-	Sound2dTemplate::VolumeSampleRateType volumeSampleRateType = getTemplate()->getVolumeSampleRateType();
+	const Sound2dTemplate::VolumeSampleRateType volumeSampleRateType = getTemplate()->getVolumeSampleRateType();
 
 	switch (volumeSampleRateType)
 	{
@@ -1149,9 +1153,10 @@ void Sound2d::setupVolume()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setupPitch()
 {
-	Sound2dTemplate::PitchSampleRateType pitchSampleRateType = getTemplate()->getPitchSampleRateType();
+	const Sound2dTemplate::PitchSampleRateType pitchSampleRateType = getTemplate()->getPitchSampleRateType();
 
 	m_pitchTimer = 0.0f;
 
@@ -1195,24 +1200,28 @@ void Sound2d::setupPitch()
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2d::getPitchDelta() const
 {
 	return m_pitchHalfStepCurrent + getUserPitchDelta();
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2d::getDistanceAtVolumeCutOff() const
 {
 	return Audio::getFallOffDistance(getTemplate()->getDistanceAtMaxVolume());
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2d::isSampleFinished() const
 {
 	return m_endOfSample;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setCurrentTime(int const milliSeconds)
 {
 	Audio::setSampleCurrentTime(m_sampleId, milliSeconds);
@@ -1226,12 +1235,14 @@ void Sound2d::setCurrentTime(int const milliSeconds)
 }
 
 //-----------------------------------------------------------------------------
+
 int Sound2d::getCurrentTime() const
 {
 	return Audio::getSampleCurrentTime(m_sampleId);
 }
 
 //-----------------------------------------------------------------------------
+
 int Sound2d::getTotalTime() const
 {
 	return Audio::getSampleTotalTime(m_sampleId);
@@ -1252,12 +1263,14 @@ bool Sound2d::isStreamed() const
 #endif // _DEBUG
 
 //-----------------------------------------------------------------------------
+
 int Sound2d::getPlayBackRate() const
 {
 	return m_initialPlayBackRate;
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2d::getVolume()
 {
 	float result = m_templateVolume;
@@ -1292,18 +1305,21 @@ float Sound2d::getVolume()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2d::setPlayBackRate(int const playBackRate)
 {
 	m_initialPlayBackRate = playBackRate;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2d::is2d() const
 {
 	return true;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2d::is3d() const
 {
 	return false;

@@ -71,16 +71,16 @@ Sound2::Sound2(SoundTemplate const *soundTemplate, SoundId const &soundId)
  : m_template(SoundTemplateList::fetch(soundTemplate))
  , m_soundId(soundId)
  , m_autoDelete(true)
- , m_callBack(NULL)
+ , m_callBack(nullptr)
  , m_sampleIndex(-1)
  , m_loopCount(0)
  , m_position_w(Vector::zero)
  , m_wasParented(false)
- , m_object(NULL)
+ , m_object(nullptr)
  , m_hardPointName()
  , m_samplePreviousTime(0.0f)
  , m_positionSpecified(false)
- , m_parentCell(NULL)
+ , m_parentCell(nullptr)
  , m_userVolume(1.0f)
  , m_userPitchDelta(0.0f)
  , m_obstructionPercent(0.0f)
@@ -93,16 +93,17 @@ Sound2::Sound2(SoundTemplate const *soundTemplate, SoundId const &soundId)
 }
 
 //-----------------------------------------------------------------------------
+
 Sound2::~Sound2()
 {
 	if (m_template)
 	{
 		SoundTemplateList::release(m_template);
-		m_template = NULL;
+		m_template = nullptr;
 	}
 
-	m_callBack = NULL;
-	m_parentCell = NULL;
+	m_callBack = nullptr;
+	m_parentCell = nullptr;
 
 #ifdef _DEBUG
 	delete m_locationTextObject;
@@ -111,54 +112,62 @@ Sound2::~Sound2()
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setCreateTextAppearanceObjectFunction(CreateTextAppearanceObjectFunction createTextAppearanceObjectFunction)
 {
 	ms_createTextAppearanceObjectFunction = createTextAppearanceObjectFunction;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setDrawCircleFunction(DrawCircleFunction drawCircleFunction)
 {
 	ms_drawCircleFunction = drawCircleFunction;
 }
 
 //-----------------------------------------------------------------------------
+
 SoundTemplate const *Sound2::getTemplate() const
 {
 	return m_template;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setAutoDelete(bool const autoDelete)
 {
 	m_autoDelete = autoDelete;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setEndOfSampleCallBack(EndOfSampleCallBack callBack)
 {
 	m_callBack = callBack;
 }
 
 //-----------------------------------------------------------------------------
+
 SoundId const &Sound2::getSoundId() const
 {
 	return m_soundId;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setSampleId(SampleId const &sampleId)
 {
 	m_sampleId = sampleId;
 }
 
 //-----------------------------------------------------------------------------
+
 CrcString const *Sound2::getSamplePath() const
 {
 	DEBUG_WARNING(m_sampleIndex < 0, ("Invalid sample index: %d", m_sampleIndex));
 	DEBUG_WARNING(m_sampleIndex >= static_cast<int>(getTemplate()->getSampleList().size()), ("Invalid sample index: %d", m_sampleIndex));
 
-	CrcString const * result = NULL;
+	CrcString const * result = nullptr;
 
 	if ((m_sampleIndex >= 0) &&
 	    (m_sampleIndex < static_cast<int>(getTemplate()->getSampleList().size())))
@@ -170,12 +179,14 @@ CrcString const *Sound2::getSamplePath() const
 }
 
 //-----------------------------------------------------------------------------
+
 SampleId const &Sound2::getSampleId() const
 {
 	return m_sampleId;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setPosition_w(Vector const &position_w)
 {
 	m_positionSpecified = true;
@@ -183,26 +194,28 @@ void Sound2::setPosition_w(Vector const &position_w)
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setObject(Object const *object)
 {
 	DEBUG_WARNING((object == NULL), ("Setting a NULL object on a sound."));
 
 	m_positionSpecified = true;
 	m_object = object;
-	m_wasParented = (object != NULL);
+	m_wasParented = (object != nullptr);
 
 	DEBUG_WARNING((object != NULL) && (object->getParentCell() == NULL), ("Attaching a sound to an object with a NULL getParentCell(). object: %s", object->getObjectTemplateName()));
 
-	if (object == NULL)
+	if (object == nullptr)
 	{
 		m_hardPointName.clear();
 	}
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setHardPointName(char const * const hardPointName)
 {
-	if (hardPointName != NULL)
+	if (hardPointName != nullptr)
 	{
 		m_hardPointName.set(hardPointName, true);
 	}
@@ -213,30 +226,35 @@ void Sound2::setHardPointName(char const * const hardPointName)
 }
 
 //-----------------------------------------------------------------------------
+
 Object const * const Sound2::getObject() const
 {
 	return m_object.getPointer();
 }
 
 //-----------------------------------------------------------------------------
+
 int Sound2::getLoopCount() const
 {
 	return m_loopCount;
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2::isInfiniteLooping() const
 {
 	return (m_loopCount == -1);
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2::isPositionSpecified() const
 {
 	return m_positionSpecified;
 }
 
 //-----------------------------------------------------------------------------
+
 Vector Sound2::getPosition_w() const
 {
 	if (!isPositionSpecified())
@@ -245,12 +263,12 @@ Vector Sound2::getPosition_w() const
 
 		m_position_w = Audio::getListenerPosition();
 	}
-	else if (m_object != NULL)
+	else if (m_object != nullptr)
 	{
 		//-- Don't look up a hardpoint position if we have a zero-length hardpoint name
 		//   OR if the appearance is currently asynchronously loading.  Asynchronously loaded
 		//   appearances don't have hardpoint info available until finished loading.
-		if (m_hardPointName.isEmpty() || ((m_object->getAppearance() == NULL) || !m_object->getAppearance()->isLoaded()))
+		if (m_hardPointName.isEmpty() || ((m_object->getAppearance() == nullptr) || !m_object->getAppearance()->isLoaded()))
 		{
 			m_position_w = m_object->getPosition_w();
 		}
@@ -275,12 +293,14 @@ Vector Sound2::getPosition_w() const
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::kill(float const fadeOutTime)
 {
 	stop(fadeOutTime);
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setParentCell(CellProperty const *parentCell)
 {
 	DEBUG_WARNING((m_object != NULL), ("Setting the cell property on a sound that already has an object defined: %s", getTemplate()->getName()));
@@ -289,9 +309,10 @@ void Sound2::setParentCell(CellProperty const *parentCell)
 }
 
 //-----------------------------------------------------------------------------
+
 CellProperty const * const Sound2::getParentCell() const
 {
-	if (m_object != NULL)
+	if (m_object != nullptr)
 	{
 		return m_object->getParentCell();
 	}
@@ -300,21 +321,18 @@ CellProperty const * const Sound2::getParentCell() const
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2::isObstructed() const
 {
 	bool result = false;
 
-	if ((getTemplate()->getAttenuationMethod() != Audio::AM_none) &&
-	    (getParentCell() != NULL) &&
-	    (Audio::getListener() != NULL) &&
-	    (Audio::getListener()->getParentCell() != NULL))
+	if((getTemplate()->getAttenuationMethod() != Audio::AM_none) && (getParentCell() != nullptr) && Audio::getListener() != nullptr && Audio::getListener()->getParentCell() != nullptr)
 	{
-		if (getParentCell() != Audio::getListener()->getParentCell())
+		if(getParentCell() != Audio::getListener()->getParentCell())
 		{
-			if (getParentCell()->getPortalProperty() == Audio::getListener()->getParentCell()->getPortalProperty())
+			if(getParentCell()->getPortalProperty() == Audio::getListener()->getParentCell()->getPortalProperty())
 			{
 				// Obstructed
-
 				result = true;
 			}
 		}
@@ -324,21 +342,18 @@ bool Sound2::isObstructed() const
 }
 
 //-----------------------------------------------------------------------------
+
 bool Sound2::isOccluded() const
 {
 	bool result = false;
 
-	if ((getTemplate()->getAttenuationMethod() != Audio::AM_none) &&
-	    (getParentCell() != NULL) &&
-	    (Audio::getListener() != NULL) &&
-	    (Audio::getListener()->getParentCell() != NULL))
+	if (getTemplate()->getAttenuationMethod() != Audio::AM_none && getParentCell() != nullptr && Audio::getListener() != nullptr && Audio::getListener()->getParentCell() != nullptr)
 	{
 		if (getParentCell() != Audio::getListener()->getParentCell())
 		{
 			if (getParentCell()->getPortalProperty() != Audio::getListener()->getParentCell()->getPortalProperty())
 			{
 				// Occluded
-
 				result = true;
 			}
 		}
@@ -348,48 +363,56 @@ bool Sound2::isOccluded() const
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2::getOcclusion() const
 {
 	return m_occlusionPercent * Audio::getOcclusion();
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2::getObstruction() const
 {
 	return m_obstructionPercent * Audio::getObstruction();
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2::getOcclusionPercent() const
 {
 	return m_occlusionPercent;
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2::getObstructionPercent() const
 {
 	return m_obstructionPercent;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setUserVolume(float const volume)
 {
 	m_userVolume = volume;
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2::getUserVolume() const
 {
 	return m_userVolume;
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::setUserPitchDelta(float const pitchDelta)
 {
 	m_userPitchDelta = pitchDelta;
 }
 
 //-----------------------------------------------------------------------------
+
 float Sound2::getUserPitchDelta() const
 {
 	return m_userPitchDelta;
@@ -397,6 +420,7 @@ float Sound2::getUserPitchDelta() const
 
 #ifdef _DEBUG
 //-----------------------------------------------------------------------------
+
 void Sound2::setText(char const * const string, VectorArgb const &color)
 {
 	if (Audio::isDebugEnabled())
@@ -430,6 +454,7 @@ void Sound2::setText(char const * const string, VectorArgb const &color)
 }
 
 //-----------------------------------------------------------------------------
+
 void Sound2::addDebugText(Object const *object, Vector const &position)
 {
 	if (Audio::isDebugEnabled() &&

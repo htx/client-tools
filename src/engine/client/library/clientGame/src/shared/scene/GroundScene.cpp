@@ -917,7 +917,6 @@ GroundScene::GroundScene(
 	m_destroyObjectSet(new DestroyObjectSet),
 	m_destroyObjectTimer(Random::randomReal(0.5f, 1.f))
 {
-	Audio::setLargePreMixBuffer();
 	Audio::silenceAllNonBackgroundMusic();
 
 	ms_loadingScreenRender = true;
@@ -1026,7 +1025,6 @@ GroundScene::GroundScene(
 	m_destroyObjectSet(new DestroyObjectSet),
 	m_destroyObjectTimer(Random::randomReal(0.5f, 1.f))
 {
-	Audio::setLargePreMixBuffer();
 	Audio::silenceAllNonBackgroundMusic();
 
 	ms_loadingScreenRender = true;
@@ -1847,7 +1845,6 @@ void GroundScene::_onFinishedLoading()
 {
 	m_loading=false;
 
-	Audio::setNormalPreMixBuffer();
 	Audio::unSilenceAllNonBackgroundMusic();
 }
 
@@ -3012,7 +3009,6 @@ void GroundScene::receiveMessage(const MessageDispatch::Emitter &, const Message
 			CuiLoadingManager::setFullscreenLoadingPercent (0);
 			CuiLoadingManager::setFullscreenLoadingEnabled (false);
 			_onFinishedLoading();
-			Audio::setNormalPreMixBuffer();
 			quit ();
 		}
 	}

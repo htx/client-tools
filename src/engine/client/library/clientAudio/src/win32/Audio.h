@@ -121,8 +121,6 @@ public:
 	static void        lock();
 	static void        unLock();
 
-	static void        setLargePreMixBuffer();
-	static void        setNormalPreMixBuffer();
 	static void        silenceAllNonBackgroundMusic();
 	static void        unSilenceAllNonBackgroundMusic();
 	static void        fadeAllNonVoiceover();
@@ -130,6 +128,8 @@ public:
 
 	static void        fadeAll();
 	static void        unfadeAll();
+
+	static void		   silenceNonBufferedMusic(bool silence);
 
 	static void setSoundFallOffPower(int const power);
 
@@ -139,7 +139,6 @@ public:
 	static void        setEnabled(bool enabled);
 
 	static bool        isMilesEnabled();
-	static void *      getMilesDigitalDriver();
 
 	static void        setRequestedMaxNumberOfSamples(int const max);
 	static int         getRequestedMaxNumberOfSamples();
@@ -196,23 +195,16 @@ public:
 	// Sounds
 	//----------------------------------
 
-	static SoundId playSound(char const * const path); // Only use for stereo sounds
+	static SoundId	   playSound(char const * const path); // Only use for stereo sounds
 	static SoundId     playSound(char const *path, CellProperty const * const parentCell);
 	static SoundId     playSound(char const *path, Vector const &position, CellProperty const * const parentCell);
-	static SoundId     attachSound(char const *path, Object const *object, char const *hardPointName = NULL);
+	static SoundId     attachSound(char const *path, Object const *object, char const *hardPointName = nullptr);
 
 	static SoundId     createSoundId(char const *path);
 	static void        playSound(SoundId &soundId, Vector const *position, CellProperty const * const parentCell);
 
-	static void        playBufferedSound(char const * const buffer, uint32 bufferLength, char const * const extension);
-	static void        playBufferedMusic(char const * const buffer, uint32 bufferLength, char const * const extension);
-
-	static void        stopBufferedSound();
-	static void        stopBufferedMusic();
-	static void        silenceNonBufferedMusic(bool silence);
-
-	static SoundId     restartSound(char const *path, Vector const *position = NULL, float const fadeOutTime = 0.0f);
-	static void        restartSound(SoundId &soundId, Vector const *position = NULL, float const fadeOutTime = 0.0f);
+	static SoundId     restartSound(char const *path, Vector const *position = nullptr, float const fadeOutTime = 0.0f);
+	static void        restartSound(SoundId &soundId, Vector const *position = nullptr, float const fadeOutTime = 0.0f);
 
 	static void        detachSound(SoundId const &soundId, float const fadeOutTime = 0.0f);
 	static void        detachSound(Object const &object, float const fadeOutTime = 0.0f);
@@ -237,7 +229,7 @@ public:
 	typedef stdvector<Sound2*>::fwd SoundVector;
 	static void        getSoundsAttachedToObject (const Object & obj, SoundVector & sv);
 	static Sound2 *    getSoundById (const SoundId & soundId);
-	static void transferOwnershipOfSounds(Object const & previousOwner, Object const & newOwner, Plane const * partition);
+	static void		   transferOwnershipOfSounds(Object const & previousOwner, Object const & newOwner, Plane const * partition);
 
 	// Sound Status
 	//----------------------------------
@@ -274,10 +266,10 @@ public:
 	static int                    getCurrentCacheSize();
 	static void                   getCurrentSample(SoundId const &soundId, TemporaryCrcString &path);
 	static void                   getCurrentSampleTime(SoundId const &soundId, float &timeTotal, float &timeCurrent);
-	static int                    getDigitalCpuPercent();
+	static float                  getDigitalCpuPercent();
 	static int                    getDigitalLatency();
 	static int                    getMaxDigitalMixerChannels();
-	static std::string            getMilesVersion();
+	static std::string            getFmodVersion();
 	static int                    getSample2dCount();
 	static int                    getSample3dCount();
 	static AudioSampleInformation getSampleInformation(std::string const &path);
@@ -327,7 +319,7 @@ protected:
 	static void           getSampleTime(SampleId const &sampleId, float &timeTotal, float &timeCurrent);
 	static int            getSampleCurrentTime(SampleId const &sampleId);
 	static void           setSampleCurrentTime(SampleId const &sampleId, int const milliSeconds);
-	static int            getSampleTotalTime(SampleId const &sampleId);
+	static unsigned int   getSampleTotalTime(SampleId const &sampleId);
 
 	static void           setSamplePlayBackRate(SampleId const &sampleId, int const playBackRate, float const playBackRateDelta = 0.0f);
 	static void           setSampleVolume(SampleId const &sampleId, float const volume);

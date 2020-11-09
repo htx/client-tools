@@ -26,6 +26,7 @@ public:
 protected:
 	SwgCuiHud &               getMediator () const;
 	SwgCuiHudWindowManager &  getWindowManager () const;
+	void					  toggleGameMenu() const;
 	
 private:
 	SwgCuiHudAction ();

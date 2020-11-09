@@ -86,7 +86,9 @@
 
 #include <dinput.h>
 #include <ctime>
- 
+
+#pragma warning (disable : 4100)
+
 extern void externalCommandHandler(const char*);
 
 namespace ClientMainNamespace
@@ -306,7 +308,7 @@ int ClientMain(
 
 		if (SetupClientGraphics::install(setupGraphicsData))
 		{
-			VideoList::install(Audio::getMilesDigitalDriver());
+			VideoList::install();
 
 			//-- directinput
 			SetupClientDirectInput::install(hInstance, Os::getWindow(), DIK_LCONTROL, Graphics::isWindowed);

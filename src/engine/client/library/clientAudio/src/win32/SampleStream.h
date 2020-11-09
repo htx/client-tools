@@ -16,6 +16,12 @@ class SampleStream
 {
 public:
 
+	enum
+	{
+		ChannelPlaying = 2,
+		ChannelReady = 3
+	};
+	
 	SampleStream();
 	SampleStream(SampleStream const &sampleStream);
 	SampleStream & operator =(SampleStream const &rhs);
@@ -23,10 +29,13 @@ public:
 
 	void                    setPath(char const *path);
 	CrcString const * const getPath() const;
+	int						getChannelStatus() const;
 
-	HSTREAM               m_stream;
-	Sound2 *              m_sound;
-	Audio::PlayBackStatus m_status;
+	FMOD::Sound*			mFmodStream;
+	FMOD::Channel*			mFmodChannel;
+
+	Sound2 *				m_sound;
+	Audio::PlayBackStatus	m_status;
 
 private:
 

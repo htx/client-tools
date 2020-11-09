@@ -18,6 +18,12 @@ class Sample2d
 {
 public:
 
+	enum
+	{
+		ChannelPlaying = 2,
+		ChannelReady = 3
+	};
+	
 	Sample2d();
 	Sample2d(Sample2d const &sample2d);
 	Sample2d & operator =(Sample2d const &rhs);
@@ -26,9 +32,13 @@ public:
 	void                    setPath(char const *path);
 	CrcString const * const getPath() const;
 
-	HSAMPLE               m_sample;
-	Sound2 *              m_sound;
-	Audio::PlayBackStatus m_status;
+	int						getChannelStatus() const;
+
+	FMOD::Sound*			mFmodSample;
+	FMOD::Channel*			mFmodChannel;
+
+	Sound2 *				m_sound;
+	Audio::PlayBackStatus	m_status;
 
 private:
 

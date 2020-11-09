@@ -519,7 +519,7 @@ SoundEditor::SoundEditor(QWidget *parent, char const *name)
 
 	// Display the Miles version
 
-	sprintf(text, "Miles sound system version: %s\n", Audio::getMilesVersion().c_str());
+	sprintf(text, "Miles sound system version: %s\n", Audio::getFmodVersion().c_str());
 	m_debugInformationWidget->append(text);
 
 	// Display the max digital mixer channels

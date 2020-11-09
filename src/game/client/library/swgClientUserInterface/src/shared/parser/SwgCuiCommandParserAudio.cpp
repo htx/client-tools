@@ -276,52 +276,7 @@ bool SwgCuiCommandParserAudio::performParsing(const NetworkId & userId, const St
 		result += Unicode::narrowToWide(text);
 		return true;
 	}
-
-	else if (isCommand(argv [0], SwgCuiCommandParserAudioNamespace::CommandNames::s_playBufferedAudio))
-	{
-		size_t const bufferSize = 4*1024*1024;
-
-		std::string filename = Unicode::wideToNarrow(argv[2]);
-
-		FILE * audioFile = fopen(filename.c_str(), "rb");
-
-		if (!audioFile)
-		{
-			result += Unicode::narrowToWide("Unable to open file\n");
-			return true;
-		}
-
-		bool const playSound = argv[1][0] == 's' || argv[1][0] == 'S';
-		std::string const extension = filename.substr(filename.length() - 4);
-		char * & buffer = playSound ? s_bufferSound : s_bufferMusic;
-
-		if (!buffer)
-			buffer = new char[bufferSize];
-
-		if (playSound)
-			Audio::stopBufferedSound();
-		else
-			Audio::stopBufferedMusic();
-
-		size_t readBytes = fread(buffer, sizeof(char), bufferSize, audioFile);
-
-		fclose(audioFile);
-
-		if (readBytes == bufferSize)
-		{
-			result += Unicode::narrowToWide("File too large\n");
-			return true;
-		}
-
-		if (playSound)
-			Audio::playBufferedSound(buffer, readBytes, extension.c_str());
-		else
-			Audio::playBufferedMusic(buffer, readBytes, extension.c_str());
-
-		return true;
-	}
-
-#endif // _DEBUG
+#endif
 
 	return false;
 }

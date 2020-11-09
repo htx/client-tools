@@ -771,19 +771,21 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 		}
 
 	}
-	else if (id == CuiActions::untarget)
+	else if(id == CuiActions::untarget)
 	{
 		//Logic: if there is a pending action, cancel that (and don't do the untarget business), otherwise untarget
 		if(SwgCuiToolbar::getActiveToolbar())
 			SwgCuiToolbar::getActiveToolbar()->clearCommandDisplayStates();
+		
 		if(CuiCombatManager::hasAnyCommandsInQueue())
 			ClientCommandQueue::clear();
 
-		if (CuiRadialMenuManager::isStorytellerMode() || CuiRadialMenuManager::isGrenadeTargetMode())
+		if(CuiRadialMenuManager::isStorytellerMode() || CuiRadialMenuManager::isGrenadeTargetMode())
 		{
 			CuiSystemMessageManager::sendFakeSystemMessage(CuiStringIds::groundplace_abort.localize());
 			CuiRadialMenuManager::setStorytellerMode(false);
 			CuiRadialMenuManager::setGrenadeTargetMode(false);
+			
 			return false;
 		}
 
@@ -791,11 +793,11 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 		SwgCuiHudWindowManagerGround* groundHudMan = dynamic_cast<SwgCuiHudWindowManagerGround*>(&hudMan);
 		SwgCuiHudWindowManagerSpace* spaceHudMan = dynamic_cast<SwgCuiHudWindowManagerSpace*>(&hudMan);
 
-		if (groundHudMan)
+		if(groundHudMan)
 		{
 			if(hudMan.isButtonBarVisible())
 			{
-				hudMan.toggleButtonBar();
+				toggleGameMenu();
 			}
 			else
 			{
@@ -803,33 +805,40 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 
 				// Even if there was a target set, we wanna toggle the button bar if the object didn't exist on the client and wasn't visible...
 				ClientObject const * const clientTarget = safe_cast<ClientObject const *>(playerCreature->getIntendedTarget().getObject());
-				if (!clientTarget)
-					hudMan.toggleButtonBar();
-
+				
+				if(!clientTarget)
+				{
+					toggleGameMenu();
+				}
+					
 				playerCreature->setIntendedTarget(NetworkId::cms_invalid);
 				playerCreature->setLookAtTarget(NetworkId::cms_invalid);
 			}
 		}
-		else if (spaceHudMan)
+		else if(spaceHudMan)
 		{
 			if(hudMan.isButtonBarVisible())
 			{
-				hudMan.toggleButtonBar();
+				toggleGameMenu();
 			}
 			else
 			{
 				CreatureObject * const playerCreature = NON_NULL(Game::getPlayerCreature());
 				ClientObject const * const clientTarget = safe_cast<ClientObject const *>(playerCreature->getLookAtTarget().getObject());
-				if( clientTarget )
+				
+				if(clientTarget)
+				{
 					playerCreature->setLookAtTarget (NetworkId::cms_invalid);
+				}
 				else
-					hudMan.toggleButtonBar();	
-			}
-			
+				{
+					toggleGameMenu();
+				}
+			}		
 		}
 		else
 		{
-			hudMan.toggleButtonBar();
+			toggleGameMenu();
 		}
 	}
 
@@ -1680,6 +1689,24 @@ bool  SwgCuiHudAction::performAction (const std::string & id, const Unicode::Str
 SwgCuiHudWindowManager & SwgCuiHudAction::getWindowManager () const
 {
 	return *NON_NULL(m_mediator.m_windowManager);
+}
+
+//----------------------------------------------------------------------
+
+void SwgCuiHudAction::toggleGameMenu() const
+{
+	CuiMediator const * const gameMenu = CuiMediatorFactory::activate(CuiMediatorTypes::GameMenu);
+	
+	if(gameMenu && gameMenu->isActive())
+	{
+		SwgCuiHudFactory::setHudActive(false);
+		CuiMediatorFactory::activate(CuiMediatorTypes::GameMenu);
+	}
+	else
+	{
+		CuiMediatorFactory::deactivate(CuiMediatorTypes::GameMenu);
+		SwgCuiHudFactory::setHudActive(true);
+	}
 }
 
 //======================================================================

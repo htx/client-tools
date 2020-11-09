@@ -116,7 +116,7 @@ void ImageDesignChangeMessage::pack(MessageQueue::Data const * const data, Archi
 		Archive::put(target, msg->getNewHairAsset());
 		Archive::put(target, msg->getHairCustomizationData());
 		Archive::put(target, msg->getDesignType());
-		Archive::put(target, msg->getStartingTime());
+		Archive::put(target, static_cast<unsigned int>(msg->getStartingTime()));
 		Archive::put(target, msg->getDesignerRequiredCredits());
 		Archive::put(target, msg->getRecipientPaidCredits());
 		Archive::put(target, msg->getAccepted());
@@ -131,20 +131,20 @@ void ImageDesignChangeMessage::pack(MessageQueue::Data const * const data, Archi
 		
 		Archive::put(target, size);
 		
-		for(auto i = morphs.begin(); i != morphs.end(); ++i)
+		for(const auto& morph : morphs)
 		{
-			Archive::put(target, i->first);
-			Archive::put(target, i->second);
+			Archive::put(target, morph.first);
+			Archive::put(target, morph.second);
 		}
 
 		std::map<std::string, int> const & indexes = msg->getIndexParameterChanges();
 		size = static_cast<int>(indexes.size());
 		Archive::put(target, size);
 		
-		for(auto j = indexes.begin(); j != indexes.end(); ++j)
+		for(const auto& indexe : indexes)
 		{
-			Archive::put(target, j->first);
-			Archive::put(target, j->second);
+			Archive::put(target, indexe.first);
+			Archive::put(target, indexe.second);
 		}
 		
 		Archive::put(target, msg->getHoloEmote());
@@ -161,7 +161,7 @@ MessageQueue::Data* ImageDesignChangeMessage::unpack(Archive::ReadIterator & sou
 	bool tempBool = false;
 	std::string tempStr;
 	int tempInt = 0;
-	time_t tempTime = 0;
+	unsigned int tempTime = 0;
 
 	Archive::get(source, tempId);
 	msg->setDesignerId(tempId);
@@ -179,7 +179,7 @@ MessageQueue::Data* ImageDesignChangeMessage::unpack(Archive::ReadIterator & sou
 	DesignType const designType = static_cast<DesignType>(tempInt);
 	msg->setDesignType(designType);
 	Archive::get(source, tempTime);
-	msg->setStartingTime(tempTime);
+	msg->setStartingTime(static_cast<time_t>(tempTime));
 	Archive::get(source, tempInt);
 	msg->setDesignerRequiredCredits(tempInt);
 	Archive::get(source, tempInt);

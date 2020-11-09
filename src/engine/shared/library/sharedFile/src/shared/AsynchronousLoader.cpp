@@ -181,7 +181,7 @@ void AsynchronousLoader::install(const char *fileName)
 					if (dot)
 						extensionFunctions.extension = dot + 1;
 
-					ms_extensionFunctionsList.push_back(extensionFunctions);
+					ms_extensionFunctionsList.emplace_back(extensionFunctions);
 				}
 			iff.exitChunk(TAG_EXTN);
 
@@ -194,7 +194,7 @@ void AsynchronousLoader::install(const char *fileName)
 					fileRecordList->reserve(count);
 
 					for (int i = 0; i < count; ++i)
-						fileRecordList->push_back(reinterpret_cast<FileRecord *>(ms_fileData + iff.read_int32()));
+						fileRecordList->emplace_back(reinterpret_cast<FileRecord *>(ms_fileData + iff.read_int32()));
 
 					const bool result = ms_fileMap.insert(FileMap::value_type(fileRecordList->front()->fileName, fileRecordList)).second;
 					UNREF(result);

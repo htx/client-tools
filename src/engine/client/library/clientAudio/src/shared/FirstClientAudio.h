@@ -14,9 +14,8 @@
 #include "sharedDebug/FirstSharedDebug.h"
 #include "sharedMemoryManager/FirstSharedMemoryManager.h"
 
-#pragma warning(push, 3)
-#include <mss.h>
-#pragma warning(pop)
+#include <fmod_studio.hpp>
+#include <fmod.hpp>
 
 // ======================================================================
 

@@ -24,7 +24,7 @@ public:
 	// ----------------------------------------------------------
 	// If hMilesDigitalDriver is NULL then no sound will accompany
 	// play-back
-	static void install(void *hMilesDigitalDriver);
+	static void install();
 	
 	static Video *fetch(const char *name);
 };

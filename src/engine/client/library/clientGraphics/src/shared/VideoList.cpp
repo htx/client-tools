@@ -48,7 +48,7 @@ using namespace VideoListNamespace;
 
 // ======================================================================
 
-void VideoList::install(void *hMilesDigitalDriver)
+void VideoList::install()
 {
 	bool binkInstalled = false;
 	

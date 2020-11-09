@@ -229,7 +229,7 @@ void SetupSharedFoundation::install(const Data &data)
 		ConfigSharedFoundation::install(defaults);
 
 		if (ConfigSharedFoundation::getCauseAccessViolation())
-			static_cast<int*>(0)[0] = 0;
+			static_cast<int*>(nullptr)[0] = 0;
 	}
 
 	// @todo codereorg should this be here?
