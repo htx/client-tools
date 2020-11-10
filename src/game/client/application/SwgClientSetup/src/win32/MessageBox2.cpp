@@ -80,7 +80,7 @@ void MessageBox2::setDoNotShowAgainCheckBox(CString const & text, CString  const
 	m_registryKey = registryKey;
 }
 
-int MessageBox2::DoModal() 
+intptr_t MessageBox2::DoModal() 
 {
 	if (!m_registryKey.IsEmpty())
 	{
@@ -88,13 +88,9 @@ int MessageBox2::DoModal()
 		regKey.Open (HKEY_CURRENT_USER, ms_registryFolder);
 
 		DWORD value = 0;
-#if _MSC_VER < 1300
-		if (regKey.QueryValue (value, m_registryKey) == ERROR_SUCCESS)
+
+		if (regKey.QueryDWORDValue(m_registryKey, value) == ERROR_SUCCESS)
 			return IDOK;
-#else
-		if (regKey.QueryValue (value, m_registryKey) == ERROR_SUCCESS)
-			return IDOK;
-#endif
 	}
 
 	return CDialog::DoModal();
@@ -109,11 +105,8 @@ void MessageBox2::OnOK()
 	{
 		CRegKey regKey;
 		regKey.Create (HKEY_CURRENT_USER, ms_registryFolder);
-#if _MSC_VER < 1300
-		regKey.SetValue(1, m_registryKey);
-#else
+
 		regKey.SetDWORDValue (m_registryKey, 1);
-#endif
 	}
 }
 

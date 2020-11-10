@@ -149,12 +149,10 @@ void PerThreadData::remove()
 		// remove this thread.
 		threadRemove();
 
-		// clean up after any threads which didn't clean up after themselves (like the miles sound system)
-		const DataAllocations::iterator iEnd = dataAllocations->end();
-		for (DataAllocations::iterator i = dataAllocations->begin(); i != iEnd; ++i)
+		for(auto& dataAllocation : *dataAllocations)
 		{
-			_closeData(*i);
-			_freeData(*i);
+			_closeData(dataAllocation);
+			_freeData(dataAllocation);
 		}
 
 		dataAllocations->clear();
@@ -213,9 +211,9 @@ void PerThreadData::threadInstall(bool isNewThread)
 	{
 		_watchThreads();
 
-		dataAllocations->push_back(data);
+		dataAllocations->emplace_back(data);
 
-		// This is most likely a thread created by a 3rd party library such as Miles or Bink.
+		// This is most likely a thread created by a 3rd party library
 		// Add a watch handle to it so we can clean it up.
 		if (!isNewThread)
 		{
@@ -244,30 +242,30 @@ void PerThreadDataNamespace::_removeFromList(Data *data)
 // needs to be entered.
 void PerThreadDataNamespace::_watchThreads()
 {
-	DataAllocations::iterator tiDest = dataAllocations->begin();
-	DataAllocations::iterator tiSrc = tiDest;
-	DataAllocations::iterator tiEnd = dataAllocations->end();
+	auto tiDest = dataAllocations->begin();
+	auto tiSrc = tiDest;
+	auto tiEnd = dataAllocations->end();
 
-	while (tiSrc!=tiEnd)
+	while (tiSrc != tiEnd)
 	{
 		Data *const data = *tiSrc;
 		const HANDLE h = data->watchHandle;
 
-		if (h!=0 && WaitForSingleObject(h, 0)==WAIT_OBJECT_0)
+		if (h != nullptr && WaitForSingleObject(h, 0) == WAIT_OBJECT_0)
 		{
 			_closeData(data);
 			_freeData(data);
 		}
 		else
 		{
-			*tiDest++=data;
+			*tiDest++ = data;
 		}
 		++tiSrc;
 	}
 
-	if (tiSrc!=tiDest)
+	if (tiSrc != tiDest)
 	{
-		const int newSize = tiDest - dataAllocations->begin();
+		const size_t newSize = tiDest - dataAllocations->begin();
 		dataAllocations->resize(newSize);
 	}
 }

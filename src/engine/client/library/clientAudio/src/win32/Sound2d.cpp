@@ -836,31 +836,23 @@ bool Sound2d::usesSample(CrcString const &path) const
 void Sound2d::endOfSample()
 {
 	//DEBUG_REPORT_LOG(true, ("Sound2d::endOfSample() - %d\n", m_soundId.getId()));
-
-	// You can not call certain Miles functions when in this function, that is
-	// why I must release the sample during the next alter
-
-	// Flag that Miles made a end of sample callback.
-
+	// release the sample during the next alter
+	// Flag end of sample callback.
 	m_endOfSample = true;
 
 	// Increment the current loop
-
 	++m_currentLoop;
 
 	// Signal the end of the sample was reached
-
 	if (m_callBack != nullptr)
 	{
 		(*m_callBack)();
 	}
 
 	// Reset the fade out timer
-
 	m_fadeOutTimer = 0.0f;
 
 	// Reset the sample time
-
 	m_currentSoundTime = 0.0f;
 }
 

@@ -45,7 +45,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
-    <UseOfMfc>false</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -72,24 +72,28 @@
     <_ProjectFileVersion>12.0.30501.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Debug\</OutDir>
-    <IntDir>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Debug\</IntDir>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Release\</OutDir>
-    <IntDir>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Release\</IntDir>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_r</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_r</TargetName>
+    <OutDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -102,7 +106,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\fmod\fsbank\inc;..\..\..\..\..\..\external\3rd\library\fmod\studio\inc;..\..\..\..\..\..\external\3rd\library\fmod\core\inc;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_MBCS;UNICODE;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -124,18 +128,17 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;Mss32.lib;ws2_32.lib;unicows.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\..\..\..\..\compile\win32\SwgClientSetup\Debug/SwgClientSetup_d.exe</OutputFile>
+      <AdditionalDependencies>fsbank_vc.lib;fmodL_vc.lib;fmodstudioL_vc.lib;legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;ws2_32.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\SwgClientSetup_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\atlmfc\lib;..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\miles\redist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\core\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\studio\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\fsbank\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Debug/SwgClientSetup_d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>wWinMainCRTStartup </EntryPointSymbol>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 %(AdditionalOptions)</AdditionalOptions>
-      <ForceFileOutput>Enabled</ForceFileOutput>
+      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
@@ -146,7 +149,7 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Configuration)\"  /I /Y</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Platform)\$(Configuration)\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -160,7 +163,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\fmod\fsbank\inc;..\..\..\..\..\..\external\3rd\library\fmod\studio\inc;..\..\..\..\..\..\external\3rd\library\fmod\core\inc;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_MBCS;UNICODE;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -176,23 +179,24 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <UseFullPaths>true</UseFullPaths>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;Mss32.lib;ws2_32.lib;unicows.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\..\..\..\..\compile\win32\SwgClientSetup\Debug/SwgClientSetup_d.exe</OutputFile>
+      <AdditionalDependencies>fsbank_vc.lib;fmodL_vc.lib;fmodstudioL_vc.lib;legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;ws2_32.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\SwgClientSetup_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\atlmfc\lib;..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\miles\redist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\external\3rd\library\fmod\core\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\studio\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\fsbank\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Debug/SwgClientSetup_d.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>wWinMainCRTStartup </EntryPointSymbol>
-      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 %(AdditionalOptions)</AdditionalOptions>
-      <ForceFileOutput>Enabled</ForceFileOutput>
+      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <Bscmake>
@@ -203,7 +207,7 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Configuration)\"  /I /Y</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Platform)\$(Configuration)\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -218,7 +222,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\fmod\fsbank\inc;..\..\..\..\..\..\external\3rd\library\fmod\studio\inc;..\..\..\..\..\..\external\3rd\library\fmod\core\inc;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_MBCS;UNICODE;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -239,17 +243,17 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;Mss32.lib;ws2_32.lib;unicows.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\..\..\..\..\compile\win32\SwgClientSetup\Release/SwgClientSetup_r.exe</OutputFile>
+      <AdditionalDependencies>fsbank_vc.lib;fmod_vc.lib;fmodstudio_vc.lib;legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;ws2_32.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\SwgClientSetup_r.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\atlmfc\lib;..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\miles\redist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\core\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\studio\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\fsbank\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Release/SwgClientSetup_r.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -259,7 +263,7 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Configuration)\"  /I /Y</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Platform)\$(Configuration)\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -274,7 +278,7 @@
     <ClCompile>
       <Optimization>MinSpace</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\atlmfc\include;..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\miles\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\..\external\3rd\library\directx9\include;..\..\..\..\..\..\external\3rd\library\trackIR\include;..\..\..\..\..\..\external\3rd\library\fmod\fsbank\inc;..\..\..\..\..\..\external\3rd\library\fmod\studio\inc;..\..\..\..\..\..\external\3rd\library\fmod\core\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_MBCS;UNICODE;_CRT_SECURE_NO_DEPRECATE=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -295,16 +299,16 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;Mss32.lib;ws2_32.lib;unicows.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\..\..\..\..\..\compile\win32\SwgClientSetup\Release/SwgClientSetup_r.exe</OutputFile>
+      <AdditionalDependencies>fsbank_vc.lib;fmod_vc.lib;fmodstudio_vc.lib;legacy_stdio_definitions.lib;d3d9.lib;ddraw.lib;dinput8.lib;dxguid.lib;ws2_32.lib;kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;oleacc.lib;oledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>.\..\..\..\..\..\..\compile\$(Platform)\$(ProjectName)\$(Configuration)\SwgClientSetup_r.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\atlmfc\lib;..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\external\3rd\library\miles\lib\win;..\..\..\..\..\..\..\src\external\3rd\library\miles\redist;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\..\..\src\external\3rd\library\blat194\build\win32;..\..\..\..\..\..\..\src\external\3rd\library\directx9\lib;..\..\..\..\..\..\..\src\external\3rd\library\fmod\core\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\studio\lib\$(PlatformTarget);..\..\..\..\..\..\..\src\external\3rd\library\fmod\fsbank\lib\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>kernel32.lib;advapi32.lib;user32.lib;gdi32.lib;shell32.lib;comdlg32.lib;version.lib;mpr.lib;rasapi32.lib;winmm.lib;winspool.lib;vfw32.lib;secur32.lib;oleacc.lib;oledlg.lib;sensapi.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>.\..\..\..\..\..\..\compile\win32\SwgClientSetup\Release/SwgClientSetup_r.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/SAFESEH:NO /ignore:4254 /ignore:4078 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -314,7 +318,7 @@
       <EnableDpiAwareness>true</EnableDpiAwareness>
     </Manifest>
     <PostBuildEvent>
-      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Configuration)\"  /I /Y</Command>
+      <Command>xcopy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)..\..\..\SwgClient\$(Platform)\$(Configuration)\"  /I /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -388,6 +392,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\src\win32\res\SwgClientSetup.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\external\3rd\library\blat194\build\win32\blat.vcxproj">
+      <Project>{ecbdfcff-f4ae-475a-aa90-729eb96430a0}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -107,10 +107,11 @@ bool ConfigFile::isInstalled()
  */
 void ConfigFile::remove(void)
 {
-	for (std::map<const char *, Section *, StringCompare>::iterator it = ms_sections->begin(); it != ms_sections->end(); ++it)
-		delete it->second;
+	for(auto& ms_section : *ms_sections)
+		delete ms_section.second;
+
 	delete ms_sections;
-	ms_sections = NULL;
+	ms_sections = nullptr;
 	ms_installed = false;
 }
 

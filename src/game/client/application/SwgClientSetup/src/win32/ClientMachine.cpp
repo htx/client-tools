@@ -16,7 +16,8 @@
 #include <atlbase.h>
 #include <d3d9.h>
 #include <ddraw.h>
-#include <mss.h>
+#include <fmod_studio.hpp>
+#include <fmod.hpp>
 #include <NPClient.h>
 #include <string>
 #include <vector>
@@ -94,29 +95,22 @@ namespace ClientMachineNamespace
 	std::vector<int>          ms_joystickSupportsForceFeedback;	
 	unsigned short ms_npClientDllVersion;
 
-	// table of providers and the Miles open driver specs for them
-	// Miles 7 lumps providers and speaker configurations together
-	// we pull them apart to be more like previous versions
 	struct ProviderInfo
 	{
 		int spec;
 		std::wstring name;
 	};
 
-	int const ms_providerInfoCount = 9;
+	int const ms_providerInfoCount = 6;
 
 	ProviderInfo ms_providerInfo[ms_providerInfoCount] = 
-	{
-
-		{MSS_MC_USE_SYSTEM_CONFIG,_T("Windows Speaker Configuration")},
-		{MSS_MC_HEADPHONES,       _T("Headphones")},
-		{MSS_MC_STEREO,           _T("2 Speakers")},
-		{MSS_MC_40_DISCRETE,      _T("4 Speakers")},
-		{MSS_MC_51_DISCRETE,      _T("5.1 Speakers")},
-		{MSS_MC_61_DISCRETE,      _T("6.1 Speakers")},
-		{MSS_MC_71_DISCRETE,      _T("7.1 Speakers")},
-		{MSS_MC_81_DISCRETE,      _T("8.1 Speakers")},
-		{MSS_MC_DOLBY_SURROUND,   _T("Dolby Surround")}
+	{	
+		{FMOD_SPEAKERMODE_DEFAULT,	_T("Windows Speaker Configuration")},
+		{FMOD_SPEAKERMODE_STEREO,   _T("2 Speakers")},
+		{FMOD_SPEAKERMODE_QUAD,     _T("4 Speakers")},
+		{FMOD_SPEAKERMODE_5POINT1,  _T("5.1 Speakers")},
+		{FMOD_SPEAKERMODE_7POINT1,  _T("7.1 Speakers")},
+		{FMOD_SPEAKERMODE_SURROUND, _T("Dolby Surround")}
 	};
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,7 +120,7 @@ namespace ClientMachineNamespace
 		// return the provider list
 		for (int provider = 0; provider < ms_providerInfoCount; ++provider)
 		{
-			providerList.push_back(ms_providerInfo[provider].name);
+			providerList.emplace_back(ms_providerInfo[provider].name);
 		}
 	}
 
@@ -165,16 +159,16 @@ namespace ClientMachineNamespace
 
 			if (numberOfAxis >= 2)
 			{
-				ms_joystickDescriptions.push_back(std::wstring(lpddi->tszInstanceName));
+				ms_joystickDescriptions.emplace_back(std::wstring(lpddi->tszInstanceName));
 
 				// Detect force feedback support
 				DIDEVCAPS deviceCaps;
 				memset(&deviceCaps, 0, sizeof(deviceCaps));
 				deviceCaps.dwSize = sizeof(deviceCaps);
 				if (SUCCEEDED(directInputDevice->GetCapabilities(&deviceCaps)) && (deviceCaps.dwFlags & DIDC_FORCEFEEDBACK) != 0)
-					ms_joystickSupportsForceFeedback.push_back(1);
+					ms_joystickSupportsForceFeedback.emplace_back(1);
 				else
-					ms_joystickSupportsForceFeedback.push_back(0);
+					ms_joystickSupportsForceFeedback.emplace_back(0);
 
 				++ms_numberOfJoysticks;
 			}
@@ -187,17 +181,18 @@ namespace ClientMachineNamespace
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	// The Miles library functions are narrow.  This was copied the from the Miles API
-	void UNICODE_AIL_MSS_version(TCHAR * const versionString, unsigned int const length)
+	void getFmodVersion(TCHAR * versionString, unsigned int const length)
 	{
-		HINSTANCE milesDll = LoadLibrary(_T("MSS32.DLL")); 
-		if (reinterpret_cast<U32>(milesDll) <= 32)
-			*versionString = 0;                           
-		else 
-		{                                
-			LoadString(milesDll, 1, versionString, length);            
-			FreeLibrary(milesDll);                     
+		FMOD::System *system;
+		unsigned int version = 0;
+		
+		if(FMOD::System_Create(&system) == FMOD_OK)
+		{
+			system->getVersion(&version);
+			system->release();
 		}
+
+		_stprintf(versionString,_T("Dll:%x Header:%x"), version, FMOD_VERSION);
 	}                                     
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,7 +210,7 @@ void ClientMachine::install ()
 	{
 		MEMORYSTATUSEX memoryStatus = { sizeof memoryStatus };
 		GlobalMemoryStatusEx(&memoryStatus);
-		ms_physicalMemorySize = (memoryStatus.ullTotalPhys / 1048576);
+		ms_physicalMemorySize = static_cast<int>(memoryStatus.ullTotalPhys / 1048576);
 	}
 
 	//-- detect cpu
@@ -319,7 +314,7 @@ void ClientMachine::install ()
 
 		if (hntdll)
 		{
-			pwine_get_version = (char)GetProcAddress(hntdll, "wine_get_version");
+			pwine_get_version = reinterpret_cast<char>(GetProcAddress(hntdll, "wine_get_version"));
 			if (pwine_get_version)
 			{
 				ms_os = _T("Wine");
@@ -421,7 +416,7 @@ void ClientMachine::install ()
 	//-- detect audio version
 	{
 		TCHAR text [MAX_PATH];
-		UNICODE_AIL_MSS_version(text, sizeof(text) / sizeof(TCHAR));
+		getFmodVersion(text, sizeof(text) / sizeof(TCHAR));
 		ms_soundVersion = text;
 		query3dProviders (ms_soundProviderList);
 	}

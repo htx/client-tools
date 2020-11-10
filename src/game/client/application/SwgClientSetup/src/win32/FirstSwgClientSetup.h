@@ -20,23 +20,19 @@
 
 // ======================================================================
 
-#include "../../../../../../external/3rd/library/atlmfc/include/afx.h"
-#include "../../../../../../external/3rd/library/atlmfc/include/afxwin.h"         // MFC core and standard components
-#include "../../../../../../external/3rd/library/atlmfc/include/afxext.h"        // MFC extensions
-#include "../../../../../../external/3rd/library/atlmfc/include/afxdisp.h"        // MFC Automation classes
-#include "../../../../../../external/3rd/library/atlmfc/include/afxdtctl.h"	// MFC support for Internet Explorer 4 Common Controls
+#include <afxwin.h>
 #ifndef _AFX_NO_AFXCMN_SUPPORT
-#include "../../../../../../external/3rd/library/atlmfc/include/afxcmn.h" // MFC support for Windows Common Controls
+#include <afxcmn.h>
 #endif
-#include "../../../../../../external/3rd/library/atlmfc/include/atlbase.h"
-
+#include <afxdlgs.h>
+#include <afxdisp.h>
+#include <atlbase.h>
 
 #include <string>
 #include <vector>
 #include <string>
 #include <map>
 #include <vector>
-
 #include "resource.h"
 
 // ======================================================================

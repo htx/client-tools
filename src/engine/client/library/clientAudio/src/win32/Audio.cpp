@@ -163,7 +163,7 @@ namespace AudioNamespace
 	int s_maxDigitalMixerChannels = 0;
 	int s_allocated2dSampleHandles = 0;
 	int s_allocated3dSampleHandles = 0;
-	bool s_disableMiles = false;
+	bool s_disableAudio = false;
 
 	bool s_silenceNonBufferedMusic = false;
 
@@ -220,7 +220,7 @@ namespace AudioNamespace
 
 using namespace AudioNamespace;
 
-// Callbacks for Miles to the TreeFile system
+// Callbacks for Fmod to the TreeFile system
 static FMOD_RESULT F_CALLBACK fileOpenCallBack(const char *fileName, unsigned int *fileSize, void **fileHandle, void *userData);
 static FMOD_RESULT F_CALLBACK fileCloseCallBack(void *fileHandle, void *userData);
 static FMOD_RESULT F_CALLBACK fileSeekCallBack(void *fileHandle, unsigned int offset, void *userData);
@@ -562,7 +562,7 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 
 				FMOD_MODE eMode = FMOD_DEFAULT;
 			    eMode |= FMOD_2D;
-			    eMode |= FMOD_LOOP_OFF;
+				eMode |= sound.isInfiniteLooping() ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
 			    eMode |= FMOD_CREATESTREAM;
 
 				s_fmod_core_system->createSound(sound.getSamplePath()->getString(), eMode, nullptr, &sampleStream.mFmodStream);
@@ -588,7 +588,7 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 				// Create the sample handle
 				FMOD_MODE eMode = FMOD_DEFAULT;
 			    eMode |= FMOD_2D;
-			    eMode |= FMOD_LOOP_OFF;
+			    eMode |= sound.isInfiniteLooping() ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
 			    eMode |= FMOD_CREATECOMPRESSEDSAMPLE;
 
 				s_fmod_core_system->createSound(sound.getSamplePath()->getString(), eMode, nullptr, &sample2d.mFmodSample);
@@ -618,7 +618,7 @@ SampleId AudioNamespace::createSampleId(Sound2 &sound)
 			// Create the sample handle
 			FMOD_MODE eMode = FMOD_DEFAULT;
 		    eMode |= FMOD_3D;
-		    eMode |= FMOD_LOOP_OFF;
+		    eMode |= sound.isInfiniteLooping() ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
 		    eMode |= FMOD_CREATECOMPRESSEDSAMPLE;
 
 			s_fmod_core_system->createSound(sound.getSamplePath()->getString(), eMode, nullptr, &sample3d.mFmodSample);
@@ -683,6 +683,7 @@ void AudioNamespace::stopSound(SoundId const &soundId, float const fadeOutTime, 
 }
 
 //-----------------------------------------------------------------------------
+
 void AudioNamespace::removeSoundFromPrioritizedPlayingSounds(Sound2 const &sound)
 {
 	bool found = false;
@@ -921,7 +922,7 @@ void Audio::showAudioDebug()
 	//DEBUG_REPORT_PRINT(true, ("Max Cached 2d Sample Size  - %d KB\n", getMaxCached2dSampleSize() / 1024));
 	DEBUG_REPORT_PRINT(true, ("Cached Samples             - %d\n", getCachedSampleCount()));
 	DEBUG_REPORT_PRINT(true, ("# of Sounds Created        - %d\n", getSoundCount()));
-	DEBUG_REPORT_PRINT(true, ("# of Samples Playing       - %2d/max(%2d) requestedMax(%2d) milesMax(%2d)\n", static_cast<int>(s_prioritizedPlayingSounds.size()), getMaxNumberOfSamples(), Audio::getRequestedMaxNumberOfSamples(), Audio::getMaxDigitalMixerChannels()));
+	DEBUG_REPORT_PRINT(true, ("# of Samples Playing       - %2d/max(%2d) requestedMax(%2d) Max(%2d)\n", static_cast<int>(s_prioritizedPlayingSounds.size()), getMaxNumberOfSamples(), Audio::getRequestedMaxNumberOfSamples(), Audio::getMaxDigitalMixerChannels()));
 	DEBUG_REPORT_PRINT(true, ("Allocated Sound2d          - %d/%d peak\n", Sound2d::getCount(), Sound2d::getMaxCount()));
 	DEBUG_REPORT_PRINT(true, ("Allocated Sound3d          - %d/%d peak\n", Sound3d::getCount(), Sound3d::getMaxCount()));
 	DEBUG_REPORT_PRINT(true, ("CPU Usage/Latency          - %d%%/%d ms\n", s_digitalCpuPercent, s_digitalLatency));
@@ -930,7 +931,7 @@ void Audio::showAudioDebug()
 	DEBUG_REPORT_PRINT(true, ("Next sampleId/soundId      - %d/%d\n", s_nextSampleId, s_nextSoundId));
 	DEBUG_REPORT_PRINT(true, ("Timer Delay (ms)           - %d/%d peak (%.1f) avg\n", s_timerCurrentDelay, s_timerHighestDelay, s_averageTimerDelay));
 	DEBUG_REPORT_PRINT(true, ("User Speaker Setting       - %s\n", getCurrent3dProvider().c_str()));
-	DEBUG_REPORT_PRINT(true, ("Miles Speaker Setting      - %s\n", getSpeakerSpec().c_str()));
+	DEBUG_REPORT_PRINT(true, ("Speaker Setting			  - %s\n", getSpeakerSpec().c_str()));
 	DEBUG_REPORT_PRINT(true, ("Environmental Reverb       - %s\n", getRoomTypeString()));
 	DEBUG_REPORT_PRINT(true, ("Obstruction (interiors)    - %d%%\n", static_cast<int>(getObstruction() * 100.0f + 0.5f)));
 	DEBUG_REPORT_PRINT(true, ("Occlusion (inside vs out)  - %d%%\n", static_cast<int>(getOcclusion() * 100.0f + 0.5f)));
@@ -1131,13 +1132,13 @@ bool Audio::install()
 {
 	DEBUG_FATAL(s_installed, ("Already installed"));
 
-	s_disableMiles = ConfigFile::getKeyBool("ClientAudio", "disableMiles", false);
+	s_disableAudio = ConfigFile::getKeyBool("ClientAudio", "disableAudio", false);
 
 	//====================================================================
 	
-	if (s_disableMiles)
+	if (s_disableAudio)
 	{
-		REPORT_LOG(true, ("Audio: FMOD is disabled. To enable, set \"disableMiles=false\" in the [ClientAudio] section of client.cfg.\n"));
+		REPORT_LOG(true, ("Audio: FMOD is disabled. To enable, set \"disableAudio=false\" in the [ClientAudio] section of client.cfg.\n"));
 		return false;
 	}
 	
@@ -1402,9 +1403,9 @@ void Audio::setEnabled(bool const enabled)
 
 //-----------------------------------------------------------------------------
 
-bool Audio::isMilesEnabled()
+bool Audio::isAudioEnabled()
 {
-	return !s_disableMiles;
+	return !s_disableAudio;
 }
 
 //-----------------------------------------------------------------------------
@@ -2662,7 +2663,6 @@ void Audio::startSample(Sound2 &sound)
 					iterSampleIdToSample2dMap->second.mFmodChannel->setLoopPoints(static_cast<unsigned int>(loopStartOffset), FMOD_TIMEUNIT_MS, static_cast<unsigned int>(loopEndOffset), FMOD_TIMEUNIT_MS);
 				}
 
-				// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
 				int const loopCount = iterSampleIdToSample2dMap->second.m_sound->getLoopCount();
 				bool const infiniteLooping = iterSampleIdToSample2dMap->second.m_sound->getTemplate()->isInfiniteLooping();
 				bool const noDelay = (iterSampleIdToSample2dMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
@@ -2678,7 +2678,7 @@ void Audio::startSample(Sound2 &sound)
 					if (loopCount >= 1 && noDelay && sampleCount <= 1)
 					{
 						// Specify the loop count
-						iterSampleIdToSample2dMap->second.mFmodChannel->setLoopCount(loopCount);
+						iterSampleIdToSample2dMap->second.mFmodChannel->setLoopCount(loopCount - 1);
 					}
 
 					// Register the end of sample callback
@@ -2731,7 +2731,6 @@ void Audio::startSample(Sound2 &sound)
 				sound.setPlayBackRate(getSamplePlayBackRate(iterSampleIdToSample3dMap->first));
 				setSamplePlayBackRate(iterSampleIdToSample3dMap->first, sound.getPlayBackRate(), sound.getPlayBackRateDelta());
 
-				// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
 				int const loopCount = iterSampleIdToSample3dMap->second.m_sound->getLoopCount();
 				bool const infiniteLooping = iterSampleIdToSample3dMap->second.m_sound->isInfiniteLooping();
 				bool const noDelay = (iterSampleIdToSample3dMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
@@ -2747,7 +2746,7 @@ void Audio::startSample(Sound2 &sound)
 					if (loopCount >= 1 && noDelay && sampleCount <= 1)
 					{
 						// Specify the loop count
-						iterSampleIdToSample3dMap->second.mFmodChannel->setLoopCount(loopCount);
+						iterSampleIdToSample3dMap->second.mFmodChannel->setLoopCount(loopCount - 1);
 					}
 
 					// Register the end of sample callback
@@ -2836,7 +2835,6 @@ void Audio::startSample(Sound2 &sound)
 
 				DEBUG_REPORT_LOG(s_debugSoundStartStop, ("Audio start stream: %s\n", iterSampleIdToSampleStreamMap->second.getPath()->getString()));
 
-				// Does this sample loop forever? Telling Miles lets us not have a hitch at the loop point.
 				int const loopCount = iterSampleIdToSampleStreamMap->second.m_sound->getLoopCount();
 				bool const infiniteLooping = (loopCount <= -1);
 				bool const noDelay = (iterSampleIdToSampleStreamMap->second.m_sound->getTemplate()->getLoopDelayMax() <= 0.0f);
@@ -2853,7 +2851,7 @@ void Audio::startSample(Sound2 &sound)
 					if ((loopCount >= 1) && noDelay && (sampleCount <= 1))
 					{
 						// Specify the loop count
-						iterSampleIdToSampleStreamMap->second.mFmodChannel->setLoopCount(loopCount);
+						iterSampleIdToSampleStreamMap->second.mFmodChannel->setLoopCount(loopCount - 1);
 					}
 
 					// Register the end of sample callback

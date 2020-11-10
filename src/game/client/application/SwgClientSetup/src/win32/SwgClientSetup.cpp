@@ -274,10 +274,10 @@ namespace SwgClientSetupNamespace
 
 	void RemoveFile(char const * fileName)
 	{
-		if (unlink(fileName) == -1 && errno == EACCES)
+		if (_unlink(fileName) == -1 && errno == EACCES)
 		{
 			_chmod(fileName, _S_IREAD | _S_IWRITE);
-			unlink(fileName);
+			_unlink(fileName);
 		}
 	}
 }
@@ -605,7 +605,7 @@ BOOL SwgClientSetupApp::InitInstance()
 
 	SwgClientSetupDlg dlg;
 	m_pMainWnd = &dlg;
-	int nResponse = dlg.DoModal();
+	intptr_t nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{
 		if (!Options::save ())
@@ -637,7 +637,7 @@ BOOL SwgClientSetupApp::InitInstance()
 
 void SwgClientSetupNamespace::sendMail(std::string const & to, std::string const & from, std::string const & subject, std::string const & body, std::vector<std::string> const & attachments)
 {
-	int const numAttachments = attachments.size();
+	int const numAttachments = static_cast<int>(attachments.size());
 
 	const int static_args = 13;
 
@@ -775,12 +775,12 @@ void SwgClientSetupApp::detectAndSendMinidumps ()
 			//-- do both the minidump and the
 			DialogProgress * dlg = new DialogProgress ();
 			dlg->Create ();
-			dlg->SetRange (0, fileNameList.size ());
+			dlg->SetRange (0, static_cast<int>(fileNameList.size ()));
 			dlg->SetStep (1);
 			dlg->SetPos (0);
 
 			CString name;
-			name.Format (_T("Sending %i log(s)..."), fileNameList.size ());
+			name.Format (_T("Sending %z log(s)..."), fileNameList.size ());
 			dlg->SetStatus (name);
 
 			for (size_t i = 0; i < fileNameList.size (); ++i)

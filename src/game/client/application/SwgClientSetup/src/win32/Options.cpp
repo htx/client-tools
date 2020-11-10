@@ -9,7 +9,7 @@
 /*
 
 	[ClientAudio]
-		disableMiles=0
+		disableAudio=0
 		soundProvider=""
 
 	[ClientGame]
@@ -339,7 +339,7 @@ void Options::load (int langCode)
 					if (left == _T("disable"))
 						ms_disableAudio = (_ttoi (right) == 1);
 					else
-						if (left == _T("disableMiles"))
+						if (left == _T("disableAudio"))
 							ms_disableAudio = (_ttoi (right) == 1);
 						else
 							if (left == _T("soundProvider"))
@@ -585,7 +585,7 @@ bool Options::save ()
 	outfile.WriteString (_T("\n[ClientAudio]\n"));
 
 		if (ms_disableAudio)
-			outfile.WriteString (_T("\tdisableMiles=1\n"));
+			outfile.WriteString (_T("\tdisableAudio=1\n"));
 
 		buffer.Format (_T("\tsoundProvider=\"%s\"\n"), ms_soundProvider.c_str ());
 		outfile.WriteString (buffer);

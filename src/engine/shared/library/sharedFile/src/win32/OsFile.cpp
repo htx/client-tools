@@ -162,12 +162,8 @@ int OsFile::read(void *destinationBuffer, int numberOfBytes)
 #endif
 
 	DWORD amountReadDword;
-	BOOL result = ReadFile(m_handle, destinationBuffer, static_cast<uint>(numberOfBytes), &amountReadDword, NULL);
+	BOOL result = ReadFile(m_handle, destinationBuffer, static_cast<uint>(numberOfBytes), &amountReadDword, nullptr);
 
-// miles crasher hack
-#if 0
-	FATAL(!result, ("FileStreamerThread::processRead ReadFile failed to read '%d' bytes with error '%d'", static_cast<uint>(numberOfBytes), GetLastError()));
-#else
 	if(!result)
 	{
 		if(GetLastError() == 998) // access violation - buffer coming from miles hosed
@@ -180,8 +176,6 @@ int OsFile::read(void *destinationBuffer, int numberOfBytes)
 			FATAL(true, ("FileStreamerThread::processRead ReadFile failed to read '%d' bytes with error '%d'", static_cast<uint>(numberOfBytes), GetLastError()));
 		}
 	}
-#endif
-// end miles crasher hack
 
 #ifdef _DEBUG
 	t.stop();

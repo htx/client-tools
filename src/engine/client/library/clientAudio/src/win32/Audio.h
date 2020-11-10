@@ -138,7 +138,7 @@ public:
 	static bool        isEnabled();
 	static void        setEnabled(bool enabled);
 
-	static bool        isMilesEnabled();
+	static bool        isAudioEnabled();
 
 	static void        setRequestedMaxNumberOfSamples(int const max);
 	static int         getRequestedMaxNumberOfSamples();

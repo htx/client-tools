@@ -81,7 +81,7 @@ SwgCuiOptBase ("SwgCuiOptSound", page)
 	getCodeDataObject (TUICheckbox, checkbox, "checkEnable");
 
 	// if Audio system was never installed, disable ability to modify audio settings 
-	if (!Audio::isMilesEnabled ())
+	if (!Audio::isAudioEnabled ())
 	{
 		checkbox->SetChecked (false);
 		checkbox->SetEnabled (false);

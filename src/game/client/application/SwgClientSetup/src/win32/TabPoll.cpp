@@ -194,11 +194,11 @@ void TabPoll::refreshItems()
 {
 	DeleteAllItems();
 
-	for (TabPages::iterator itTab = m_pages.begin(); itTab != m_pages.end(); ++itTab) 
+	for (auto itTab = m_pages.begin(); itTab != m_pages.end(); ++itTab) 
 	{
 		CDialog * const dlg = *itTab;
 		
-		int const index = itTab - m_pages.begin();
+		int const index = static_cast<int>(itTab - m_pages.begin());
 
 		CString windowText;
 		dlg->GetWindowText(windowText);
@@ -376,7 +376,7 @@ void TabPoll::setCurrentTab(int tabIndex)
 		{
 			CDialog * const dlg = *itTab;
 			
-			int const index = itTab - m_pages.begin();
+			int const index = static_cast<int>(itTab - m_pages.begin());
 
 			dlg->ShowWindow(SW_HIDE);
 
