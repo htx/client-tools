@@ -1265,8 +1265,7 @@ bool Audio::install()
 
 	//AIL_set_3D_rolloff_factor(s_digitalDevice2d, s_rollOffFactor); // TODO : set per channel ?
 
-	REPORT_LOG(true, ("Audio: %s\n", getCurrent3dProvider().c_str()));
-	REPORT_LOG(true, ("Audio: FMOD speakers are %s\n", getSpeakerSpec().c_str()));
+	REPORT_LOG(true, ("Audio: FMOD speakers are %s\n", getCurrent3dProvider().c_str()));
 	REPORT_LOG(true, ("Audio: FMOD Max Channels set to %d\n", getMaxDigitalMixerChannels()));
 
 	s_obstruction = ConfigClientAudio::getObstruction();
@@ -2968,7 +2967,7 @@ void Audio::setSampleVolume(SampleId const &sampleId, float const volume)
 		Sample2d const &sample2d = iterSampleIdToSample2dMap->second;
 
 		sample2d.mFmodChannel->setVolume(finalVolume);
-		sample2d.mFmodChannel->setReverbProperties(0, 0.0f);
+		sample2d.mFmodChannel->setReverbProperties(1, 0.0f);
 	}
 	else if (isSample3d(sampleId, iterSampleIdToSample3dMap))
 	{
@@ -2989,7 +2988,7 @@ void Audio::setSampleVolume(SampleId const &sampleId, float const volume)
 		Sample3d const &sample3d = iterSampleIdToSample3dMap->second;
 
 		sample3d.mFmodChannel->setVolume(finalVolume);
-		sample3d.mFmodChannel->setReverbProperties(0, 0.0f);
+		sample3d.mFmodChannel->setReverbProperties(1, 0.0f);
 	}
 	else if (isSampleStream(sampleId, iterSampleIdToSampleStreamMap))
 	{
@@ -3001,7 +3000,7 @@ void Audio::setSampleVolume(SampleId const &sampleId, float const volume)
 		SampleStream const &sampleStream = iterSampleIdToSampleStreamMap->second;
 
 		sampleStream.mFmodChannel->setVolume(finalVolume);
-		sampleStream.mFmodChannel->setReverbProperties(0, 0.0f);
+		sampleStream.mFmodChannel->setReverbProperties(1, 0.0f);
 	}
 }
 
@@ -3736,11 +3735,10 @@ void Audio::setSampleEffectsLevel(SampleId const &sampleId, float const effectLe
 
 		if (it != s_sampleIdToSample3dMap.end())
 		{
-			//NOT_NULL(it->second.mFmodSample);
-			//NOT_NULL(it->second.mFmodChannel);
+			NOT_NULL(it->second.mFmodSample);
+			NOT_NULL(it->second.mFmodChannel);
 
-			// TODO : dry level ??
-			it->second.mFmodChannel->setReverbProperties(0, 0.0f);
+			it->second.mFmodChannel->setReverbProperties(1, effectLevel);
 		}
 	}
 }
@@ -3749,7 +3747,6 @@ void Audio::setSampleEffectsLevel(SampleId const &sampleId, float const effectLe
 
 float Audio::getSampleEffectsLevel(SampleId const &sampleId)
 {
-	float resultDry = 0.0f;
 	float resultWet = 0.0f;
 
 	if (s_installed)
@@ -3761,12 +3758,11 @@ float Audio::getSampleEffectsLevel(SampleId const &sampleId)
 			NOT_NULL(it->second.mFmodSample);
 			NOT_NULL(it->second.mFmodChannel);
 
-			// TODO : dry level ?
-			it->second.mFmodChannel->getReverbProperties(0, &resultWet);
+			it->second.mFmodChannel->getReverbProperties(1, &resultWet);
 		}
 	}
 
-	return resultDry;
+	return resultWet;
 }
 
 //-----------------------------------------------------------------------------

@@ -176,10 +176,7 @@ SwgCuiOptKeymap::~SwgCuiOptKeymap ()
 
 	m_workingInputMap = 0;
 
-	if (m_originalInputMap)
-	{
-		delete m_originalInputMap;
-	}
+	delete m_originalInputMap;
 
 	m_originalInputMap = 0;
 	m_tableModelBinds = NULL;
@@ -673,10 +670,9 @@ void SwgCuiOptKeymap::resetTabs ()
 	const InputMap::StringVector & sv = m_workingInputMap->getCommandCategories ();
 
 	int index = 0;
-	for (InputMap::StringVector::const_iterator it = sv.begin (); it != sv.end (); ++it)
+	
+	for(const auto& category : sv)
 	{
-		const std::string & category = *it;
-
 #if PRODUCTION == 1
 		if (category == Categories::internal)
 			continue;
@@ -706,7 +702,6 @@ void SwgCuiOptKeymap::resetPresets ()
 {
 	InputScheme::StringVector sv;
 	InputScheme::getTypes (sv);
-
 	UIDataSource * const dataSource = NON_NULL(m_comboPreset->GetDataSource());
 	
 	dataSource->Clear();
@@ -714,10 +709,9 @@ void SwgCuiOptKeymap::resetPresets ()
 	std::string const & lastInputScheme = InputScheme::getLastInputSchemeType ();
 
 	int selectComboIndex = 0;
-	for (InputScheme::StringVector::const_iterator it = sv.begin (); it != sv.end (); ++it)
+	
+	for(const auto& schemeName : sv)
 	{
-		const std::string & schemeName = *it;
-
 		if (!dataSource->GetChild (schemeName.c_str ()))
 		{
 			const Unicode::String & localizedSchemeName = InputScheme::localizeTypeName (schemeName);
@@ -729,9 +723,11 @@ void SwgCuiOptKeymap::resetPresets ()
 			//-- find position of child
 			UIDataList const & dataList = dataSource->GetData ();
 			int index = 0;
-			for (UIDataList::const_iterator dit = dataList.begin (); dit != dataList.end (); ++dit, ++index)
+			
+			for (auto dit = dataList.begin (); dit != dataList.end (); ++dit, ++index)
 			{
 				UIData const * const data = *dit;
+				
 				if (data && data->GetName () == schemeName)
 				{
 					selectComboIndex = index;

@@ -259,11 +259,12 @@ namespace
 		cniv.clear ();
 		cniv.reserve (owv.size ());
 
-		for (ObjectWatcherVector::const_iterator it = owv.begin (); it != owv.end (); ++it)
+		for (auto it = owv.begin (); it != owv.end (); ++it)
 		{
 			ClientObject * const clientObject = (*it).getPointer ();
+			
 			if (clientObject)
-				cniv.push_back (CachedNetworkId (*clientObject));
+				cniv.emplace_back (CachedNetworkId (*clientObject));
 			else
 				WARNING (true, ("CuiInventoryState converting watcher->id vector with null pointer"));
 		}
@@ -276,13 +277,14 @@ namespace
 		owv.clear ();
 		owv.reserve (cniv.size ());
 
-		for (CachedNetworkIdVector::const_iterator it = cniv.begin (); it != cniv.end (); ++it)
+		for (auto it = cniv.begin (); it != cniv.end (); ++it)
 		{
 			const CachedNetworkId & id = *it;
 
 			ClientObject * const clientObject = safe_cast<ClientObject *>(id.getObject ());
+			
 			if (clientObject)
-				owv.push_back (ObjectWatcher (clientObject));
+				owv.emplace_back (ObjectWatcher (clientObject));
 			else
 				WARNING (true, ("CuiInventoryState converting (id obj [%s])->watcher vector with null pointer", id.getValueString ().c_str ()));
 		}

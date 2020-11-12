@@ -70,7 +70,7 @@ private:
 protected:
 	void                        setNonBlocking() const;
 protected:
-	int                         handle;
+	uintptr_t                    handle;
 
 	/**
 		@brief support for setting/getting last error from derived

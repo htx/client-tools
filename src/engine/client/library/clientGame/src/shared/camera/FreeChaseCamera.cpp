@@ -434,7 +434,7 @@ float FreeChaseCamera::alter (float elapsedTime)
 			break;
 
 		case CM_chaseCamera:
-			setCameraMode ( useModeless || ( ms_cameraMode == CM_free ) ? CM_chase : CM_free);
+			setCameraMode ( useModeless || ms_cameraMode == CM_free ? CM_chase : CM_free);
 			m_spinning = false;
 			break;
 

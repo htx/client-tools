@@ -296,10 +296,11 @@ void  InputScheme::getTypes      (StringVector & sv)
 	}
 
 	sv.reserve (s_dataMap[sceneType].size ());
-	for (DataMap::const_iterator it = s_dataMap[sceneType].begin (); it != s_dataMap[sceneType].end (); ++it)
+	
+	for(const auto& it : s_dataMap[sceneType])
 	{
-		const std::string & name = (*it).first;
-		sv.push_back (name);
+		const std::string & name = it.first;
+		sv.emplace_back (name);
 	}
 }
 

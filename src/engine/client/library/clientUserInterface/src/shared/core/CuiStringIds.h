@@ -191,8 +191,6 @@ namespace CuiStringIds
 
 	MAKE_STRING_ID(ui,      groundplace);
 	MAKE_STRING_ID(ui,		groundplace_abort);
-
-	MAKE_STRING_ID(ui,      tcg_exit_confirmation);
 };
 
 #undef MAKE_STRING_ID

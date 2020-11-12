@@ -184,7 +184,7 @@ bool Sock::canSend() const
 	FD_ZERO(&w);
 	FD_SET(handle, &w); //lint !e717 // I have no idea why MS makes this a do { .. } while(0); macro?! Pointless.
 
-	return (select(1, 0, &w, 0, &tv) > 0);
+	return (select(1, nullptr, &w, nullptr, &tv) > 0);
 }
 
 //---------------------------------------------------------------------
@@ -201,8 +201,8 @@ bool Sock::canSend() const
 const unsigned int Sock::getInputBytesPending() const
 {
 	unsigned long int bytes = 0;
-	int err;
-	err = ioctlsocket(handle, FIONREAD, &bytes); //lint !e1924 (I don't know WHAT Microsoft is doing here!)
+	ioctlsocket(handle, FIONREAD, &bytes); //lint !e1924 (I don't know WHAT Microsoft is doing here!)
+	
 	return bytes;
 }
 
@@ -345,8 +345,7 @@ const unsigned int Sock::getMaxMessageSendSize() const
 void Sock::getPeerName(struct sockaddr_in & target, SOCKET s)
 {
 	int namelen = sizeof(struct sockaddr_in);
-	int err;
-	err = getpeername(s, reinterpret_cast<sockaddr *>(&(target)), &namelen);
+	getpeername(s, reinterpret_cast<sockaddr *>(&(target)), &namelen);
 }
 
 //---------------------------------------------------------------------
@@ -357,8 +356,8 @@ void Sock::getPeerName(struct sockaddr_in & target, SOCKET s)
 void Sock::setNonBlocking() const
 {
 	unsigned long int nb = 1;
-	int err;
-	err = ioctlsocket(handle, FIONBIO, &nb); //lint !e569 // loss of precision in the FIONBIO macro, beyond my control
+	int err = ioctlsocket(handle, FIONBIO, &nb); //lint !e569 // loss of precision in the FIONBIO macro, beyond my control
+	
 	if(err == SOCKET_ERROR)
 		OutputDebugString(getLastError().c_str());
 }

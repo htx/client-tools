@@ -62,7 +62,7 @@ namespace ClientMachineNamespace
 	std::wstring              ms_os;
 	bool                      ms_directXSupported;
 	bool                      ms_supportsHardwareMouseCursor;
-	int                       ms_videoMemorySize;
+	unsigned int              ms_videoMemorySize;
 	std::wstring              ms_deviceDescription;
 	unsigned short            ms_deviceIdentifier;
 	unsigned short            ms_vendorIdentifier;

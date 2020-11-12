@@ -119,7 +119,7 @@ bool  RadialMenuManager::getCommandForMenuType (int menuType, std::string & comm
 
 //----------------------------------------------------------------------
 
-int RadialMenuManager::getMenuTypeByName     (const std::string & name)
+int RadialMenuManager::getMenuTypeByName (const std::string & name)
 {
 	if (!s_installed)
 		install ();
@@ -135,82 +135,82 @@ int RadialMenuManager::getMenuTypeByName     (const std::string & name)
 
 //----------------------------------------------------------------------
 
-int RadialMenuManager::addRootMenu           (DataVector & dv, int menuType, const Unicode::String & label, bool serverNotify)
+int RadialMenuManager::addRootMenu (DataVector & dv, int menuType, const Unicode::String & label, bool serverNotify)
 {
-	if (menuType == 0)
+	if(menuType == 0)
 		return 0;
 
-	const ObjectMenuRequestData * const data = findMenuByType (dv, menuType);
+	const ObjectMenuRequestData * const data = findMenuByType(dv, menuType);
 
-	if (data)
+	if(data)
 		return 0;
 
-	const uint8 id = findNextId (dv);
-	dv.push_back (ObjectMenuRequestData (id, 0, static_cast<uint8>(menuType), label, true, serverNotify));
+	const uint8 id = findNextId(dv);
+	
+	dv.emplace_back(ObjectMenuRequestData (id, 0, static_cast<uint8>(menuType), label, true, serverNotify));
 
 	return id;
 }
 
 //----------------------------------------------------------------------
 
-int RadialMenuManager::addSubMenu            (DataVector & dv, int parent, int menuType, const Unicode::String & label, bool serverNotify)
+int RadialMenuManager::addSubMenu (DataVector & dv, int parent, int menuType, const Unicode::String & label, bool serverNotify)
 {
-	if (menuType == 0 || parent == 0)
+	if(menuType == 0 || parent == 0)
 		return 0;
 
-	const ObjectMenuRequestData * const data = findMenuByType (dv, menuType);
+	const ObjectMenuRequestData * const data = findMenuByType(dv, menuType);
 
 	if (data)
 		return 0;
 
-	const ObjectMenuRequestData * const root = findMenuById (dv, parent);
+	const ObjectMenuRequestData * const root = findMenuById(dv, parent);
 
 	if (!root)
 		return 0;
 
-	const uint8 id = findNextId (dv);
-	dv.push_back (ObjectMenuRequestData (id, static_cast<uint8>(parent), static_cast<uint8>(menuType), label, true, serverNotify));
+	const uint8 id = findNextId(dv);
+	
+	dv.emplace_back(ObjectMenuRequestData (id, static_cast<uint8>(parent), static_cast<uint8>(menuType), label, true, serverNotify));
 
 	return id;
 }
 
 //----------------------------------------------------------------------
 
-const ObjectMenuRequestData * RadialMenuManager::findMenuByType         (const DataVector & dv, int menuType)
+const ObjectMenuRequestData * RadialMenuManager::findMenuByType(const DataVector & dv, int menuType)
 {
-	for (DataVector::const_iterator it = dv.begin (); it != dv.end (); ++it)
+	for(const auto& data : dv)
 	{
-		const ObjectMenuRequestData & data = *it;
-		if (data.m_menuItemType == menuType)
+		if(data.m_menuItemType == menuType)
 			return &data;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
 
-const ObjectMenuRequestData * RadialMenuManager::findMenuById          (const DataVector & dv, int id)
+const ObjectMenuRequestData * RadialMenuManager::findMenuById (const DataVector & dv, int id)
 {
-	for (DataVector::const_iterator it = dv.begin (); it != dv.end (); ++it)
+	for(const auto& data : dv)
 	{
-		const ObjectMenuRequestData & data = *it;
-		if (data.m_id == id)
+		if(data.m_id == id)
 			return &data;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
 
-uint8 RadialMenuManager::findNextId            (const DataVector & dv)
+uint8 RadialMenuManager::findNextId (const DataVector & dv)
 {
 	uint8 id = 1;
-	for (DataVector::const_iterator it = dv.begin (); it != dv.end (); ++it)
+	
+	for(const auto& data : dv)
 	{
-		const ObjectMenuRequestData & data = *it;
-		id = std::max (id, static_cast<uint8>(data.m_id + 1));
+		id = std::max(id, static_cast<uint8>(data.m_id + 1));
 	}
 	
 	return id;

@@ -60,7 +60,6 @@
 #include "clientUserInterface/CuiStringIdsServer.h"
 #include "clientUserInterface/CuiTextManager.h"
 #include "clientUserInterface/IMEManager.h"
-#include "libEverQuestTCG/libEverQuestTCG.h"
 #include "sharedDebug/DebugFlags.h"
 #include "sharedDebug/InstallTimer.h"
 #include "sharedDebug/PerformanceTimer.h"
@@ -713,12 +712,6 @@ void CuiManager::update (float elapsedTime)
 		PROFILER_AUTO_BLOCK_DEFINE ("UIManager");
 		if (ms_theIoWin)
 			UIManager::gUIManager ().SendHeartbeats ();
-	}
-
-	{
-		PROFILER_AUTO_BLOCK_DEFINE ("LibEverQuest");
-		if(libEverQuestTCG::isLaunched())
-			libEverQuestTCG::update();
 	}
 
 	{

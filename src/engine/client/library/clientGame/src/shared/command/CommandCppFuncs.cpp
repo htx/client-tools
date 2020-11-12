@@ -263,8 +263,6 @@ namespace CommandCppFuncsNamespace
 	void commandFuncExternalCommand(Command const & command, NetworkId const & actor, NetworkId const & target, Unicode::String const & params);
 	void commandFuncCollections(Command const & command, NetworkId const & , NetworkId const & target, Unicode::String const &);
 
-	//void commandFuncTcg(Command const & command, NetworkId const & , NetworkId const & target, Unicode::String const &);
-
 	void commandFuncToggleOutOfCharacter(Command const & command, NetworkId const & actor, NetworkId const & target, Unicode::String const &);
 
 	void commandFuncEquipAppearance(Command const & command, NetworkId const & actor, NetworkId const & target, Unicode::String const & params);
@@ -2404,13 +2402,6 @@ void CommandCppFuncsNamespace::commandFuncCollections(Command const & , NetworkI
 
 //----------------------------------------------------------------------
 
-//void CommandCppFuncsNamespace::commandFuncTcg(Command const & , NetworkId const & , NetworkId const & , Unicode::String const & params)
-//{
-//	CuiActionManager::performAction(CuiActions::tcg, params);
-//}
-
-//----------------------------------------------------------------------
-
 void CommandCppFuncsNamespace::commandFuncGCWInfo(Command const & , NetworkId const & , NetworkId const & , Unicode::String const & params)
 {
 	CuiActionManager::performAction(CuiActions::gcwInfo, params);
@@ -2588,8 +2579,6 @@ void CommandCppFuncs::install()
 	CommandTable::addCppFunction("externalCommand", commandFuncExternalCommand);
 	CommandTable::addCppFunction("collections", commandFuncCollections);
 	//endspace
-
-	//CommandTable::addCppFunction("tcg", commandFuncTcg);
 
 	CommandTable::addCppFunction("equipAppearance", commandFuncEquipAppearance);
 	CommandTable::addCppFunction("unequipAppearance", commandFuncUnequipAppearance);

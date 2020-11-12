@@ -264,42 +264,48 @@ bool ProcessSpawner::getOutputString(char *buffer, int bufferSize)
 
 	if (currentRead >= currentLine)
 	{
-		const unsigned bufferAvailable = sizeof(readBuffer) - (currentRead - readBuffer);
-		unsigned toRead = dwAvail;
+		const size_t bufferAvailable = sizeof(readBuffer) - (currentRead - readBuffer);
+		size_t toRead = dwAvail;
+		
 		if (toRead > bufferAvailable)
 		{
-			toRead=bufferAvailable;
+			toRead = bufferAvailable;
 		}
 
 		dwRead=0;
-		if (!::ReadFile(hOutputRead, currentRead, min(bufferAvailable, dwAvail), &dwRead, NULL) || !dwRead)
+		if (!::ReadFile(hOutputRead, currentRead, min(bufferAvailable, dwAvail), &dwRead, nullptr) || !dwRead)
 		{
 			return false;
 		}
-		dwAvail-=dwRead;
-		currentRead+=dwRead;
-		if (currentRead==readBuffer+sizeof(readBuffer))
+		
+		dwAvail -= dwRead;
+		currentRead += dwRead;
+		
+		if (currentRead == readBuffer+sizeof(readBuffer))
 		{
-			currentRead=readBuffer;
+			currentRead = readBuffer;
 		}
 	}
 
 	if (dwAvail>0)
 	{
-		const unsigned bufferAvailable = currentLine - currentRead - 1;
+		const size_t bufferAvailable = currentLine - currentRead - 1;
 		if (bufferAvailable)
 		{
-			unsigned toRead = dwAvail;
+			size_t toRead = dwAvail;
+			
 			if (toRead > bufferAvailable)
 			{
 				toRead=bufferAvailable;
 			}
 
 			dwRead=0;
-			if (!::ReadFile(hOutputRead, currentRead, min(bufferAvailable, dwAvail), &dwRead, NULL) || !dwRead)
+			
+			if (!::ReadFile(hOutputRead, currentRead, min(bufferAvailable, dwAvail), &dwRead, nullptr) || !dwRead)
 			{
 				return false;
 			}
+			
 			currentRead+=dwRead;
 
 			DEBUG_FATAL(currentRead>=currentLine, (""));

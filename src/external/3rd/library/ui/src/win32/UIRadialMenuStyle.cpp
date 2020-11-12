@@ -125,26 +125,27 @@ UIBaseObject *UIRadialMenuStyle::Clone( void ) const
 }
 
 //----------------------------------------------------------------------
-void UIRadialMenuStyle::GetLinkPropertyNames( UIPropertyNameVector &In ) const
-{
-	In.push_back (PropertyName::ButtonStyle_E  );
-	In.push_back (PropertyName::ButtonStyle_N  );
-	In.push_back (PropertyName::ButtonStyle_NE );
-	In.push_back (PropertyName::ButtonStyle_NW );
-	In.push_back (PropertyName::ButtonStyle_S  );
-	In.push_back (PropertyName::ButtonStyle_SE );
-	In.push_back (PropertyName::ButtonStyle_SW );
-	In.push_back (PropertyName::ButtonStyle_W  );
-	In.push_back (PropertyName::PopupStyle_E  );
-	In.push_back (PropertyName::PopupStyle_N  );
-	In.push_back (PropertyName::PopupStyle_NE );
-	In.push_back (PropertyName::PopupStyle_NW );
-	In.push_back (PropertyName::PopupStyle_S  );
-	In.push_back (PropertyName::PopupStyle_SE );
-	In.push_back (PropertyName::PopupStyle_SW );
-	In.push_back (PropertyName::PopupStyle_W  );
 
-	UIWidgetStyle::GetLinkPropertyNames( In );
+void UIRadialMenuStyle::GetLinkPropertyNames(UIPropertyNameVector &In) const
+{
+	In.emplace_back(PropertyName::ButtonStyle_E);
+	In.emplace_back(PropertyName::ButtonStyle_N);
+	In.emplace_back(PropertyName::ButtonStyle_NE);
+	In.emplace_back(PropertyName::ButtonStyle_NW);
+	In.emplace_back(PropertyName::ButtonStyle_S);
+	In.emplace_back(PropertyName::ButtonStyle_SE);
+	In.emplace_back(PropertyName::ButtonStyle_SW);
+	In.emplace_back(PropertyName::ButtonStyle_W);
+	In.emplace_back(PropertyName::PopupStyle_E);
+	In.emplace_back(PropertyName::PopupStyle_N);
+	In.emplace_back(PropertyName::PopupStyle_NE);
+	In.emplace_back(PropertyName::PopupStyle_NW);
+	In.emplace_back(PropertyName::PopupStyle_S);
+	In.emplace_back(PropertyName::PopupStyle_SE);
+	In.emplace_back(PropertyName::PopupStyle_SW);
+	In.emplace_back(PropertyName::PopupStyle_W);
+
+	UIWidgetStyle::GetLinkPropertyNames(In);
 }
 
 //----------------------------------------------------------------------
@@ -159,31 +160,31 @@ void UIRadialMenuStyle::GetPropertyGroups(UIPropertyGroupVector &o_groups, UIPro
 
 //----------------------------------------------------------------------
 
-void UIRadialMenuStyle::GetPropertyNames( UIPropertyNameVector &In, bool forCopy  ) const
+void UIRadialMenuStyle::GetPropertyNames(UIPropertyNameVector &In, bool forCopy) const
 {
-	In.push_back (PropertyName::ButtonStyle_E  );
-	In.push_back (PropertyName::ButtonStyle_N  );
-	In.push_back (PropertyName::ButtonStyle_NE );
-	In.push_back (PropertyName::ButtonStyle_NW );
-	In.push_back (PropertyName::ButtonStyle_S  );
-	In.push_back (PropertyName::ButtonStyle_SE );
-	In.push_back (PropertyName::ButtonStyle_SW );
-	In.push_back (PropertyName::ButtonStyle_W  );
-	In.push_back (PropertyName::PopupStyle_E  );
-	In.push_back (PropertyName::PopupStyle_N  );
-	In.push_back (PropertyName::PopupStyle_NE );
-	In.push_back (PropertyName::PopupStyle_NW );
-	In.push_back (PropertyName::PopupStyle_S  );
-	In.push_back (PropertyName::PopupStyle_SE );
-	In.push_back (PropertyName::PopupStyle_SW );
-	In.push_back (PropertyName::PopupStyle_W  );
+	In.emplace_back(PropertyName::ButtonStyle_E);
+	In.emplace_back(PropertyName::ButtonStyle_N);
+	In.emplace_back(PropertyName::ButtonStyle_NE);
+	In.emplace_back(PropertyName::ButtonStyle_NW);
+	In.emplace_back(PropertyName::ButtonStyle_S);
+	In.emplace_back(PropertyName::ButtonStyle_SE);
+	In.emplace_back(PropertyName::ButtonStyle_SW);
+	In.emplace_back(PropertyName::ButtonStyle_W);
+	In.emplace_back(PropertyName::PopupStyle_E);
+	In.emplace_back(PropertyName::PopupStyle_N);
+	In.emplace_back(PropertyName::PopupStyle_NE);
+	In.emplace_back(PropertyName::PopupStyle_NW);
+	In.emplace_back(PropertyName::PopupStyle_S);
+	In.emplace_back(PropertyName::PopupStyle_SE);
+	In.emplace_back(PropertyName::PopupStyle_SW);
+	In.emplace_back(PropertyName::PopupStyle_W);
 
-	In.push_back( PropertyName::ItemRadius );
-	In.push_back( PropertyName::ItemHeight );
-	In.push_back( PropertyName::ItemMargin );
-	In.push_back( PropertyName::ItemPopupTimeout );
+	In.emplace_back(PropertyName::ItemRadius);
+	In.emplace_back(PropertyName::ItemHeight);
+	In.emplace_back(PropertyName::ItemMargin);
+	In.emplace_back(PropertyName::ItemPopupTimeout);
 
-	UIWidgetStyle::GetPropertyNames( In, forCopy );
+	UIWidgetStyle::GetPropertyNames(In, forCopy);
 }
 
 //----------------------------------------------------------------------

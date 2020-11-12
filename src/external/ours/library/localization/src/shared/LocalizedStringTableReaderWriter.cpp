@@ -388,8 +388,8 @@ LocalizedString* LocalizedStringTableRW::addString(LocalizedString * locstr, con
 		if (it != m_nameMap.end ())
 		{
 			const size_t            old_id     = (*it).second;
-			const std::string *     old_name   = getNameById        (old_id);
-			const LocalizedString * old_locstr = getLocalizedString (old_id);
+			const std::string *     old_name   = getNameById        (static_cast<unsigned long>(old_id));
+			const LocalizedString * old_locstr = getLocalizedString (static_cast<unsigned long>(old_id));
 			const std::string       old_str    = old_locstr ? Unicode::wideToNarrow (old_locstr->getString ()) : std::string ();
 			
 			sprintf (buf, 
@@ -451,11 +451,11 @@ bool LocalizedStringTableRW::removeStringByName (const Unicode::NarrowString & n
 
 	const size_t id = (*find_iter_id).second;
 
-	Map_t::iterator find_iter_string = m_map.find (id);
+	auto find_iter_string = m_map.find (static_cast<unsigned long>(id));
 
 	assert (find_iter_string != m_map.end ());  //lint !e1924 // c-style cast.  MSVC bug
 
-	IdNameMap_t::iterator find_iter_id_map = m_idNameMap.find (id);
+	auto find_iter_id_map = m_idNameMap.find (static_cast<unsigned long>(id));
 
 	assert (find_iter_id_map != m_idNameMap.end ());  //lint !e1924 // c-style cast.  MSVC bug
 

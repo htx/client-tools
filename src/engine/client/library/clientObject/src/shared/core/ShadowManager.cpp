@@ -94,8 +94,8 @@ namespace ShadowManagerNamespace
 		{
 			// Calculate our fog value
 			float distance = camera.getPosition_w ().magnitudeBetween(position_w);
-			float distanceDensitySqrd = pow(distance * fogDensity, 2);
-			float baseDistanceDensity = pow(cms_fogNaturalBase, distanceDensitySqrd);
+			float distanceDensitySqrd = powf(distance * fogDensity, 2.0f);
+			float baseDistanceDensity = powf(cms_fogNaturalBase, distanceDensitySqrd);
 			float finalFogValue = 1.0f / baseDistanceDensity;
 
 			if(finalFogValue < cms_fogCutOff)

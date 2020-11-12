@@ -68,7 +68,7 @@ namespace UIRadialMenuNamespace
 		_DESCRIPTOR(RadialCenterMargin, "", T_rect),
 		_DESCRIPTOR(RadialCenterPrototype, "", T_object),
 		_DESCRIPTOR(Style, "", T_object),
-	_GROUPEND(Basic, 3, int(UIPropertyCategories::C_Basic));
+	_GROUPEND(Basic, 3, static_cast<int>(UIPropertyCategories::C_Basic));
 	//================================================================
 }
 using namespace UIRadialMenuNamespace;
@@ -152,14 +152,14 @@ bool UIRadialMenu::ProcessMessage( const UIMessage &msg )
 			const UIBaseObject::UIObjectList & olist = GetChildrenRef ();
 
 			int i = 0;
-			for (UIObjectList::const_iterator it = olist.begin (); it != olist.end() && !processed; ++it)
+			for (auto it = olist.begin (); it != olist.end() && !processed; ++it)
 			{
 				UIBaseObject * const obj = *it;
 				if (obj->IsA (TUIButton))
 				{
 					if (i++ == index)
 					{
-						static_cast<UIButton *>(obj)->Press ();
+						dynamic_cast<UIButton *>(obj)->Press ();
 						processed = true;
 					}
 				}
@@ -194,19 +194,19 @@ void UIRadialMenu::SetStyle( UIRadialMenuStyle *NewStyle )
 
 //-----------------------------------------------------------------
 
-UIStyle *UIRadialMenu::GetStyle () const
+UIStyle *UIRadialMenu::GetStyle() const
 {
 	return mStyle;
 };
 
 //-----------------------------------------------------------------
 
-void UIRadialMenu::GetLinkPropertyNames( UIPropertyNameVector &In ) const
+void UIRadialMenu::GetLinkPropertyNames(UIPropertyNameVector &In) const
 {
-	In.push_back (PropertyName::DataSource);
-	In.push_back (PropertyName::PopupDataNamespace);
-	In.push_back (PropertyName::RadialCenterPrototype);
-	In.push_back (PropertyName::Style);
+	In.emplace_back(PropertyName::DataSource);
+	In.emplace_back(PropertyName::PopupDataNamespace);
+	In.emplace_back(PropertyName::RadialCenterPrototype);
+	In.emplace_back(PropertyName::Style);
 
 	UIPage::GetLinkPropertyNames( In );
 }
@@ -221,15 +221,15 @@ void UIRadialMenu::GetPropertyGroups(UIPropertyGroupVector &o_groups, UIProperty
 
 //----------------------------------------------------------------------
 
-void UIRadialMenu::GetPropertyNames( UIPropertyNameVector &In, bool forCopy ) const
+void UIRadialMenu::GetPropertyNames(UIPropertyNameVector &In, bool forCopy) const
 {
-	In.push_back (PropertyName::DataSource);
-	In.push_back (PropertyName::PopupDataNamespace);
-	In.push_back (PropertyName::RadialCenterMargin);
-	In.push_back (PropertyName::RadialCenterPrototype);
-	In.push_back (PropertyName::Style);
+	In.emplace_back(PropertyName::DataSource);
+	In.emplace_back(PropertyName::PopupDataNamespace);
+	In.emplace_back(PropertyName::RadialCenterMargin);
+	In.emplace_back(PropertyName::RadialCenterPrototype);
+	In.emplace_back(PropertyName::Style);
 
-	UIPage::GetPropertyNames( In, forCopy );
+	UIPage::GetPropertyNames(In, forCopy);
 }
 
 //-----------------------------------------------------------------
@@ -238,7 +238,7 @@ bool UIRadialMenu::SetProperty( const UILowerString & Name, const UIString &Valu
 {
 	if( Name == PropertyName::DataSource )
 	{
-		UIDataSource * const NewDataSource = static_cast<UIDataSource *>(GetObjectFromPath(Value, TUIDataSource));
+		auto* const NewDataSource = dynamic_cast<UIDataSource *>(GetObjectFromPath(Value, TUIDataSource));
 
 		if( NewDataSource || Value.empty() )
 		{
@@ -248,7 +248,7 @@ bool UIRadialMenu::SetProperty( const UILowerString & Name, const UIString &Valu
 	}
 	else if( Name == PropertyName::Style )
 	{
-		UIRadialMenuStyle * const NewStyle = static_cast<UIRadialMenuStyle *>(GetObjectFromPath(Value, TUIRadialMenuStyle));
+		auto* const NewStyle = dynamic_cast<UIRadialMenuStyle *>(GetObjectFromPath(Value, TUIRadialMenuStyle));
 
 		if (NewStyle || Value.empty())
 		{
@@ -258,7 +258,7 @@ bool UIRadialMenu::SetProperty( const UILowerString & Name, const UIString &Valu
 	}
 	else if( Name == PropertyName::PopupDataNamespace )
 	{
-		UINamespace * const ns = static_cast<UINamespace *>(GetObjectFromPath(Value, TUINamespace));
+		auto* const ns = dynamic_cast<UINamespace *>(GetObjectFromPath(Value, TUINamespace));
 
 		if (ns || Value.empty())
 		{
@@ -278,9 +278,9 @@ bool UIRadialMenu::SetProperty( const UILowerString & Name, const UIString &Valu
 
 	else if (Name == PropertyName::RadialCenterPrototype)
 	{
-		UIWidget * const w = static_cast<UIWidget *>(GetObjectFromPath(Value, TUIWidget));
+		auto* const w = dynamic_cast<UIWidget *>(GetObjectFromPath(Value, TUIWidget));
 
-		if (w)
+		if(w)
 		{
 			SetRadialCenterPrototype (w);
 		}
@@ -356,9 +356,9 @@ bool UIRadialMenu::OnMessage (UIWidget * context, const UIMessage & msg)
 
 		bool found = false;
 		const UIBaseObject::UIObjectList & olist = GetChildrenRef ();
-		for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+		
+		for(auto* obj : olist)
 		{
-			const UIBaseObject * const obj = *it;
 			if (obj == context)
 			{
 				found = true;
@@ -374,10 +374,6 @@ bool UIRadialMenu::OnMessage (UIWidget * context, const UIMessage & msg)
 			mHoverButtonIndex = -1;
 			return true;
 		}
-
-		//----------------------------------------------------------------------
-		//-- if the popupmenu is already visible for another button, try to spawn it here.
-
 	}
 	else if (msg.Type == UIMessage::MouseExit)
 	{
@@ -386,19 +382,18 @@ bool UIRadialMenu::OnMessage (UIWidget * context, const UIMessage & msg)
 		mPopupMenuVanishTime = 0;
 	}
 
-
 	return true;
 }
 
 //----------------------------------------------------------------------
 
-void UIRadialMenu::OnButtonPressed (UIWidget * context)
+void UIRadialMenu::OnButtonPressed(UIWidget * context)
 {
-	UIButton * const button = static_cast<UIButton *>(context);
+	auto* const button = dynamic_cast<UIButton *>(context);
 
-	mSelectedName = button->GetName ();
+	mSelectedName = button->GetName();
 
-	SendCallback( &UIEventCallback::OnPopupMenuSelection , UILowerString::null);
+	SendCallback(&UIEventCallback::OnPopupMenuSelection , UILowerString::null);
 }
 
 //----------------------------------------------------------------------
@@ -447,9 +442,6 @@ long UIRadialMenu::GetItemCount () const
 
 void UIRadialMenu::SetDataSource( UIDataSource *NewDataSource )
 {
-//	if( NewDataSource == mDataSource )
-//		return;
-
 	if( NewDataSource )
 	{
 		NewDataSource->Listen( this );
@@ -469,20 +461,17 @@ void UIRadialMenu::SetDataSource( UIDataSource *NewDataSource )
 
 //----------------------------------------------------------------------
 
-void UIRadialMenu::RecreateButtons ()
+void UIRadialMenu::RecreateButtons()
 {
 	UIBaseObject::UIObjectList olist;
-	GetChildren (olist);
+	GetChildren(olist);
 
+	for(auto* obj : olist)
 	{
-		for (UIObjectList::iterator it = olist.begin (); it != olist.end (); ++it)
+		if (obj->IsA (TUIButton))
 		{
-			UIBaseObject * const obj = *it;
-			if (obj->IsA (TUIButton))
-			{
-				static_cast<UIButton *>(obj)->RemoveCallback (this);
-				RemoveChild (obj);
-			}
+			dynamic_cast<UIButton *>(obj)->RemoveCallback(this);
+			RemoveChild (obj);
 		}
 	}
 
@@ -495,10 +484,9 @@ void UIRadialMenu::RecreateButtons ()
 
 	{
 		int index = 0;
-		for (UIObjectList::iterator it = dataList.begin (); it != dataList.end () && index < s_max_buttons; ++it, ++index)
+		for (auto it = dataList.begin (); it != dataList.end () && index < s_max_buttons; ++it, ++index)
 		{
-			UIData * const data = static_cast<UIData *>(*it);
-
+			auto* const data = dynamic_cast<UIData *>(*it);
 			const UIRadialMenuStyle::ButtonStyleType bst = s_buttonStyleTypes [index];
 
 			UIButton * const butt = new UIButton;
@@ -576,13 +564,13 @@ void UIRadialMenu::LayoutButtons ()
 
 	{
 		const float f_radius = static_cast<float>(radius);
-		for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+		
+		for(auto* obj : olist)
 		{
-			UIBaseObject * const obj = *it;
 			if (!obj->IsA (TUIButton))
 				continue;
 
-			UIButton * const butt = static_cast<UIButton *>(obj);
+			auto* const butt = dynamic_cast<UIButton *>(obj);
 
 			if (!butt->IsVisible () || buttonIndex >= s_max_buttons)
 				break;
@@ -664,13 +652,12 @@ void UIRadialMenu::LayoutButtons ()
 	{
 		const UIPoint & rectLoc = rectFromCenter.Location ();
 
-		for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+		for(auto* obj : olist)
 		{
-			UIBaseObject * const obj = *it;
 			if (!obj->IsA (TUIButton))
 				continue;
 
-			UIButton * const butt = static_cast<UIButton *>(obj);
+			auto* const butt = dynamic_cast<UIButton *>(obj);
 
 			if (!butt->IsVisible ())
 				break;
@@ -702,6 +689,7 @@ void UIRadialMenu::Notify( UINotificationServer *NotifyingObject, UIBaseObject *
 		case UINotification::ChildChanged:
 			RecreateButtons ();
 			break;
+		default:break;
 		}
 
 		return;
@@ -713,7 +701,7 @@ void UIRadialMenu::Notify( UINotificationServer *NotifyingObject, UIBaseObject *
 	const unsigned long currentTime = UIClock::gUIClock ().GetTime ();
 
 	if (mPopupMenu && !mPopupMenu->GetParent ())
-		SetPopupMenu (0);
+		SetPopupMenu (nullptr);
 
 	//-- see if we need to vanish our popupmenu
 	if (mPopupMenu && mPopupMenu->IsVisible () && !mPopupMenu->IsUnderMouse ())
@@ -727,7 +715,7 @@ void UIRadialMenu::Notify( UINotificationServer *NotifyingObject, UIBaseObject *
 			{
 				mPopupMenu->SetVisible (false);
 				mPopupButtonIndex = -1;
-				SetPopupMenu (0);
+				SetPopupMenu (nullptr);
 			}
 		}
 	}
@@ -823,14 +811,14 @@ void UIRadialMenu::SpawnPopupMenu (int index)
 	if (!dsc)
 	{
 		if (mPopupMenu)
-			SetPopupMenu (0);
+			SetPopupMenu (nullptr);
 
 		return;
 	}
 
 	if (!mPopupMenu)
 	{
-		const auto pop = new UIPopupMenu(this);
+		auto* const pop = new UIPopupMenu(this);
 		assert (pop);
 		SetPopupMenu (pop);
 	}
@@ -870,26 +858,26 @@ void UIRadialMenu::SpawnPopupMenu (int index)
 
 //----------------------------------------------------------------------
 
-const UIButton * UIRadialMenu::GetRadialButton (int index) const
+const UIButton * UIRadialMenu::GetRadialButton(int index) const
 {
 	if (index < 0)
-		return 0;
+		return nullptr;
 
 	int count = 0;
-	const UIBaseObject::UIObjectList & olist = GetChildrenRef ();
-	for (UIBaseObject::UIObjectList::const_iterator it = olist.begin (); it != olist.end (); ++it)
+	const UIBaseObject::UIObjectList & olist = GetChildrenRef();
+	
+	for(auto* obj : olist)
 	{
-		const UIBaseObject * const obj = *it;
 		if (!obj->IsA (TUIButton))
 			continue;
 
 		if (count == index)
-			return static_cast<const UIButton *>(obj);
+			return dynamic_cast<const UIButton *>(obj);
 
 		++count;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
@@ -1075,24 +1063,24 @@ UIDataSource * UIRadialMenu::AddPopupDataSourceItem (UIDataSourceContainer * dsc
 
 //----------------------------------------------------------------------
 
-void UIRadialMenu::SetRadialCenterPrototype (UIWidget * proto)
+void UIRadialMenu::SetRadialCenterPrototype(UIWidget * proto)
 {
-	if (mRadialCenterWidget)
-		RemoveChild (mRadialCenterWidget);
+	if(mRadialCenterWidget)
+		RemoveChild(mRadialCenterWidget);
 
-	UIWidget * const dupe = proto ? static_cast<UIWidget *>(proto->DuplicateObject ()) : 0;
+	UIWidget * const dupe = proto ? dynamic_cast<UIWidget *>(proto->DuplicateObject ()) : nullptr;
 
-	AttachMember (mRadialCenterWidget, dupe);
+	AttachMember(mRadialCenterWidget, dupe);
 
-	if (mRadialCenterWidget)
+	if(mRadialCenterWidget)
 	{
-		mRadialCenterWidget->RemoveProperty (UIWidget::PropertyName::PackSize);
-		mRadialCenterWidget->RemoveProperty (UIWidget::PropertyName::PackLocation);
-		AddChild (mRadialCenterWidget);
-		MoveChild (mRadialCenterWidget, UIBaseObject::Bottom);
+		mRadialCenterWidget->RemoveProperty(UIWidget::PropertyName::PackSize);
+		mRadialCenterWidget->RemoveProperty(UIWidget::PropertyName::PackLocation);
+		AddChild(mRadialCenterWidget);
+		MoveChild(mRadialCenterWidget, UIBaseObject::Bottom);
 	}
 
-	LayoutButtons ();
+	LayoutButtons();
 }
 
 //----------------------------------------------------------------------

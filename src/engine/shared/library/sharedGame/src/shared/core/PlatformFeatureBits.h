@@ -145,15 +145,14 @@ namespace ClientSubscriptionFeature
 namespace PlatformGameCode
 {
 	const unsigned SWG = 4;
-	const unsigned SWGTCG = 38;
 
 	const std::pair<unsigned, const std::string> _gamecodeName[] = 
 	{  
 		std::pair<unsigned, const std::string>(SWG, "SWG"),
-		std::pair<unsigned, const std::string>(SWGTCG, "SWGTCG")
 	};
 
-	const std::map<unsigned, std::string const> gamecodeName((const std::map<unsigned, std::string const>::value_type *)&_gamecodeName[0],(const std::map<unsigned, std::string const>::value_type *)&_gamecodeName[sizeof(_gamecodeName)/sizeof(_gamecodeName[0])]);
+	const std::map<unsigned, std::string const> gamecodeName(reinterpret_cast<const std::map<unsigned, std::string const>::value_type*>(&_gamecodeName[0]),reinterpret_cast<const std::map<unsigned, std::string const>::value_type*>(&_gamecodeName[sizeof(_gamecodeName) /
+		                                                         sizeof(_gamecodeName[0])]));
 
 	inline std::string const & getGamecodeName(unsigned gameCode)
 	{

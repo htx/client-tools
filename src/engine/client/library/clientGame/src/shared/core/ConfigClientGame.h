@@ -216,8 +216,6 @@ public:
 	static bool                getLogClientCommandChecks();
 	static float               getDebounceLightsaberBlade();
 	static char const *        getCsTrackingBaseUrl();
-	static bool                getUseTcgRealmTypeStage();
-	static std::string const & getTcgDirectory();
 
 	// to display additional character on the character selection window
 	// (like a character that is disabled in the login DB, but we want

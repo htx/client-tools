@@ -60,7 +60,7 @@ LONG __stdcall SetupSharedFoundationNamespace::MyUnhandledExceptionFilter(LPEXCE
 
 	// log some important information
 	static char buffer[128];
-	sprintf(buffer, "Exception %08x(%d)=code %08x=addr\n", (uint)exceptionPointers->ExceptionRecord->ExceptionCode, exceptionPointers->ExceptionRecord->ExceptionCode, (uint)exceptionPointers->ExceptionRecord->ExceptionAddress);
+	sprintf(buffer, "Exception %zx(%d)=code %zx=addr\n", static_cast<size_t>(exceptionPointers->ExceptionRecord->ExceptionCode), exceptionPointers->ExceptionRecord->ExceptionCode, reinterpret_cast<size_t>(exceptionPointers->ExceptionRecord->ExceptionAddress));
 	OutputDebugString(buffer);
 
 	// write the minidump if we're in here for the first time

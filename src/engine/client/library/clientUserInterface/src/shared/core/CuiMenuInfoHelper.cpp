@@ -243,7 +243,7 @@ void CuiMenuInfoHelper::populatePopupDataSourceContainer (UIDataSourceContainer 
 				
 				populatePopupDataSourceContainer (*subDsc, omrd.m_id, true, got);
 				
-				objectsToMoveToBottom.push_back (subDsc);
+				objectsToMoveToBottom.emplace_back (subDsc);
 			}
 		}
 	}
@@ -303,7 +303,7 @@ void CuiMenuInfoHelper::updateRadialMenu (UIRadialMenu & radial, int got)
 		char dataNameBuf [64];
 		_itoa (omrd.m_menuItemType, dataNameBuf, 10);
 
-		UIData * data = safe_cast<UIData *>(ds->GetChild (dataNameBuf));
+		auto* data = dynamic_cast<UIData *>(ds->GetChild (dataNameBuf));
 
 		int actual_rootIndex = 0;
 
@@ -359,7 +359,6 @@ void CuiMenuInfoHelper::updateRadialMenu (UIRadialMenu & radial, int got)
 
 			//-- always repopulate conversation responses to avoid fuxxoring em up,
 			//-- when updated from the client side
-
 			if (omrd.m_menuItemType == Cui::MenuInfoTypes::CONVERSE_RESPOND)
 			{
 				//-- the server is not allowd to modify this menu
@@ -370,6 +369,7 @@ void CuiMenuInfoHelper::updateRadialMenu (UIRadialMenu & radial, int got)
 			}
 
 			size_t childIndex = 0;
+			
 			for (DataVector::const_iterator cit = childItems.begin (); cit != childItems.end (); ++cit, ++childIndex)
 			{
 				const ObjectMenuRequestData & child = *cit;
@@ -380,10 +380,9 @@ void CuiMenuInfoHelper::updateRadialMenu (UIRadialMenu & radial, int got)
 				if (child.m_menuItemType != Cui::MenuInfoTypes::CONVERSE_RESPONSE || omrd.m_menuItemType != Cui::MenuInfoTypes::CONVERSE_RESPOND)
 					_itoa (child.m_menuItemType, childNameBuf, 10);
 				else
-					_snprintf (childNameBuf, 64, "%d %zd", child.m_menuItemType, childIndex);
+					snprintf (childNameBuf, 64, "%d %zd", child.m_menuItemType, childIndex);
 
 				//@ add popupdatasourceitem does not add if it already exists...
-
 				UIDataSource * const dataSource = UIRadialMenu::AddPopupDataSourceItem (popupDataSource, childNameBuf, child.m_label, child.isEnabled ());
 
 				NOT_NULL (dataSource);
@@ -419,32 +418,32 @@ void CuiMenuInfoHelper::updateRadialMenu (UIRadialMenu & radial, int got)
 
 void CuiMenuInfoHelper::purgeLabels ()
 {
-	for (DataVector::iterator it = m_dataVector->begin (); it != m_dataVector->end (); ++it)
-		(*it).m_label.clear ();
+	for(auto& it : *m_dataVector)
+		it.m_label.clear();
 }
 
 //----------------------------------------------------------------------
 
 void CuiMenuInfoHelper::getChildItems (int parent, DataVector & dv) const
 {
-	for (DataVector::const_iterator it = m_dataVector->begin (); it != m_dataVector->end (); ++it)
+	for(const auto& it : *m_dataVector)
 	{
-		if ((*it).m_parent == parent)
-			dv.push_back (*it);
+		if (it.m_parent == parent)
+			dv.emplace_back(it);
 	}
 }
 
 //----------------------------------------------------------------------
 
-const ObjectMenuRequestData * CuiMenuInfoHelper::findItem      (int id) const
+const ObjectMenuRequestData * CuiMenuInfoHelper::findItem (int id) const
 {
-	for (DataVector::const_iterator it = m_dataVector->begin (); it != m_dataVector->end (); ++it)
+	for(const auto& it : *m_dataVector)
 	{
-		if ((*it).m_id == id)
-			return &(*it);
+		if (it.m_id == id)
+			return &it;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
@@ -473,7 +472,8 @@ int CuiMenuInfoHelper::addMenuInternal (int parent, Cui::MenuInfoTypes::Type typ
 	omrd.m_parent = static_cast<uint8>(parent);	
 	omrd.setServerNotify(serverNotify);
 
-	m_dataVector->push_back (omrd);
+	m_dataVector->emplace_back(omrd);
+	
 	return m_nextItemId++;
 }
 
@@ -507,50 +507,50 @@ int CuiMenuInfoHelper::addSubMenu (int parent, Cui::MenuInfoTypes::Type type,  i
 
 //----------------------------------------------------------------------
 
-int CuiMenuInfoHelper::addSubMenu (int parent, Cui::MenuInfoTypes::Type type, const char * label)
+int CuiMenuInfoHelper::addSubMenu(int parent, Cui::MenuInfoTypes::Type type, const char * label)
 {
 	return addMenuInternal (parent, type, Unicode::narrowToWide (label));
 }
 
 //----------------------------------------------------------------------
 
-int CuiMenuInfoHelper::addSubMenu (int parent, Cui::MenuInfoTypes::Type type, const Unicode::String & label )
+int CuiMenuInfoHelper::addSubMenu(int parent, Cui::MenuInfoTypes::Type type, const Unicode::String & label )
 {
 	return addMenuInternal (parent, type, label);
 }
 
 //----------------------------------------------------------------------
 
-const ObjectMenuRequestData * CuiMenuInfoHelper::getDefault () const
+const ObjectMenuRequestData * CuiMenuInfoHelper::getDefault() const
 {
 	NOT_NULL (m_dataVector);
-	return m_dataVector->empty () ? 0 : &(m_dataVector->front ());
+	
+	return m_dataVector->empty() ? nullptr : &m_dataVector->front();
 }
 
 //----------------------------------------------------------------------
 
-const ObjectMenuRequestData * CuiMenuInfoHelper::findDataByType (int type) const
+const ObjectMenuRequestData * CuiMenuInfoHelper::findDataByType(int type) const
 {
-	for (DataVector::const_iterator it = m_dataVector->begin (); it != m_dataVector->end (); ++it)
+	for(const auto& omrd : *m_dataVector)
 	{
-		const ObjectMenuRequestData & omrd = *it;
 		if (omrd.m_menuItemType == type)
 			return &omrd;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 //----------------------------------------------------------------------
 
-bool CuiMenuInfoHelper::updateRanges (float range, const Object & object)
+bool CuiMenuInfoHelper::updateRanges(float range, const Object & object)
 {
 	bool found = false;
 
-	for (DataVector::iterator it = m_dataVector->begin (); it != m_dataVector->end (); ++it)
+	for(auto& omrd : *m_dataVector)
 	{
-		ObjectMenuRequestData & omrd = *it;
 		float acceptableRange = 0.0f;
+		
 		if (RadialMenuManager::getRangeForMenuType (omrd.m_menuItemType, acceptableRange))
 		{
 			if (acceptableRange < range)

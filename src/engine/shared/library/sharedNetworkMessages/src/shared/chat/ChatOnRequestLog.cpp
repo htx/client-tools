@@ -43,11 +43,15 @@ namespace Archive
 {
 	void get (ReadIterator & source, ChatLogEntry & target)
 	{
+		unsigned int tmpTime = 0;
+		
 		get (source, target.m_from);
 		get (source, target.m_to);
 		get (source, target.m_channel);
 		get (source, target.m_message);
-		get (source, target.m_time);	
+		get (source, tmpTime);
+
+		target.m_time = static_cast<time_t>(tmpTime);
 	}
 
 	void put (ByteStream & target, const ChatLogEntry & source)
@@ -56,7 +60,7 @@ namespace Archive
 		put (target, source.m_to);
 		put (target, source.m_channel);
 		put (target, source.m_message);
-		put (target, source.m_time);
+		put (target, static_cast<unsigned int>(source.m_time));
 	}
 }
 

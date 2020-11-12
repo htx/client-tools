@@ -8,26 +8,66 @@ NAMESPACE_BEGIN(CryptoPP)
 
 byte OAEP_P_DEFAULT[1];
 
-void xorbuf(byte *buf, const byte *mask, unsigned int count)
+void xorbuf(byte *buf, const byte *mask, size_t count)
 {
-	if (((unsigned int)buf | (unsigned int)mask | count) % WORD_SIZE == 0)
-		XorWords((word *)buf, (const word *)mask, count/WORD_SIZE);
-	else
+	size_t i=0;
+	if (IsAligned<word32>(buf) && IsAligned<word32>(mask))
 	{
-		for (unsigned int i=0; i<count; i++)
-			buf[i] ^= mask[i];
+		if (IsAligned<word64>(buf) && IsAligned<word64>(mask))
+		{
+			for (i=0; i<count/8; i++)
+				((word64*)(void*)buf)[i] ^= ((word64*)(void*)mask)[i];
+			count -= 8*i;
+			if (!count)
+				return;
+			buf += 8*i;
+			mask += 8*i;
+		}
+
+		for (i=0; i<count/4; i++)
+			((word32*)(void*)buf)[i] ^= ((word32*)(void*)mask)[i];
+		
+		count -= 4*i;
+		if (!count)
+			return;
+		buf += 4*i;
+		mask += 4*i;
 	}
+	
+	for (i=0; i<count; i++)
+		buf[i] ^= mask[i];
 }
 
-void xorbuf(byte *output, const byte *input, const byte *mask, unsigned int count)
+void xorbuf(byte *output, const byte *input, const byte *mask, size_t count)
 {
-	if (((unsigned int)output | (unsigned int)input | (unsigned int)mask | count) % WORD_SIZE == 0)
-		XorWords((word *)output, (const word *)input, (const word *)mask, count/WORD_SIZE);
-	else
+	size_t i=0;
+	
+	if (IsAligned<word32>(output) && IsAligned<word32>(input) && IsAligned<word32>(mask))
 	{
-		for (unsigned int i=0; i<count; i++)
-			output[i] = input[i] ^ mask[i];
+		if (IsAligned<word64>(output) && IsAligned<word64>(input) && IsAligned<word64>(mask))
+		{
+			for (i=0; i<count/8; i++)
+				((word64*)(void*)output)[i] = ((word64*)(void*)input)[i] ^ ((word64*)(void*)mask)[i];
+			count -= 8*i;
+			if (!count)
+				return;
+			output += 8*i;
+			input += 8*i;
+			mask += 8*i;
+		}
+
+		for (i=0; i<count/4; i++)
+			((word32*)(void*)output)[i] = ((word32*)(void*)input)[i] ^ ((word32*)(void*)mask)[i];
+		count -= 4*i;
+		if (!count)
+			return;
+		output += 4*i;
+		input += 4*i;
+		mask += 4*i;
 	}
+
+	for (i=0; i<count; i++)
+		output[i] = input[i] ^ mask[i];
 }
 
 unsigned int Parity(unsigned long value)

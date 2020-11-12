@@ -124,7 +124,6 @@
 #include "swgClientUserInterface/SwgCuiSpaceZoneMap.h"
 #include "swgClientUserInterface/SwgCuiSplash.h"
 #include "swgClientUserInterface/SwgCuiStructurePlacement.h"
-#include "swgClientUserInterface/SwgCuiTcgWindow.h"
 #include "swgClientUserInterface/SwgCuiTicketPurchase.h"
 #include "swgClientUserInterface/SwgCuiTrade.h"
 #include "swgClientUserInterface/SwgCuiVendor.h"
@@ -253,7 +252,6 @@ void SwgCuiMediatorFactorySetup::install ()
 	MAKE_SWG_CTOR_WS (BuffBuilderBuffee,              "/pda.BuffBuilder.buffee");
 	MAKE_SWG_CTOR_WS (Incubator,                      "/pda.Incubator");
 	MAKE_SWG_CTOR_WS (Collections,                    "/pda.Collections");
-	MAKE_SWG_CTOR_WS (TcgWindow,                      "/pda.Tcg");
 	MAKE_SWG_CTOR_WS (Mahjong,                        "/pda.Mahjong");
 	MAKE_SWG_CTOR_WS (AppearanceTab,                  "/pda.AppearanceTab");
 	MAKE_SWG_CTOR_WS (QuestBuilder,					  "/pda.QuestBuilder");

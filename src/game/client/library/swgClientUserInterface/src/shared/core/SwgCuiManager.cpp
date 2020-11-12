@@ -68,7 +68,6 @@
 #include "swgClientUserInterface/SwgCuiQuestHelper.h"
 #include "swgClientUserInterface/SwgCuiServerData.h"
 #include "swgClientUserInterface/SwgCuiStatusGround.h"
-#include "swgClientUserInterface/SwgCuiTcgManager.h"
 
 // ======================================================================
 
@@ -470,7 +469,6 @@ void SwgCuiManager::install ()
 	SwgCuiMediatorFactorySetup::install();
 	SwgCuiAvatarCreationHelper::install();
 	SwgCuiQuestHelper::install();
-	SwgCuiTcgManager::install();
 
 	s_receiver = new Listener;
 
@@ -498,7 +496,6 @@ void SwgCuiManager::remove ()
 	delete s_receiver;
 	s_receiver = 0;
 	
-	SwgCuiTcgManager::remove ();
 	SwgCuiQuestHelper::remove ();
 	SwgCuiAvatarCreationHelper::remove ();
 	SwgCuiMediatorFactorySetup::remove ();
@@ -544,8 +541,6 @@ bool SwgCuiManager::test (std::string & result)
 void SwgCuiManager::update (float deltaTimeSecs)
 {
 	UNREF (deltaTimeSecs);
-
-	SwgCuiTcgManager::update(deltaTimeSecs);
 	
 	if (s_checkHud)
 	{
@@ -553,10 +548,7 @@ void SwgCuiManager::update (float deltaTimeSecs)
 
 		CuiActionManager::setCurrentActionMap(static_cast<int>(Game::getHudSceneType()));
 
-		if(
-			(!Game::isParticleEditor() && !Game::isAnimationEditor())
-			|| s_hudLoadedInClientTools
-		)
+		if(!Game::isParticleEditor() && !Game::isAnimationEditor() || s_hudLoadedInClientTools)
 		{
 			SwgCuiHudFactory::createHudIfNeeded();
 		}

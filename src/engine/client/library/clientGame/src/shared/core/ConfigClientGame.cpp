@@ -222,8 +222,6 @@ namespace ConfigClientGameNamespace
 	float           ms_debounceLightsaberBlade = 2.0f;
 
 	char const *    ms_csTrackingBaseUrl;
-	bool            ms_useTcgRealmTypeStage = false;
-	std::string     ms_tcgDirectory;
 
 #if PRODUCTION == 0
 	int ms_2fa8673b89f9443bb24e40c3d6127118 = 0; // additionalCharacterSelectionStationId
@@ -1197,20 +1195,12 @@ void ConfigClientGame::install(void)
 
 	KEY_FLOAT(debounceLightsaberBlade, 2.0f);
 
-#define CS_TRACKING_BASE_URL "https://soe-ing.custhelp.com/cgi-bin/soe_ing.cfg/php/enduser/std_alp.php"
+#define CS_TRACKING_BASE_URL ""
 #if PRODUCTION
 	ms_csTrackingBaseUrl = CS_TRACKING_BASE_URL;
 #else
 	KEY_STRING(csTrackingBaseUrl, CS_TRACKING_BASE_URL);
 #endif
-
-#if PRODUCTION
-	ms_useTcgRealmTypeStage = false;
-#else
-	KEY_BOOL(useTcgRealmTypeStage, false);
-#endif
-
-	KEY_STRING(tcgDirectory, "TradingCardGame");
 
 #if PRODUCTION == 0
 	KEY_INT(2fa8673b89f9443bb24e40c3d6127118, 0); // additionalCharacterSelectionStationId
@@ -1467,20 +1457,6 @@ float ConfigClientGame::getDebounceLightsaberBlade()
 char const * ConfigClientGame::getCsTrackingBaseUrl()
 {
 	return ms_csTrackingBaseUrl;
-}
-
-// ----------------------------------------------------------------------
-
-bool ConfigClientGame::getUseTcgRealmTypeStage()
-{
-	return ms_useTcgRealmTypeStage;
-}
-
-// ----------------------------------------------------------------------
-
-std::string const & ConfigClientGame::getTcgDirectory()
-{
-	return ms_tcgDirectory;
 }
 
 // ----------------------------------------------------------------------

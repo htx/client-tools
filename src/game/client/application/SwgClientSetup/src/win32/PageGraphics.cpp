@@ -190,7 +190,7 @@ BOOL PageGraphics::OnInitDialog()
 		if ((ClientMachine::getPixelShaderMajorVersion () > 0) && (ClientMachine::getPhysicalMemorySize() > 260))
 		{
 			int item = m_vertexPixelShaderVersion.AddString (m_lblVspsOptimal);
-			m_vertexPixelShaderVersion.SetItemData (item, static_cast<DWORD> (-1));
+			m_vertexPixelShaderVersion.SetItemData (item, static_cast<DWORD_PTR> (-1));
 		
 			int const supportedPixelShaderMajorVersion = ClientMachine::getPixelShaderMajorVersion ();
 			int const supportedPixelShaderMinorVersion = ClientMachine::getPixelShaderMinorVersion ();
@@ -360,7 +360,7 @@ void PageGraphics::applyOptions ()
 		Options::setFullScreenRefreshRate (ClientMachine::getDisplayModeRefreshRate (selection));
 	}
 
-	switch (m_vertexPixelShaderVersion.GetItemData (m_vertexPixelShaderVersion.GetCurSel ()))
+	switch (static_cast<int>(m_vertexPixelShaderVersion.GetItemData (m_vertexPixelShaderVersion.GetCurSel ())))
 	{
 	case -1:  
 		Options::setPixelShaderVersion (-1, -1);  

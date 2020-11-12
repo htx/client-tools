@@ -197,8 +197,9 @@ namespace CuiRadialMenuManagerNamespace
 
 	void updateCache (const NetworkId & id, int sequence, const ObjectMenuRequestDataVector & combinedData)
 	{
-		const CacheMap::iterator it = s_cacheMap.find (id);
-		if (it != s_cacheMap.end ())
+		const CacheMap::iterator it = s_cacheMap.find(id);
+		
+		if (it != s_cacheMap.end())
 		{
 			ObjectMenuCacheData & cd = (*it).second;
 
@@ -208,36 +209,30 @@ namespace CuiRadialMenuManagerNamespace
 				return;
 			}
 
-			Object * const obj = NetworkIdManager::getObjectById (id);
-			ClientObject const * const clientObject = obj ? obj->asClientObject() : NULL;
-			TangibleObject const * const tangible   = clientObject ? clientObject->asTangibleObject () : 0;
-			cd.lastCounter     = tangible ? tangible->getCount ()     : 0;
-			cd.lastCondition   = tangible ? tangible->getCondition () : 0;
+			Object * const obj = NetworkIdManager::getObjectById(id);
+			ClientObject const * const clientObject = obj ? obj->asClientObject() : nullptr;
+			TangibleObject const * const tangible   = clientObject ? clientObject->asTangibleObject() : nullptr;
+			cd.lastCounter     = tangible ? tangible->getCount()     : 0;
+			cd.lastCondition   = tangible ? tangible->getCondition() : 0;
 
-			cd.timestamp       = Game::getElapsedTime ();
+			cd.timestamp       = Game::getElapsedTime();
 			cd.ok              = true;
 			cd.responsePending = false;
 
 			// some scripts may overide default commands like ITEM_USE.
 			// we want to make sure that we only copy in the latest
 			// command based off of type.
-
 			cd.combinedData.clear();
 
 			cd.combinedData.reserve(combinedData.size());
-			ObjectMenuRequestDataVector::const_iterator ii = combinedData.begin();
-			ObjectMenuRequestDataVector::const_iterator iiEnd = combinedData.end();
 
-			for (; ii != iiEnd; ++ii)
+			for(auto ii = combinedData.begin(); ii != combinedData.end(); ++ii)
 			{
-				ObjectMenuRequestDataVector::iterator jj = cd.combinedData.begin();
-				ObjectMenuRequestDataVector::iterator jjEnd = cd.combinedData.end();
-
 				ObjectMenuRequestData const & source = *ii;
 
 				bool alreadyExists = false;
 
-				for (; jj != jjEnd; ++jj)
+				for (auto jj = cd.combinedData.begin(); jj != cd.combinedData.end(); ++jj)
 				{
 					ObjectMenuRequestData const & destination = *jj;
 
@@ -250,7 +245,7 @@ namespace CuiRadialMenuManagerNamespace
 
 				if (!alreadyExists)
 				{
-					cd.combinedData.push_back(*ii);
+					cd.combinedData.emplace_back(*ii);
 				}
 			}
 
@@ -271,7 +266,6 @@ namespace CuiRadialMenuManagerNamespace
 	*    If the entry has valid menu data, and the timestamp indicates the data is 50% towards expiration, request new data but return TRUE
 	*    If the entry has valid menu data, and the timestamp has not otherwise expired expired, return TRUE
 	*/
-
 	bool findOrRequestCache (const NetworkId & id, const ObjectMenuRequestDataVector & clientData, float expireSeconds, ObjectMenuRequestDataVector & combinedData, uint8 & sequence)
 	{
 		bool retval = false;
@@ -382,14 +376,14 @@ namespace CuiRadialMenuManagerNamespace
 			responseInfo.networkId = id;
 			responseInfo.sequence  = s_sequenceGlobal;
 			responseInfo.timestamp = currentTime;
-			s_pendingResponses.push_back(responseInfo);
+			s_pendingResponses.emplace_back(responseInfo);
 		}
 
 		if (Game::getSinglePlayer ())
 		{
 			ObjectMenuRequestDataVector myData = clientData;
 			ObjectMenuRequestData data (250, 0, static_cast<uint8>(CLIENT_MENU_LAST + 1), Unicode::narrowToWide ("server test"), true, true);
-			myData.push_back (data);
+			myData.emplace_back(data);
 			updateCache (id, s_sequenceGlobal, myData);
 		}
 		else if(ClientObject::isFakeNetworkId(id))
@@ -571,20 +565,17 @@ bool CanBeManipulatedManager::canBeManipulated(Object const * const object) cons
 {
 	NOT_NULL(object);
 
-	Functions::const_iterator ii = m_functions.begin();
-	Functions::const_iterator iiEnd = m_functions.end();
-
-	for (; ii != iiEnd; ++ii)
+	for(auto m_function : m_functions)
 	{
-		CuiRadialMenuManager::CanBeManipulatedFunction function = *ii;
-		if (function != 0)
+		if(m_function != nullptr)
 		{
-			if (!function(object))
+			if (!m_function(object))
 			{
 				return false;
 			}
 		}
 	}
+	
 	return true;
 }
 
@@ -594,7 +585,7 @@ void CanBeManipulatedManager::registerCanBeManipulated(CuiRadialMenuManager::Can
 {
 	NOT_NULL(function);
 
-	m_functions.push_back(function);
+	m_functions.emplace_back(function);
 }
 
 //======================================================================
@@ -654,14 +645,15 @@ void CuiRadialMenuManager::install ()
 	DEBUG_FATAL (s_installed, ("already installed\n"));
 	s_listener = new Listener;
 	s_installed = true;
-	s_object = 0;
+	s_object = nullptr;
 
 	s_groundTargetMode = GTM_None;
 	s_groundTargetTokenId = NetworkId::cms_invalid;
 	s_groundTargetMenuSelection = 0;
 
-	UIWidget * const w = safe_cast<UIWidget *>(UIManager::gUIManager ().GetObjectFromPath (RADIAL_CENTER_PROTO, TUIWidget));
+	const auto w = safe_cast<UIWidget *>(UIManager::gUIManager ().GetObjectFromPath (RADIAL_CENTER_PROTO, TUIWidget));
 	WARNING (!w, ("No such RADIAL_CENTER_PROTO [%s]", RADIAL_CENTER_PROTO));
+	
 	if (w)
 	{
 //		w->SetOpacity (0.0f);
@@ -673,20 +665,20 @@ void CuiRadialMenuManager::install ()
 
 //----------------------------------------------------------------------
 
-void CuiRadialMenuManager::remove ()
+void CuiRadialMenuManager::remove()
 {
-	DEBUG_FATAL (!s_installed, ("not installed\n"));
+	DEBUG_FATAL(!s_installed, ("not installed\n"));
 
-	setRadial (0);
+	setRadial(nullptr);
 
 	delete s_listener;
-	s_listener = 0;
+	s_listener = nullptr;
 
 	s_pendingServerNotifications.clear ();
 	
 	s_installed = false;
 
-	GroundCombatActionManager::registerDefaultActionCallback(0);
+	GroundCombatActionManager::registerDefaultActionCallback(nullptr);
 }
 
 //----------------------------------------------------------------------
@@ -724,7 +716,7 @@ void CuiRadialMenuManager::update()
 								WARNING(true, ("CuiRadialMenuManager timing out and resending request with no response for [%s]", entry.networkId.getValueString ().c_str()));
 								if (player->getController())
 								{
-									MessageQueueObjectMenuRequest * const msg = new MessageQueueObjectMenuRequest (entry.networkId, player->getNetworkId (), cacheData.clientData, entry.sequence);
+									auto* const msg = new MessageQueueObjectMenuRequest (entry.networkId, player->getNetworkId (), cacheData.clientData, entry.sequence);
 									player->getController()->appendMessage(
 										CM_objectMenuRequest,
 										0.0f,
@@ -1523,33 +1515,31 @@ bool CuiRadialMenuManager::populateMenu (CuiMenuInfoHelper & helper, const Objec
 		case SharedObjectTemplate::GOT_weapon_heavy_misc:
 		case SharedObjectTemplate::GOT_weapon_ranged_thrown:
 		case SharedObjectTemplate::GOT_misc_firework:
-		case SharedObjectTemplate::GOT_misc_tcg_card:
+		{
+			if (isOnPlayer)
 			{
-				if (isOnPlayer)
+				if (!player->isIncapacitated() && !player->isDead())
 				{
-					if (!player->isIncapacitated() && !player->isDead())
-					{
-						helper.addRootMenu (ITEM_USE, got);
-						if (defaultOnly)
-							return true;
-					}
+					helper.addRootMenu (ITEM_USE, got);
+					if (defaultOnly)
+						return true;
 				}
 			}
-			break;
-
+		}
+		break;
 		case SharedObjectTemplate::GOT_deed_vehicle:
+		{
+			if (isOnPlayer)
 			{
-				if (isOnPlayer)
+				if (!player->isIncapacitated() && !player->isDead())
 				{
-					if (!player->isIncapacitated() && !player->isDead())
-					{
-						helper.addRootMenu (VEHICLE_GENERATE, got);
-						if (defaultOnly)
-							return true;
-					}
+					helper.addRootMenu (VEHICLE_GENERATE, got);
+					if (defaultOnly)
+						return true;
 				}
 			}
-			break;
+		}
+		break;
 
 			//-- non-equippable instruments
 		case SharedObjectTemplate::GOT_misc_instrument:
