@@ -404,19 +404,13 @@ public:
 
 	int getTotalWaypoints() const;
 
-protected:
-
 private:
 
 	PlayerObject();
 	PlayerObject(const PlayerObject& rhs);
 	PlayerObject&	operator=(const PlayerObject& rhs);
-
-private:
 	
-#if PRODUCTION == 0
 	static bool s_admin;
-#endif
 
 	void shouldShowBackpack(bool show);
 	void shouldShowHelmet(bool show);
@@ -933,11 +927,7 @@ inline std::string const & PlayerObject::getDefaultAttackOverride() const
 
 inline bool PlayerObject::isAdmin()
 {
-#if PRODUCTION == 0
 	return s_admin;
-#else
-	return false;
-#endif
 }
 
 // ----------------------------------------------------------------------

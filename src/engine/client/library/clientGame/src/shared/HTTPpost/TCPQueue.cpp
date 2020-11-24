@@ -29,19 +29,21 @@ TCPQueue::~TCPQueue()
     Clear();
 }
 
-void TCPQueue::Clear( void )
+void TCPQueue::Clear(void)
 {
     // Pull out big chunks until done
-    while ( Remove_Head( NULL, 0xFFFFFF ) );
+    while(Remove_Head(nullptr, 0xFFFFFF ));
 
     // Free the spare vectors
-    int sparelen = SpareVectors.size();
-    for ( int i = 0; i < sparelen; i++ )
+    size_t sparelen = SpareVectors.size();
+	
+    for(size_t i = 0; i < sparelen; i++)
     {
-        TCPVector* delvec = 0;
-        delvec = SpareVectors.at( i );
-        delete( delvec );
+        TCPVector* delvec = nullptr;
+        delvec = SpareVectors.at(i);
+        delete(delvec);
     }
+	
     SpareVectors.clear();
 }
 

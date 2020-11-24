@@ -6,7 +6,6 @@
 
 #include "clientBugReporting/SetupClientBugReporting.h"
 #include "clientBugReporting/ToolBugReporting.h"
-#include "sharedMemoryManager/MemoryManager.h"
 #include "LeftView.h"
 #include "MainFrm.h"
 #include "ShaderBuilderDoc.h"

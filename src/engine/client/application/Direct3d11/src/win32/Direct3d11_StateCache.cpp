@@ -518,7 +518,7 @@ void Direct3d11_StateCache::resetTextureCoordinateIndices()
 
 void Direct3d11_StateCache::setVertexShaderConstants(unsigned int slot, ID3D11Buffer* buffer, unsigned int numberOfConstants)
 {
-	Direct3d11::getDeviceContext()->VSSetConstantBuffers(slot, numberOfConstants, &buffer);
+	Direct3d11::getDeviceContext()->VSSetConstantBuffers(0, numberOfConstants, &buffer);
 }
 
 // ----------------------------------------------------------------------

@@ -481,8 +481,8 @@ void Direct3d11_LightManager::applyLights_vertexShader()
 					pixelDot3Data.tangentMinusDiffuseColor.a = alphaFadeAndBloomSettings.g; //bloomEnabled in tangentMinusDiffuseColor.a
 					pixelDot3Data.tangentMinusBackColor.a    = Direct3d11Namespace::ms_currentTime;
 
-					Direct3d11::getDeviceContext()->UpdateSubresource(ms_constantBufferDot3LightDirection, 0, nullptr, &pixelDot3Data, 0, 0);
-					Direct3d11_StateCache::setPixelShaderConstants(PSCR_dot3LightDirection, ms_constantBufferDot3LightDirection, 5);
+				//	Direct3d11::getDeviceContext()->UpdateSubresource(ms_constantBufferDot3LightDirection, 0, nullptr, &pixelDot3Data, 0, 0);
+				//	Direct3d11_StateCache::setPixelShaderConstants(PSCR_dot3LightDirection, ms_constantBufferDot3LightDirection, 5);
 				}
 			}
 		}
@@ -581,11 +581,11 @@ void Direct3d11_LightManager::applyLights_vertexShader()
 	}
 
 	// set the light data
-	Direct3d11::getDeviceContext()->UpdateSubresource(ms_constantBufferLightData, 0, nullptr, &lightData, 0, 0);
-	Direct3d11_StateCache::setVertexShaderConstants(VSCR_lightData, ms_constantBufferLightData, sizeof(LightData) / (4 * sizeof(float)));
+	//Direct3d11::getDeviceContext()->UpdateSubresource(ms_constantBufferLightData, 0, nullptr, &lightData, 0, 0);
+	//Direct3d11_StateCache::setVertexShaderConstants(VSCR_lightData, ms_constantBufferLightData, sizeof(LightData) / (4 * sizeof(float)));
 	// set the extra light data
-	Direct3d11::getDeviceContext()->UpdateSubresource(ms_constantBufferExtendedLightData, 0, nullptr, &extendedLightData, 0, 0);
-	Direct3d11_StateCache::setVertexShaderConstants(VCSR_extendedLightData, ms_constantBufferExtendedLightData, sizeof(ExtendedLightData) / (4 * sizeof(float)));
+	//Direct3d11::getDeviceContext()->UpdateSubresource(ms_constantBufferExtendedLightData, 0, nullptr, &extendedLightData, 0, 0);
+	//Direct3d11_StateCache::setVertexShaderConstants(VCSR_extendedLightData, ms_constantBufferExtendedLightData, sizeof(ExtendedLightData) / (4 * sizeof(float)));
 }
 
 void Direct3d11_LightManager::_vsps_setExtendedLightData(

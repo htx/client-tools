@@ -90,7 +90,6 @@
 #include "swgClientUserInterface/ConfigSwgClientUserInterface.h"
 #include "swgClientUserInterface/SwgCuiChatWindow.h"
 #include "swgClientUserInterface/SwgCuiChatWindow_Tab.h"
-#include "swgClientUserInterface/SwgCuiG15Lcd.h"
 #include "swgClientUserInterface/SwgCuiHudAction.h"
 #include "swgClientUserInterface/SwgCuiHudWindowManager.h"
 #include "swgClientUserInterface/SwgCuiInventory.h"
@@ -108,8 +107,6 @@
 #include "UITextStyle.h"
 #include "UITextbox.h"
 #include "UIUtils.h"
-
-#include "EZ_LCD.h"
 
 #include <list>
 #include <map>
@@ -197,11 +194,9 @@ namespace SwgCuiHudNamespace
 
 		const ClientObject * const clientObject = obj ? obj->asClientObject () : 0;
 
-#if PRODUCTION == 0
 		const bool allowTargetAnything = CuiPreferences::getAllowTargetAnything ();
 		//-- don't target buildings and shit
 		if (!allowTargetAnything)
-#endif
 		{
 			//-- we are looking at an untargettable object
 			if (!clientObject)
@@ -678,61 +673,59 @@ m_adjacentReticleObjects()
 	}
 
 	getPage ().SetMouseCursor (0);
-	SwgCuiG15Lcd::initializeLcd();
-
 } //lint !e1401 //m_reticles
 
 //-----------------------------------------------------------------
 
-SwgCuiHud::~SwgCuiHud ()
+SwgCuiHud::~SwgCuiHud()
 {
-	SwgCuiG15Lcd::remove();
-	for(std::vector<Watcher<ReticleObject> >::iterator i = m_adjacentReticleObjects.begin(); i != m_adjacentReticleObjects.end(); ++i)
+	for(auto& m_adjacentReticleObject : m_adjacentReticleObjects)
 	{
-		if(i->getPointer())
-		{		
-			i->getPointer()->removeFromWorld();
-			ReticleManager::disableReticleObject(*(i->getPointer()));
-			ReticleManager::giveBackReticleObject(i->getPointer());
+		if(m_adjacentReticleObject.getPointer())
+		{
+			m_adjacentReticleObject.getPointer()->removeFromWorld();
+			ReticleManager::disableReticleObject(*(m_adjacentReticleObject.getPointer()));
+			ReticleManager::giveBackReticleObject(m_adjacentReticleObject.getPointer());
 		}
 	}
+	
 	if(m_reticleObject.getPointer())
 	{
 		m_reticleObject.getPointer()->removeFromWorld();
 		delete m_reticleObject.getPointer();
 	}
 
-	m_reticleDefault->Detach (0);
-	m_reticleDefault = 0;
+	m_reticleDefault->Detach(nullptr);
+	m_reticleDefault = nullptr;
 
 	delete m_lastDragInfo;
-	m_lastDragInfo = 0;
+	m_lastDragInfo = nullptr;
 
 	delete m_windowManager;
-	m_windowManager = 0;
+	m_windowManager = nullptr;
 
-	if (m_action)
+	if(m_action)
 	{
 		CuiActionManager::removeAction(m_action);
 	}
-	delete m_action;
-	m_action = 0;
 	
+	delete m_action;
+	m_action = nullptr;
+	
+	for(auto& m_selectionBoxPage : m_selectionBoxPages)
 	{
-		for (int i = 0; i < SBT_numTypes; ++i)
-		{
-			UIBaseObject * const parent = m_selectionBoxPages [i]->GetParent ();
-			if (parent)
-				parent->RemoveChild (m_selectionBoxPages [i]);
-			m_selectionBoxPages [i] = 0;
-		}
+		UIBaseObject * const parent = m_selectionBoxPage->GetParent ();
+		
+		if (parent)
+			parent->RemoveChild (m_selectionBoxPage);
+		
+		m_selectionBoxPage = nullptr;
 	}
 	
-	CuiWorkspace::setGameWorkspace (0);
+	CuiWorkspace::setGameWorkspace (nullptr);
 
 	delete m_workspace;
-	m_workspace = 0;
-
+	m_workspace = nullptr;
 }
 
 //-----------------------------------------------------------------
@@ -741,15 +734,15 @@ void SwgCuiHud::performActivate()
 {	
 	CuiWorkspace::setGameWorkspace(m_workspace);
 
-	CuiManager::getIoWin ().setRadialMenuActiveHack (false);
+	CuiManager::getIoWin().setRadialMenuActiveHack (false);
 
-	setInputToggleActive    (true);
-	getPage ().AddCallback (this);
+	setInputToggleActive(true);
+	getPage().AddCallback(this);
 
-	setIsUpdating          (true);
+	setIsUpdating(true);
 
-	if (m_hudEnabled && m_windowManager != NULL)
-		m_windowManager->handlePerformActivate ();
+	if (m_hudEnabled && m_windowManager != nullptr)
+		m_windowManager->handlePerformActivate();
 
 	CuiManager::getIoWin().resetScreenCenter();
 }
@@ -758,79 +751,78 @@ void SwgCuiHud::performActivate()
 
 void SwgCuiHud::performDeactivate()
 {
-	CuiManager::getIoWin ().setRadialMenuActiveHack (false);
+	CuiManager::getIoWin().setRadialMenuActiveHack(false);
 
-	setIsUpdating          (false);
+	setIsUpdating(false);
 
-	getPage ().RemoveCallback (this);
+	getPage().RemoveCallback(this);
 
-	if (m_windowManager != NULL)
-		m_windowManager->handlePerformDeactivate ();
+	if(m_windowManager != nullptr)
+		m_windowManager->handlePerformDeactivate();
 
-	CuiRadialMenuManager::clear ();
-
-	CuiSettings::save   ();
-
-	CurrentUserOptionManager::save ();
-	LocalMachineOptionManager::save ();
+	CuiRadialMenuManager::clear();
+	CuiSettings::save();
+	CurrentUserOptionManager::save();
+	LocalMachineOptionManager::save();
 }
 
 //-----------------------------------------------------------------
 
-void SwgCuiHud::setHudEnabled        (bool b)
+void SwgCuiHud::setHudEnabled(bool b)
 {
-	if (b)
+	if(b)
 	{
 		CuiWorkspace::setGameWorkspace(m_workspace);
 	}
 
-	CuiManager::getIoWin ().setRadialMenuActiveHack (false);
+	CuiManager::getIoWin().setRadialMenuActiveHack(false);
 
-	for (int i = 0; i < SBT_numTypes; ++i)
+	for(auto& m_selectionBoxPage : m_selectionBoxPages)
 	{
-		m_selectionBoxPages [i]->SetEnabled (false);
+		m_selectionBoxPage->SetEnabled(false);
 	}
 
-	m_workspace->setEnabled (b);
+	m_workspace->setEnabled(b);
 	
 	m_hudEnabled = b;
 
-	if (b)
+	if(b)
 	{
-		if (m_windowManager != NULL)
-			m_windowManager->handlePerformActivate ();
+		if (m_windowManager != nullptr)
+			m_windowManager->handlePerformActivate();
 	}
 	else
 	{
-		if (m_windowManager != NULL)
-			m_windowManager->handlePerformDeactivate ();
-		m_reticleImage->SetVisible (false);
+		if (m_windowManager != nullptr)
+			m_windowManager->handlePerformDeactivate();
+		
+		m_reticleImage->SetVisible(false);
 	}
 }
 
 //-----------------------------------------------------------------
 
-bool SwgCuiHud::getHudEnabled        () const
+bool SwgCuiHud::getHudEnabled() const
 {
 	return m_hudEnabled;
 }
 
 //-----------------------------------------------------------------
 
-bool SwgCuiHud::OnMessage( UIWidget * const context, const UIMessage & msg)
+bool SwgCuiHud::OnMessage(UIWidget * const context, const UIMessage & msg)
 {	
 	static bool s_mouse1Down = false;
 	static bool s_mouse2Down = false;
 
-
-	if (context == &getPage ())
+	if(context == &getPage())
 	{
 		//-- this action should be cancelled if the mouse moves too much during the mouse press, regardless of cursor mode
-		if (msg.Type == UIMessage::MouseMove)
+		if(msg.Type == UIMessage::MouseMove)
 		{
 			const UIPoint & Delta = msg.MouseCoords - targetAndRadialCursorPos;
-			const float mag = Delta.Magnitude ();
-			if (mag > UIManager::gUIManager ().GetDragThreshold ())
+			const float mag = Delta.Magnitude();
+			
+			if (mag > UIManager::gUIManager().GetDragThreshold())
 				setIntendedAndSummonRadialMenu(true, true);
 		}
 
@@ -1147,10 +1139,7 @@ void SwgCuiHud::handleDrop ()
 
 void SwgCuiHud::update (float deltaTimeSecs)
 {
-	SwgCuiG15Lcd::updateLcd();
-
 	CuiMediator::update (deltaTimeSecs);
-
 	ReticleManager::update (deltaTimeSecs);
 
 	GroundCombatActionManager::ObjectVector orderedTargets;
@@ -1182,7 +1171,7 @@ void SwgCuiHud::update (float deltaTimeSecs)
 	bool updateCursor = false;
 	bool allowLookAtTargetSelection = false;
 
-		//update the reticle
+	//update the reticle
 	CreatureObject *playerCreature = Game::getPlayerCreature();
 	if(playerCreature && !Game::isSpace())
 	{

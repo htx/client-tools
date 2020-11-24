@@ -103,7 +103,6 @@ public:
 	static bool                getMouseLeftAndRightDrivesMovementToggle();	
 	static bool                getScrollThroughDefaultActions();	
 	static bool				   getOffsetCamera();
-	static bool                getDisableG15Lcd();
 	static bool                getShowStatusOverIntendedTarget();
 	static bool				   getEnableGimbal();
 	static bool                getEnableTargetArrow();

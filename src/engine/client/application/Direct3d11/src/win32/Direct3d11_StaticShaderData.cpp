@@ -274,7 +274,7 @@ void Direct3d11_StaticShaderData::Pass::construct(const StaticShader &shader, co
 	}
 
 	m_vertexShader = vertexShaderData->getVertexShader(textureCoordinateSetKey);
-	
+
 	if (pass.m_materialTag)
 	{
 	/*	Material material;

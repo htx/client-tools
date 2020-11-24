@@ -46,6 +46,9 @@
 #include <cstdio>
 
 #pragma warning (disable: 4201)
+#include <d3dcompiler.h>
+#include <memory>
+#include <wrl/client.h>
 #include <mmsystem.h>
 #pragma warning (default: 4201)
 
@@ -85,6 +88,18 @@ namespace Direct3d11Namespace
 	typedef void (*CallbackFunction)();
 	typedef std::vector<CallbackFunction> CallbackFunctions;
 
+	class AdapterData
+	{
+	public:
+		AdapterData(IDXGIAdapter * pAdapter)
+		{
+			this->pAdapter = pAdapter;
+			pAdapter->GetDesc(&this->description);
+		}
+		IDXGIAdapter * pAdapter = nullptr;
+		DXGI_ADAPTER_DESC description;
+	};
+	
 	// ----------------------------------------------------------------------
 	// functions
 
@@ -258,30 +273,30 @@ namespace Direct3d11Namespace
 	HWND                                       ms_window;
 
 	Gl_api                                     ms_glApi;
-
+	
+	Microsoft::WRL::ComPtr<ID3D11Device>			ms_device;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>		ms_deviceContext;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> ms_depthStencilState;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	ms_depthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState>	ms_rasterState;
+	Microsoft::WRL::ComPtr<ID3D11SamplerState>		ms_samplerState;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	ms_renderTargetView;
+	Microsoft::WRL::ComPtr<IDXGISwapChain>			ms_swapChain;
+	Microsoft::WRL::ComPtr<IDXGIFactory>            ms_dxgiFactory;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>			ms_backBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Texture2D>		    ms_depthStencilBuffer;
+	std::vector<AdapterData>						ms_adapters;
+	
 	ID3D11Buffer*							   ms_constantBufferTime;
 	ID3D11Buffer*							   ms_constantBufferViewport;
 	ID3D11Buffer*							   ms_constantBufferCameraPosition;
 	ID3D11Buffer*							   ms_constantBufferFog;
 	ID3D11Buffer*							   ms_constantBufferUserConstants;
 	ID3D11Buffer*							   ms_constantBufferObjectWorldCameraPM;
-	ID3D11DepthStencilState*				   ms_depthStencilState;
-	ID3D11DepthStencilView*					   ms_depthStencilView;
-	ID3D11RasterizerState*					   ms_rasterState;
-	ID3D11RenderTargetView*					   ms_renderTargetView;
-	IDXGISwapChain*							   ms_swapChain;
-	DXGI_SWAP_CHAIN_DESC					   ms_swapChainDesc;
+
 	D3D_FEATURE_LEVEL						   ms_featureLevel;
 	D3D11_TEXTURE2D_DESC					   ms_depthBufferDesc;
-	D3D11_DEPTH_STENCIL_DESC				   ms_depthStencilDesc;
-	D3D11_DEPTH_STENCIL_VIEW_DESC			   ms_depthStencilViewDesc;
-	D3D11_RASTERIZER_DESC					   ms_rasterDesc;
 	D3D11_VIEWPORT							   ms_viewport;
-	IDXGIFactory*                              ms_dxgiFactory;
-	ID3D11Device*							   ms_device;
-	//D3DPRESENT_PARAMETERS                      ms_presentParameters;
-	//D3DCAPS9                                   ms_deviceCaps;
-	ID3D11DeviceContext*                       ms_deviceContext;
 	DXGI_MODE_DESC                             ms_displayMode;
 	DXGI_FORMAT                                ms_adapterFormat;
 	IDXGIAdapter*							   ms_adapter;
@@ -289,8 +304,6 @@ namespace Direct3d11Namespace
 	DXGI_FORMAT                                ms_backBufferFormat;
 	DXGI_FORMAT                                ms_depthStencilFormat;
 	DXGI_ADAPTER_DESC						   ms_adapterIdentifier;
-	ID3D11Texture2D*                           ms_backBuffer;
-	ID3D11Texture2D*						   ms_depthStencilBuffer;
 	bool                                       ms_backBufferLocked;
 	bool                                       ms_hasDepthBuffer;
 	bool                                       ms_hasStencilBuffer;
@@ -395,14 +408,14 @@ bool Direct3d11Namespace::verify()
 
 IDXGIFactory *Direct3d11::getDXGIFactory()
 {
-	return ms_dxgiFactory;
+	return ms_dxgiFactory.Get();
 }
 
 // ----------------------------------------------------------------------
 
 ID3D11Device *Direct3d11::getDevice()
 {
-	return ms_device;
+	return ms_device.Get();
 }
 
 // ----------------------------------------------------------------------
@@ -423,7 +436,7 @@ int Direct3d11::getFrameNumber()
 
 ID3D11DeviceContext* Direct3d11::getDeviceContext()
 {
-	return ms_deviceContext;
+	return ms_deviceContext.Get();
 }
 
 // ----------------------------------------------------------------------
@@ -451,11 +464,7 @@ int Direct3d11::getVideoMemoryInMegabytes()
 
 bool Direct3d11Namespace::requiresVertexAndPixelShaders()
 {
-#ifdef FFP
-	return false;
-#else
 	return true;
-#endif
 }
 
 // ----------------------------------------------------------------------
@@ -800,14 +809,12 @@ bool Direct3d11::install(Gl_install *gl_install)
 
 	ms_installed = true;
 	ms_currentTime = 0.0f;
-#ifdef VSPS
 	ms_alphaFadeOpacityEnabled = false;
 	ms_alphaFadeOpacityDirty = true;
 	ms_alphaFadeOpacity.r = 0.0f;
 	ms_alphaFadeOpacity.g = 0.0f;
 	ms_alphaFadeOpacity.b = 0.0f;
 	ms_alphaFadeOpacity.a = 0.0f;
-#endif
 
 	// store the screen dimensions
 	ms_width               = gl_install->width;
@@ -960,7 +967,7 @@ bool Direct3d11::install(Gl_install *gl_install)
 	ms_glApi.setAntialiasEnabled = setAntialiasEnabled;
 
 	// create interface factory
-	HRESULT hresult = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&ms_dxgiFactory));
+	HRESULT hresult = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(ms_dxgiFactory.GetAddressOf()));
 	
 	FATAL(FAILED(hresult), ("Failed creating dxgi factory"));
 	
@@ -974,23 +981,6 @@ bool Direct3d11::install(Gl_install *gl_install)
 
 	REPORT_LOG(verboseHardwareLogging, ("Video memory = %i\n", ms_videoMemoryInMegabytes));
 	CrashReportInformation::addStaticText("VideoMemory: %i\n", ms_videoMemoryInMegabytes);
-
-#if PRODUCTION
-	if (ms_videoMemoryInMegabytes < 32 && (ms_width > 1024 || ms_height > 768))
-	{
-		ms_width = gl_install->width = 1024;
-		ms_height = gl_install->height = 768;
-		REPORT_LOG(verboseHardwareLogging, ("Restricting screen resolution to %i x %i\n", ms_width, ms_height));
-	}
-
-	if (ms_videoMemoryInMegabytes < 64 && (ms_width > 1280 || ms_height > 1024))
-	{
-		ms_width = gl_install->width = 1280;
-		ms_height = gl_install->height = 1024;
-		REPORT_LOG(verboseHardwareLogging, ("Restricting screen resolution to %i x %i\n", ms_width, ms_height));
-	}
-#endif
-
 	CrashReportInformation::addStaticText("GameResolution: %d %d\n", ms_width, ms_height);
 
 	// ---------------------------------------------------------------------------------
@@ -999,27 +989,28 @@ bool Direct3d11::install(Gl_install *gl_install)
 		const int configAdapter = ConfigDirect3d11::getAdapter();
 		
 		unsigned int adapterNr = configAdapter < 0 ? 0 : configAdapter;
-
-		hresult = ms_dxgiFactory->EnumAdapters(adapterNr, &ms_adapter);
-
-		FATAL(FAILED(hresult), ("Enum adapters fail."));
+		
+		UINT index = 0;
+		while (SUCCEEDED(ms_dxgiFactory->EnumAdapters(index, &ms_adapter)))
+		{
+			ms_adapters.emplace_back(AdapterData(ms_adapter));
+			index += 1;
+		}
 
 		// use primary adapter output
-		hresult = ms_adapter->EnumOutputs(0, &ms_adapterOutput);
-
+		hresult = ms_adapters[0].pAdapter->EnumOutputs(0, &ms_adapterOutput);
 		FATAL(FAILED(hresult), ("Enum adapter output fail."));
 		
-		/*int numberOfAdapters = ms_direct3d->GetAdapterCount();
+		int numberOfAdapters = ms_adapters.size();
 		REPORT_LOG(verboseHardwareLogging, ("Using adapter %d of %d:\n", configAdapter, numberOfAdapters));
-		CrashReportInformation::addStaticText("VideoAdapter: %d/%d\n", configAdapter, numberOfAdapters);*/
+		CrashReportInformation::addStaticText("VideoAdapter: %d/%d\n", configAdapter, numberOfAdapters);
 
 		// adapter info
-		hresult = ms_adapter->GetDesc(&ms_adapterIdentifier);
-		
+		hresult = ms_adapters[0].pAdapter->GetDesc(&ms_adapterIdentifier);
 		FATAL(FAILED(hresult), ("get adapter description fail."));
 
-		REPORT_LOG(verboseHardwareLogging, ("Adapter device: 0x%08x 0x%08x 0x%08x 0x%08x\n", ms_adapterIdentifier.VendorId, ms_adapterIdentifier.DeviceId, ms_adapterIdentifier.SubSysId, ms_adapterIdentifier.Revision));
-		REPORT_LOG(verboseHardwareLogging, ("Adapter driver: %s\n", ms_adapterIdentifier.Description));
+		//REPORT_LOG(verboseHardwareLogging, ("Adapter device: 0x%08x 0x%08x 0x%08x 0x%08x\n", ms_adapterIdentifier.VendorId, ms_adapterIdentifier.DeviceId, ms_adapterIdentifier.SubSysId, ms_adapterIdentifier.Revision));
+		//REPORT_LOG(verboseHardwareLogging, ("Adapter driver: %s\n", ms_adapterIdentifier.Description));
 	}
 
 	// ---------------------------------------------------------------------------------
@@ -1056,67 +1047,68 @@ bool Direct3d11::install(Gl_install *gl_install)
 	// ---------------------------------------------------------------------------------
 
 	// Initialize the swap chain description.
-	ZeroMemory(&ms_swapChainDesc, sizeof(ms_swapChainDesc));
+	DXGI_SWAP_CHAIN_DESC scd;
+	ZeroMemory(&scd, sizeof(scd));
 
 	// Set to a single back buffer.
-	ms_swapChainDesc.BufferCount = 1;
+	scd.BufferCount = 1;
 
 	// Set the width and height of the back buffer.
-	ms_swapChainDesc.BufferDesc.Width = ms_width;
-	ms_swapChainDesc.BufferDesc.Height = ms_height;
+	scd.BufferDesc.Width = ms_width;
+	scd.BufferDesc.Height = ms_height;
 
 	// Set regular 32-bit surface for the back buffer.
-	ms_swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	// Set the refresh rate of the back buffer.
 	if(ConfigDirect3d11::getAllowTearing())
 	{
-		ms_swapChainDesc.BufferDesc.RefreshRate.Numerator = ms_displayMode.RefreshRate.Numerator;
-		ms_swapChainDesc.BufferDesc.RefreshRate.Denominator = ms_displayMode.RefreshRate.Denominator;
+		scd.BufferDesc.RefreshRate.Numerator = ms_displayMode.RefreshRate.Numerator;
+		scd.BufferDesc.RefreshRate.Denominator = ms_displayMode.RefreshRate.Denominator;
 	}
 	else
 	{
-		ms_swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
-		ms_swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+		scd.BufferDesc.RefreshRate.Numerator = 0;
+		scd.BufferDesc.RefreshRate.Denominator = 1;
 	}
 
 	// Set the usage of the back buffer.
-	ms_swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 
 	// Set the handle for the window to render to.
-	ms_swapChainDesc.OutputWindow = ms_window;
+	scd.OutputWindow = ms_window;
 
 	// Turn multisampling off.
-	ms_swapChainDesc.SampleDesc.Count = 1;
-	ms_swapChainDesc.SampleDesc.Quality = 0;
+	scd.SampleDesc.Count = 1;
+	scd.SampleDesc.Quality = 0;
 
 	// Set to full screen or windowed mode.
-	ms_swapChainDesc.Windowed = ms_windowed;
+	scd.Windowed = ms_windowed;
 
 	// Set the scan line ordering and scaling to unspecified.
-	ms_swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	ms_swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	scd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	scd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
 	// Discard the back buffer contents after presenting.
-	ms_swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	scd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
 	// Don't set the advanced flags.
-	ms_swapChainDesc.Flags = 0;
+	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
 	// Set the feature level
-	ms_featureLevel = D3D_FEATURE_LEVEL_11_0;
+	ms_featureLevel = D3D_FEATURE_LEVEL_11_1;
 
 	// Create the swap chain, Direct3D device, and Direct3D device context.
-	hresult = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, D3D11_CREATE_DEVICE_DEBUG, &ms_featureLevel, 1, 
-					       D3D11_SDK_VERSION, &ms_swapChainDesc, &ms_swapChain, &ms_device, NULL, &ms_deviceContext);
+	hresult = D3D11CreateDeviceAndSwapChain(ms_adapters[0].pAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, D3D11_CREATE_DEVICE_DEBUG, &ms_featureLevel, 1, 
+					       D3D11_SDK_VERSION, &scd, ms_swapChain.GetAddressOf(), ms_device.GetAddressOf(), nullptr, ms_deviceContext.GetAddressOf());
 	FATAL(FAILED(hresult), ("create device + swapchain fail."));
 
 	// Get the pointer to the back buffer.
-	hresult = ms_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&ms_backBuffer);
+	hresult = ms_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(ms_backBuffer.GetAddressOf()));
 	FATAL(FAILED(hresult), ("get backbuffer fail."));
 
 	// Create the render target view with the back buffer pointer.
-	hresult = ms_device->CreateRenderTargetView(ms_backBuffer, nullptr, &ms_renderTargetView);
+	hresult = ms_device->CreateRenderTargetView(ms_backBuffer.Get(), nullptr, ms_renderTargetView.GetAddressOf());
 	FATAL(FAILED(hresult), ("create rendertargetview fail."));
 
 	// Release pointer to the back buffer as we no longer need it.
@@ -1140,75 +1132,99 @@ bool Direct3d11::install(Gl_install *gl_install)
 	ms_depthBufferDesc.MiscFlags = 0;
 
 	// Create the texture for the depth buffer using the filled out description.
-	hresult = ms_device->CreateTexture2D(&ms_depthBufferDesc, nullptr, &ms_depthStencilBuffer);
+	hresult = ms_device->CreateTexture2D(&ms_depthBufferDesc, nullptr, ms_depthStencilBuffer.GetAddressOf());
 	FATAL(FAILED(hresult), ("create depthstencilbuffer fail."));
 
 	// Initialize the description of the stencil state.
-	ZeroMemory(&ms_depthStencilDesc, sizeof(ms_depthStencilDesc));
+	D3D11_DEPTH_STENCIL_DESC dsd;
+	ZeroMemory(&dsd, sizeof(dsd));
 
 	// Set up the description of the stencil state.
-	ms_depthStencilDesc.DepthEnable = true;
-	ms_depthStencilDesc.DepthWriteMask =D3D11_DEPTH_WRITE_MASK_ALL;
-	ms_depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	dsd.DepthEnable = true;
+	dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dsd.DepthFunc = D3D11_COMPARISON_LESS;
 
-	ms_depthStencilDesc.StencilEnable = true;
-	ms_depthStencilDesc.StencilReadMask = 0xFF;
-	ms_depthStencilDesc.StencilWriteMask = 0xFF;
+	dsd.StencilEnable = true;
+	dsd.StencilReadMask = 0xFF;
+	dsd.StencilWriteMask = 0xFF;
 
 	// Stencil operations if pixel is front-facing.
-	ms_depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	ms_depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	ms_depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	ms_depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	dsd.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dsd.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	dsd.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dsd.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Stencil operations if pixel is back-facing.
-	ms_depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	ms_depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	ms_depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	ms_depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	dsd.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dsd.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	dsd.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dsd.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 	// Create the depth stencil state.
-	hresult = ms_device->CreateDepthStencilState(&ms_depthStencilDesc, &ms_depthStencilState);
+	hresult = ms_device->CreateDepthStencilState(&dsd, ms_depthStencilState.GetAddressOf());
 	FATAL(FAILED(hresult), ("create depthstencilstate fail."));
 
-	// Set the depth stencil state.
-	ms_deviceContext->OMSetDepthStencilState(ms_depthStencilState, 1);
-
 	// Initailze the depth stencil view.
-	ZeroMemory(&ms_depthStencilViewDesc, sizeof(ms_depthStencilViewDesc));
+	CD3D11_DEPTH_STENCIL_VIEW_DESC dsvd;
+	ZeroMemory(&dsvd, sizeof(dsvd));
 
 	// Set up the depth stencil view description.
-	ms_depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	ms_depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	ms_depthStencilViewDesc.Texture2D.MipSlice = 0;
+	dsvd.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	dsvd.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvd.Texture2D.MipSlice = 0;
 
 	// Create the depth stencil view.
-	hresult = ms_device->CreateDepthStencilView(ms_depthStencilBuffer, &ms_depthStencilViewDesc, &ms_depthStencilView);
+	hresult = ms_device->CreateDepthStencilView(ms_depthStencilBuffer.Get(), &dsvd, ms_depthStencilView.GetAddressOf());
 	FATAL(FAILED(hresult), ("create depthstencilview fail."));
 
 	// Bind the render target view and depth stencil buffer to the output render pipeline.
-	ms_deviceContext->OMSetRenderTargets(1, &ms_renderTargetView, ms_depthStencilView);
+	ms_deviceContext->OMSetRenderTargets(1, ms_renderTargetView.GetAddressOf(), ms_depthStencilView.Get());
+	
+	D3D11_VIEWPORT viewport;
+	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 
-	// Setup the raster description which will determine how and what polygons will be drawn.
-	ms_rasterDesc.AntialiasedLineEnable = false;
-	ms_rasterDesc.CullMode = D3D11_CULL_BACK;
-	ms_rasterDesc.DepthBias = 0;
-	ms_rasterDesc.DepthBiasClamp = 0.0f;
-	ms_rasterDesc.DepthClipEnable = true;
-	ms_rasterDesc.FillMode = D3D11_FILL_SOLID;
-	ms_rasterDesc.FrontCounterClockwise = false;
-	ms_rasterDesc.MultisampleEnable = false;
-	ms_rasterDesc.ScissorEnable = false;
-	ms_rasterDesc.SlopeScaledDepthBias = 0.0f;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = ms_width;
+	viewport.Height = ms_height;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+
+	// set the Viewport
+	ms_deviceContext->RSSetViewports(1, &viewport);
+	
+	D3D11_RASTERIZER_DESC rsd;
+	ZeroMemory(&rsd, sizeof(D3D11_RASTERIZER_DESC));
+	
+	rsd.AntialiasedLineEnable = false;
+	rsd.CullMode = D3D11_CULL_BACK;
+	rsd.DepthBias = 0;
+	rsd.DepthBiasClamp = 0.0f;
+	rsd.DepthClipEnable = true;
+	rsd.FillMode = D3D11_FILL_WIREFRAME;
+	rsd.FrontCounterClockwise = false;
+	rsd.MultisampleEnable = false;
+	rsd.ScissorEnable = false;
+	rsd.SlopeScaledDepthBias = 0.0f;
 
 	// Create the rasterizer state from the description we just filled out.
-	hresult = ms_device->CreateRasterizerState(&ms_rasterDesc, &ms_rasterState);
+	hresult = ms_device->CreateRasterizerState(&rsd, ms_rasterState.GetAddressOf());
 	FATAL(FAILED(hresult), ("create rasterizer state fail."));
 
-	// Now set the rasterizer state.
-	ms_deviceContext->RSSetState(ms_rasterState);
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	hresult = ms_device->CreateSamplerState(&sampDesc, ms_samplerState.GetAddressOf());
+	
+	FATAL(FAILED(hresult), ("create sampler state fail."));
 
-
+	//---------------------------------------------
 	// create constant buffers
 	D3D11_BUFFER_DESC constantBufferDesc;   // create the constant buffer
 
@@ -1231,10 +1247,10 @@ bool Direct3d11::install(Gl_install *gl_install)
 	constantBufferDesc.ByteWidth = sizeof(DirectX::XMFLOAT4X4[2]);
 	ms_device->CreateBuffer(&constantBufferDesc, nullptr, &ms_constantBufferObjectWorldCameraPM);
 
-	//updateWindowSettings();
+	updateWindowSettings();
 
-	//ms_hasDepthBuffer = getDepthBufferBitDepth(ms_depthStencilFormat) != 0;
-	//ms_hasStencilBuffer = getStencilBufferBitDepth(ms_depthStencilFormat) != 0;
+	ms_hasDepthBuffer = true;//getDepthBufferBitDepth(ms_depthStencilFormat) != 0;
+	ms_hasStencilBuffer = true;//getStencilBufferBitDepth(ms_depthStencilFormat) != 0;
 
 	// install the other subsystems
 	Direct3d11_VertexDeclarationMap::install();
@@ -1303,7 +1319,7 @@ void Direct3d11Namespace::remove()
 
 	if(ms_swapChain)
 	{
-		ms_swapChain->SetFullscreenState(false, NULL);
+		ms_swapChain->SetFullscreenState(false, nullptr);
 	}
 	
 	if(ms_rasterState)
@@ -1394,10 +1410,6 @@ bool Direct3d11Namespace::checkDisplayMode()
 	
 	if (ms_windowed && ms_engineOwnsWindow)
 	{
-		// get the current display mode
-		Zero(ms_displayMode);
-		//HRESULT hresult = ms_direct3d->GetAdapterDisplayMode(ms_adapter, &ms_displayMode);
-		//FATAL_DX_HR("GetAdapterDisplayMode failed %s", hresult);
 		ms_adapterFormat = ms_displayMode.Format;
 
 		if (!ms_borderlessWindow && (static_cast<int>(ms_displayMode.Width) == ms_width || static_cast<int>(ms_displayMode.Height) == ms_height))
@@ -1469,7 +1481,7 @@ void Direct3d11Namespace::flushResources(bool fullReset)
 
 void Direct3d11Namespace::updateWindowSettings()
 {
-/*	if (ms_engineOwnsWindow)
+	if (ms_engineOwnsWindow)
 	{
 		DWORD const windowStyleWindowed    = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_BORDER | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 		DWORD const windowStyleFullscreen  = WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
@@ -1491,7 +1503,13 @@ void Direct3d11Namespace::updateWindowSettings()
 			UNREF(result1);
 
 			// get the area of the monitor
-			HMONITOR monitor = ms_direct3d->GetAdapterMonitor(ms_adapter);
+			HRESULT hresult = ms_adapters[0].pAdapter->EnumOutputs(0, &ms_adapterOutput);
+			FATAL(FAILED(hresult), ("Enum adapter output fail."));
+
+			DXGI_OUTPUT_DESC oDesc;
+			ms_adapterOutput->GetDesc(&oDesc);
+			
+			HMONITOR monitor = oDesc.Monitor;
 			MONITORINFO monitorInfo;
 			Zero(monitorInfo);
 			monitorInfo.cbSize = sizeof(monitorInfo);
@@ -1517,7 +1535,13 @@ void Direct3d11Namespace::updateWindowSettings()
 		{
 			SetWindowLong(ms_window, GWL_STYLE, windowStyleFullscreen);
 
-			HMONITOR monitor = ms_direct3d->GetAdapterMonitor(ms_adapter);
+			HRESULT hresult = ms_adapters[0].pAdapter->EnumOutputs(0, &ms_adapterOutput);
+			FATAL(FAILED(hresult), ("Enum adapter output fail."));
+
+			DXGI_OUTPUT_DESC oDesc;
+			ms_adapterOutput->GetDesc(&oDesc);
+			
+			HMONITOR monitor = oDesc.Monitor;
 			MONITORINFO monitorInfo;
 			Zero(monitorInfo);
 			monitorInfo.cbSize = sizeof(monitorInfo);
@@ -1527,7 +1551,7 @@ void Direct3d11Namespace::updateWindowSettings()
 			const BOOL result2 = SetWindowPos(ms_window, HWND_TOPMOST, r.left, r.top, ms_width, ms_height, SWP_NOCOPYBITS |  SWP_SHOWWINDOW);
 			FATAL(!result2, ("SetWindowPos failed"));
 		}
-	}*/
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -1939,14 +1963,14 @@ void Direct3d11Namespace::setPointSpriteEnable( bool bEnable )
 
 void Direct3d11Namespace::clearViewport(bool clearColor, uint32 colorValue, bool clearDepth, float depthValue, bool clearStencil, uint32 stencilValue)
 {
-	/*// d3d will fail the clear call if we try to clear a buffer that's not present
-	if (!ms_hasDepthBuffer)
+	// d3d will fail the clear call if we try to clear a buffer that's not present
+	/*if (!ms_hasDepthBuffer)
 		clearDepth = false;
 	if (!ms_hasStencilBuffer)
 		clearStencil = false;
 
 	const DWORD flags = (clearColor ? D3DCLEAR_TARGET : 0) | (clearDepth ? D3DCLEAR_ZBUFFER : 0) | (clearStencil ? D3DCLEAR_STENCIL : 0);
-	const HRESULT hresult = ms_device->Clear(0, NULL, flags, colorValue, depthValue, stencilValue);
+	const HRESULT hresult = ms_deviceContext->Clear->Clear(0, NULL, flags, colorValue, depthValue, stencilValue);
 	FATAL(FAILED(hresult), ("Clear failed %d: %08x %08x %5.2f %08x", HRESULT_CODE(hresult), flags, colorValue, depthValue, stencilValue));*/
 }
 
@@ -1998,11 +2022,11 @@ void Direct3d11Namespace::resizeQuadListIndexBuffer(int numberOfQuads)
 void Direct3d11Namespace::update(float elapsedTime)
 {
 	++ms_frameNumber;
-	ms_currentTime += elapsedTime;
+	ms_currentTime += elapsedTime; 
 
-	const float time[4] = { ms_currentTime, 0.f, 0.f, 0.f };
-	ms_deviceContext->UpdateSubresource(ms_constantBufferTime, 0, nullptr, &time, 0, 0);
-	Direct3d11_StateCache::setVertexShaderConstants(VSCR_currentTime, ms_constantBufferTime, 1);
+	//const float time[4] = { ms_currentTime, 0.f, 0.f, 0.f };
+	//ms_deviceContext->UpdateSubresource(ms_constantBufferTime, 0, nullptr, &time, 0, 0);
+	//Direct3d11_StateCache::setVertexShaderConstants(0, ms_constantBufferTime, 1); //VSCR_currentTime
 }
 
 // ----------------------------------------------------------------------
@@ -2012,25 +2036,20 @@ void Direct3d11Namespace::beginScene()
 	if (ms_displayModeChanged && !checkDisplayMode())
 		setWindowedMode(false);
 
-	float color[4];
+	float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f};
 
-	// Setup the color to clear the buffer to.
-	color[0] = 0;
-	color[1] = 0;
-	color[2] = 0;
-	color[3] = 0;
+	// clear buffers
+	ms_deviceContext->ClearRenderTargetView(ms_renderTargetView.Get(), color);
+	ms_deviceContext->ClearDepthStencilView(ms_depthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	// Clear the back buffer.
-	ms_deviceContext->ClearRenderTargetView(ms_renderTargetView, color);
-    
-	// Clear the depth buffer.
-	ms_deviceContext->ClearDepthStencilView(ms_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	ms_deviceContext->RSSetState(ms_rasterState.Get());
+	ms_deviceContext->OMSetDepthStencilState(ms_depthStencilState.Get(), 0);
 
-	/*Direct3d9_StaticShaderData::beginFrame();
-	Direct3d9_DynamicVertexBufferData::beginFrame();
-	Direct3d9_DynamicIndexBufferData::beginFrame();
-	Direct3d9_LightManager::beginFrame();
-	ms_savedIndexBuffer = NULL;*/
+	Direct3d11_StaticShaderData::beginFrame();
+	Direct3d11_DynamicVertexBufferData::beginFrame();
+	Direct3d11_DynamicIndexBufferData::beginFrame();
+	Direct3d11_LightManager::beginFrame();
+	ms_savedIndexBuffer = nullptr;
 }
 
 // ----------------------------------------------------------------------
@@ -2038,7 +2057,6 @@ void Direct3d11Namespace::beginScene()
 void Direct3d11Namespace::endScene()
 {
 	// end the 3d scene
-	
 }
 
 // ----------------------------------------------------------------------
@@ -2787,8 +2805,8 @@ void Direct3d11Namespace::setVertexShaderUserConstants(int index, float c0, floa
 	UNREF(c3);
 
 	const float constants[4] = { c0, c1, c2, c3 };
-	ms_deviceContext->UpdateSubresource(ms_constantBufferUserConstants, 0, nullptr, &constants, 0, 0);
-	Direct3d11_StateCache::setVertexShaderConstants(VCSR_userConstant0 + index, ms_constantBufferUserConstants, 1);
+	//ms_deviceContext->UpdateSubresource(ms_constantBufferUserConstants, 0, nullptr, &constants, 0, 0);
+	//Direct3d11_StateCache::setVertexShaderConstants(VCSR_userConstant0 + index, ms_constantBufferUserConstants, 1);
 }
 
 // ----------------------------------------------------------------------
@@ -2875,7 +2893,7 @@ void Direct3d11Namespace::noSetAlphaFadeOpacity(bool, float)
 
 void Direct3d11Namespace::setLights(const stdvector<const Light*>::fwd &lightList)
 {
-	Direct3d11_LightManager::setLights(lightList);
+	//Direct3d11_LightManager::setLights(lightList);
 }
 
 // ----------------------------------------------------------------------
@@ -3115,8 +3133,8 @@ inline bool Direct3d11::drawPrimitive()
 		
 		matrices[1] = ms_cachedObjectToWorldMatrix;
 
-		ms_deviceContext->UpdateSubresource(ms_constantBufferObjectWorldCameraPM, 0, nullptr, &matrices, 0, 0);
-		Direct3d11_StateCache::setVertexShaderConstants(VSCR_objectWorldCameraProjectionMatrix, ms_constantBufferObjectWorldCameraPM, 8);
+		//ms_deviceContext->UpdateSubresource(ms_constantBufferObjectWorldCameraPM, 0, nullptr, &matrices, 0, 0);
+		//Direct3d11_StateCache::setVertexShaderConstants(VSCR_objectWorldCameraProjectionMatrix, ms_constantBufferObjectWorldCameraPM, 8);
 		ms_transformDirty = false;
 	}
 

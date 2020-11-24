@@ -76,7 +76,6 @@
 #include "swgClientUserInterface/SetupSwgClientUserInterface.h"
 #include "swgClientUserInterface/SwgCuiAuctionFilter.h"
 #include "swgClientUserInterface/SwgCuiChatWindow.h"
-#include "swgClientUserInterface/SwgCuiG15Lcd.h"
 #include "swgClientUserInterface/SwgCuiManager.h"
 #include "swgSharedNetworkMessages/SetupSwgSharedNetworkMessages.h"
 
@@ -88,7 +87,7 @@
 #include <ctime>
 
 #pragma warning (disable : 4100)
-
+ 
 extern void externalCommandHandler(const char*);
 
 namespace ClientMainNamespace
@@ -146,7 +145,6 @@ int ClientMain(
 	snprintf(clientWindowName, sizeof(clientWindowName), "SwgClient (%s.%s)", Branch().getBranchName().c_str(), ApplicationVersion::getPublicVersion());
 	clientWindowName[sizeof(clientWindowName) - 1] = '\0';
 #endif
-
 
 	//-- foundation
 	SetupSharedFoundation::Data data(SetupSharedFoundation::Data::D_game);
@@ -306,7 +304,7 @@ int ClientMain(
 		setupGraphicsData.alphaBufferBitDepth = 0;
 		SetupClientGraphics::setupDefaultGameData(setupGraphicsData);
 
-		if (SetupClientGraphics::install(setupGraphicsData))
+		if(SetupClientGraphics::install(setupGraphicsData))
 		{
 			VideoList::install();
 
@@ -354,11 +352,6 @@ int ClientMain(
 			//-- setup the client user interface.
 			SetupSwgClientUserInterface::install();
 
-			//-- G15 LCD
-#ifndef _WIN64
-			SwgCuiG15Lcd::initializeLcd();
-#endif
-
 			//-- run game
 			rootInstallTimer.manualExit();
 			SetupSharedFoundation::callbackWithExceptionHandling(Game::run);
@@ -367,13 +360,13 @@ int ClientMain(
 			// @todo: write a flexible options load/save system, both of ours suck
 			CuiWorkspace * workspace = CuiWorkspace::getGameWorkspace();
 			
-			if (workspace != nullptr)
+			if(workspace != nullptr)
 			{
 				workspace->saveAllSettings();
 
 				auto* chatWindow = dynamic_cast<SwgCuiChatWindow *>(workspace->findMediatorByType(typeid(SwgCuiChatWindow)));
 				
-				if (chatWindow != nullptr)
+				if(chatWindow != nullptr)
 					chatWindow->saveSettings();
 			}
 			
@@ -387,10 +380,9 @@ int ClientMain(
 	SetupSharedFoundation::remove();
 	SetupSharedThread::remove();
 
-	if (semaphore)
+	if(semaphore)
 		CloseHandle(semaphore);
 	
 	return 0;
-
 }
 // ======================================================================

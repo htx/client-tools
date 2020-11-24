@@ -125,7 +125,6 @@ namespace AudioNamespace
 	int                          s_requestedMaxNumberOfSamples = 32;
 	int                          s_maxCached2dSampleSize = 0;
 	ConstWatcher<Object>         s_listenerObject;
-	float const                  s_rollOffFactor = 0.0f; // The volume of sounds is based on linear distance
 	float                        s_occlusion = 0.0f;
 	float                        s_obstruction = 0.0f;
 	std::string                  s_soundProvider;
@@ -1205,6 +1204,11 @@ bool Audio::install()
 
 	s_maxDigitalMixerChannels = 64;
 
+#ifdef _DEBUG
+	const FMOD_DEBUG_FLAGS dFlags = FMOD_DEBUG_LEVEL_ERROR;
+	FMOD::Debug_Initialize(dFlags, FMOD_DEBUG_MODE_TTY, nullptr, nullptr);
+#endif
+	
 	// create studio + core system
 	FMOD_RESULT fr = FMOD::Studio::System::create(&s_fmod_studio_system);
 
@@ -1248,7 +1252,7 @@ bool Audio::install()
 		setEnabled(false);
 		return false;
 	}
-	
+
 	// init
 	fr = s_fmod_studio_system->initialize(s_maxDigitalMixerChannels, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr);
 
@@ -1262,8 +1266,6 @@ bool Audio::install()
 	
 	s_listener.mFmodCoreSystem = s_fmod_core_system;
 	s_listener.alter();
-
-	//AIL_set_3D_rolloff_factor(s_digitalDevice2d, s_rollOffFactor); // TODO : set per channel ?
 
 	REPORT_LOG(true, ("Audio: FMOD speakers are %s\n", getCurrent3dProvider().c_str()));
 	REPORT_LOG(true, ("Audio: FMOD Max Channels set to %d\n", getMaxDigitalMixerChannels()));

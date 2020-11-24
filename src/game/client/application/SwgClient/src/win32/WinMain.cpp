@@ -17,6 +17,8 @@
 
 #include <shellapi.h>
 
+#pragma warning (disable : 4100)
+
 extern void externalCommandHandler(const char*);
 
 // ======================================================================

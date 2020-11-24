@@ -20,7 +20,6 @@
 
 //======================================================================
 
-
 namespace
 {
 	bool              ms_groundRadarTerrainEnabled;
@@ -106,7 +105,6 @@ namespace
 	bool              ms_mouseLeftAndRightDrivesMovementToggle;
 	bool              ms_scrollThroughDefaultActions;	
 	bool			  ms_offsetCamera;
-	bool              ms_disableG15Lcd;
 	bool              ms_showStatusOverIntendedTarget;
 	bool			  ms_enableGimbal;
 	int				  ms_currencyFormat;
@@ -152,7 +150,12 @@ void ConfigClientUserInterface::install ()
 	KEY_BOOL   (drawSelfName,                false);
 	KEY_BOOL   (allowRadialMenuPickup,       false);
 	KEY_STRING (uiRootPath,                  "ui/");
-
+	
+	if (ConfigFile::getKeyBool("ClientUserInterface", "use4kResolutionInterface", false)) 
+	{
+		ms_uiRootPath = "ui-4k/";
+	}
+	
 	KEY_STRING (uiRootName,                  DefaultUIFile);
 	if(ConfigFile::getKeyBool("ClientTools","loadHud",false))
 	{
@@ -241,7 +244,6 @@ void ConfigClientUserInterface::install ()
 	KEY_BOOL   (mouseLeftAndRightDrivesMovementToggle, false);
 	KEY_BOOL   (scrollThroughDefaultActions,      false);
 	KEY_BOOL   (offsetCamera,					  true);
-	KEY_BOOL   (disableG15Lcd,                    false);
 	KEY_BOOL   (showStatusOverIntendedTarget,     true);
 	KEY_BOOL   (enableGimbal,					  true);
 	KEY_INT	   (currencyFormat,						0);
@@ -843,13 +845,6 @@ bool ConfigClientUserInterface::getScrollThroughDefaultActions()
 bool ConfigClientUserInterface::getOffsetCamera()
 {
 	return ms_offsetCamera;
-}
-
-//----------------------------------------------------------------------
-
-bool ConfigClientUserInterface::getDisableG15Lcd()
-{
-	return ms_disableG15Lcd;
 }
 
 //----------------------------------------------------------------------

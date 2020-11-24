@@ -90,7 +90,7 @@ inline int StaticIndexBuffer::getNumberOfIndices() const
 
 inline void StaticIndexBuffer::lock(bool readOnly) const 
 {
-	DEBUG_FATAL(m_indexData, ("IB already locked"));
+	//DEBUG_FATAL(m_indexData, ("IB already locked"));
 	m_readOnly = readOnly;
 	m_indexData = m_graphicsData->lock(m_readOnly);
 }

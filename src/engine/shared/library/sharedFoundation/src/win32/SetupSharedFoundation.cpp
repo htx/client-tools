@@ -91,38 +91,40 @@ LONG __stdcall SetupSharedFoundationNamespace::MyUnhandledExceptionFilter(LPEXCE
 
 		sprintf(fileName, "%s-%s-%I64d.txt", Os::getShortProgramName(), ApplicationVersion::getInternalVersion(), timestamp);
 		HANDLE const file = CreateFile(fileName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_ARCHIVE, NULL);
+		
 		if (file != INVALID_HANDLE_VALUE)
 		{
 			char text1[] = "automated crash dump from ";
-			DWORD bytesWritten;
-			WriteFile(file, text1, strlen(text1), &bytesWritten, NULL);
+			DWORD bytesWritten = 0;
+			
+			WriteFile(file, text1, static_cast<DWORD>(strlen(text1)), &bytesWritten, nullptr);
 
 			char const * text2 = Os::getShortProgramName();
-			WriteFile(file, text2, strlen(text2), &bytesWritten, NULL);
+			WriteFile(file, text2, static_cast<DWORD>(strlen(text2)), &bytesWritten, nullptr);
 
 			char text3[] = " ";
-			WriteFile(file, text3, strlen(text3), &bytesWritten, NULL);
+			WriteFile(file, text3, static_cast<DWORD>(strlen(text3)), &bytesWritten, nullptr);
 
 			char const * text4 = ApplicationVersion::getInternalVersion();
-			WriteFile(file, text4, strlen(text4), &bytesWritten, NULL);
+			WriteFile(file, text4, static_cast<DWORD>(strlen(text4)), &bytesWritten, nullptr);
 
 			char text5[] = "\n\n\n";
-			WriteFile(file, text5, strlen(text5), &bytesWritten, NULL);
+			WriteFile(file, text5, static_cast<DWORD>(strlen(text5)), &bytesWritten, nullptr);
 
 			if (exceptionPointers->ExceptionRecord->ExceptionCode == 0x80000003)
 			{
 				// write out the fatal buffer
 				char const * text6 = FatalNamespace::ms_buffer;
-				WriteFile(file, text6, strlen(text6), &bytesWritten, NULL);
+				WriteFile(file, text6, strlen(text6), &bytesWritten, nullptr);
 			}
 			else
 			{
 				char const * text6 = buffer;
-				WriteFile(file, text6, strlen(text6), &bytesWritten, NULL);
+				WriteFile(file, text6, static_cast<DWORD>(strlen(text6)), &bytesWritten, nullptr);
 			}
 
 			char text7[] = "\n\n";
-			WriteFile(file, text7, strlen(text7), &bytesWritten, NULL);
+			WriteFile(file, text7, static_cast<DWORD>(strlen(text7)), &bytesWritten, nullptr);
 
 			char const * text8 = "";
 			for (int i = 0; text8; ++i)
@@ -132,20 +134,20 @@ LONG __stdcall SetupSharedFoundationNamespace::MyUnhandledExceptionFilter(LPEXCE
 				{
 					int const text8Length = strlen(text8);
 					if (text8Length)
-						WriteFile(file, text8, text8Length, &bytesWritten, NULL);
+						WriteFile(file, text8, text8Length, &bytesWritten, nullptr);
 				}
 			}
 
 			CloseHandle(file);
 		}
 
-		sprintf(fileName, "%s-%s-%I64d.mdmp", Os::getShortProgramName(), ApplicationVersion::getInternalVersion(), timestamp);
+		sprintf(fileName, "%s-%s-%llu.mdmp", Os::getShortProgramName(), ApplicationVersion::getInternalVersion(), timestamp);
 		OutputDebugString("Generating minidump ");
 		OutputDebugString(fileName);
 		OutputDebugString("\n");
 		DebugHelp::writeMiniDump(fileName, exceptionPointers);
 
-		sprintf(fileName, "%s-%s-%I64d.log", Os::getShortProgramName(), ApplicationVersion::getInternalVersion(), timestamp);
+		sprintf(fileName, "%s-%s-%llu.log", Os::getShortProgramName(), ApplicationVersion::getInternalVersion(), timestamp);
 		TailFileLogObserver::flushAllTailFileLogObservers(fileName);
 	}
 
