@@ -332,10 +332,10 @@ Direct3d11_VertexShaderData::~Direct3d11_VertexShaderData()
 
 ID3D11VertexShader * Direct3d11_VertexShaderData::createVertexShader(uint32 textureCoordinateSetKey) const
 {
-	ID3DBlob *compiledShader = NULL;
+	ID3DBlob *compiledShader = nullptr;
 
 	ms_defines.clear();
-	char const * target = "vs_2_0";
+	char const * target = "vs_5_0";
 	const int numberOfTextureCoordinateSets = 8;
 	
 	if (m_hlsl)
@@ -370,7 +370,7 @@ ID3D11VertexShader * Direct3d11_VertexShaderData::createVertexShader(uint32 text
 					SCRATCH_INT(textureCoordinateSet);
 					SCRATCH_DONE();
 
-					ms_defines.push_back(macro);
+					ms_defines.emplace_back(macro);
 				}
 			}
 
@@ -403,14 +403,14 @@ ID3D11VertexShader * Direct3d11_VertexShaderData::createVertexShader(uint32 text
 
 				SCRATCH_DONE();
 
-				ms_defines.push_back(macro);
+				ms_defines.emplace_back(macro);
 			}
 
 			DEBUG_FATAL(ms_scratchBuffer + sizeof(ms_scratchBuffer) < scratchBuffer, ("Scratch buffer overflow"));
 		}
 
 		D3D_SHADER_MACRO empty = { nullptr, nullptr };
-		ms_defines.push_back(empty);
+		ms_defines.emplace_back(empty);
 
 		IncludeHandler includeHandler;
 		ID3DBlob *error = nullptr;

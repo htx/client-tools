@@ -105,11 +105,10 @@ void IffReadMap(Iff &iff, CString &string, const Map &m)
 {
 	const int8 value = iff.read_int8();
 
-	Map::const_iterator end = m.end();
-	for (Map::const_iterator i = m.begin(); i != end; ++i)
-		if (i->second == value)
+	for(const auto& i : m)
+		if (i.second == value)
 		{
-			string = i->first;
+			string = i.first;
 			return;
 		}
 
@@ -573,7 +572,6 @@ CTemplateTreeNode::CTemplateTreeNode(CLeftView &newLeftView, CTreeCtrl &newTreeC
 	includeTreeNode(NULL),
 	vertexShaderProgramTreeNode(NULL),
 	pixelShaderProgramTreeNode(NULL)
-
 {
 	// save off the tree control
 	leftView = &newLeftView;

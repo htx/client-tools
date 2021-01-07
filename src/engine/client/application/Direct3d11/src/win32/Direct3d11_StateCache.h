@@ -248,7 +248,6 @@ inline void Direct3d11_StateCache::setVertexDeclaration(ID3D11InputLayout *verte
 
 inline void Direct3d11_StateCache::forceVertexShader(ID3D11VertexShader *vertexShader)
 {
-		REPORT_LOG(true, ("setvs!!!!!!!!!!!!!"));
 	ms_vertexShader = vertexShader;
 	Direct3d11::getDeviceContext()->VSSetShader(ms_vertexShader, nullptr, 0);
 }
